@@ -602,4 +602,116 @@
     orefresh();
   }
 
+  /* ---------- reading widget (guarded by #numrun) ----------
+     Activity 7. Drag the tilt and watch three things at once: the number the
+     sensor hands back with its whole tail of digits, the same number after
+     round(), and what actually reaches the glass. The screen only catches up
+     when Send it is pressed, so Activity 6's write-then-show survives. The
+     "as a number" setting reproduces the TypeError in words. As with every
+     widget here the output is written in words and never prints a line of code
+     (CONTEXT.md rule 5.1). */
+  var numrun = document.getElementById('numrun');
+  if(numrun){
+    var ntilt = document.getElementById('numtilt');
+    var nraw  = document.getElementById('numraw');
+    var nrnd  = document.getElementById('numrnd');
+    var nscr  = document.getElementById('numscr');
+    var nout  = document.getElementById('numout');
+    var nstr  = document.getElementById('numstr');
+    var ndp = 1, asWords = true, sent = 0, refused = 0;
+
+    /* The sensor counts in steps of one sixteen-thousandth of a g, which is
+       where the long tail comes from. MicroPython prints seven significant
+       digits, so this does the same. */
+    var nquant = function(v){ return Math.round(v * 16384) / 16384; };
+    var nshow = function(v){
+      var t = Number(v.toPrecision(7)).toString();
+      if(t.indexOf('.') === -1 && t.indexOf('e') === -1) t += '.0';
+      return t;
+    };
+    var nround = function(v, dp){
+      var f = Math.pow(10, dp);
+      return Math.round(v * f) / f;
+    };
+
+    var nrows = ['Tilt', '', '', ''];
+    var npaint = function(){
+      var kids = nscr.querySelectorAll('b');
+      for(var i = 0; i < kids.length; i++){
+        kids[i].textContent = nrows[i] ? nrows[i] : ' ';
+      }
+    };
+
+    var nvalue = function(){ return nquant(parseInt(ntilt.value, 10) / 100); };
+
+    var nrefresh = function(){
+      var v = nvalue();
+      nraw.textContent = nshow(v);
+      nrnd.textContent = nshow(nround(v, ndp));
+    };
+
+    var nsay = function(head){
+      nout.textContent = head + '\nSent to the screen: ' + sent
+        + '  ·  refused: ' + refused;
+    };
+
+    ntilt.addEventListener('input', function(){
+      nrefresh();
+      nout.textContent = 'The board moved, so the reading moved. Notice that the long '
+        + 'number almost never lands on a whole one — and that the screen has not '
+        + 'changed, because nothing has been sent to it yet.';
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-numdp]'), function(b){
+      b.addEventListener('click', function(){
+        ndp = parseInt(b.getAttribute('data-numdp'), 10);
+        [].forEach.call(document.querySelectorAll('[data-numdp]'), function(o){
+          o.classList.toggle('ghost', o !== b);
+        });
+        nrefresh();
+        nsay(ndp === 0
+          ? 'Rounding to no decimal places at all. The tilt is now only ever a whole '
+            + 'number, which is tidy and throws away most of what the sensor knew.'
+          : 'Rounding to ' + ndp + (ndp === 1 ? ' decimal place.' : ' decimal places.')
+            + ' The number keeps that many digits after the point and the rest are gone '
+            + 'for good — rounding does not hide them, it discards them.');
+      });
+    });
+
+    if(nstr){
+      nstr.addEventListener('click', function(){
+        asWords = !asWords;
+        nstr.textContent = asWords
+          ? '✓ turning it into words'
+          : '✗ leaving it as a number';
+        nstr.classList.toggle('ghost', !asWords);
+        nsay(asWords
+          ? 'The number will be turned into words before it goes to the screen. That is '
+            + 'the only thing the screen will accept.'
+          : 'The number will be handed to the screen as a number. Press Send it and see '
+            + 'what happens.');
+      });
+    }
+
+    numrun.addEventListener('click', function(){
+      var v = nround(nvalue(), ndp);
+      if(!asWords){
+        refused++;
+        nsay('The program stopped. The screen was handed a number where it expected '
+           + 'words, so it refused it and the whole program came to a halt — the '
+           + 'screen is still showing whatever it had before. This is the error you '
+           + 'will meet today, and it is the reason for the extra step.');
+        return;
+      }
+      nrows[2] = nshow(v);
+      sent++;
+      npaint();
+      nsay('Sent. The rounded number became words, the words went onto the page, and '
+         + 'the page went onto the glass — the same wipe, write, show as Activity 6.');
+    });
+
+    nrefresh();
+    npaint();
+  }
+
 })();

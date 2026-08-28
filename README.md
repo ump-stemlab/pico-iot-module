@@ -25,6 +25,7 @@ type-the-code checker, progress tracking and a quiz.
 | 🔀 **Activity 4 — Making Decisions** | https://ump-stemlab.github.io/pico-iot-module/activity-4.html |
 | 🔗 **Activity 5 — And, Or, Not** | https://ump-stemlab.github.io/pico-iot-module/activity-5.html |
 | 🖥️ **Activity 6 — Words on a Screen** | https://ump-stemlab.github.io/pico-iot-module/activity-6.html |
+| 📐 **Activity 7 — Sensors and Numbers** | https://ump-stemlab.github.io/pico-iot-module/activity-7.html |
 | 📌 **LilEx5 pin reference** | https://ump-stemlab.github.io/pico-iot-module/pinout.html |
 
 ## What the module covers
@@ -42,7 +43,7 @@ with [Thonny](https://thonny.org).
 | 4 | [Making Decisions](https://ump-stemlab.github.io/pico-iot-module/activity-4.html) | `if` / `else`, comparing with `==` | ✅ live |
 | 5 | [And, Or, Not](https://ump-stemlab.github.io/pico-iot-module/activity-5.html) | `and` / `or` / `not`, joining two questions | ✅ live |
 | 6 | [Words on a Screen](https://ump-stemlab.github.io/pico-iot-module/activity-6.html) | the OLED screen, the I²C bus, adding a library | ✅ live |
-| 7 | Sensors and Numbers | motion sensor, decimals, `round()` | 🔜 |
+| 7 | [Sensors and Numbers](https://ump-stemlab.github.io/pico-iot-module/activity-7.html) | a sensor on the same bus, decimals, `round()` | ✅ live |
 | 8 | Internet and Data | WiFi, MQTT, live dashboards | 🔜 |
 | 9 | Radio Communication | board-to-board messaging | 🔜 |
 
@@ -67,6 +68,9 @@ all the sensors) shares those two, so they never need adding again, and nothing 
 be wired to them. Activity 6 also needs **GP2** and **GP3** for its exercise, and GP11 and
 GP15 in going-further only. SW5 is the power switch and is not on a GP pin at all.
 
+**Activity 7 adds no pins at all.** Its accelerometer joins GP0 and GP1 alongside the
+screen — which is the whole point of having built a bus.
+
 Full map: [pin reference](https://ump-stemlab.github.io/pico-iot-module/pinout.html).
 
 ## Repository layout
@@ -86,6 +90,8 @@ docs/
   teacher-5.html    Activity 5 teacher notes (unlisted — see below)
   activity-6.html   Activity 6 — Words on a Screen
   teacher-6.html    Activity 6 teacher notes (unlisted — see below)
+  activity-7.html   Activity 7 — Sensors and Numbers
+  teacher-7.html    Activity 7 teacher notes (unlisted — see below)
   teacher.html      index of every teacher notes page (unlisted — see below)
   pinout.html       LilEx5 pin reference, searchable
   style.css         shared stylesheet
@@ -96,7 +102,7 @@ docs/
   robots.txt        keeps teacher pages out of search engines
   img/              LilEx5 board photos
 CONTEXT.md          how this site is built — read before changing it
-PROMPT-activity-7.md  hand this to a fresh chat to build the next activity
+PROMPT-activity-8.md  hand this to a fresh chat to build the next activity
 ```
 
 GitHub Pages serves the site from the `docs/` folder on `main`. Edit a file, commit,
@@ -113,7 +119,9 @@ with staff, not in the student handout.
 ## Related
 
 [`ump-stemlab/stemcube`](https://github.com/ump-stemlab/stemcube) — the MicroPython sensor
-libraries (BME280, IMU/MPU6050, GPS, ADC, SSD1306) the later activities use.
+libraries the later activities use. Activity 6 needs `ssd1306.py`; Activity 7 needs
+`imu.py` and `vector3d.py` — the first depends on the second, so both have to go on
+the Pico.
 
 ---
 

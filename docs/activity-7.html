@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 7 &mdash; Sensors and Numbers | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 7: a sensor on the I2C bus, decimals, and round().">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html" aria-current="page">Activity 7</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 7</p>
+    <h1>Sensors and Numbers</h1>
+    <p class="sub">Every answer the board has given you so far was one you put there yourself. Today it
+    <em>measures something</em> &mdash; and what comes back is not a 0 or a 1. It is a number with a
+    decimal point and a long tail of digits, and you have to do something about that before it will fit
+    on a screen.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 50 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 6</span>
+      <span class="pill">&#127760; New hardware, no new pins</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#sensor">What a sensor is</a>
+      <a href="#join">A second part on the bus</a>
+      <a href="#numbers">Decimals and round()</a>
+      <a href="#library">The library</a>
+      <a href="#try">Try it</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the code</a>
+      <a href="#run">Run it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Make the board <strong>measure how it is tilted</strong>, and put that measurement on
+  its own screen &mdash; rounded to something a human can read.</p>
+  <p>Pick the board up and turn it, and the number changes. Put it down and it settles. Nothing you typed
+  decided that number: the board found it out for itself, and that is a genuinely different kind of
+  program from every one you have written so far.</p>
+
+<svg class="dia wide" viewBox="0 0 780 262" role="img" aria-label="The shape of today's program. You tilt the board. The sensor turns that tilt into a number with a long tail of digits. Rounding shortens it to one decimal place. Turning it into words lets it go on the screen, where it appears as the word Tilt above the number nought point nine.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">From a movement of your hand to a number on the glass</text>
+
+  <rect x="14" y="60" width="132" height="86" rx="10" class="step"/>
+  <text x="80" y="94" class="dlbl" text-anchor="middle">you tilt</text>
+  <text x="80" y="114" class="dlbl" text-anchor="middle">the board</text>
+  <text x="80" y="134" class="dsub" text-anchor="middle">the real world</text>
+
+  <path d="M146 103 L182 103" class="arrow2"/>
+
+  <rect x="188" y="60" width="132" height="86" rx="10" class="pinbox"/>
+  <text x="254" y="94" class="dlbl" text-anchor="middle">the sensor</text>
+  <text x="254" y="114" class="dsub" text-anchor="middle">on the bus you</text>
+  <text x="254" y="132" class="dsub" text-anchor="middle">built last time</text>
+
+  <path d="M320 103 L356 103" class="arrow2"/>
+
+  <rect x="362" y="60" width="180" height="86" rx="10" class="namebox"/>
+  <text x="452" y="92" class="dsub" text-anchor="middle">a measurement</text>
+  <text x="452" y="122" class="dnum" text-anchor="middle">0.9873047</text>
+
+  <path d="M542 103 L578 103" class="arrow2"/>
+
+  <rect x="584" y="60" width="182" height="86" rx="10" class="step"/>
+  <text x="675" y="90" class="dsub" text-anchor="middle">rounded, then</text>
+  <text x="675" y="108" class="dsub" text-anchor="middle">turned into words</text>
+  <text x="675" y="136" class="dnum keep" text-anchor="middle">0.9</text>
+
+  <path d="M675 146 L675 176 L390 176 L390 196" class="arrow"/>
+
+  <rect x="284" y="196" width="212" height="46" rx="6" class="wk-oled-glass"/>
+  <text x="298" y="228" class="oledtxt">Tilt  0.9</text>
+  <text x="596" y="222" class="dsub">and it keeps up, for ever</text>
+  <text x="180" y="222" class="dsub" text-anchor="end">the screen from Activity 6</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>A sensor measures</h4><p>A button is yes or no. A sensor answers with
+    <em>how much</em> &mdash; and the answer lands anywhere in between.</p></div>
+    <div class="mini"><h4>No new pins at all</h4><p>The sensor sits on the very same two wires the screen
+    does. That is what a bus was for.</p></div>
+    <div class="mini"><h4>Numbers with a point in them</h4><p>Why a measurement has a fractional part,
+    and why seven digits come back when you only wanted one.</p></div>
+    <div class="mini"><h4><code>round()</code> and words</h4><p>Shorten the number, then turn it into
+    letters &mdash; because a screen will not take a number.</p></div>
+  </div>
+
+  <div class="cal info"><b>You need Activities 1 to 6 first</b>
+  The forever-loop and how to stop it, <code>print()</code>, <code>if</code> and <code>else</code>,
+  variables and comments, the I&sup2;C bus, and the whole business of getting a library file onto the
+  Pico. Today reuses all of it and re-teaches none of it.</div>
+</section>
+
+<section id="sensor">
+  <h2>&#127760; What a sensor actually is</h2>
+  <p class="lede">Every input you have read so far could only ever be one of two things. A sensor is the
+  first part on this board that answers with <strong>how much</strong>.</p>
+
+  <p>Press SW1 and it reads 0. Let go and it reads 1. There is nothing in between, and there never can
+  be &mdash; a button is <em>shut</em> or it is <em>open</em>. A sensor is not like that. It is measuring
+  something real, and real things do not come in two sizes.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="A comparison. On the left a button, which can only ever answer nought or one, with nothing in between. On the right a sensor, which answers with a position anywhere along a scale, and the answer shown is nought point nine eight seven, sitting between nought and one.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two answers, or every answer in between</text>
+
+  <rect x="16" y="46" width="360" height="248" rx="12" class="pane"/>
+  <text x="196" y="76" class="dlbl" text-anchor="middle">a button &mdash; Activity 3</text>
+  <path d="M64 150 L328 150" class="lead"/>
+  <circle cx="64" cy="150" r="11" class="ring"/>
+  <circle cx="328" cy="150" r="11" class="ring"/>
+  <circle cx="64" cy="150" r="6" class="legdot"/>
+  <circle cx="328" cy="150" r="6" class="legdot"/>
+  <text x="64" y="124" class="dnum" text-anchor="middle">0</text>
+  <text x="328" y="124" class="dnum" text-anchor="middle">1</text>
+  <text x="64" y="184" class="dsub" text-anchor="middle">held</text>
+  <text x="328" y="184" class="dsub" text-anchor="middle">not held</text>
+  <text x="196" y="230" class="dsub" text-anchor="middle">Two places to stand, and no</text>
+  <text x="196" y="250" class="dsub" text-anchor="middle">ground at all between them.</text>
+  <text x="196" y="278" class="dlbl" text-anchor="middle">yes or no</text>
+
+  <rect x="404" y="46" width="360" height="248" rx="12" class="pane"/>
+  <text x="584" y="76" class="dlbl" text-anchor="middle">a sensor &mdash; today</text>
+  <path d="M452 150 L716 150" class="buswire"/>
+  <path d="M452 142 L452 158" class="lead"/>
+  <path d="M716 142 L716 158" class="lead"/>
+  <path d="M518 144 L518 156" class="lead"/>
+  <path d="M584 144 L584 156" class="lead"/>
+  <path d="M650 144 L650 156" class="lead"/>
+  <text x="452" y="128" class="dsub" text-anchor="middle">0</text>
+  <text x="716" y="128" class="dsub" text-anchor="middle">1</text>
+  <circle cx="712" cy="150" r="9" class="legdot"/>
+  <path d="M712 162 L664 190" class="arrow"/>
+  <text x="584" y="204" class="dnum keep" text-anchor="middle">0.9873047</text>
+  <text x="584" y="236" class="dsub" text-anchor="middle">The answer can be anywhere on</text>
+  <text x="584" y="256" class="dsub" text-anchor="middle">the line, and it usually is.</text>
+  <text x="584" y="278" class="dlbl" text-anchor="middle">how much</text>
+</svg>
+
+  <h3>The sensor on this board, and what it measures</h3>
+  <p>The LilEx5 carries an <strong>accelerometer</strong>. Its job is to notice which way is <em>down</em>
+  &mdash; and because gravity always points down, an accelerometer that is sitting still is really a very
+  good tilt meter.</p>
+  <p>It answers three times over, one number for each direction, and each number is measured in
+  <strong>g</strong> &mdash; the strength of gravity itself. A board lying flat on the desk has all of
+  gravity pulling straight through it, so one of the three numbers is about <strong>1</strong> and the
+  other two are about <strong>0</strong>. Stand the board on its edge and the numbers swap over.</p>
+
+<svg class="dia wide" viewBox="0 0 780 330" role="img" aria-label="The board seen twice. Lying flat, gravity pulls straight down through it, so the up-and-down direction reads about one and the two flat directions read about nought. Standing on its edge, gravity now pulls along one of the flat directions, so that one reads about one instead and the up direction falls to about nought.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Gravity never moves. The board does.</text>
+
+  <rect x="24" y="50" width="336" height="242" rx="12" class="pane"/>
+  <text x="192" y="80" class="dlbl" text-anchor="middle">lying flat on the desk</text>
+  <rect x="104" y="150" width="176" height="26" rx="4" class="part"/>
+  <text x="116" y="142" class="dsub" text-anchor="middle">the board</text>
+  <path d="M192 96 L192 142" class="arrow"/>
+  <text x="228" y="120" class="dsub">gravity</text>
+  <path d="M64 190 L320 190" class="lead"/>
+  <text x="120" y="222" class="dsub" text-anchor="middle">flat directions</text>
+  <text x="120" y="248" class="dnum" text-anchor="middle">0.0</text>
+  <text x="264" y="222" class="dsub" text-anchor="middle">up and down</text>
+  <text x="264" y="248" class="dnum keep" text-anchor="middle">1.0</text>
+  <text x="192" y="278" class="dsub" text-anchor="middle">all of gravity goes through the board</text>
+
+  <rect x="420" y="50" width="336" height="242" rx="12" class="pane"/>
+  <text x="588" y="80" class="dlbl" text-anchor="middle">standing on its edge</text>
+  <rect x="576" y="102" width="26" height="120" rx="4" class="part"/>
+  <text x="640" y="118" class="dsub">the board</text>
+  <path d="M498 110 L498 176" class="arrow"/>
+  <text x="470" y="146" class="dsub" text-anchor="end">gravity</text>
+  <text x="470" y="222" class="dsub" text-anchor="middle">one flat direction</text>
+  <text x="470" y="248" class="dnum keep" text-anchor="middle">1.0</text>
+  <text x="676" y="222" class="dsub" text-anchor="middle">up and down</text>
+  <text x="676" y="248" class="dnum" text-anchor="middle">0.0</text>
+  <text x="588" y="278" class="dsub" text-anchor="middle">the same pull, now across it instead</text>
+</svg>
+
+  <div class="cal tip"><b>Which of the three is which? Find out, do not guess.</b>
+  The three directions are called <strong>x</strong>, <strong>y</strong> and <strong>z</strong>, but which
+  one points which way depends on how the chip happens to be soldered onto the board. In the simulator the
+  sliders are labelled, so it is obvious. On the real board, print all three and tip it about until you
+  have worked out which is which &mdash; that is a two-minute experiment and it is worth more than being
+  told.</div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>I can say the difference between an input that is yes-or-no and one that measures</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I know why a board lying flat reads about 1 in one direction</span></label>
+</section>
+
+<section id="join">
+  <h2>&#128279; A second part on a bus you already built</h2>
+  <p class="lede">Here is the payoff for Activity 6. The sensor needs <strong>no new pins and no new
+  wires</strong> &mdash; it goes on the same pair the screen is already using. One more part, one more
+  address, and nothing else changes.</p>
+
+  <p>That is exactly what a bus is for, and you have already done all the hard part.
+  <a href="activity-6.html#bus">Activity 6&rsquo;s bus section</a> has the whole story if you want it
+  again; the short version is that <span class="gp">GP0</span> carries the data and
+  <span class="gp">GP1</span> carries the clock, every part hears everything, and each part has an
+  <strong>address</strong> so it knows which messages are meant for it.</p>
+
+<svg class="dia wide" viewBox="0 0 780 316" role="img" aria-label="The bus with two parts on it. Two wires leave the Pico, labelled data on GP0 and clock on GP1. The screen hangs off them at address three C. The sensor hangs off the same two wires at address six eight. A note says the count of pins used did not change.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two wires. Two parts. Still two pins.</text>
+
+  <rect x="30" y="86" width="112" height="132" rx="10" class="step"/>
+  <text x="86" y="140" class="dlbl" text-anchor="middle">the Pico</text>
+  <text x="86" y="164" class="dsub" text-anchor="middle">GP0 &middot; GP1</text>
+  <text x="86" y="186" class="dsub" text-anchor="middle">and nothing else</text>
+
+  <path d="M142 128 L700 128" class="buswire"/>
+  <path d="M142 176 L700 176" class="buswire"/>
+  <text x="716" y="132" class="dsub">SDA</text>
+  <text x="716" y="180" class="dsub">SCL</text>
+
+  <g class="lead">
+    <path d="M290 128 L290 224"/><path d="M330 176 L330 224"/>
+    <path d="M530 128 L530 224"/><path d="M570 176 L570 224"/>
+  </g>
+
+  <rect x="226" y="224" width="168" height="62" rx="8" class="pinbox"/>
+  <text x="310" y="250" class="dlbl" text-anchor="middle">the screen</text>
+  <text x="310" y="274" class="dmono" text-anchor="middle">0x3C</text>
+  <text x="310" y="306" class="dsub" text-anchor="middle">wired in Activity 6</text>
+
+  <rect x="466" y="224" width="168" height="62" rx="8" class="namebox"/>
+  <text x="550" y="250" class="dlbl" text-anchor="middle">the sensor</text>
+  <text x="550" y="274" class="dmono" text-anchor="middle">0x68</text>
+  <text x="550" y="306" class="dlbl" text-anchor="middle">&#10003; added today</text>
+
+  <text x="390" y="66" class="dsub" text-anchor="middle">Adding the second part did not cost a single extra pin. Six more could join the same two wires.</text>
+</svg>
+
+  <div class="cal note"><b>The sensor&rsquo;s address is <code>0x68</code>, and this one needs no halving</b>
+  Activity 6 warned you that a screen&rsquo;s datasheet often prints <code>0x78</code> for what
+  MicroPython calls <code>0x3C</code>. That is a real trap, but it is not a rule that applies to every
+  number you meet. This sensor&rsquo;s address is <strong><code>0x68</code> in both styles</strong>, which
+  is the form the library already uses. As in Activity 6, <strong>no program on this page types an
+  address at all</strong> &mdash; the library finds the sensor by itself.</div>
+
+  <label class="chk"><input type="checkbox" data-p="j1"><span>I can say why the sensor needed no new pins</span></label>
+  <label class="chk"><input type="checkbox" data-p="j2"><span>I can say what tells the screen and the sensor apart on one pair of wires</span></label>
+</section>
+
+<section id="numbers">
+  <h2>&#128290; Decimals, and what <code>round()</code> is for &mdash; the second new idea</h2>
+  <p class="lede">The sensor is the reason decimals turn up. <code>round()</code> is the only thing that
+  makes them fit. They are one lesson, not two &mdash; exactly the way the screen and the library were
+  one lesson last time.</p>
+
+  <h3>Where the decimal point comes from</h3>
+  <p>Every number the board has handed you so far has been a whole one: <code>0</code>, <code>1</code>,
+  a pin number, a count. That is because they were all <em>counted</em>. A measurement is not counted, it
+  is <strong>compared</strong> &mdash; and the thing being compared almost never lands exactly on a whole
+  number.</p>
+  <p>Inside the sensor is a tiny weight on tiny springs, and the chip reports where the weight is sitting
+  as a whole number of very small steps. There are <strong>16&thinsp;384 steps in one g</strong>. So every
+  answer is some whole number of those steps, divided by 16&thinsp;384 &mdash; and a fraction like that
+  almost never comes out as a tidy decimal.</p>
+
+<svg class="dia wide" viewBox="0 0 780 314" role="img" aria-label="A number line magnified between nought point nine eight and one point nought nought. The sensor's steps are drawn as closely spaced ticks. The reading lands exactly on one tick, at nought point nine eight seven three nought four seven, which sits between the two nearest tidy numbers, nought point nine eight and nought point nine nine.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The reading lands on a step, not on a round number</text>
+  <text x="390" y="50" class="dsub" text-anchor="middle">this is the line between 0.98 and 1.00, magnified enormously</text>
+
+  <path d="M60 128 L720 128" class="lead"/>
+  <g class="lead">
+    <path d="M60 118 L60 138"/><path d="M720 118 L720 138"/>
+  </g>
+  <g class="gridline">
+    <path d="M93 122 L93 134"/><path d="M126 122 L126 134"/><path d="M159 122 L159 134"/>
+    <path d="M192 122 L192 134"/><path d="M225 122 L225 134"/><path d="M258 122 L258 134"/>
+    <path d="M291 122 L291 134"/><path d="M324 122 L324 134"/><path d="M357 122 L357 134"/>
+    <path d="M390 122 L390 134"/><path d="M423 122 L423 134"/><path d="M456 122 L456 134"/>
+    <path d="M489 122 L489 134"/><path d="M522 122 L522 134"/><path d="M555 122 L555 134"/>
+    <path d="M588 122 L588 134"/><path d="M621 122 L621 134"/><path d="M654 122 L654 134"/>
+    <path d="M687 122 L687 134"/>
+  </g>
+  <text x="60" y="106" class="dsub" text-anchor="middle">0.98</text>
+  <text x="720" y="106" class="dsub" text-anchor="middle">1.00</text>
+
+  <circle cx="291" cy="128" r="8" class="legdot"/>
+  <path d="M291 140 L291 190" class="arrow"/>
+  <text x="291" y="220" class="dnum keep" text-anchor="middle">0.9873047</text>
+  <text x="291" y="246" class="dsub" text-anchor="middle">the reading &mdash; sitting on a step</text>
+
+  <text x="600" y="212" class="dsub" text-anchor="middle">There is no tidier answer</text>
+  <text x="600" y="232" class="dsub" text-anchor="middle">available. The step it landed</text>
+  <text x="600" y="252" class="dsub" text-anchor="middle">on simply is not a round number.</text>
+  <text x="390" y="276" class="dsub" text-anchor="middle">Every little mark is one step of the sensor &mdash; there are 16 384 of them in a whole g.</text>
+  <text x="390" y="300" class="dsub" text-anchor="middle">The long tail is not the sensor being vague. It is the sensor being exact about something untidy.</text>
+</svg>
+
+  <div class="cal info"><b>Why <em>seven</em> digits, and not two or twenty?</b>
+  Seven is roughly as much as MicroPython can hold on to for a number this size, so seven is what it
+  prints. The digits are real &mdash; they are just far more precision than a person tilting a board could
+  ever use. Nothing is wrong. There is simply too much answer.</div>
+
+  <h3>What <code>round()</code> does about it</h3>
+  <p>Python has one instruction for this. You give it the number and how many places you want kept, and
+  it hands back a shorter number:</p>
+  <span class="codeimg" data-code="cm91bmQodGlsdCwgMSk=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>The <code>1</code> is <strong>how many digits to keep after the point</strong>. Everything past that
+  is gone &mdash; not hidden, not stored somewhere else, <em>gone</em> &mdash; and the last digit kept is
+  nudged up or down to whichever is nearer.</p>
+
+<svg class="dia wide" viewBox="0 0 780 306" role="img" aria-label="What rounding does to one number. The reading nought point nine eight seven three nought four seven is shown three times. Rounded to two places it becomes nought point nine nine. Rounded to one place it becomes one point nought. Rounded to no places at all it becomes one. In each case the discarded digits are shown greyed out and then cut off.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Keep this many, throw the rest away</text>
+
+  <text x="34" y="86" class="dsub">the reading</text>
+  <text x="200" y="90" class="dnum">0.9873047</text>
+
+  <path d="M34 108 L746 108" class="gridline"/>
+
+  <text x="34" y="146" class="dsub">keep 2</text>
+  <text x="200" y="150" class="dnum keep">0.98</text>
+  <text x="272" y="150" class="dnum drop">73047</text>
+  <path d="M266 132 L266 160" class="lead"/>
+  <text x="430" y="150" class="dsub">&rarr;</text>
+  <text x="474" y="150" class="dnum keep">0.99</text>
+  <text x="746" y="150" class="dsub" text-anchor="end">7 rounds it up</text>
+
+  <text x="34" y="206" class="dsub">keep 1</text>
+  <text x="200" y="210" class="dnum keep">0.9</text>
+  <text x="254" y="210" class="dnum drop">873047</text>
+  <path d="M248 192 L248 220" class="lead"/>
+  <text x="430" y="210" class="dsub">&rarr;</text>
+  <text x="474" y="210" class="dnum keep">1.0</text>
+  <text x="746" y="210" class="dsub" text-anchor="end">8 is nearer to ten than to nothing</text>
+
+  <text x="34" y="266" class="dsub">keep 0</text>
+  <text x="200" y="270" class="dnum keep">0</text>
+  <text x="224" y="270" class="dnum drop">.9873047</text>
+  <path d="M218 252 L218 280" class="lead"/>
+  <text x="430" y="270" class="dsub">&rarr;</text>
+  <text x="474" y="270" class="dnum keep">1</text>
+  <text x="746" y="270" class="dsub" text-anchor="end">no point left at all</text>
+</svg>
+
+  <div class="cal warn"><b>Rounding is a one-way street</b>
+  Once you have rounded a reading you cannot get the rest of it back. That is fine when you are putting
+  it on a screen for a person to look at, and it is not fine if you were going to do sums with it
+  afterwards. Round <strong>last</strong>, at the moment you show something &mdash; never as soon as the
+  reading arrives.</div>
+
+  <h3>And now the part that catches everybody: a number is not words</h3>
+  <p>You have a short, tidy number. You try to put it on the screen the way Activity 6 taught you, and the
+  program stops dead with a complaint about types.</p>
+  <p>Here is the reason, and it is worth thirty seconds because it is the only genuinely new piece of
+  syntax in the whole activity. <strong><code>0.9</code> and <code>"0.9"</code> are two different
+  things.</strong> One is a quantity &mdash; you can halve it, add to it, compare it. The other is three
+  letters in a row: a zero, a dot and a nine. The screen draws letters. It has no idea what to do with a
+  quantity.</p>
+
+<svg class="dia wide" viewBox="0 0 780 322" role="img" aria-label="A number and words compared. On the left, the number nought point nine, which can be halved, added to and compared, but which the screen refuses. On the right, the same thing written as three letters, a zero a dot and a nine, which cannot be used in sums but which the screen accepts. An instruction called str turns the first into the second.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same thing, in two forms that cannot be swapped</text>
+
+  <rect x="20" y="52" width="316" height="176" rx="12" class="pane"/>
+  <text x="178" y="82" class="dlbl" text-anchor="middle">a number</text>
+  <text x="178" y="128" class="dnumbig" text-anchor="middle">0.9</text>
+  <text x="178" y="164" class="dsub" text-anchor="middle">a quantity, nine tenths of a g</text>
+  <text x="178" y="188" class="dsub" text-anchor="middle">you can halve it, add to it,</text>
+  <text x="178" y="208" class="dsub" text-anchor="middle">and ask whether it is bigger</text>
+
+  <rect x="444" y="52" width="316" height="176" rx="12" class="pane"/>
+  <text x="602" y="82" class="dlbl" text-anchor="middle">words</text>
+  <rect x="524" y="98" width="34" height="42" rx="4" class="oledcell"/>
+  <rect x="562" y="98" width="34" height="42" rx="4" class="oledcell"/>
+  <rect x="600" y="98" width="34" height="42" rx="4" class="oledcell"/>
+  <text x="541" y="130" class="dnum keep" text-anchor="middle">0</text>
+  <text x="579" y="130" class="dnum keep" text-anchor="middle">.</text>
+  <text x="617" y="130" class="dnum keep" text-anchor="middle">9</text>
+  <text x="602" y="164" class="dsub" text-anchor="middle">three letters, side by side</text>
+  <text x="602" y="188" class="dsub" text-anchor="middle">useless for sums, and the only</text>
+  <text x="602" y="208" class="dsub" text-anchor="middle">thing a screen will draw</text>
+
+  <path d="M336 122 L444 122" class="arrow"/>
+  <text x="390" y="108" class="dmono" text-anchor="middle">str</text>
+  <text x="390" y="146" class="dsub" text-anchor="middle">turns one</text>
+  <text x="390" y="164" class="dsub" text-anchor="middle">into the other</text>
+
+  <path d="M178 228 L178 262" class="arrow"/>
+  <text x="178" y="290" class="dwarn" text-anchor="middle">&#10007; THE SCREEN REFUSES THIS</text>
+  <path d="M602 228 L602 262" class="arrow"/>
+  <text x="602" y="290" class="dlbl" text-anchor="middle">&#10003; the screen draws this</text>
+</svg>
+
+  <p>So the line that puts a reading on the screen does two jobs on the way, reading from the inside out:
+  round the number, then turn the short number into words.</p>
+  <span class="codeimg" data-code="c3RyKHJvdW5kKHRpbHQsIDEpKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal tip"><b>Read it inside out, like a set of boxes</b>
+  The innermost bracket happens first. <code>round</code> gets the reading and hands back a shorter
+  number; <code>str</code> gets that shorter number and hands back the letters; and only then does the
+  screen get anything. If you find that hard to see, put the two steps on two separate lines with a name
+  in between &mdash; it does exactly the same thing and there is no shame in it.</div>
+
+  <label class="chk"><input type="checkbox" data-p="n1"><span>I can say why a measurement has a decimal point when a button never did</span></label>
+  <label class="chk"><input type="checkbox" data-p="n2"><span>I can say what the second number inside round() controls</span></label>
+  <label class="chk"><input type="checkbox" data-p="n3"><span>I can say why a screen will not take a number as it stands</span></label>
+</section>
+
+<section id="library">
+  <h2>&#128218; The sensor&rsquo;s library &mdash; the same job as last time, twice</h2>
+  <p class="lede">Nothing new to learn here. This is
+  <a href="activity-6.html#library">Activity 6&rsquo;s library step</a> again, with two files instead of
+  one, and <code>ssd1306.py</code> is already where you left it.</p>
+
+  <p>The screen needed <code>ssd1306.py</code>. The sensor needs <strong><code>imu.py</code></strong>
+  &mdash; and <code>imu.py</code> itself needs <strong><code>vector3d.py</code></strong>, because whoever
+  wrote it borrowed a tool of their own. That is completely normal and it is the only thing about today&rsquo;s
+  library step that is different: <strong>a library is allowed to need another library</strong>. Copy both
+  and it works; copy one and you get the same &ldquo;no module named&rdquo; message, about the other name.</p>
+
+<svg class="dia wide" viewBox="0 0 780 250" role="img" aria-label="The Pico's disk after today. It holds four files: the student's own program, the screen library from Activity 6, the sensor library, and the file the sensor library itself depends on. An arrow shows that the sensor library needs the fourth file.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What is on the Pico&rsquo;s disk once you are done</text>
+  <rect x="150" y="46" width="480" height="182" rx="12" class="pinbox"/>
+  <text x="390" y="74" class="dlbl" text-anchor="middle">the Pico&rsquo;s own disk</text>
+
+  <rect x="176" y="90" width="200" height="40" rx="8" class="step"/>
+  <text x="276" y="115" class="dsub" text-anchor="middle">your program</text>
+  <rect x="176" y="140" width="200" height="40" rx="8" class="part"/>
+  <text x="276" y="165" class="dsub" text-anchor="middle">the screen library</text>
+  <text x="276" y="204" class="dsub" text-anchor="middle">already there from Activity 6</text>
+
+  <rect x="404" y="90" width="200" height="40" rx="8" class="namebox"/>
+  <text x="504" y="115" class="dsub" text-anchor="middle">the sensor library</text>
+  <rect x="404" y="140" width="200" height="40" rx="8" class="namebox"/>
+  <text x="504" y="165" class="dsub" text-anchor="middle">what it leans on</text>
+  <path d="M614 110 L640 110 L640 160 L614 160" class="arrow"/>
+  <text x="700" y="128" class="dsub" text-anchor="middle">this one</text>
+  <text x="700" y="148" class="dsub" text-anchor="middle">needs that one</text>
+  <text x="504" y="204" class="dlbl" text-anchor="middle">&#10003; both are new today</text>
+</svg>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <p>Same <strong>&#9662;</strong> menu beside the file tabs, same <strong>New file&hellip;</strong>,
+    same paste &mdash; just do it twice.</p>
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Make a file called <code>imu.py</code></h4>
+      <p>Open the <strong>&#9662;</strong> menu, choose <strong>New file&hellip;</strong>, and type the
+      name exactly. Then paste the file in from
+      <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the STEM LAB
+      library repository</a>.</p>
+      <div class="cal tip"><b>The rename box arrives with the old name already in it</b>
+      Clear it before you type, or you will end up with a file called something like
+      <code>main.pyimu.py</code>. It is a five-second fix and it catches people every time.</div>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Do it again for <code>vector3d.py</code></h4>
+      <p>Exactly the same three clicks. Two new tabs when you are finished.</p>
+      <label class="chk"><input type="checkbox" data-p="l1"><span>My project has five tabs: main.py, ssd1306.py, imu.py, vector3d.py and diagram.json</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <p>Same <strong>File &rarr; Open&hellip;</strong>, then <strong>File &rarr; Save as&hellip; &rarr;
+    Raspberry Pi Pico</strong> &mdash; twice. Keep both names exactly as they are.</p>
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Copy both files onto the Pico</h4>
+      <p><code>imu.py</code> and <code>vector3d.py</code>, from
+      <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the STEM LAB
+      library repository</a> or from wherever your teacher has put them.</p>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Check the Pico&rsquo;s file list</h4>
+      <p><strong>View &rarr; Files</strong>. The lower panel should now show <em>three</em> library files:
+      <code>ssd1306.py</code> from last time, plus today&rsquo;s two. They all stay there for good.</p>
+      <label class="chk"><input type="checkbox" data-p="l1b"><span>Thonny&rsquo;s file list shows ssd1306.py, imu.py and vector3d.py on the Pico</span></label>
+    </div></div>
+  </div>
+
+  <div class="cal warn"><b>The message that means you only copied one of them</b>
+  <code>ImportError: no module named 'vector3d'</code> is not a mistake in your program. It is
+  <code>imu.py</code> asking for the file it leans on, and not finding it. Copy the second file and the
+  message goes away.</div>
+
+  <label class="chk"><input type="checkbox" data-p="l2"><span>Both library files are on the Pico, not just on my computer</span></label>
+</section>
+
+<section id="try">
+  <h2>&#128268; Try it before you write it</h2>
+  <p>Three things happen to every reading on its way to the glass, and it is much easier to see them than
+  to read about them. Drag the tilt and watch all three at once. Nothing reaches the screen until you
+  send it &mdash; that is Activity 6&rsquo;s <em>write, then show</em>, still true.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div style="text-align:center">
+        <div class="readout num" id="numraw">0.0</div>
+        <span class="readlbl">what the sensor hands back</span>
+      </div>
+      <div style="text-align:center">
+        <div class="readout num short" id="numrnd">0.0</div>
+        <span class="readlbl">after rounding</span>
+      </div>
+      <div style="text-align:center">
+        <div class="oledbox lit" id="numscr"><b>Tilt</b><b> </b><b> </b><b> </b></div>
+        <span class="readlbl">the screen</span>
+      </div>
+    </div>
+    <div class="sim-ctl">
+      <label>Tilt the board<input type="range" id="numtilt" min="-100" max="100" step="1" value="0" aria-label="Tilt the board"></label>
+      <button class="btn ghost" type="button" data-numdp="0">keep 0 places</button>
+      <button class="btn" type="button" data-numdp="1">keep 1 place</button>
+      <button class="btn ghost" type="button" data-numdp="2">keep 2 places</button>
+      <button class="btn" id="numstr" type="button">&#10003; turning it into words</button>
+      <button class="btn" id="numrun" type="button">&#128065;&#65039; Send it to the screen</button>
+    </div>
+    <div class="sim-out tall" id="numout">Drag the tilt first. Watch how rarely the long number lands on anything tidy &mdash; and notice that the screen does not change until you send something to it.</div>
+  </div>
+
+  <div class="cal tip"><b>Three things to try on purpose</b>
+  Drag slowly and watch the long number: it is never still and almost never round. Then switch to
+  <strong>keep 0 places</strong> and drag again &mdash; the screen number now jumps from one whole number
+  to the next and most of the movement has vanished. Then press <strong>turning it into words</strong> so
+  it reads <em>leaving it as a number</em>, and send it: that is the error you are going to meet.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I saw the long number change as I tilted</span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I saw what keeping 0 places instead of 1 throws away</span></label>
+  <label class="chk"><input type="checkbox" data-p="t3"><span>I made it refuse a number on purpose, and saw the screen keep its old contents</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; Add the sensor to the circuit</h2>
+  <p class="lede">Four more wires, and not one of them goes anywhere new.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-c" aria-selected="true" aria-controls="pan-c">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-d" aria-selected="false" aria-controls="pan-d">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-c" role="tabpanel" aria-labelledby="tab-c">
+    <p><strong>Do not start a fresh project.</strong> Open the one from Activity 6, with the screen
+    already wired and <code>ssd1306.py</code> already in it, and add to it.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Add the sensor part</h4>
+      <p>Click the blue <strong>+</strong> and type <em>mpu6050</em>. One part comes back:
+      <strong>MPU6050 Accelerometer + Gyroscope</strong>. Add it and drag it somewhere clear, with its
+      row of pads facing the Pico.</p>
+      <label class="chk"><input type="checkbox" data-p="c1"><span>The blue sensor part is on the diagram</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Draw the four wires</h4>
+      <p>The sensor has <strong>eight</strong> pads along its top edge and you are only using four of
+      them. Reading left to right they are <em>INT, AD0, XCL, XDA,</em> <strong>SDA, SCL, GND,
+      VCC</strong> &mdash; the four you want are the four on the right-hand end, and they come in the
+      same order as the Pico&rsquo;s pins, which for once makes this easy.</p>
+
+<svg class="dia wide" viewBox="0 0 780 690" role="img" aria-label="The Wokwi circuit for the sensor, drawn the way Wokwi draws it. The blue sensor module sits to the left of the Pico with eight pads along its top edge, four of them unused. The SDA pad is wired to physical pin 1, which is GP0. The SCL pad is wired to physical pin 2, which is GP1. The GND pad is wired to physical pin 3, a ground. The VCC pad is wired the long way round, under the board, to physical pin 36, the three point three volt supply on the far side.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Four wires, to four pins the screen is already using</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+<g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="400" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 400)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+  <circle cx="555" cy="134" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="154" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="174" r="10.5" class="wk-ring"/>
+  <circle cx="735" cy="214" r="10.5" class="wk-ring"/>
+
+  <g transform="translate(48,183.2) scale(2.9)">
+    <rect x="0" y="0" width="81.6" height="61.2" rx="1" class="wk-imu-pcb"/>
+    <rect x="8" y="22" width="7" height="11" rx=".5" class="wk-imu-silk"/>
+    <rect x="18" y="22" width="4" height="9" rx=".4" class="wk-imu-cap"/>
+    <rect x="23.5" y="22" width="4" height="9" rx=".4" class="wk-imu-cap"/>
+    <rect x="18" y="34" width="4" height="9" rx=".4" class="wk-imu-cap"/>
+    <rect x="23.5" y="34" width="4" height="9" rx=".4" class="wk-imu-cap"/>
+    <rect x="31" y="21" width="18" height="18" rx="1" class="wk-imu-chip"/>
+    <rect x="52" y="22" width="7" height="5.5" rx=".5" class="wk-imu-smd"/>
+    <rect x="52" y="31" width="7" height="5.5" rx=".5" class="wk-imu-smd"/>
+    <rect x="62" y="24" width="5" height="8" rx=".5" class="wk-imu-smd"/>
+    <rect x="8" y="45" width="14" height="2.4" rx=".4" class="wk-imu-silk"/>
+    <circle cx="10" cy="51.78" r="6.88" class="wk-imu-hole"/>
+    <circle cx="71.6" cy="51.78" r="6.88" class="wk-imu-hole"/>
+    <circle cx="7.26" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="16.84" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="26.42" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="36" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="45.58" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="55.16" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="64.74" cy="5.81" r="2.81" class="wk-imu-pad"/>
+    <circle cx="74.32" cy="5.81" r="2.81" class="wk-imu-pad"/>
+  </g>
+  <text x="65" y="216" class="wk-imu-lbl dim" transform="rotate(90 65 216)">INT</text>
+  <text x="92.8" y="216" class="wk-imu-lbl dim" transform="rotate(90 92.8 216)">AD0</text>
+  <text x="120.6" y="216" class="wk-imu-lbl dim" transform="rotate(90 120.6 216)">XCL</text>
+  <text x="148.4" y="216" class="wk-imu-lbl dim" transform="rotate(90 148.4 216)">XDA</text>
+  <text x="176.2" y="216" class="wk-imu-lbl" transform="rotate(90 176.2 216)">SDA</text>
+  <text x="204" y="216" class="wk-imu-lbl" transform="rotate(90 204 216)">SCL</text>
+  <text x="231.8" y="216" class="wk-imu-lbl" transform="rotate(90 231.8 216)">GND</text>
+  <text x="259.6" y="216" class="wk-imu-lbl" transform="rotate(90 259.6 216)">VCC</text>
+  <text x="166" y="392" class="dlbl" text-anchor="middle">MPU6050 sensor module</text>
+  <text x="166" y="414" class="dsub" text-anchor="middle">the four pads on the left are not used today</text>
+
+  <path d="M180.18 200 L180.18 134 L537 134" class="wkwire green"/>
+  <path d="M207.96 200 L207.96 154 L537 154" class="wkwire blue"/>
+  <path d="M235.75 200 L235.75 174 L537 174" class="wkwire black"/>
+  <path d="M263.53 200 L263.53 194 L505 194 L505 600 L772 600 L772 214 L755 214" class="wkwire red"/>
+
+  <rect x="310" y="250" width="186" height="152" rx="10" class="pane"/>
+  <path d="M326 280 L352 280" class="wkwire green"/>
+  <text x="362" y="285" class="dsub">SDA &rarr; GP0 &middot; pin 1</text>
+  <path d="M326 314 L352 314" class="wkwire blue"/>
+  <text x="362" y="319" class="dsub">SCL &rarr; GP1 &middot; pin 2</text>
+  <path d="M326 348 L352 348" class="wkwire black"/>
+  <text x="362" y="353" class="dsub">GND &rarr; pin 3</text>
+  <path d="M326 382 L352 382" class="wkwire red"/>
+  <text x="362" y="387" class="dsub">VCC &rarr; 3V3 &middot; pin 36</text>
+
+  <text x="246" y="470" class="dlbl" text-anchor="middle">The screen&rsquo;s four wires already go to these same four pins.</text>
+  <text x="246" y="494" class="dsub" text-anchor="middle">Leave them exactly where they are.</text>
+  <text x="246" y="516" class="dsub" text-anchor="middle">Two wires on one pad is what a bus looks like.</text>
+  <text x="403" y="632" class="dsub" text-anchor="middle">The red wire is only power, and it is long because 3V3 is on the far side of the board.</text>
+  <text x="390" y="668" class="dsub" text-anchor="middle">Nothing crosses anything here: the module&rsquo;s SDA, SCL and GND come in the same order as the Pico&rsquo;s pins 1, 2 and 3.</text>
+</svg>
+
+      <table>
+        <thead><tr><th>Physical pin</th><th>Name on the board</th><th>Sensor pad</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td><span class="gp">GP0</span></td><td><strong>SDA</strong> &mdash; the data</td></tr>
+          <tr><td><strong>2</strong></td><td><span class="gp">GP1</span></td><td><strong>SCL</strong> &mdash; the clock</td></tr>
+          <tr><td><strong>3</strong></td><td>GND</td><td><strong>GND</strong></td></tr>
+          <tr><td><strong>36</strong></td><td>3V3</td><td><strong>VCC</strong> &mdash; power in</td></tr>
+        </tbody>
+      </table>
+
+      <div class="cal tip"><b>Two wires can share one pad, and here they must</b>
+      Both the screen and the sensor need SDA. Both need SCL. So pin 1 ends up with two wires on it and so
+      does pin 2, and that is not a mistake &mdash; it is the entire point of a bus. Wokwi will let you
+      draw the second wire onto a pin that already has one.</div>
+
+      <div class="cal warn"><b>VCC goes to 3V3, not to 5V</b>
+      Physical pin <strong>36</strong>, the same one the screen uses. Pins 39 and 40 look like power and
+      are 5&nbsp;V &mdash; still the one rule this module has repeated since Activity 1.</div>
+
+      <label class="chk"><input type="checkbox" data-p="c2"><span>SDA &rarr; GP0 and SCL &rarr; GP1, alongside the screen&rsquo;s wires</span></label>
+      <label class="chk"><input type="checkbox" data-p="c3"><span>GND &rarr; a ground pin, and VCC &rarr; 3V3</span></label>
+      <label class="chk"><input type="checkbox" data-p="c4"><span>The screen&rsquo;s four wires are still there and untouched</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>You can move the sensor while it is running</h4>
+      <p>This is the part of the simulator that makes today work without a board. <strong>Click the
+      sensor part while the simulation is running</strong> and a little panel opens with sliders on it:
+      three for acceleration, three for rotation, and one for temperature. Drag the acceleration
+      sliders and your program sees the numbers change, exactly as if you had picked the board up.</p>
+      <label class="chk"><input type="checkbox" data-p="c5"><span>I found the sliders by clicking the sensor while it was running</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
+    <p>Nothing to wire, again. The sensor is already joined to GP0 and GP1 inside the board, in copper,
+    on the same two lines as the screen.</p>
+    <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above" loading="lazy"><figcaption>Everything on the I&sup2;C bus &mdash; the screen and all the sensors &mdash; is already connected to GP0 and GP1 inside the circuit board.</figcaption></figure>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Plug in and power up</h4>
+      <p>USB cable in, power switch <strong>SW5</strong> on, and Thonny showing
+      <code>&gt;&gt;&gt;</code> in the Shell.</p>
+      <label class="chk"><input type="checkbox" data-p="d1"><span>The Shell shows &gt;&gt;&gt;</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Get today&rsquo;s two library files on</h4>
+      <p>This is your wiring step. Go back to <a href="#library">the library section</a> and finish it
+      before you write a line of the program.</p>
+      <label class="chk"><input type="checkbox" data-p="d2"><span>imu.py and vector3d.py are both on the Pico</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Have somewhere to put the board down</h4>
+      <p>You are going to be picking it up and tilting it with a USB cable attached. Leave enough slack,
+      and keep the cable out of the way of your own hand.</p>
+      <label class="chk"><input type="checkbox" data-p="d3"><span>I can tilt the board freely without pulling on anything</span></label>
+    </div></div>
+
+    <div class="cal warn"><b>The safety rules have not gone away</b>
+    Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
+    GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>Start a new file &mdash; or keep last week&rsquo;s and change it, whichever you prefer. The loop is
+  back: a reading that is not being taken over and over again is not much of a reading.</p>
+
+  <span class="codeimg" data-code="IyBGb3VyIHRvb2xzIG5vdzogUGluIGFuZCBJMkMgZm9yIHRoZSBidXMsIE1QVTYwNTAgZm9yIHRoZSBzZW5zb3IsCiMgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gaW11IGltcG9ydCBNUFU2MDUwCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgc2FtZSBidXMgYXMgQWN0aXZpdHkgNiAtIFNEQSBpcyBHUDAgYW5kIFNDTCBpcyBHUDEKaTJjID0gSTJDKDAsIHNkYT1QaW4oMCksIHNjbD1QaW4oMSkpCgojIFR3byBwYXJ0cyBvbiB0aGF0IG9uZSBidXMgbm93OiB0aGUgc2Vuc29yIGFuZCB0aGUgc2NyZWVuCmltdSA9IE1QVTYwNTAoaTJjKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKd2hpbGUgVHJ1ZToKICAgIHRpbHQgPSBpbXUuYWNjZWwueCAgICAgICAgICAgICMgYSBtZWFzdXJlbWVudCwgbm90IGEgMCBvciBhIDEKICAgIHByaW50KHRpbHQpICAgICAgICAgICAgICAgICAgICMgZXZlcnkgZGlnaXQgb2YgaXQsIGluIHRoZSBTaGVsbAoKICAgIG9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZQogICAgb2xlZC50ZXh0KCJUaWx0IiwgMCwgMCkgICAgICAgIyB0aGUgbGFiZWwsIHdoaWNoIG5ldmVyIGNoYW5nZXMKICAgIG9sZWQudGV4dChzdHIocm91bmQodGlsdCwgMSkpLCAwLCAxNikgICAjIHJvdW5kZWQsIHRoZW4gbWFkZSBpbnRvIHdvcmRzCiAgICBvbGVkLnNob3coKSAgICAgICAgICAgICAgICAgICAjIHB1dCB0aGUgcGFnZSBvbiB0aGUgZ2xhc3MKICAgIHNsZWVwKDAuNSk=" role="img" aria-label="Python code, 23 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
+  One line here is unlike anything you have typed before &mdash; the one with two sets of brackets inside
+  each other. Build it from the inside out and count the closing brackets at the end: there are three, and
+  they are not all the same job.</div>
+
+  <h3>Type it here first</h3>
+  <p>The five lines that are new or nearly new. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from imu import MPU6050" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="imu = MPU6050(i2c)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="tilt = imu.accel.x" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="print(tilt)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="oled.text(str(round(tilt, 1)), 0, 16)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 5 is the one worth slowing down for &mdash; three closing brackets, and a comma inside as well as outside.</p>
+  </div>
+  <div class="cal note"><b>Everything after the loop line is indented by four</b>
+  One level, not two &mdash; there is no decision in this program. If a line has drifted to eight spaces
+  it will still run and it will behave oddly, which is worse than an error.</div>
+  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each new line is doing</h3>
+  <table>
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBpbXUgaW1wb3J0IE1QVTYwNTA=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>The sensor&rsquo;s library.</strong> Same shape as the screen&rsquo;s import, and it
+          fails in the same way if the file is not on the Pico. The lower-case name is the file; the
+          capitals are the tool inside it.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="aW11ID0gTVBVNjA1MChpMmMp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Making the sensor.</strong> It only needs to be told which bus to look on &mdash; it
+          goes and finds itself on it. From here <code>imu</code> is the sensor&rsquo;s name, the way
+          <code>oled</code> is the screen&rsquo;s.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="dGlsdCA9IGltdS5hY2NlbC54" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Taking one reading.</strong> Two dots, and they read left to right: from the sensor,
+          its acceleration, and of that the x direction. The answer is a number with a decimal point.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cHJpbnQodGlsdCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>The whole reading, untouched, in the Shell &mdash; all seven digits of it. This line is here
+          so that you can <em>see</em> what the rounding on the next line is dealing with.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZC50ZXh0KHN0cihyb3VuZCh0aWx0LCAxKSksIDAsIDE2KQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>The new one.</strong> Inside out: round the reading to one decimal place, turn that
+          short number into words, and draw the words at the left edge, 16 pixels down. Three closing
+          brackets: one for <code>round</code>, one for <code>str</code>, one for <code>text</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="c2xlZXAoMC41KQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Half a second between readings. Not to slow the sensor down &mdash; it is far faster than
+          this &mdash; but so that the number on the screen sits still long enough to read.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cal info"><b>Everything else on this page you have already met</b>
+  The bus line, the screen line, <code>fill</code>, <code>text</code>, <code>show</code>, the loop and
+  <code>sleep</code> are all Activity 6 or earlier, unchanged. Only three lines in this program are new,
+  and one of them is an import.</div>
+
+  <details>
+    <summary>&#128269; How do I check the sensor is even there?</summary>
+    <p>Same one-line question you asked the screen in Activity 6 &mdash; the bus does not mind who is
+    listening:</p>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICMgYSB3b3JraW5nIGJvYXJkIGFuc3dlcnMgWzYwLCAxMDRd" role="img" aria-label="Python code, 3 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>A board with both parts working answers with a list containing <strong>60</strong> and
+    <strong>104</strong>. Those are <code>0x3C</code> and <code>0x68</code> written in ordinary numbers:
+    the screen and the sensor. If 104 is missing, nothing you do in the program will help &mdash; that is
+    a wiring or power problem.</p>
+  </details>
+
+  <details>
+    <summary>&#128269; What about the other two directions?</summary>
+    <p>They are there, spelt the way you would expect, and they answer at the same instant:</p>
+    <span class="codeimg" data-code="cHJpbnQoaW11LmFjY2VsLngpCnByaW50KGltdS5hY2NlbC55KQpwcmludChpbXUuYWNjZWwueik=" role="img" aria-label="Python code, 3 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Print all three at once and tip the board slowly through a right angle. Watching which number
+    hands its value over to which other one is the clearest thirty seconds in this whole activity.</p>
+  </details>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it and run it</h2>
+  <table>
+    <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button</td><td>The screen part, and the black console underneath it</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>tilt.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>The screen on the board, and Thonny&rsquo;s Shell</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>This one loops, so you have to stop it</b>
+  Wokwi&rsquo;s <strong>&#9632; Stop</strong> button, or Thonny&rsquo;s Stop, or <kbd>Ctrl</kbd>+<kbd>C</kbd>
+  in the Shell. Activity 2 taught this and it has not changed.</div>
+
+  <h3>&#9989; What you should see</h3>
+  <p>Two things at once, and they are meant to disagree in length. The Shell fills up with long numbers.
+  The screen shows one short one, changing as you move.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="What the finished program produces. On the left, the Shell filling with long numbers, one per line, all slightly different. In the middle, the screen showing the word Tilt above the short number nought point nine. On the right, a wrong version in which the number was not rounded and runs off the edge of the screen.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Long in the Shell, short on the glass &mdash; both are right</text>
+
+  <rect x="18" y="52" width="232" height="176" rx="8" class="pane"/>
+  <text x="134" y="78" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="40" y="106" class="dmono">0.9873047</text>
+  <text x="40" y="132" class="dmono">0.9871826</text>
+  <text x="40" y="158" class="dmono">0.9884033</text>
+  <text x="40" y="184" class="dmono">0.8721924</text>
+  <text x="40" y="210" class="dmono">0.5397949</text>
+  <text x="134" y="256" class="dsub" text-anchor="middle">never still, never round</text>
+  <text x="134" y="278" class="dsub" text-anchor="middle">&mdash; that is correct</text>
+
+  <rect x="282" y="66" width="216" height="112" rx="8" class="wk-oled-bezel"/>
+  <rect x="292" y="76" width="196" height="92" rx="4" class="wk-oled-glass"/>
+  <text x="304" y="106" class="oledtxt">Tilt</text>
+  <text x="304" y="150" class="oledtxt">0.9</text>
+  <text x="390" y="212" class="dlbl" text-anchor="middle">&#10003; this is right</text>
+  <text x="390" y="234" class="dsub" text-anchor="middle">one short number, keeping up</text>
+  <text x="390" y="256" class="dsub" text-anchor="middle">with your hand</text>
+
+  <rect x="530" y="66" width="232" height="112" rx="8" class="wk-oled-bezel"/>
+  <rect x="540" y="76" width="212" height="92" rx="4" class="wk-oled-glass"/>
+  <text x="552" y="106" class="oledtxt">Tilt</text>
+  <text x="552" y="150" class="oledtxt2">0.98730</text>
+  <text x="646" y="212" class="dwarn" text-anchor="middle">&#10007; NOT ROUNDED</text>
+  <text x="646" y="234" class="dsub" text-anchor="middle">sixteen letters is the whole width,</text>
+  <text x="646" y="256" class="dsub" text-anchor="middle">so the rest falls off the edge</text>
+
+  <text x="390" y="306" class="dsub" text-anchor="middle">The Shell is for you to debug with. The screen is for a person to read. They do not want the same number.</text>
+</svg>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are scrolling up the Shell, one every half second</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>The screen shows a short number under the word Tilt</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>Tilting the board (or dragging the slider) changes both of them</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>I found the position where the number is nearest to 1</span></label>
+  <label class="chk"><input type="checkbox" data-p="r5"><span>I changed the 1 in round to a 2, ran it, and saw a longer number</span></label>
+  <label class="chk"><input type="checkbox" data-p="r6"><span>I took the rounding out on purpose and saw the number run off the edge</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><code>TypeError: can't convert float to str</code><br>or <code>TypeError: object with buffer protocol required</code></td><td>The number was handed to the screen as a number. It has to be turned into words first &mdash; see <a href="#numbers">the section above</a>. This is today&rsquo;s headline error and it is not a mistake in your sums.</td></tr>
+      <tr><td><code>ImportError: no module named 'imu'</code></td><td>The sensor library is not on the Pico. Same problem, same fix, same place as Activity 6 &mdash; <a href="#library">the library section</a>.</td></tr>
+      <tr><td><code>ImportError: no module named 'vector3d'</code></td><td>You copied one of the two files. <code>imu.py</code> needs <code>vector3d.py</code> beside it. Copy the second one.</td></tr>
+      <tr><td><code>MPUException: No MPU's detected</code></td><td>The library asked the bus who was there and the sensor did not answer. On Wokwi: a wire is on the wrong pad, or VCC has no power. On the board: the bus pins are not 0 and 1.</td></tr>
+      <tr><td><strong>The number never changes, whatever I do</strong></td><td>In Wokwi you have to <em>click the sensor part</em> to get its sliders &mdash; it does not move by itself. On the real board, check you are reading a direction that your tilting actually affects; try all three.</td></tr>
+      <tr><td><strong>The number is always 0.0 or always 1.0</strong></td><td>You are rounding to no decimal places. The second number inside <code>round</code> should be a <code>1</code>.</td></tr>
+      <tr><td><code>SyntaxError</code> on the long line</td><td>Count the closing brackets: there should be three in a row at the end. One closes <code>round</code>, one closes <code>str</code>, one closes <code>text</code>.</td></tr>
+      <tr><td><strong>The old number is still faintly there behind the new one</strong></td><td>The wipe is missing, or it is outside the loop. Activity 6&rsquo;s rule, unchanged: wipe, write, show, every round.</td></tr>
+      <tr><td><code>OSError: [Errno 5] EIO</code></td><td>Nothing answered on the bus at all. That is wiring or power &mdash; and if the screen has stopped working too, you have knocked one of Activity 6&rsquo;s wires.</td></tr>
+      <tr><td><strong>It works in Wokwi but not on the board</strong></td><td>The two library files are in the Wokwi project but not on your real Pico. Two different disks, as ever.</td></tr>
+      <tr><td><strong>The screen went blank when I stopped the program</strong></td><td>It did not &mdash; it is still showing the last thing it was given. If it is genuinely blank, the board lost power.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; two directions at once</h2>
+  <p class="lede">One number told you the board had moved. Two numbers tell you <strong>which way</strong>
+  &mdash; and that is the difference between a reading and an instrument.</p>
+  <p><strong>Task:</strong> the screen shows two labelled rows, <strong>X</strong> on the top row and
+  <strong>Y</strong> on the row below it. Beside each label is that direction&rsquo;s reading, rounded to
+  one decimal place, keeping up as you move the board. The labels never move; only the numbers do.</p>
+  <ul>
+    <li>Both readings come from the same sensor you already have &mdash; no new part, no new wires, no new
+    library</li>
+    <li>Top row and the row 16 pixels below it, as in the program you have just written</li>
+    <li>Take both readings at the <strong>start</strong> of each round, before you write anything</li>
+    <li>Wokwi route: drag the X and Y acceleration sliders on the sensor&rsquo;s panel to test it</li>
+  </ul>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="Three states the finished screen has to show. Lying flat, both X and Y read about nought. Tipped one way, X reads about nought point nine and Y still reads about nought. Tipped the other way, X returns to about nought and Y reads about minus nought point nine. In every case the labels X and Y stay exactly where they are.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three states, and the labels never move</text>
+
+  <rect x="24" y="52" width="216" height="116" rx="6" class="wk-oled-glass"/>
+  <text x="40" y="88" class="oledtxt">X   0.0</text>
+  <text x="40" y="140" class="oledtxt">Y   0.0</text>
+  <text x="132" y="196" class="dsub" text-anchor="middle">flat on the desk</text>
+  <text x="132" y="218" class="dsub" text-anchor="middle">both near nothing</text>
+
+  <rect x="282" y="52" width="216" height="116" rx="6" class="wk-oled-glass"/>
+  <text x="298" y="88" class="oledtxt">X   0.9</text>
+  <text x="298" y="140" class="oledtxt">Y   0.0</text>
+  <text x="390" y="196" class="dsub" text-anchor="middle">tipped one way</text>
+  <text x="390" y="218" class="dsub" text-anchor="middle">one number moves</text>
+
+  <rect x="540" y="52" width="216" height="116" rx="6" class="wk-oled-glass"/>
+  <text x="556" y="88" class="oledtxt">X   0.0</text>
+  <text x="556" y="140" class="oledtxt">Y  -0.9</text>
+  <text x="648" y="196" class="dsub" text-anchor="middle">tipped the other way</text>
+  <text x="648" y="218" class="dsub" text-anchor="middle">the other one moves</text>
+
+  <rect x="24" y="242" width="732" height="66" rx="10" class="pane"/>
+  <text x="390" y="270" class="dlbl" text-anchor="middle">A reading can be negative, and the minus sign takes a whole letter of room.</text>
+  <text x="390" y="294" class="dsub" text-anchor="middle">Leave space for it, or your numbers will jump about sideways as the board rocks.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="e1"><span>Both rows show a number with one digit after the point</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>The labels X and Y stay exactly where they are while the numbers change</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>Tipping one way moves one number and leaves the other alone</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>I have seen a negative number appear, and it still fits</span></label>
+  <label class="chk"><input type="checkbox" data-p="e5"><span>Nothing is left over on the screen from the round before</span></label>
+  <label class="chk"><input type="checkbox" data-p="e6"><span>It keeps up with me for as long as I leave it running</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
+    <p>Do not start a new file. Start from the program you have just written, which already does
+    <em>everything</em> for one direction, and make it do the same for two.</p>
+    <p>The setting-up part does not change at all: the same four imports, the same bus, the same sensor,
+    the same screen. Nothing is added above the loop.</p>
+    <p>Inside the loop, take <strong>both</strong> readings first and give each one a name of its own,
+    before you write anything on the page. Ask yourself why they have to be taken together at the top
+    rather than one at a time as you need them &mdash; the board is moving while your program runs.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; what happens on each round?</summary>
+    <p>Five things, in this order, every time round:</p>
+
+<svg class="dia" viewBox="0 0 720 260" role="img" aria-label="The five things one round of the loop has to do, in order. First take both readings. Then wipe the page. Then write four things onto it: two labels and two numbers. Then show the page. Then wait a moment and start again.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">One round of the loop</text>
+  <rect x="20" y="60" width="128" height="72" rx="10" class="pinbox"/>
+  <text x="84" y="90" class="dlbl" text-anchor="middle">1. read</text>
+  <text x="84" y="110" class="dsub" text-anchor="middle">both, together</text>
+  <path d="M148 96 L180 96" class="arrow2"/>
+  <rect x="186" y="60" width="110" height="72" rx="10" class="step"/>
+  <text x="241" y="90" class="dlbl" text-anchor="middle">2. wipe</text>
+  <text x="241" y="110" class="dsub" text-anchor="middle">the page</text>
+  <path d="M296 96 L328 96" class="arrow2"/>
+  <rect x="334" y="60" width="146" height="72" rx="10" class="namebox"/>
+  <text x="407" y="88" class="dlbl" text-anchor="middle">3. write</text>
+  <text x="407" y="108" class="dsub" text-anchor="middle">two labels and</text>
+  <text x="407" y="126" class="dsub" text-anchor="middle">two numbers</text>
+  <path d="M480 96 L512 96" class="arrow2"/>
+  <rect x="518" y="60" width="94" height="72" rx="10" class="step"/>
+  <text x="565" y="90" class="dlbl" text-anchor="middle">4. show</text>
+  <text x="565" y="110" class="dsub" text-anchor="middle">it</text>
+  <path d="M612 96 L644 96" class="arrow2"/>
+  <rect x="650" y="60" width="52" height="72" rx="10" class="step"/>
+  <text x="676" y="90" class="dlbl" text-anchor="middle">5.</text>
+  <text x="676" y="110" class="dsub" text-anchor="middle">wait</text>
+  <path d="M676 132 L676 186 L84 186 L84 140" class="arrow"/>
+  <text x="380" y="208" class="dsub" text-anchor="middle">&hellip; and round again, five times a second</text>
+  <text x="360" y="240" class="dsub" text-anchor="middle">Step 3 is four separate instructions, not two. A label and a number are two different things on one row.</text>
+</svg>
+
+    <p>Putting a label and a number on the <em>same</em> row is exactly what Activity 6&rsquo;s exercise
+    did: write the label at the left edge, then write the number further across on the same down-number.
+    A letter is 8 pixels wide, so a one-letter label needs very little clearance &mdash; but leave room
+    for a minus sign.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Five things to check before you decide it is broken:</p>
+    <ul>
+      <li>Are <strong>both</strong> numbers going through the rounding and then through the
+      words step? It is easy to do it properly for the first one and forget the second.</li>
+      <li>Is the wipe <strong>inside</strong> the loop, and is the show the <strong>last</strong> thing
+      before the wait? Activity 6&rsquo;s order, unchanged.</li>
+      <li>Are the two rows far enough apart? 0 and 16.</li>
+      <li>Do the two readings have <strong>different names</strong>? Two names that are accidentally the
+      same means one row copying the other.</li>
+      <li>Is the across-number for the numbers big enough to clear the label, and small enough that
+      <code>-0.9</code> still fits? Four letters, so it must start at 96 or less.</li>
+    </ul>
+    <p>Test it by moving the board in one direction only. If both rows change together, both are reading
+    the same direction.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by tilting the
+  board rather than by reading. Your teacher has the worked answer if the class needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li>Add <strong>Z</strong> on a third row. Predict what it will read while the board is flat
+    <em>before</em> you run it, and write your prediction down.</li>
+    <li>Change the rounding from one place to two, and then to none. Watch what happens to the width of
+    the number and to how much of your movement survives.</li>
+    <li>Print all three directions at once and tip the board slowly through a right angle until you can
+    say which of x, y and z points which way on your board.</li>
+    <li>The sensor has a <strong>thermometer</strong> inside it as well, and it is spelt about as simply
+    as you would guess. Find it, put it on a fourth row, and decide for yourself how much to trust it.</li>
+    <li>Make a word appear when the board is lying flat &mdash; <code>FLAT</code> or <code>TILTED</code>.
+    This needs an <code>if</code>, and it needs a comparison that is <strong>not</strong> the double
+    equals: a measurement is almost never exactly anything, so asking whether it is <em>bigger than</em>
+    something is the only question worth asking.</li>
+    <li>Centre the number on the screen. You will have to work out the across-number for yourself, and it
+    changes when the number does &mdash; which is a harder problem than it looks.</li>
+    <li>There is a second set of three numbers, for how fast the board is <em>turning</em> rather than how
+    it is tilted. It is spelt like the first set with one word changed. Find it, and notice that it drops
+    back to nothing the moment you stop moving.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now find
+  something out about the world, and say it in a form a person can read &mdash; which is the whole job of
+  every instrument ever built. Next up &mdash; Activity 8, where that number leaves the board altogether
+  and goes out onto the internet.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Sensor</strong></td><td>A part that measures something real and answers with <em>how much</em>, not yes or no.</td></tr>
+      <tr><td><strong>Accelerometer</strong></td><td>The sensor on this board. It notices which way gravity is pulling, which makes it a tilt meter when it is sitting still.</td></tr>
+      <tr><td><strong>g</strong></td><td>The unit it answers in: 1&nbsp;g is the full strength of gravity. Flat on the desk, one direction reads about 1.</td></tr>
+      <tr><td><strong>Reading</strong></td><td>One answer from a sensor, taken at one moment. Take it again and it will be slightly different.</td></tr>
+      <tr><td><strong>Decimal place</strong></td><td>One digit after the point. <code>0.9</code> has one; <code>0.98</code> has two.</td></tr>
+      <tr><td><strong>Float</strong></td><td>What programmers call a number with a point in it, as opposed to a whole one. You will meet the word everywhere online.</td></tr>
+      <tr><td><strong><code>round()</code></strong></td><td>Shortens a number to a given number of decimal places. What it throws away is gone for good.</td></tr>
+      <tr><td><strong><code>str()</code></strong></td><td>Turns a number into the letters that spell it, so that it can be drawn on a screen.</td></tr>
+      <tr><td><strong>Address <code>0x68</code></strong></td><td>The sensor&rsquo;s number on the bus &mdash; 104 in ordinary numbers. The screen&rsquo;s is <code>0x3C</code>, which is 60.</td></tr>
+      <tr><td><strong>Dependency</strong></td><td>A library that another library needs. <code>imu.py</code> depends on <code>vector3d.py</code>; both have to be on the Pico.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from imu import MPU6050",
+    "imu = MPU6050(i2c)",
+    "tilt = imu.accel.x",
+    "print(tilt)",
+    "oled.text(str(round(tilt, 1)), 0, 16)"
+  ],
+  quiz: [
+    { q: 'A button always answered 0 or 1. Why does a sensor answer with a decimal point?',
+      opts: ['Because it is broken', 'Because it measures how much of something there is, and that lands anywhere', 'Because MicroPython prefers decimals', 'Because it is on a bus'],
+      right: 1,
+      why: 'A button is shut or open — there is nothing in between. A measurement is a position on a scale, and it lands wherever it lands.' },
+    { q: 'In <code>round(tilt, 1)</code>, what does the 1 control?',
+      opts: ['How many digits are kept after the point', 'How many times to round it', 'Which direction to read', 'How long to wait'],
+      right: 0,
+      why: 'It is the number of decimal places to keep. Everything past that is discarded — not hidden somewhere, discarded.' },
+    { q: 'Your program stops with a <code>TypeError</code> on the line that writes the reading to the screen. What is missing?',
+      opts: ['The library', 'The wipe', 'The step that turns the number into words', 'The show'],
+      right: 2,
+      why: 'The screen draws letters. A number is a quantity, not letters, so it has to be turned into words first — that is what str() is for.' },
+    { q: 'How many new pins did adding the sensor use up?',
+      opts: ['Two — SDA and SCL', 'Four — SDA, SCL, GND and VCC', 'One', 'None at all'],
+      right: 3,
+      why: 'It joined GP0 and GP1, which the screen was already using. That is the whole point of a bus: the next part costs no pins either.' },
+    { q: 'You ask the bus who is listening and it answers with a list containing 60 and 104. What does that tell you?',
+      opts: ['Something is wired wrongly', 'The screen and the sensor are both there and answering', 'The sensor is at address 60', 'The reading is 104'],
+      right: 1,
+      why: '60 is 0x3C, the screen. 104 is 0x68, the sensor. Both answered, so both are powered and wired — any remaining problem is in the program.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

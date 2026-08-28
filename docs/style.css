@@ -438,3 +438,28 @@ figure.board figcaption{text-align:center;font-size:13.5px;color:var(--muted);ma
 .oledbox b{display:block;font-weight:400;min-height:22px;white-space:pre}
 .oledbox.lit{background:#050708;border-color:#14524f}
 .oledbox.lit b{color:#9BF3EC;text-shadow:0 0 9px rgba(126,227,221,.55)}
+
+/* ---------- the MPU6050 module, Wokwi-look (Activity 7) ----------
+   Geometry and colours read out of Wokwi's own wokwi-mpu6050 artwork in the
+   simulator (viewBox 81.6 x 61.2). Like the wk- and wk-oled- families these are
+   the colours of a physical object, so they are fixed in both themes. */
+.dia .wk-imu-pcb{fill:#16619d}
+.dia .wk-imu-chip{fill:#26232b}
+.dia .wk-imu-smd{fill:#31322e}
+.dia .wk-imu-cap{fill:#e5e5e5}
+.dia .wk-imu-silk{fill:#fefdf4}
+.dia .wk-imu-hole{fill:#fff;stroke:#c8ceda;stroke-width:.5}
+.dia .wk-imu-pad{fill:#fff;stroke:#ecc98a;stroke-width:.35}
+.dia .wk-imu-lbl{fill:#fff;font:700 10px "SFMono-Regular",Consolas,monospace}
+.dia .wk-imu-lbl.dim{opacity:.42}
+
+/* a number drawn inside a diagram: the long tail versus the short one */
+.dia .dnum{fill:var(--ink);font:700 26px "SFMono-Regular",Consolas,monospace}
+.dia .dnum.keep{fill:var(--teal)}
+.dia .dnum.drop{fill:var(--muted);opacity:.62}
+.dia .dnumbig{fill:var(--ink);font:700 40px "SFMono-Regular",Consolas,monospace}
+
+/* ---------- the reading widget (Activity 7) ---------- */
+.sim-ctl input[type=range]{width:220px;accent-color:var(--teal);vertical-align:middle;margin-left:8px}
+.readout.num{font-size:27px;line-height:46px;min-width:200px}
+.readout.num.short{min-width:110px}

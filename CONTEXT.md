@@ -57,10 +57,18 @@ bare Pico and correctly say "GP11 is physical pin 15" — on the LilEx5 the same
 out at header pin **29**. If a later activity ever puts the two side by side, say which
 board each number belongs to.
 
-I²C addresses (as the board's own documentation prints them, i.e. 8-bit): OLED `0x78`
-— **which is `0x3C` in the 7-bit form MicroPython wants; see the Activity 6 block in §7** — temp/humidity/pressure `0x76`, accelerometer+gyro `0x68`,
-compass `0x7C`, proximity+light `0x60`, air quality `0x1A` (its clock must stay below
-15 kHz), ADC `0x48`.
+I²C addresses, **as the board's own documentation prints them — and the list is not all in
+one form**, which is the trap. OLED `0x78`; temp/humidity/pressure `0x76`;
+accelerometer+gyro `0x68`; compass `0x7C`; proximity+light `0x60`; air quality `0x1A` (its
+clock must stay below 15 kHz); ADC `0x48`.
+
+**Only the OLED's is the 8-bit (shifted) form.** `0x78` is `0x3C` shifted left by one, and
+MicroPython wants `0x3C` — see the Activity 6 block in §7. The sensor entries are already
+in the 7-bit form MicroPython wants and **must not be halved**: checked against the drivers
+in `ump-stemlab/stemcube` during Activity 7's build, where `bme280.py` sets
+`BME280_I2CADDR = 0x76` and `imu.py` looks for `0x68`/`0x69`, both used directly. Halving
+`0x68` gives `0x34`, which is nothing. Do not apply the OLED's rule to the whole list; when
+a new part is added, read its driver or scan the bus.
 
 The four analogue inputs on connector **H3** do **not** reach the Pico directly — they
 go through a converter chip and come back over I²C. Reading a voltage on this board is
@@ -456,7 +464,86 @@ them in the markup if they are there.
   the two routes to get it there, wipe–write–show, the expected result beside a wrong-row version, the
   exercise's four states and the exercise loop. Every one was rendered and looked at in both themes.
 
-### The Wokwi-look board diagrams (Activities 1, 3, 4, 5 and 6)
+### Activity 7 — Sensors and Numbers
+
+- **The one idea is two halves again**: a sensor *measures*, so what comes back is a decimal; and
+  `round()` plus `str()` are the only way to make a decimal fit on a screen. The sensor is the reason
+  decimals appear. Do not split them.
+- **The sensor is the MPU6050 accelerometer at `0x68`.** Kamil's call, over the BME280. The deciding
+  facts, all checked in the Wokwi editor during this build: Wokwi **has** `wokwi-mpu6050` as a built-in
+  part at the same address, so both routes are the same circuit for the first time since Activity 5 —
+  whereas Wokwi has **no BME280** at all (its nearest cousin is `board-bmp180` at `0x77`, which would
+  have meant a different library on the Wokwi route).
+- **Wokwi's docs are wrong about the sliders.** They say the MPU6050 is driven only from Automation
+  Scenarios. It is not: **clicking the part while the simulation is running** opens a panel with live
+  sliders for acceleration x/y/z, rotation x/y/z and temperature. That panel is what makes the whole
+  activity work without a board, and it is not discoverable — both the student page and `teacher-7.html`
+  say so explicitly.
+- **New hardware, and no new pins at all.** That is the headline, not a footnote: the sensor joins the
+  bus Activity 6 built. The page points back to `activity-6.html#bus` rather than re-teaching it.
+- **The library is `imu.py` *and* `vector3d.py`.** Kamil's call over the one-file `mpu6050.py`, whose
+  reader returns a nested dict (`data['accel']['x']`) — two levels of bracket lookup, versus
+  `imu.accel.x`, which reads like `oled.fill()` and `sw.value()` and needs no new syntax. The cost is a
+  second file, and **a library depending on another library is the one new thing in the library step**.
+  `ImportError: no module named 'vector3d'` is the message that means only one was copied.
+- **`str()` is the only genuinely new syntax**, and it is taught in the main program, not the exercise —
+  rule 5.4 means the exercise carries no answer, so nothing new may be introduced only there. `round()`
+  is new too but self-explanatory; the surprise is that a screen refuses a number.
+- **Decimals get their own top-level section** (`#numbers`), the way adding a library was Activity 6's.
+  Three beats: where the fractional part comes from (the sensor reports whole steps of 1/16384 g, so the
+  answer is an untidy fraction), what `round(x, 1)` keeps and discards, and number-versus-words.
+- **Say "seven digits", not "fourteen".** MicroPython prints about seven significant figures for a float
+  this size — `1.149963`, not CPython's longer tail. Verified in the simulator.
+- **Round last, never at the moment of reading.** Stated on both pages; it is the habit that Activity 8
+  will need.
+- Mission: **one tilt number, printed raw in the Shell and shown rounded on the screen.** Kamil's call.
+  The `print()` is load-bearing — it is the only place the class ever sees the untouched reading, and
+  without it the decimals lesson is theory. `sleep(0.5)`, not 0.1: a number changing ten times a second
+  cannot be read.
+- Exercise: **X and Y on two labelled rows**, rounded, live. Kamil's call. Reuses Activity 6's
+  label-at-0, number-further-across layout; the real new work is remembering to round *both*. **No answer
+  on the student page** (rule 5.4); clue 3 stops at a five-point checklist. Negative readings are called
+  out on the page because the minus sign costs a whole letter of width.
+- **`>` is deliberately kept out of the exercise** and lives in going-further only (a FLAT/TILTED word).
+  The point when it arrives: a measurement is almost never exactly anything, so `== 1.0` is the wrong
+  question. That is the seed of Activity 8's thresholds.
+- **No `elif`, still, and no `for` loops.**
+- `activity.js` gained a **reading widget** guarded by `#numrun`, inert on every other page. Markup:
+  `#numtilt` range slider, `#numraw` / `#numrnd` readouts, `#numscr` `.oledbox`, `[data-numdp]` buttons
+  (`0`/`1`/`2`), `#numstr` toggle and `#numout`. It shows the long number, the rounded number and the
+  glass at once, only updates the glass when Send is pressed (Activity 6's write-then-show survives), and
+  reproduces the `TypeError` **in words** when the words step is switched off. It leaks no code.
+- `style.css` gained a **`wk-imu-` family** (PCB `#16619d`, chip, smd, cap, silk, hole, pad and the
+  silkscreen label, with `.dim` for the four unused pads), three `.dnum` helpers for drawing numbers
+  inside a diagram, `.sim-ctl input[type=range]`, and `.readout.num`. The `wk-imu-` colours and geometry
+  were read out of Wokwi's own `wokwi-mpu6050` artwork in the running simulator — viewBox `81.6 × 61.2`
+  (21.6 × 16.2 mm), PCB `#16619d`, silkscreen white 3.6px **rotated 90°**, two mounting holes r `6.88` at
+  (10, 51.78) and (71.6, 51.78), and **eight** pads r `2.81` at cy `5.81`, cx `7.26` stepping by `9.58`:
+  left to right **INT · AD0 · XCL · XDA · SDA · SCL · GND · VCC**. The diagram draws it inside
+  `<g transform="translate(48,183.2) scale(2.9)">`, so the `wk-imu-` stroke widths in `style.css` are
+  authored for a scale of 2.9 (the `wk-oled-` ones are authored for 9 — check the scale before reusing
+  either family).
+- **The wiring diagram has no crossings at all**, unlike Activity 6's, and the reason is worth keeping:
+  the module's SDA · SCL · GND run left to right in the *same* order as the Pico's pins 1 · 2 · 3 run top
+  to bottom, so the three signal wires nest instead of swapping. VCC is the far-right pad and wraps under
+  the board (out at y 194, down at x 505, along y 600, up at x 772) to pin **36**, 3V3. viewBox
+  `780 × 690`. Pads ringed: 1, 2, 3 and 36 — the *same four* the screen already uses, and the page says
+  two wires on one pad is what a bus looks like.
+- **Only the sensor is drawn in the Wokwi diagram**, not the screen as well. Eight wires in one picture
+  could not be routed cleanly, and it matches what students actually do: keep the Activity 6 project and
+  add one part. The sharing is shown separately, as a schematic, in `#join`.
+- Eleven diagrams: the mission flow, button-versus-sensor, gravity flat versus on edge, the two parts on
+  one bus, the magnified number line where the reading lands on a step, what rounding keeps and discards
+  at three settings, number-versus-words, the Wokwi wiring, the expected result beside an unrounded one,
+  the exercise's three states, and the exercise loop. Every one was rendered and looked at in both themes.
+- **The whole thing was run in Wokwi before the page was written** — `imu.py`, `vector3d.py` and
+  `ssd1306.py` pasted in as project files, `wokwi-mpu6050` and `board-ssd1306` on one bus. `i2c.scan()`
+  answered `['0x3c', '0x68']`; register `0x75` answered `104`, so `imu.py`'s chip-ID check passes;
+  dragging X to 1.15 g printed `1.149963` and put `1.1` on the glass. If a later builder changes the
+  program, run it again — the cloud container **cannot reach wokwi.com**, so this needs the browser in
+  the Claude desktop app.
+
+### The Wokwi-look board diagrams (Activities 1, 3, 4, 5, 6 and 7)
 
 Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
 physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
@@ -475,7 +562,7 @@ module does not look like two different books.
   beside the pad, the name inside it. Telling the two apart is the thing students get wrong every
   time, and it is why the diagrams carry the line *"the big white numbers are the physical pins."*
 - The board is a self-contained `<g class="wk">` and is **identical in every file that uses it**. To
-  wire a new activity, copy that group out of `activity-5.html` or `activity-6.html`, change the ring circles and the wire paths,
+  wire a new activity, copy that group out of `activity-6.html` or `activity-7.html`, change the ring circles and the wire paths,
   and leave everything else alone. The geometry you need:
   board at `x=545`, width `200`, height `440`; **pin *n*'s centre line is
   `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
@@ -483,7 +570,8 @@ module does not look like two different books.
   `<circle r="10.5" class="wk-ring">` centred on the hole.
 - The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3),
   `780 × 600` (Activity 4, which carries both circuits), `780 × 690` (Activity 5, which adds a
-  second button below the first) and `780 × 660` (Activity 6, whose power wires wrap round the board).
+  second button below the first), `780 × 660` (Activity 6, whose power wires wrap round the board) and
+  `780 × 690` (Activity 7, whose sensor module sits high on the left).
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
   long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at
