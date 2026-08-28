@@ -55,12 +55,17 @@ docs/teacher-N.html    one page per activity (instructors, unlisted)
 docs/pinout.html       searchable pin reference
 docs/style.css         the whole design system — every page links it
 docs/code.js           renders code as pictures + guards the clipboard
-docs/activity.js       progress, tabs, board simulator, typing box, quiz
+docs/activity.js       progress, tabs, board simulator, blink simulator, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
 docs/img/lilex5-board-red-on.png  the same board with LED1 **lit**
 ```
+
+In the repo root: `CONTEXT.md` (this file) and **`PROMPT-activity-N.md`** — the
+brief for the *next* activity, written at the end of the previous build. There is only
+ever one of these. Whoever builds activity N deletes it and leaves `PROMPT-activity-N+1.md`
+behind.
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -130,6 +135,13 @@ do not — flag those as real-board-only.
 overlapping a wire. Reroute rather than let a wire double back. Always render and look
 at the picture before committing.
 
+Rule 5.1 applies inside diagrams too: SVG `<text>` is selectable, so **a diagram may not
+contain a line of code**. Activity 2 needed to draw program structure (which lines are
+indented, which repeat) and does it with **bars, not text** — `.codeline` paths at two
+different left edges, a teal bar for the loop line, a bracket for the block, and the
+words in labels beside it. Single identifiers in prose are fine in `<code>`; whole lines
+are not, anywhere.
+
 ## 6. Anatomy of an activity page
 
 In order: hero (title, one-line mission, pills, in-page nav) → sticky progress bar →
@@ -168,6 +180,34 @@ them in the markup if they are there.
   that; the answer is last.
 - Progressive concepts, one new idea per activity — see the table in `README.md`.
 
+### Activity 2 — Make an LED Blink
+
+- **No new hardware.** Same red LED on GP11, same Wokwi circuit. When an activity adds no
+  hardware, the "new hardware" slot in the anatomy above becomes **"the new idea"** — here
+  loops, `sleep` and indentation — and the *build the circuit* section shrinks to a one-picture
+  recap that points back to Activity 1. Do not re-teach wiring that has already been taught.
+- **Indentation gets its own top-level section**, before the code, with two diagrams: what the
+  four spaces mean, and a side-by-side of `off` inside vs outside the loop. It is the thing the
+  class will get wrong, and it is the first time whitespace has changed meaning in this module.
+- **`from time import sleep`, not `import time`.** It matches Activity 1's "borrow one tool from
+  a toolbox" model, so every activity's import lines look alike. The `time.sleep()` style is shown
+  once, in a `<details>`, so nobody is thrown by code they find online. Keep the single-tool form
+  in later activities.
+- **Still no `print()`.** Same reason as Activity 1; it arrives in Activity 3.
+- **Stopping a forever-loop is taught here** (Wokwi's Stop button, Thonny's Stop or Ctrl+C) and is
+  assumed from now on. Every activity after this one runs in a loop, so this never needs teaching
+  again — but it does need to be in the troubleshooting table.
+- Activity 2's exercise is a **traffic light**: all three LEDs, red 4 s → green 4 s → yellow 1 s,
+  for ever. It deliberately needs one thing from Activity 1 (each LED gets its own name) and two
+  from Activity 2 (the loop, and an unequal delay). Clues build to it; answer last.
+- `activity.js` gained a **blink simulator** block, guarded by `#blinkrun`, so it is inert on
+  every other page. Markup: `#bblink` bulb, `#onsec` / `#offsec` number inputs, `[data-preset]`
+  buttons, `#blinkout`. Its output text deliberately *describes* the loop rather than printing
+  code, unlike the Activity 1 board simulator, whose `#simout` does echo two lines of plain code
+  — a small unfixed leak of rule 5.1.
+- Known TODO carried over: `activity-1.html` still has an unfilled `%WOKWI%` placeholder where a
+  ready-made Wokwi project link should go. `teacher-1.html` has the real project id.
+
 ## 8. Publishing
 
 The repo is **cloned on Kamil's machine** at:
@@ -205,6 +245,39 @@ one** — tokens are credentials and are out of scope. Pushing is Kamil's step.
 After a push, GitHub Pages rebuilds in about a minute. The CDN caches hard — check with
 `?v=2` on the URL or a hard refresh before believing a change failed.
 
+### 8.1 How to actually check a page before committing it
+
+There is no browser on Kamil's machine that these sessions can drive, but the cloud
+container has Chromium and Playwright already installed (`PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`
+— never run `playwright install`). The routine that worked for Activity 2:
+
+1. Build the page in the container, next to copies of `style.css`, `code.js`,
+   `activity.js` and `img/`, staged from the clone.
+2. Load it from `file://` and assert, in **both** `color_scheme` light and dark:
+   every `.codeimg` contains a `<canvas>` and no `.codefallback`; `#pcount` counts the
+   checkboxes; `#quizbox .q` has the expected number of questions; zero `pageerror` and
+   zero console errors; `document.documentElement.scrollWidth` equals `clientWidth` at
+   390, 768 and 1400 px.
+3. **Screenshot every `svg.dia` on its own** (`element.screenshot()`) and look at each
+   one, in both themes. This is the only way to catch a label sitting on a wire. Two of
+   Activity 2's nine needed moving after seeing them.
+4. Drive the widgets: click the tabs, the quiz options, a checkbox, and any simulator;
+   type into the `#typer` inputs, including a deliberately wrong capital.
+5. **Prove rule 5.1.** Select the whole body, dispatch a synthetic `copy` event with a
+   `DataTransfer`, and grep the resulting `text/plain` for anything runnable. It should
+   come back with none — `code.js` replaces each hit with `[code — type it yourself]`.
+6. `md5sum` the container copy against the copy in the clone after committing it, so you
+   know the file that will be pushed is the file you looked at.
+
+Then render the changed `index.html` too, and click through to the new activity.
+
+### 8.2 Every activity means touching every page
+
+Adding activity N means adding a nav link and a footer link to **every** page that
+already exists — `index.html`, each `activity-*.html`, each `teacher-*.html`, and
+`pinout.html`. Two lines each, and easy to forget. A student who finishes activity N−1
+has no other way forward.
+
 ## 9. Teacher pages
 
 `teacher-N.html`: `noindex`, listed in `robots.txt`, not linked from any student page,
@@ -215,4 +288,30 @@ teacher notes have to leave this repo.
 
 Each teacher page carries: exercise answer, going-further answers, before-the-lesson
 checklist, the mistakes students actually make, teaching notes, every link used, and a
-cumulative "pins used so far" table.
+cumulative "pins used so far" table. From Activity 2 on it also opens with a
+short **"what is actually being taught"** section — the one idea, and which part of the
+page carries it — and links back to the previous activity's notes from the hero.
+
+`robots.txt` already lists `teacher-1.html` through `teacher-9.html`, so a new teacher
+page needs no change there.
+
+## 10. Adding the next activity — the checklist
+
+1. Read `PROMPT-activity-N.md`, this file, and the two most recent activity pages.
+2. **Ask before you build.** Kamil answers, and the answers change the page — the
+   Activity 2 exercise went from a level crossing to a traffic light on one question.
+   Worth asking about: the exercise, anything that needs a Wokwi project link, and
+   anything about the board you cannot verify from §2.
+3. Write `docs/activity-N.html` and `docs/teacher-N.html`.
+4. Nav + footer links on every existing page (§8.2).
+5. `docs/index.html`: the activity row moves from `.act.soon` (a `<div>`) to
+   `.act.live` (an `<a href>`), badge "New".
+6. `README.md`: the links table near the top, the status table (`🔜` → `✅ live` with a
+   link), the repository layout block, and the "pins used so far" table if the activity
+   introduced any.
+7. `CONTEXT.md`: an "Activity N" block in §7 for anything a later builder would
+   otherwise have to guess or would get wrong.
+8. Verify (§8.1). Look at every diagram.
+9. Write `PROMPT-activity-N+1.md` and delete `PROMPT-activity-N.md`. Deleting needs
+   permission on the mount — ask for it, it also unblocks git's `index.lock`.
+10. Report what changed and stop. Kamil pushes.

@@ -4,8 +4,9 @@
      <script>window.ACTIVITY = { typer: [...lines...], quiz: [{q,opts,right,why}] };</script>
      <script src="activity.js"></script>
 
-   Everything else (progress checkboxes, route tabs, the board simulator) is
-   picked up from the markup if it is there, and skipped if it is not. */
+   Everything else (progress checkboxes, route tabs, the board simulator, the
+   blink simulator) is picked up from the markup if it is there, and skipped if
+   it is not. */
 (function(){
   "use strict";
   var CFG = window.ACTIVITY || {};
@@ -122,7 +123,7 @@
           inp.classList.add('bad'); mark.textContent = '✗';
           if(norm(inp.value).toLowerCase() === norm(target).toLowerCase()){
             note = 'Line ' + (i + 1) + ': the letters are right but the capitals are not. '
-                 + 'Python cares — Pin is not pin.';
+                 + 'Python cares — Pin is not pin, and True is not true.';
           }
         }
       });
@@ -176,4 +177,73 @@
       box.appendChild(d);
     });
   }
+
+  /* ---------- blink simulator ---------- */
+  var blinkrun = document.getElementById('blinkrun');
+  if(blinkrun){
+    var bbulb = document.getElementById('bblink');
+    var bout  = document.getElementById('blinkout');
+    var onIn  = document.getElementById('onsec');
+    var offIn = document.getElementById('offsec');
+    var timer = null, lit = false, blinks = 0;
+
+    var clamp = function(v){
+      v = parseFloat(v);
+      if(isNaN(v)) v = 0.5;
+      return Math.min(Math.max(v, 0.02), 5);
+    };
+    var pretty = function(v){ return (Math.round(v * 100) / 100) + ' s'; };
+
+    var say = function(){
+      var on = clamp(onIn.value), off = clamp(offIn.value);
+      var t = 'Running. On for ' + pretty(on) + ', off for ' + pretty(off)
+            + '.\nBlinks so far: ' + blinks + ' — and nothing will stop it on its own.';
+      if(on + off < 0.14){
+        t += '\n\n⚡ Far too fast for your eye. It is still blinking — it just looks dim.';
+      } else if(on + off > 3){
+        t += '\n\nSlow enough to count out loud.';
+      }
+      bout.textContent = t;
+    };
+
+    var tick = function(){
+      lit = !lit;
+      if(lit){ bbulb.classList.add('on'); blinks++; }
+      else { bbulb.classList.remove('on'); }
+      say();
+      timer = setTimeout(tick, clamp(lit ? onIn.value : offIn.value) * 1000);
+    };
+
+    var stop = function(msg){
+      if(timer){ clearTimeout(timer); timer = null; }
+      lit = false;
+      bbulb.classList.remove('on');
+      blinkrun.textContent = '▶ Run the loop';
+      bout.textContent = msg;
+    };
+
+    blinkrun.addEventListener('click', function(){
+      if(timer){
+        stop('Stopped after ' + blinks + ' blinks.\nOn a real Pico you stop a forever-loop the same way — '
+           + 'the Stop button, or Ctrl+C in the Shell.');
+        return;
+      }
+      blinks = 0; lit = false;
+      blinkrun.textContent = '■ Stop it';
+      tick();
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-preset]'), function(b){
+      b.addEventListener('click', function(){
+        var v = b.getAttribute('data-preset').split(',');
+        onIn.value = v[0]; offIn.value = v[1];
+        if(timer) say();
+      });
+    });
+
+    [onIn, offIn].forEach(function(inp){
+      inp.addEventListener('input', function(){ if(timer) say(); });
+    });
+  }
+
 })();

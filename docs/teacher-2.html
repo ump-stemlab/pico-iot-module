@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 2 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 2.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answers for <strong>Activity 2 &mdash; Make an LED Blink</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-2.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 2 &mdash; teacher notes</h1>
+    <p class="sub">Make an LED Blink. Everything on this page is for the person running the lesson.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-2.html">&#9654; Open the student page</a>
+      <a class="cta alt" href="teacher-1.html">&#8592; Activity 1 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> The page is unlisted and hidden from search
+engines, but the repository is public &mdash; anyone given the URL can read it. Share it with staff, not
+in the student handout.</div>
+
+<section>
+  <h2>What is actually being taught</h2>
+  <p>One idea: <strong>a block of code can repeat</strong>. Everything else on the student page &mdash;
+  the loop, the pause, the four spaces &mdash; is machinery in service of that.</p>
+  <p>The blink itself is easy. <strong>Indentation is the lesson.</strong> It is the first time in this
+  module that whitespace changes meaning, and it is the single thing most of your class will get wrong at
+  least once. Budget time for it and do not rush past the two comparison diagrams.</p>
+  <div class="cal tip"><b>The question to ask before they type anything</b>
+  &ldquo;In Activity 1 your light stayed on. What would it take to make it go off again?&rdquo; Let them
+  answer <em>&ldquo;tell it to switch off&rdquo;</em>, then ask why adding <code>off</code> at the end of
+  Activity 1's program does not appear to work. That is the whole activity, in one question.</div>
+</section>
+
+<section>
+  <h2>The main program</h2>
+  <span class="codeimg" data-code="IyBUd28gdG9vbHMgdGhpcyB0aW1lOiBQaW4gZm9yIHRoZSBMRUQsIHNsZWVwIGZvciB0aGUgcGF1c2UKZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBMRUQxIGlzIHRoZSByZWQgb25lLCB3aXJlZCB0byBHUDExCmxlZCA9IFBpbigxMSwgUGluLk9VVCkKCiMgS2VlcCBkb2luZyBldmVyeXRoaW5nIGJlbG93LCBmb3IgZXZlcgp3aGlsZSBUcnVlOgogICAgbGVkLm9uKCkgICAgICAjIGxpZ2h0IG9uCiAgICBzbGVlcCgwLjUpICAgICMgd2FpdCBoYWxmIGEgc2Vjb25kCiAgICBsZWQub2ZmKCkgICAgICMgbGlnaHQgb2ZmCiAgICBzbGVlcCgwLjUpICAgICMgd2FpdCBhZ2Fpbg==" role="img" aria-label="Python code, 13 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>The two comments at the top are optional and the four inline ones are decorative &mdash; a program
+  of six working lines is fine. Do not let a student who wrote it without comments feel they got it wrong.</p>
+</section>
+
+<section>
+  <h2>Exercise answer &mdash; the traffic light</h2>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBPbmUgbmFtZSBmb3IgZWFjaCBMRUQKcmVkID0gUGluKDExLCBQaW4uT1VUKQp5ZWxsb3cgPSBQaW4oMTIsIFBpbi5PVVQpCmdyZWVuID0gUGluKDEzLCBQaW4uT1VUKQoKIyBUaGUgd2hvbGUgc2VxdWVuY2UgcmVwZWF0cywgZm9yIGV2ZXIKd2hpbGUgVHJ1ZToKICAgIHJlZC5vbigpICAgICAgICAjIHN0b3AKICAgIHNsZWVwKDQpCiAgICByZWQub2ZmKCkKCiAgICBncmVlbi5vbigpICAgICAgIyBnbwogICAgc2xlZXAoNCkKICAgIGdyZWVuLm9mZigpCgogICAgeWVsbG93Lm9uKCkgICAgICMgYWJvdXQgdG8gc3RvcAogICAgc2xlZXAoMSkKICAgIHllbGxvdy5vZmYoKQ==" role="img" aria-label="Python code, 21 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Three groups of three inside one loop. The exercise deliberately needs <strong>two things from
+  Activity 1</strong> (each LED gets its own name) and <strong>two things from this one</strong> (the loop,
+  and a different waiting time for the yellow), so it is a genuine check that Activity 1 stuck.</p>
+  <p>Accept any sensible order and any sensible names. The three things worth insisting on:</p>
+  <ul>
+    <li>Every colour is switched <strong>off</strong> again before the next one comes on. Students who
+    only ever switch on end up with all three lit &mdash; a lovely, obvious failure.</li>
+    <li>All nine lines are indented. One group left at the left edge is the classic mistake, and the
+    symptom is subtle: that colour appears to be skipped.</li>
+    <li>The yellow really is shorter. If all three delays are the same they have not read the task.</li>
+  </ul>
+  <p>Blank lines between the groups are worth praising out loud &mdash; it is the first time formatting
+  for a human reader has come up since comments in Activity 1.</p>
+  <div class="cal info"><b>If a pair finishes very early</b>
+  Ask them to make the sequence twice as fast by editing one line only. They cannot yet &mdash; unless
+  they invent a variable for the delay, which is going-further task 3 and a genuinely elegant answer for
+  a beginner. It also pre-teaches why named values matter, which pays off in Activity 7.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <table>
+    <thead><tr><th>Task</th><th>What happens / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Yellow blinks three times</td><td>Six more lines inside the loop: on, wait, off, wait &mdash;
+      three times over. Some students will ask &ldquo;is there a shorter way?&rdquo; There is
+      (<code>for</code>), and it is not in this module &mdash; tell them the instinct is exactly right and
+      that counted loops are the next thing they would learn.</td></tr>
+      <tr><td>Red and yellow together</td><td>Two <code>on</code> lines with no <code>off</code> between
+      them, then a wait, then two <code>off</code> lines. Proves that a pin holds its state until something
+      changes it.</td></tr>
+      <tr><td>Name the delay</td><td>A line such as a nickname set to 4 above the loop, then that name used
+      instead of the number. Editing one line changes the whole light. This is the best answer of the five
+      and worth showing to the class.</td></tr>
+      <tr><td>A waiting time of <code>0</code></td><td>No error. The pause is real but effectively
+      instantaneous, so that colour flashes for a few microseconds and looks like it never came on. Same
+      lesson as the too-fast preset on the student page.</td></tr>
+      <tr><td>Buzzer on <span class="gp">14</span></td><td>A short beep every cycle. Loud in a full lab &mdash;
+      consider demonstrating from the front rather than letting thirty pairs discover it at once. Also a
+      useful reminder that the buzzer is switched exactly like an LED.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li>Activity 1 must be done. This activity does not re-teach the wiring, the pin numbers or variables.</li>
+    <li>A LilEx5 board and USB cable per pair; check <strong>SW5</strong> works on each.</li>
+    <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
+    <li>Have <a href="https://wokwi.com" target="_blank" rel="noopener">Wokwi</a> open on the projector.
+    If your class saved their Activity 1 projects, remind them to reopen rather than rebuild.</li>
+    <li><strong>Know where the Stop button is on both tools before you start.</strong> You will be asked
+    within five minutes, by everyone, at the same time.</li>
+    <li>The <a href="pinout.html">pin reference</a> open on every machine.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>The <code>off</code> lines are not indented</td><td>The LED comes on and stays on. No error.</td>
+      <td><strong>The big one.</strong> Ask them to point at which lines are inside the loop. They usually
+      spot it themselves once asked to say it out loud rather than look at it.</td></tr>
+      <tr><td>Nothing indented under <code>while</code></td><td><code>IndentationError: expected an indented block</code></td>
+      <td>Easy &mdash; the message is clear and names the line. A loop must contain something.</td></tr>
+      <tr><td>Missing colon on the <code>while</code> line</td><td><code>SyntaxError</code></td>
+      <td>The editor stops auto-indenting too, so the whole block collapses to the left edge and looks
+      doubly broken. Fix the colon first, then re-indent.</td></tr>
+      <tr><td>Lowercase <code>true</code></td><td><code>NameError</code> or <code>SyntaxError</code></td>
+      <td>Same lesson as lowercase <code>pin</code> in Activity 1. The type-it-here box catches it.</td></tr>
+      <tr><td>No <code>sleep</code> import</td><td><code>NameError: name 'sleep' is not defined</code></td>
+      <td>They remember to borrow <code>Pin</code> and forget the second toolbox. Point at line 2 of their
+      own program.</td></tr>
+      <tr><td>Only one <code>sleep</code>, after the <code>on</code></td><td>The LED looks permanently on,
+      very slightly dim.</td><td>Genuinely hard to see. Slow it right down &mdash; five seconds on, five
+      off &mdash; and the missing dark half becomes obvious.</td></tr>
+      <tr><td>Tabs mixed with spaces</td><td><code>TabError</code>, or lines that look aligned but are not</td>
+      <td>Rare in Thonny, more common if they paste from somewhere. Delete the leading whitespace and
+      retype it.</td></tr>
+      <tr><td>Cannot save; Thonny appears frozen</td><td>No <code>&gt;&gt;&gt;</code> in the Shell</td>
+      <td>The old forever-loop is still running. Stop button, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.
+      Expect this repeatedly &mdash; it is new this activity.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Teach stopping before you teach starting.</strong> Show the Stop button and
+    <kbd>Ctrl</kbd>+<kbd>C</kbd> on the projector <em>before</em> anyone runs a forever-loop, or you will
+    spend the next ten minutes walking round doing it for them.</li>
+    <li><strong>The blink widget on the student page is worth two minutes of class time.</strong> Put the
+    &ldquo;too fast&rdquo; preset up on the projector and ask what the LED is doing. Nearly everyone says
+    &ldquo;it is on&rdquo;. It is not &mdash; it is blinking fifty times a second. That single demonstration
+    does more for the <code>sleep</code> idea than any explanation.</li>
+    <li><strong>Indentation deserves a physical demonstration.</strong> Put the program on the board and
+    physically drag one line left, then ask what changes. Do not accept &ldquo;it breaks&rdquo; &mdash;
+    make them say <em>which</em> lines now repeat.</li>
+    <li><strong>Still no <code>print()</code>.</strong> As in Activity 1, it is held back until Activity 3
+    where reading a button gives it a real job. A blinking light is its own output. If a student adds one,
+    praise it and move on.</li>
+    <li><code>while True</code> is not explained in terms of boolean logic here, on purpose. &ldquo;True
+    means keep going&rdquo; is enough. <code>True</code> and <code>False</code> get their proper treatment
+    in Activities 4 and 5.</li>
+    <li>The module borrows single tools (<code>from time import sleep</code>) rather than whole modules, so
+    every activity's import lines look the same. The student page shows the other style in a
+    <em>details</em> block so nobody is thrown by code they find online.</li>
+    <li>The waiting numbers are the easiest thing in the module to experiment with. Encourage fiddling
+    &mdash; nothing can break, and the connection between a number in a file and a thing happening in the
+    physical world is the point of the whole course.</li>
+    <li>The safety rules still apply: never join 5V to a GP pin, never join a power pin to GND, switch off
+    at SW5 before changing wires.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Every link in this activity</h2>
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-2.html">activity-2.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-1.html">activity-1.html</a> &middot; <a href="teacher-1.html">teacher-1.html</a></td></tr>
+      <tr><td>Wokwi</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>LilEx5 pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">https://github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>First seen</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activity 1</td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>Activity 1 (exercise), Activity 2 (exercise)</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 1 (exercise), Activity 2 (exercise)</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Not required &mdash; Activity 2 going-further only</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">No new pins in Activity 2. The new material is all in the language, not the hardware.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

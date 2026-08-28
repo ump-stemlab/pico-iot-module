@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 2 &mdash; Make an LED Blink | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 2: make an LED blink with a loop and sleep.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html" aria-current="page">Activity 2</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 2</p>
+    <h1>Make an LED Blink</h1>
+    <p class="sub">Your light switched on and stayed on. Now make it switch itself off, and on, and off &mdash; for ever.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 35 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 1</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#idea">The new idea</a>
+      <a href="#indent">Indentation</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the code</a>
+      <a href="#run">Run it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Make the red LED blink on and off by itself, and never stop.</p>
+  <p>In Activity 1 you told the Pico to switch a light on. It obeyed &mdash; once &mdash; and then your
+  program ran out of lines and finished. The light stayed on because nothing ever told it otherwise.</p>
+  <p>This time you are going to give the Pico four instructions and then tell it to
+  <strong>go back to the beginning and do them again</strong>. That single idea is what turns a list of
+  instructions into a machine that keeps running.</p>
+
+<svg class="dia" viewBox="0 0 720 205" role="img" aria-label="The blink cycle: switch the LED on, wait, switch it off, wait, then go back to the start and repeat for ever">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Four steps, then back to the start</text>
+  <rect x="34" y="44" width="132" height="56" rx="10" class="step"/>
+  <text x="100" y="70" class="dlbl" text-anchor="middle">switch on</text>
+  <text x="100" y="89" class="dsub" text-anchor="middle">the LED lights</text>
+  <path d="M174 72 L198 72" class="arrow"/>
+  <rect x="206" y="44" width="132" height="56" rx="10" class="step"/>
+  <text x="272" y="70" class="dlbl" text-anchor="middle">wait</text>
+  <text x="272" y="89" class="dsub" text-anchor="middle">half a second</text>
+  <path d="M346 72 L370 72" class="arrow"/>
+  <rect x="378" y="44" width="132" height="56" rx="10" class="step"/>
+  <text x="444" y="70" class="dlbl" text-anchor="middle">switch off</text>
+  <text x="444" y="89" class="dsub" text-anchor="middle">the LED goes dark</text>
+  <path d="M518 72 L542 72" class="arrow"/>
+  <rect x="550" y="44" width="132" height="56" rx="10" class="step"/>
+  <text x="616" y="70" class="dlbl" text-anchor="middle">wait</text>
+  <text x="616" y="89" class="dsub" text-anchor="middle">half a second</text>
+  <path d="M616 100 L616 140 L100 140 L100 106" class="arrow"/>
+  <text x="358" y="163" class="dlbl" text-anchor="middle">&hellip; and now do the whole thing again</text>
+  <text x="358" y="185" class="dsub" text-anchor="middle">for ever, until you stop the program yourself</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>How to repeat something</h4><p>A <strong>loop</strong> &mdash; telling the Pico to run the same lines over and over.</p></div>
+    <div class="mini"><h4>What the spaces mean</h4><p><strong>Indentation</strong>: in Python, the gap at the start of a line changes what the line does.</p></div>
+    <div class="mini"><h4>How to make it wait</h4><p><strong>sleep</strong> &mdash; a pause measured in seconds, and why a blink is impossible without one.</p></div>
+    <div class="mini"><h4>How to stop it</h4><p>A program that never ends needs a way out. You will need this in every activity from now on.</p></div>
+  </div>
+
+  <div class="cal info"><b>You need Activity 1 first</b>
+  This activity uses the same red LED on the same pin, and assumes you have already written
+  <a href="activity-1.html">Activity 1</a>. If you have not, go and do that one &mdash; it takes half an hour
+  and everything here builds straight on top of it.</div>
+
+  <h3>Which route are you taking?</h3>
+  <table>
+    <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. Nothing to plug in.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Wokwi first, again</b>
+  A blinking light is much easier to watch in the simulator, where you can slow it right down and speed
+  it back up without touching anything. Move to the board once it works.</div>
+</section>
+
+<section id="idea">
+  <h2>&#128260; The new idea &mdash; doing it again</h2>
+  <p class="lede">One new idea this time, in three pieces: a loop, a pause, and the spaces that hold
+  them together.</p>
+
+  <h3>1. The loop</h3>
+  <p>A <strong>loop</strong> is an instruction that says <em>go back and do that again</em>. Python
+  writes the simplest kind like this:</p>
+  <span class="codeimg" data-code="d2hpbGUgVHJ1ZTo=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Read it out loud as <strong>&ldquo;while true &mdash; keep going&rdquo;</strong>. It means: everything
+  underneath this line runs, then it runs again, then again, and it never stops on its own.</p>
+  <p>Two things about that line catch people out:</p>
+  <ul>
+    <li><code>True</code> has a <strong>capital T</strong>. Python does not accept <code>true</code>.</li>
+    <li>It ends with a <strong>colon</strong> &mdash; <code>:</code> &mdash; not a full stop. The colon is
+    Python's way of saying <em>&ldquo;and here is what to do&rdquo;</em>.</li>
+  </ul>
+
+  <h3>2. The pause</h3>
+  <p>The Pico is fast. Frighteningly fast &mdash; it can run millions of instructions every second. Ask it
+  to switch a light on and off in a loop with nothing in between, and it will do exactly that, far faster
+  than your eye can follow.</p>
+  <p>So you have to make it <strong>wait</strong>. That is what <code>sleep</code> does, and the number in
+  the brackets is <strong>how many seconds</strong> to wait for. It does not have to be a whole number.</p>
+
+<svg class="dia" viewBox="0 0 720 235" role="img" aria-label="How long each sleep value waits: 2 seconds, 1 second, 0.5 is half a second, 0.1 is a tenth of a second">
+  <text x="360" y="24" class="dttl" text-anchor="middle">The number in the brackets is seconds</text>
+  <text x="190" y="66" class="dlbl" text-anchor="end">2</text>
+  <rect x="200" y="48" width="400" height="26" rx="6" class="pinbox"/>
+  <text x="612" y="66" class="dsub">two seconds</text>
+  <text x="190" y="104" class="dlbl" text-anchor="end">1</text>
+  <rect x="200" y="86" width="200" height="26" rx="6" class="pinbox"/>
+  <text x="412" y="104" class="dsub">one second</text>
+  <text x="190" y="142" class="dlbl" text-anchor="end">0.5</text>
+  <rect x="200" y="124" width="100" height="26" rx="6" class="pinbox"/>
+  <text x="312" y="142" class="dsub">half a second</text>
+  <text x="190" y="180" class="dlbl" text-anchor="end">0.1</text>
+  <rect x="200" y="162" width="20" height="26" rx="6" class="pinbox"/>
+  <text x="232" y="180" class="dsub">a tenth of a second</text>
+  <g class="lead"><path d="M200 200 L600 200"/><path d="M200 195 L200 205"/><path d="M300 195 L300 205"/><path d="M400 195 L400 205"/><path d="M500 195 L500 205"/><path d="M600 195 L600 205"/></g>
+  <g text-anchor="middle">
+    <text x="200" y="222" class="dsub">0</text>
+    <text x="300" y="222" class="dsub">0.5 s</text>
+    <text x="400" y="222" class="dsub">1 s</text>
+    <text x="500" y="222" class="dsub">1.5 s</text>
+    <text x="600" y="222" class="dsub">2 s</text>
+  </g>
+</svg>
+
+  <p>The tool is not built in. Just as you borrowed <code>Pin</code> in Activity 1, you have to borrow
+  <code>sleep</code> before you can use it:</p>
+  <span class="codeimg" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcA==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Same shape as the line you already know: <em>from</em> a toolbox, <em>import</em> a tool. This one
+  comes out of the toolbox called <code>time</code> instead of <code>machine</code>.</p>
+
+  <details>
+    <summary>&#129300; You may see it written the other way</summary>
+    <p>Some programs borrow the whole toolbox instead of one tool out of it, and then say which toolbox
+    every time they use it:</p>
+    <span class="codeimg" data-code="aW1wb3J0IHRpbWUKCnRpbWUuc2xlZXAoMC41KQ==" role="img" aria-label="Python code, 3 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>That does exactly the same thing. Neither is more correct. This module borrows single tools, so
+    every activity looks the same as the last one &mdash; but you will meet the other style in code you
+    find online, and now you know it is not something new.</p>
+  </details>
+
+  <h3>3. Why a blink needs both</h3>
+  <p>A loop with no pause in it still works. It just runs so fast that the LED is on and off again
+  thousands of times before you can blink your own eyes &mdash; so it looks like a dim, permanently-on
+  light rather than a blink.</p>
+
+<svg class="dia" viewBox="0 0 720 262" role="img" aria-label="Comparison: a loop with pauses gives a visible blink, a loop with no pauses switches too fast to see and just looks dim">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Both of these are blinking</text>
+  <text x="170" y="83" class="dlbl" text-anchor="end">with the pauses</text>
+  <path d="M180 100 L180 58 L227.5 58 L227.5 100 L275 100 L275 58 L322.5 58 L322.5 100 L370 100 L370 58 L417.5 58 L417.5 100 L465 100 L465 58 L512.5 58 L512.5 100 L560 100" class="wire"/>
+  <circle cx="638" cy="79" r="30" fill="#FF2B2B" opacity="0.28"/>
+  <circle cx="638" cy="79" r="22" fill="#FF2B2B"/>
+  <text x="638" y="128" class="dsub" text-anchor="middle">you see it blink</text>
+  <text x="170" y="183" class="dlbl" text-anchor="end">with no pauses</text>
+  <path d="M180 200 L180 158 L185 158 L185 200 L190 200 L190 158 L195 158 L195 200 L200 200 L200 158 L205 158 L205 200 L210 200 L210 158 L215 158 L215 200 L220 200 L220 158 L225 158 L225 200 L230 200 L230 158 L235 158 L235 200 L240 200 L240 158 L245 158 L245 200 L250 200 L250 158 L255 158 L255 200 L260 200 L260 158 L265 158 L265 200 L270 200 L270 158 L275 158 L275 200 L280 200 L280 158 L285 158 L285 200 L290 200 L290 158 L295 158 L295 200 L300 200 L300 158 L305 158 L305 200 L310 200 L310 158 L315 158 L315 200 L320 200 L320 158 L325 158 L325 200 L330 200 L330 158 L335 158 L335 200 L340 200 L340 158 L345 158 L345 200 L350 200 L350 158 L355 158 L355 200 L360 200 L360 158 L365 158 L365 200 L370 200 L370 158 L375 158 L375 200 L380 200 L380 158 L385 158 L385 200 L390 200 L390 158 L395 158 L395 200 L400 200 L400 158 L405 158 L405 200 L410 200 L410 158 L415 158 L415 200 L420 200 L420 158 L425 158 L425 200 L430 200 L430 158 L435 158 L435 200 L440 200 L440 158 L445 158 L445 200 L450 200 L450 158 L455 158 L455 200 L460 200 L460 158 L465 158 L465 200 L470 200 L470 158 L475 158 L475 200 L480 200 L480 158 L485 158 L485 200 L490 200 L490 158 L495 158 L495 200 L500 200 L500 158 L505 158 L505 200 L510 200 L510 158 L515 158 L515 200 L520 200 L520 158 L525 158 L525 200 L530 200 L530 158 L535 158 L535 200 L540 200 L540 158 L545 158 L545 200 L550 200 L550 158 L555 158 L555 200 L560 200" class="wire"/>
+  <circle cx="638" cy="179" r="22" fill="#FF2B2B" opacity="0.34"/>
+  <text x="638" y="228" class="dsub" text-anchor="middle">you see a dim glow</text>
+  <text x="360" y="253" class="dsub" text-anchor="middle">The only difference is how long the Pico waits between the two instructions.</text>
+</svg>
+
+  <h3>Try it before you write it</h3>
+  <p>Below is the loop you are about to build, already running. Change the two waiting times and press
+  <strong>Run the loop</strong> &mdash; then try the presets and watch what happens when the pause gets
+  too short.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div class="led-unit"><div class="bulb red" id="bblink"></div><small>LED1</small><b>GP11</b></div>
+    </div>
+    <div class="sim-ctl">
+      <label for="onsec">wait while <strong>on</strong></label>
+      <input type="number" id="onsec" value="0.5" min="0.02" max="5" step="0.1">
+      <label for="offsec">wait while <strong>off</strong></label>
+      <input type="number" id="offsec" value="0.5" min="0.02" max="5" step="0.1">
+      <button class="btn" id="blinkrun" type="button">&#9654; Run the loop</button>
+    </div>
+    <div class="sim-ctl" style="margin-top:10px">
+      <label>Presets:</label>
+      <button class="btn ghost" type="button" data-preset="1,1">Slow &middot; 1 and 1</button>
+      <button class="btn ghost" type="button" data-preset="0.5,0.5">Normal &middot; 0.5 and 0.5</button>
+      <button class="btn ghost" type="button" data-preset="0.1,0.9">Heartbeat &middot; 0.1 and 0.9</button>
+      <button class="btn ghost" type="button" data-preset="0.02,0.02">Too fast &middot; 0.02</button>
+    </div>
+    <div class="sim-out" id="blinkout">Nothing running yet. Press Run the loop.</div>
+  </div>
+
+  <label class="chk"><input type="checkbox" data-p="p1"><span>I made the LED blink slowly, then so fast I could not see it blink at all</span></label>
+  <label class="chk"><input type="checkbox" data-p="p2"><span>I can see that the two waiting times do not have to be the same</span></label>
+</section>
+
+<section id="indent">
+  <h2>&#8677; The spaces at the start of a line are not decoration</h2>
+  <p class="lede">This is the part people get wrong. Read it slowly &mdash; it is worth more than the
+  rest of the activity put together.</p>
+  <p>In most languages you would put brackets around the lines that belong to a loop. Python does not.
+  Python looks at <strong>how far each line is pushed in from the left</strong>, and that is how it decides
+  what belongs to what.</p>
+  <p>Pushing a line in is called <strong>indenting</strong> it. The lines that are indented under
+  <code>while</code> are the ones that repeat. The lines that are not indented are outside the loop
+  altogether.</p>
+
+<svg class="dia" viewBox="0 0 720 290" role="img" aria-label="A diagram of a program shown as bars: three lines at the left edge run once at the start, the while line ends with a colon, and the four lines indented by four spaces are the ones that repeat for ever">
+  <text x="360" y="26" class="dttl" text-anchor="middle">How Python decides which lines repeat</text>
+  <g class="codeline">
+    <path d="M120 62 L300 62"/>
+    <path d="M120 86 L260 86"/>
+    <path d="M120 110 L285 110"/>
+  </g>
+  <path d="M120 140 L250 140" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="lead"><path d="M120 166 L168 166"/><path d="M120 161 L120 171"/><path d="M168 161 L168 171"/></g>
+  <text x="180" y="171" class="dsub">4 spaces</text>
+  <g class="codeline">
+    <path d="M168 192 L298 192"/>
+    <path d="M168 214 L278 214"/>
+    <path d="M168 236 L298 236"/>
+    <path d="M168 258 L278 258"/>
+  </g>
+  <path d="M154 182 L154 268 M154 182 L163 182 M154 268 L163 268" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="330" y="92" class="dsub">these run once, at the start</text>
+  <text x="330" y="145" class="dlbl">the loop line &mdash; it ends with a colon</text>
+  <text x="330" y="220" class="dlbl">everything in here repeats, for ever</text>
+</svg>
+
+  <div class="cal tip"><b>Four spaces, and your editor helps</b>
+  Type the colon at the end of the <code>while</code> line, press <kbd>Enter</kbd>, and both Thonny and
+  Wokwi push the next line in for you automatically. You mostly have to remember <em>not</em> to undo it
+  &mdash; and to press <kbd>Backspace</kbd> when you want to come back out.</div>
+
+  <h3>What happens if a line is not pushed in</h3>
+  <p>Nothing crashes. That is what makes this mistake so good at hiding. The program still runs &mdash; it
+  just does something you did not ask for.</p>
+
+<svg class="dia wide" viewBox="0 0 780 290" role="img" aria-label="Two versions compared: with the off lines indented the LED blinks, with the off lines at the left edge the loop never reaches them so the LED comes on and stays on">
+  <rect x="20" y="44" width="360" height="232" rx="12" class="pane"/>
+  <text x="200" y="70" class="dlbl" text-anchor="middle">off is pushed in</text>
+  <path d="M52 96 L162 96" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="codeline">
+    <path d="M96 124 L186 124"/>
+    <path d="M96 148 L176 148"/>
+    <path d="M96 172 L186 172"/>
+    <path d="M96 196 L176 196"/>
+  </g>
+  <path d="M84 116 L84 204" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="200" y="234" class="dlbl" text-anchor="middle">the LED blinks</text>
+  <text x="200" y="256" class="dsub" text-anchor="middle">all four lines repeat</text>
+
+  <rect x="400" y="44" width="360" height="232" rx="12" class="pane"/>
+  <text x="580" y="70" class="dlbl" text-anchor="middle">off is left at the edge</text>
+  <path d="M432 96 L542 96" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="codeline">
+    <path d="M476 124 L566 124"/>
+    <path d="M476 148 L556 148"/>
+  </g>
+  <path d="M464 116 L464 156" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g stroke="var(--red)" stroke-width="5" stroke-linecap="round" opacity="0.55" fill="none">
+    <path d="M432 176 L522 176"/>
+    <path d="M432 200 L512 200"/>
+  </g>
+  <text x="546" y="192" class="dwarn">these two never run</text>
+  <text x="580" y="234" class="dlbl" text-anchor="middle">the LED comes on and stays on</text>
+  <text x="580" y="256" class="dsub" text-anchor="middle">the loop never ends, so it never gets past them</text>
+</svg>
+
+  <p>On the right, the two lines at the left edge are <em>after</em> the loop. The loop never finishes, so
+  the Pico never reaches them &mdash; and you are back to Activity 1, with a light that comes on and stays
+  on.</p>
+
+  <details>
+    <summary>&#128065;&#65039; Show me the wrong version</summary>
+    <p>This is the mistake, written out. It has no error in it at all &mdash; Python is perfectly happy:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGxlZC5vbigpCiAgICBzbGVlcCgwLjUpCmxlZC5vZmYoKQpzbGVlcCgwLjUp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>The light comes on, waits half a second, and then the loop goes back to the top and switches it on
+    again. It is already on, so nothing appears to happen. The last two lines sit there for ever, waiting
+    for a turn that never comes.</p>
+    <p>If your blink is not blinking, this is the first thing to check.</p>
+  </details>
+
+  <details>
+    <summary>&#9888;&#65039; And if you indent something that should not be</summary>
+    <p>Push a line in where Python was not expecting it and you get a real error message:</p>
+    <p><code>IndentationError: unexpected indent</code></p>
+    <p>Unlike the mistake above, this one is easy &mdash; the message tells you the line number. Take the
+    spaces off the front of that line.</p>
+    <p>The opposite message, <code>IndentationError: expected an indented block</code>, means the line
+    after a colon was <em>not</em> pushed in. A loop with nothing inside it is not allowed.</p>
+  </details>
+
+  <div class="cal warn"><b>Do not mix tabs and spaces</b>
+  A tab and four spaces look identical on screen and are completely different to Python. Use the spaces
+  your editor puts in for you and you will never meet this problem. If a line refuses to work and you
+  cannot see why, delete all the space at the front of it and press <kbd>Space</kbd> four times.</div>
+
+  <label class="chk"><input type="checkbox" data-p="p3"><span>I can say what the four spaces in front of a line mean</span></label>
+  <label class="chk"><input type="checkbox" data-p="p4"><span>I know what happens if <em>off</em> is left at the left edge</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; The circuit &mdash; nothing new</h2>
+  <p class="lede">Same LED, same pin, same wires. If Activity 1 still works, you are already done here.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <p>If your project from Activity 1 is still in your Wokwi account, <strong>open it and skip to the
+    code</strong>. You are going to replace the program, not the circuit.</p>
+    <p>If you are starting from an empty project, here it is again in one picture &mdash;
+    <a href="activity-1.html#build">Activity 1 has the step-by-step version</a> if you want it.</p>
+
+<svg class="dia" viewBox="0 0 720 200" role="img" aria-label="The circuit: GP11 goes through a 330 ohm resistor to the LED long leg A, and the LED short leg C returns to a GND pin">
+  <text x="360" y="24" class="dttl" text-anchor="middle">The same circuit you built in Activity 1</text>
+  <rect x="560" y="66" width="120" height="120" rx="8" class="pico"/>
+  <rect x="549" y="91" width="13" height="11" rx="2" class="padhot"/>
+  <rect x="549" y="151" width="13" height="11" rx="2" class="padgnd"/>
+  <text x="574" y="101" class="silk">GP11</text>
+  <text x="574" y="161" class="silk">GND</text>
+  <text x="620" y="181" class="silkbig" text-anchor="middle">Pico</text>
+  <path d="M549 96 L430 96" class="wireR"/>
+  <rect x="326" y="81" width="104" height="30" rx="6" class="part"/>
+  <path d="M336 96 l9 -8 l13 16 l13 -16 l13 16 l13 -16 l9 8" class="zig"/>
+  <text x="378" y="73" class="dlbl" text-anchor="middle">330 &#8486;</text>
+  <path d="M326 96 L268 96" class="wireR"/>
+  <circle cx="230" cy="96" r="26" fill="#FF2B2B"/>
+  <text x="230" y="58" class="dlbl" text-anchor="middle">red LED</text>
+  <text x="266" y="128" class="dsub">A</text>
+  <text x="194" y="128" class="dsub" text-anchor="end">C</text>
+  <path d="M204 96 L120 96 L120 156 L549 156" class="wireK"/>
+  <text x="336" y="148" class="dsub" text-anchor="middle">the short leg goes back to GND</text>
+</svg>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Check the parts</h4>
+      <p>A <strong>red LED</strong> and a <strong>330&nbsp;&Omega; resistor</strong>, nothing else. Add
+      them from the blue <strong>+</strong> button if the project is empty.</p>
+      <label class="chk"><input type="checkbox" data-p="a1"><span>Red LED and 330 &Omega; resistor are on the diagram</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Check the two wires</h4>
+      <p>Long leg <strong>A</strong> through the resistor to <strong>GP11</strong> (physical pin 15).
+      Short leg <strong>C</strong> to any <strong>GND</strong> pin.</p>
+      <label class="chk"><input type="checkbox" data-p="a2"><span>Both wires are in place and the LED has no warning triangle</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <p>Still nothing to wire. The red LED is joined to GP11 inside the board, in copper.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Plug in and power up</h4>
+      <p>USB cable in, power switch <strong>SW5</strong> on.</p>
+      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Find the Pico in Thonny</h4>
+      <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
+      choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the Shell.</p>
+      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
+    </div></div>
+
+    <div class="cal warn"><b>The safety rules have not gone away</b>
+    Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
+    GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>Start a new file. Type this in exactly &mdash; including the four spaces at the front of the last
+  four lines, which your editor should add for you as soon as you press <kbd>Enter</kbd> after the colon.</p>
+
+  <span class="codeimg" data-code="IyBUd28gdG9vbHMgdGhpcyB0aW1lOiBQaW4gZm9yIHRoZSBMRUQsIHNsZWVwIGZvciB0aGUgcGF1c2UKZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBMRUQxIGlzIHRoZSByZWQgb25lLCB3aXJlZCB0byBHUDExCmxlZCA9IFBpbigxMSwgUGluLk9VVCkKCiMgS2VlcCBkb2luZyBldmVyeXRoaW5nIGJlbG93LCBmb3IgZXZlcgp3aGlsZSBUcnVlOgogICAgbGVkLm9uKCkgICAgICAjIGxpZ2h0IG9uCiAgICBzbGVlcCgwLjUpICAgICMgd2FpdCBoYWxmIGEgc2Vjb25kCiAgICBsZWQub2ZmKCkgICAgICMgbGlnaHQgb2ZmCiAgICBzbGVlcCgwLjUpICAgICMgd2FpdCBhZ2Fpbg==" role="img" aria-label="Python code, 13 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don't copy it</b>
+  You will write a loop in every remaining activity in this module. The fastest way to stop having to
+  look it up is to have typed it out yourself a few times.</div>
+
+  <div class="cal info"><b>The comments after the code</b>
+  A <code>#</code> does not have to be at the start of a line. Put one after an instruction and the rest
+  of that line is a note &mdash; handy for labelling four short lines without doubling the length of your
+  program.</div>
+
+  <h3>Type it here first</h3>
+  <p>The four lines that are new this time. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from time import sleep" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="while True:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="sleep(0.5)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="led.off()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Four boxes, four lines. Capitals matter.</p>
+  </div>
+  <div class="cal note"><b>These boxes ignore the spaces at the front</b>
+  Python does not. When you type these lines for real, lines 3 and 4 go <strong>inside</strong> the loop
+  &mdash; pushed in by four spaces.</div>
+  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each line is doing</h3>
+  <table>
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>You already know this one from Activity 1: pin <strong>11</strong>, set to send power out,
+          nicknamed <code>led</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcA==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Borrow the <strong>sleep</strong> tool from the <code>time</code> toolbox. Leave this line out
+          and the Pico will tell you it has never heard of <code>sleep</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="d2hpbGUgVHJ1ZTo=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Do the indented lines below, over and over, for ever.</strong> Capital
+          <code>T</code>, and a colon on the end.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIGxlZC5vbigp" role="img" aria-label="Code line, indented"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Send the power &mdash; the LED lights. Pushed in, so it is part of the loop.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIHNsZWVwKDAuNSk=" role="img" aria-label="Code line, indented"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Stop and do nothing for half a second.</strong> The LED is still on the whole time
+          &mdash; nothing has told it to change.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIGxlZC5vZmYoKQ==" role="img" aria-label="Code line, indented"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Cut the power &mdash; the LED goes dark. The opposite of <code>on</code>, and the line that
+          makes this a blink instead of a light.</td></tr>
+    </tbody>
+  </table>
+  <p>Then the fourth waiting line runs, the loop reaches the bottom, and it starts again from the top.</p>
+
+  <details>
+    <summary>&#129300; Why does the program need a wait after the LED goes off?</summary>
+    <p>Take that last waiting line out and the Pico switches the LED off and immediately loops round and
+    switches it back on. The dark part of the blink lasts a few millionths of a second, so what you see is
+    a light that is on all the time &mdash; very slightly dimmer than usual.</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGxlZC5vbigpCiAgICBsZWQub2ZmKCk=" role="img" aria-label="Python code, 3 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>A blink needs a pause on <em>both</em> sides: one to let you see the light, one to let you see the
+    dark.</p>
+  </details>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it, run it &mdash; and stop it</h2>
+  <table>
+    <thead><tr><th></th><th>Save</th><th>Run</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd> saves the project.</td><td>Click the green <strong>&#9654; Play</strong> button above the diagram.</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>blink.py</code>.</td><td>Click the green <strong>&#9654; Run</strong> arrow, or press <kbd>F5</kbd>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>&#9209;&#65039; How to stop a program that never ends</h3>
+  <p>This is new, and you will need it in every activity from now on. Your program has no last line
+  any more &mdash; it will keep going until <em>you</em> end it.</p>
+  <table>
+    <thead><tr><th>Where</th><th>How to stop it</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td>Press the red <strong>&#9632; Stop</strong> button &mdash; it is in the same place the green Play button was.</td></tr>
+      <tr><td><strong>Thonny</strong></td><td>Click the red <strong>&#9632; Stop</strong> button on the toolbar. Or click into the Shell and press <kbd>Ctrl</kbd>+<kbd>C</kbd>.</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Thonny will not let you save while a program is running</b>
+  If saving does nothing, or the Shell will not give you a <code>&gt;&gt;&gt;</code> back, the old program is
+  still going. Stop it first, then save.</div>
+
+  <h3>&#9989; What you should see</h3>
+
+<svg class="dia" viewBox="0 0 720 230" role="img" aria-label="Timing diagram: the pin is high for half a second, then low for half a second, repeating for ever">
+  <text x="360" y="22" class="dttl" text-anchor="middle">What the pin is doing, second by second</text>
+  <g stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <path d="M80 70 L80 190"/><path d="M155 70 L155 190"/><path d="M230 70 L230 190"/>
+    <path d="M305 70 L305 190"/><path d="M380 70 L380 190"/><path d="M455 70 L455 190"/>
+    <path d="M530 70 L530 190"/><path d="M605 70 L605 190"/><path d="M680 70 L680 190"/>
+  </g>
+  <path d="M80 158 L80 78 L155 78 L155 158 L230 158 L230 78 L305 78 L305 158 L380 158 L380 78 L455 78 L455 158 L530 158 L530 78 L605 78 L605 158 L680 158" class="wire"/>
+  <text x="72" y="83" class="dlbl" text-anchor="end">on</text>
+  <text x="72" y="163" class="dsub" text-anchor="end">off</text>
+  <g class="lead"><path d="M80 58 L230 58"/><path d="M80 53 L80 63"/><path d="M230 53 L230 63"/></g>
+  <text x="155" y="46" class="dlbl" text-anchor="middle">one blink</text>
+  <g class="lead">
+    <path d="M80 196 L155 196"/><path d="M80 191 L80 201"/><path d="M155 191 L155 201"/>
+    <path d="M155 196 L230 196"/><path d="M230 191 L230 201"/>
+  </g>
+  <text x="117" y="216" class="dsub" text-anchor="middle">0.5 s</text>
+  <text x="192" y="216" class="dsub" text-anchor="middle">0.5 s</text>
+  <text x="455" y="216" class="dsub" text-anchor="middle">and on, and on, for ever</text>
+</svg>
+
+  <p>One second per blink: on for half of it, off for the other half.</p>
+
+<svg class="dia" viewBox="0 0 720 200" role="img" aria-label="The board half a second apart: in the first picture the red LED is lit, in the second it is dark, and the yellow and green LEDs stay off in both">
+  <rect x="20" y="44" width="300" height="92" rx="12" class="pcb"/>
+  <circle cx="95" cy="90" r="28" fill="#FF2B2B" opacity="0.28"/>
+  <circle cx="95" cy="90" r="22" fill="#FF2B2B"/>
+  <circle cx="170" cy="90" r="22" fill="#3a3210"/>
+  <circle cx="245" cy="90" r="22" fill="#0f3a1a"/>
+  <text x="170" y="160" class="dlbl" text-anchor="middle">red is ON</text>
+  <path d="M336 90 L384 90" class="arrow"/>
+  <rect x="400" y="44" width="300" height="92" rx="12" class="pcb"/>
+  <circle cx="475" cy="90" r="22" fill="#3a1010"/>
+  <circle cx="550" cy="90" r="22" fill="#3a3210"/>
+  <circle cx="625" cy="90" r="22" fill="#0f3a1a"/>
+  <text x="550" y="160" class="dlbl" text-anchor="middle">red is off</text>
+  <text x="360" y="188" class="dsub" text-anchor="middle">These two pictures are half a second apart &mdash; and then it swaps back, for ever.</text>
+</svg>
+
+  <p>On the real board, the red LED you lit in Activity 1 now switches itself off and on again about once
+  a second, and keeps doing it until you press stop.</p>
+  <figure class="board"><img src="img/lilex5-board-red-on.png" alt="The LilEx5 board with the red LED lit, one half of the blink" loading="lazy"><figcaption>Half of the blink. Half a second later this LED is dark, and half a second after that it is back.</figcaption></figure>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>The red LED goes <strong>on and off</strong> by itself, about once a second</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>It keeps going &mdash; it does not stop after one blink</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>I stopped the program on purpose, and the blinking stopped</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>I changed one of the waiting numbers and the blink changed speed</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><code>NameError: name 'sleep' is not defined</code></td><td>The line that borrows <code>sleep</code> from the <code>time</code> toolbox is missing or misspelled.</td></tr>
+      <tr><td><code>IndentationError: expected an indented block</code></td><td>Nothing is pushed in under the <code>while</code> line. A loop must have at least one line inside it.</td></tr>
+      <tr><td><code>IndentationError: unexpected indent</code></td><td>A line is pushed in that should not be. The message names the line &mdash; take the spaces off the front of it.</td></tr>
+      <tr><td><code>SyntaxError</code> on the <code>while</code> line</td><td>Missing colon on the end, or you typed <code>true</code> instead of <code>True</code>.</td></tr>
+      <tr><td><strong>The LED comes on and stays on</strong></td><td>The lines that switch it off are not pushed in, so they are outside the loop and never run.</td></tr>
+      <tr><td><strong>The LED looks on all the time, but dimmer</strong></td><td>A waiting line is missing, or its number is far too small. It <em>is</em> blinking &mdash; too fast to see.</td></tr>
+      <tr><td><strong>It blinks once and stops</strong></td><td>The <code>while</code> line is missing, or your four lines are not underneath it.</td></tr>
+      <tr><td><strong>A buzzer is beeping in time with nothing</strong></td><td>You used pin <strong>14</strong>. Red is <strong>11</strong>.</td></tr>
+      <tr><td><strong>I cannot save, or the Shell will not respond</strong> (Thonny)</td><td>The program is still running. Press the red <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</td></tr>
+      <tr><td><strong>Nothing happens at all</strong> (Wokwi)</td><td>Press the green <strong>&#9654; Play</strong> button. Nothing runs until you do.</td></tr>
+      <tr><td><strong>The blink is far slower than you expected</strong></td><td>Check the number in the brackets. <code>5</code> is five seconds; <code>0.5</code> is half of one.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; build a traffic light</h2>
+  <p class="lede">One LED blinking was the warm-up. Now make three of them take turns.</p>
+  <p><strong>Task:</strong> use all three LEDs to make a working traffic light that runs for ever:</p>
+  <ol>
+    <li><strong>Red</strong> for 4 seconds &mdash; stop.</li>
+    <li><strong>Green</strong> for 4 seconds &mdash; go.</li>
+    <li><strong>Yellow</strong> for 1 second &mdash; about to stop.</li>
+    <li>Then back to red, and round again.</li>
+  </ol>
+  <p>Only one colour is lit at a time, and the yellow is deliberately much shorter than the other two.</p>
+
+<svg class="dia" viewBox="0 0 720 290" role="img" aria-label="One trip round the loop: red is lit for four seconds, then green for four seconds, then yellow for one second, then it starts again">
+  <text x="360" y="24" class="dttl" text-anchor="middle">One trip round the loop</text>
+  <g fill="var(--line)" opacity="0.35">
+    <rect x="90" y="56" width="600" height="30" rx="6"/>
+    <rect x="90" y="104" width="600" height="30" rx="6"/>
+    <rect x="90" y="152" width="600" height="30" rx="6"/>
+  </g>
+  <rect x="90" y="56" width="266.7" height="30" rx="6" fill="#FF2B2B"/>
+  <rect x="623.3" y="104" width="66.7" height="30" rx="6" fill="#FFD426"/>
+  <rect x="356.7" y="152" width="266.7" height="30" rx="6" fill="#2BE06A"/>
+  <text x="80" y="76" class="dlbl" text-anchor="end">red</text>
+  <text x="80" y="124" class="dlbl" text-anchor="end">yellow</text>
+  <text x="80" y="172" class="dlbl" text-anchor="end">green</text>
+  <g stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <path d="M356.7 48 L356.7 198"/>
+    <path d="M623.3 48 L623.3 198"/>
+  </g>
+  <g class="lead">
+    <path d="M90 210 L690 210"/>
+    <path d="M90 205 L90 215"/><path d="M356.7 205 L356.7 215"/>
+    <path d="M623.3 205 L623.3 215"/><path d="M690 205 L690 215"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="223" y="230" class="dsub">4 seconds</text>
+    <text x="490" y="230" class="dsub">4 seconds</text>
+    <text x="656" y="230" class="dsub">1 s</text>
+  </g>
+  <path d="M690 254 L96 254" class="arrow"/>
+  <text x="393" y="276" class="dsub" text-anchor="middle">&hellip; then back to red, and round again, for ever</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="e1"><span>The three colours take turns in the right order</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>Only one LED is lit at a time &mdash; no two colours overlap</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>The yellow is clearly shorter than the red and the green</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>It runs for ever, until I stop it</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
+    <p>You have done most of this before. In the Activity 1 exercise you gave each LED its own nickname,
+    because <strong>one nickname can only point at one pin</strong>. Do that again, at the top, before the
+    loop:</p>
+    <ul>
+      <li>red is <span class="gp">11</span></li>
+      <li>yellow is <span class="gp">12</span></li>
+      <li>green is <span class="gp">13</span></li>
+    </ul>
+    <p>Those three lines go <strong>above</strong> the <code>while</code> line, not inside it. You only
+    need to say which pin is which once.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; only one at a time</summary>
+    <p>Switching a colour on is not enough. Nothing switches it off again on its own &mdash; you saw that
+    in Activity 1. If you only ever switch things on, you will end up with all three lit and staying lit.</p>
+    <p>So every colour needs three things, in this order: <strong>on</strong>, then <strong>wait</strong>,
+    then <strong>off</strong>. Three colours, three of those groups.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; what the loop looks like</summary>
+    <p>Here is the first colour done. All of it is pushed in, because all of it repeats:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIHJlZC5vbigpCiAgICBzbGVlcCg0KQogICAgcmVkLm9mZigpCgogICAgIyBub3cgZG8gdGhlIHNhbWUgZm9yIGdyZWVuLCB0aGVuIGZvciB5ZWxsb3c=" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Now do the same for green &mdash; same shape, different name, same 4 &mdash; and then for yellow,
+    with a <strong>1</strong> instead of a 4.</p>
+    <p>Blank lines between the groups are allowed and make it much easier to read. Python does not mind.</p>
+  </details>
+
+  <details><summary>&#9989; Answer &mdash; only open this after you have really tried</summary>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBPbmUgbmFtZSBmb3IgZWFjaCBMRUQKcmVkID0gUGluKDExLCBQaW4uT1VUKQp5ZWxsb3cgPSBQaW4oMTIsIFBpbi5PVVQpCmdyZWVuID0gUGluKDEzLCBQaW4uT1VUKQoKIyBUaGUgd2hvbGUgc2VxdWVuY2UgcmVwZWF0cywgZm9yIGV2ZXIKd2hpbGUgVHJ1ZToKICAgIHJlZC5vbigpICAgICAgICAjIHN0b3AKICAgIHNsZWVwKDQpCiAgICByZWQub2ZmKCkKCiAgICBncmVlbi5vbigpICAgICAgIyBnbwogICAgc2xlZXAoNCkKICAgIGdyZWVuLm9mZigpCgogICAgeWVsbG93Lm9uKCkgICAgICMgYWJvdXQgdG8gc3RvcAogICAgc2xlZXAoMSkKICAgIHllbGxvdy5vZmYoKQ==" role="img" aria-label="Python code, 21 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Nine lines inside the loop, in three groups of three. Every one of them is pushed in by four
+    spaces &mdash; if any group is left at the left edge, that colour drops out of the sequence and only
+    ever runs once, or not at all.</p>
+  </details>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li>Make the yellow <strong>blink three times</strong> instead of staying on for one second.</li>
+    <li>Real traffic lights in some countries show <strong>red and yellow together</strong> just before
+    green. Add that step.</li>
+    <li>Give the waiting time a nickname of its own at the top, the way you named the LEDs, and use that
+    name everywhere instead of the number. Now change the speed of the whole traffic light by editing
+    <em>one</em> line.</li>
+    <li>What does a waiting time of <code>0</code> do? Predict first, then try it.</li>
+    <li>Put a fourth group in the loop that switches the buzzer on <span class="gp">14</span> for a tenth
+    of a second when the light turns red. Warn the person next to you first.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> Loops, spaces and pauses
+  &mdash; that is the machinery behind almost every program you will write from here. Next up &mdash;
+  Activity 3, where the board starts listening to you instead of the other way round.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Loop</strong></td><td>Instructions that run over and over instead of once.</td></tr>
+      <tr><td><strong><code>while True</code></strong></td><td>The simplest loop: keep going, for ever. Capital T, colon on the end.</td></tr>
+      <tr><td><strong>Indentation</strong></td><td>The spaces at the start of a line. In Python they decide which lines belong to the loop.</td></tr>
+      <tr><td><strong>Block</strong></td><td>The group of indented lines that belong together underneath a <code>while</code>.</td></tr>
+      <tr><td><strong>sleep</strong></td><td>Wait and do nothing. The number in the brackets is seconds, and it can have a decimal point.</td></tr>
+      <tr><td><strong>Infinite loop</strong></td><td>A loop with no way out. Useful on purpose here &mdash; you stop it yourself.</td></tr>
+      <tr><td><strong>Stopping a program</strong></td><td>The red &#9632; button, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in Thonny's Shell.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from time import sleep",
+    "while True:",
+    "sleep(0.5)",
+    "led.off()"
+  ],
+  quiz: [
+    { q: 'What does <code>while True:</code> tell the Pico to do?',
+      opts: ['Run the lines below it once','Run the lines indented below it over and over, for ever','Check whether something is true','Wait until you press a button'],
+      right: 1,
+      why: 'It is a loop. Everything indented underneath it runs, then runs again, and nothing stops it except you.' },
+    { q: 'How does Python know which lines belong inside the loop?',
+      opts: ['They are written in a different colour','They come after the word while','They are pushed in from the left edge','They are inside curly brackets'],
+      right: 2,
+      why: 'Indentation. The spaces at the start of a line are what put that line inside the loop — which is why they are never optional.' },
+    { q: 'How long does <code>sleep(0.5)</code> wait?',
+      opts: ['Half a second','Five seconds','Half a minute','Five milliseconds'],
+      right: 0,
+      why: 'The number is seconds, and it can have a decimal point. 0.5 is half of one second.' },
+    { q: 'A program switches the LED on and waits, but the two lines that switch it off and wait again are left at the <b>left edge</b>. What happens?',
+      opts: ['An error message','The LED blinks normally','The LED comes on and stays on','The LED never comes on'],
+      right: 2,
+      why: 'Those two lines are outside the loop, so they only run after it finishes — and it never finishes. The LED is switched on again and again, and never off.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>
