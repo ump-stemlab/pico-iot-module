@@ -409,3 +409,32 @@ figure.board figcaption{text-align:center;font-size:13.5px;color:var(--muted);ma
 .dia .wkwire.red{stroke:#E03131}
 .dia .wkwire.black{stroke:#22303A}
 @media (prefers-color-scheme: dark){ .dia .wkwire.black{stroke:#9BB0B9} }
+
+/* ---------- the OLED module, Wokwi-look (Activity 6) ----------
+   Geometry and colours read out of Wokwi's own board-ssd1306 artwork. Like the
+   wk- family above these are the colours of a physical object, so they are fixed
+   in both themes on purpose. */
+.dia .wk-oled-pcb{fill:#0f4d7c}
+.dia .wk-oled-bezel{fill:#0a0a0a}
+.dia .wk-oled-glass{fill:#262628}
+.dia .wk-oled-seam{fill:#737373;opacity:.47}
+.dia .wk-oled-tab{fill:#ba8239}
+.dia .wk-oled-hole{fill:#fff;stroke:#c8ceda;stroke-width:.206}
+.dia .wk-oled-pad{fill:#fff;stroke:#ecc98a;stroke-width:.304}
+.dia .wk-oled-lbl{fill:#fff;font:700 10px "SFMono-Regular",Consolas,monospace}
+.dia .wkwire.blue{stroke:#1C6FD6}
+
+/* text and grids drawn on a screen inside a diagram */
+.dia .oledtxt{fill:#9BF3EC;font:700 22px "SFMono-Regular",Consolas,monospace}
+.dia .oledtxt2{fill:#F5A21D;font:700 22px "SFMono-Regular",Consolas,monospace}
+.dia .oledcell{fill:rgba(155,243,236,.13)}
+.dia .gridline{stroke:#3d4a4d;stroke-width:1;fill:none}
+.dia .buswire{stroke:var(--teal);stroke-width:4;fill:none;stroke-linecap:round}
+
+/* ---------- the page-versus-screen widget (Activity 6) ---------- */
+.oledbox{background:#0a0f12;border:2px solid #2c6a66;border-radius:8px;padding:10px 12px;
+  font-family:"SFMono-Regular",Consolas,monospace;font-size:14px;line-height:1.5;
+  color:#4d7a78;min-width:178px;text-align:left}
+.oledbox b{display:block;font-weight:400;min-height:22px;white-space:pre}
+.oledbox.lit{background:#050708;border-color:#14524f}
+.oledbox.lit b{color:#9BF3EC;text-shadow:0 0 9px rgba(126,227,221,.55)}

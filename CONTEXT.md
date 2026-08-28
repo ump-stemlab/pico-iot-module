@@ -57,7 +57,8 @@ bare Pico and correctly say "GP11 is physical pin 15" — on the LilEx5 the same
 out at header pin **29**. If a later activity ever puts the two side by side, say which
 board each number belongs to.
 
-I²C addresses: OLED `0x78`, temp/humidity/pressure `0x76`, accelerometer+gyro `0x68`,
+I²C addresses (as the board's own documentation prints them, i.e. 8-bit): OLED `0x78`
+— **which is `0x3C` in the 7-bit form MicroPython wants; see the Activity 6 block in §7** — temp/humidity/pressure `0x76`, accelerometer+gyro `0x68`,
 compass `0x7C`, proximity+light `0x60`, air quality `0x1A` (its clock must stay below
 15 kHz), ADC `0x48`.
 
@@ -78,7 +79,7 @@ docs/pinout.html       searchable pin reference
 docs/style.css         the whole design system — every page links it
 docs/code.js           renders code as pictures + guards the clipboard
 docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
-                       decision simulator, logic simulator, typing box, quiz
+                       decision simulator, logic simulator, screen widget, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
@@ -382,7 +383,80 @@ them in the markup if they are there.
   no code), name-versus-value, the double-negative result, the four expected states, and the
   exercise's four states.
 
-### The Wokwi-look board diagrams (Activities 1, 3, 4 and 5)
+### Activity 6 — Words on a Screen
+
+- **The one idea is two halves again**, the way Activity 3's was: the OLED screen, and the first
+  **library that is not built in**. They need each other — the screen is the reason to add a library,
+  the library is the only way to use the screen. Do not split them.
+- **First new hardware since Activity 3**, and the first part ever that sits on a **bus**. SDA is
+  **GP0**, SCL is **GP1**, and both are new pins — the first added since Activity 1.
+- **The address is `0x3C`, and no code sample on either page types it.** The driver's default is
+  `0x3C`, so `SSD1306_I2C(128, 64, i2c)` is all a student writes. §2 of this file lists the OLED as
+  `0x78`; that is the same address with the read/write bit tacked on (`0x3C` shifted left by one), the
+  form datasheets print. Kamil's call: write `0x3C` where an address is discussed, and carry a callout
+  on the student page explaining that `0x78` in a datasheet is not a different screen. Wokwi's own
+  *SSD1306 OLED display* part ships with `i2cAddress: 0x3c` as its default attribute — checked in the
+  Wokwi editor during this build.
+- **Adding a library is its own top-level section** (`#library`), the way indentation was Activity 2's.
+  Where the file goes on the Pico (top level or `lib/`), how it gets there, and what
+  `ImportError: no module named 'ssd1306'` actually means (Python looked on the *Pico's* disk, not the
+  computer's). The library lives in `ump-stemlab/stemcube`.
+- **The two routes genuinely differ here, and the page says so.** Wokwi: the tab-bar `▾` menu →
+  **New file…** → `ssd1306.py`, paste the driver in; Wokwi copies every project file onto the simulated
+  Pico on each run (there is no MicroPython library manager in Wokwi — checked). Thonny: open the file
+  and **File → Save as… → Raspberry Pi Pico**, with *Tools → Manage packages* as a `<details>`
+  alternative. This is the only place in the module where the two routes are not the same thing.
+- **Pasting is allowed, once, and the page says why.** A library is somebody else's tool and nobody
+  retypes one. Rule 5.1 is about the student's *own* program. Stated on the student page and on
+  `teacher.html`'s rules card, or the no-copying rule starts to look arbitrary.
+- **Write-then-show is the third teaching beat** and is where the class will lose time: a missing
+  `oled.show()` produces a perfect run, no error and a black screen. `oled.fill(0)` is in the main
+  program even though a freshly made screen is already blank, because the exercise cannot work without
+  it and the clues have to be able to point back at it.
+- **The main program has no loop.** First one since Activity 1 that ends by itself; the words stay
+  because the screen holds what it was last given. This breaks Activity 2's "every activity after this
+  runs in a loop" — deliberately. The exercise puts the loop back.
+- Mission: **plain hello** — two fixed lines. Kamil's call: the smallest thing that proves the bus and
+  the library work, with the changing value saved for the exercise.
+- Exercise: **SW1 and SW2 shown as words** — two labelled rows reading `HELD` / `UP`, updating live.
+  Kamil's call. It reuses Activity 3's buttons and Activity 4's two independent `if`/`else` pairs, and
+  the real new work is the wipe–write–show order. **No answer on the student page** (rule 5.4); clue 3
+  stops at a five-point checklist. A counter was considered and rejected for the exercise because it
+  needs turning a number into words, which this module has not taught — it is on `teacher-6.html` as a
+  going-further answer only.
+- **No `elif`, still, and no `for` loops.** Neither is needed.
+- `activity.js` gained two things. First, the **route-tab block was generalised** into a `wire()` helper
+  called for `tab-a`/`tab-b` and again for `tab-c`/`tab-d`, because Activity 6 is the first page with
+  *two* route-tab groups (getting the library on, and building the circuit). All groups share one stored
+  `state.route`, so picking Wokwi once picks it everywhere; pages with only one group behave exactly as
+  before. Second, a **screen widget** guarded by `#oledrun`, inert elsewhere. Markup: `#oledmem` and
+  `#oledscr` boxes of four `<b>` rows, `[data-oled]` buttons (`wipe` / `l1` / `l2`) and `#oledout`. It
+  shows the page and the glass side by side so that writing changes one and not the other. Output is
+  words only — it leaks no code.
+- `style.css` gained a **`wk-oled-` family** (the module's PCB, bezel, glass, seam, ribbon tab, mounting
+  holes, pads and silkscreen labels), `.wkwire.blue`, four diagram helpers (`.oledtxt`, `.oledtxt2`,
+  `.oledcell`, `.gridline`, `.buswire`) and the `.oledbox` widget. The `wk-oled-` colours and geometry
+  were read out of Wokwi's own artwork at
+  `https://wokwi.github.io/wokwi-boards/ssd1306/board.svg` — viewBox `27.7 × 22.6` (mm), PCB `#0f4d7c`,
+  glass `#262628`, ribbon tab `#ba8239`, four mounting holes r `1.24` at (2.02, 1.87) / (25.6, 1.87) /
+  (2.02, 21) / (25.6, 21), and four pads r `.706` at cy `1.71`, cx `10.1` **GND**, `12.6` **VCC**,
+  `15.1` **SCL**, `17.7` **SDA**. The diagram draws it inside
+  `<g transform="translate(60,200) scale(9)">` so those millimetre numbers are used unchanged. Like the
+  `wk-` family these are the colours of a physical object and are fixed in both themes.
+- **The wiring diagram has exactly one crossing, and it cannot be removed.** The module's pads run
+  GND · VCC · SCL · SDA left to right, while the Pico's pins run GP0 · GP1 · GND top to bottom — the
+  reverse order — so any planar routing is impossible and the blue SCL wire has to cross the green SDA
+  wire once. It is a clean right angle in open space. GND and VCC wrap round the bottom-left instead of
+  competing in the top band, which removes every other crossing. Wire colours: SDA green, SCL blue, GND
+  black, VCC red; pads ringed are 1, 2, 3 and **36** (3V3, on the far right — VCC must not go to pin 39
+  or 40, which are 5 V). The wire labels are a **legend box** at `x=336 y=238`, not inline labels, because
+  the three signal wires are only 20 px apart at the Pico end. viewBox `780 × 660`.
+- Ten diagrams besides the wiring one: the mission flow, the 128 × 64 pixel grid, how 8 × 8 letters sit
+  on it, one-pair-per-part versus one shared bus, addressing on the bus, where the library file lives,
+  the two routes to get it there, wipe–write–show, the expected result beside a wrong-row version, the
+  exercise's four states and the exercise loop. Every one was rendered and looked at in both themes.
+
+### The Wokwi-look board diagrams (Activities 1, 3, 4, 5 and 6)
 
 Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
 physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
@@ -400,16 +474,16 @@ module does not look like two different books.
   the corners). Both were added here deliberately, in white silkscreen on the board: the number
   beside the pad, the name inside it. Telling the two apart is the thing students get wrong every
   time, and it is why the diagrams carry the line *"the big white numbers are the physical pins."*
-- The board is a self-contained `<g class="wk">` and is **identical in all three files**. To wire a
-  new activity, copy that group out of `activity-4.html`, change the ring circles and the wire paths,
+- The board is a self-contained `<g class="wk">` and is **identical in every file that uses it**. To
+  wire a new activity, copy that group out of `activity-5.html` or `activity-6.html`, change the ring circles and the wire paths,
   and leave everything else alone. The geometry you need:
   board at `x=545`, width `200`, height `440`; **pin *n*'s centre line is
   `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
   meets a left-hand pad at `x=537` and a right-hand pad at `x=755`; the ring on a used pad is
   `<circle r="10.5" class="wk-ring">` centred on the hole.
 - The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3),
-  `780 × 600` (Activity 4, which carries both circuits) and `780 × 690` (Activity 5, which adds a
-  second button below the first).
+  `780 × 600` (Activity 4, which carries both circuits), `780 × 690` (Activity 5, which adds a
+  second button below the first) and `780 × 660` (Activity 6, whose power wires wrap round the board).
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
   long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 6 &mdash; Words on a Screen | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 6: the OLED screen, the I2C bus, and adding a library that is not built in.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html" aria-current="page">Activity 6</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 6</p>
+    <h1>Words on a Screen</h1>
+    <p class="sub">Until today the board could only answer you with a light, or with words on
+    <em>your</em> computer. Today it gets a screen of its own &mdash; and to use it you have to give
+    Python a tool it does not come with.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 50 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 5</span>
+      <span class="pill">&#128421;&#65039; New hardware</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#screen">Meet the screen</a>
+      <a href="#bus">Two wires, eight parts</a>
+      <a href="#library">Adding a library</a>
+      <a href="#try">Try it</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the code</a>
+      <a href="#run">Run it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Put <strong>your own words on the little screen</strong> &mdash; and leave them there.
+  Two lines of text, written by your program, glowing on the board itself.</p>
+  <p>It sounds small. It is not. Every light and every buzz so far has been the board saying
+  <em>something happened</em>. A screen is the board saying <strong>what</strong> happened, in words,
+  with nobody&rsquo;s laptop attached. Unplug the USB cable, put the board on a battery, and the words
+  are still there.</p>
+
+<svg class="dia wide" viewBox="0 0 780 250" role="img" aria-label="The shape of today's program. The Pico sends words along two wires, labelled data and clock, to the little screen, and the words appear on the glass. Underneath, a note that the screen needs a library, which is a file of ready-made instructions that does not come with Python.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One program, two wires, one screen</text>
+  <rect x="34" y="62" width="176" height="90" rx="12" class="step"/>
+  <text x="122" y="96" class="dlbl" text-anchor="middle">your program</text>
+  <text x="122" y="118" class="dsub" text-anchor="middle">running on the Pico</text>
+  <text x="122" y="138" class="dsub" text-anchor="middle">it knows the words</text>
+
+  <path d="M210 92 L330 92" class="arrow"/>
+  <path d="M210 124 L330 124" class="arrow"/>
+  <text x="270" y="82" class="dsub" text-anchor="middle">data &middot; GP0</text>
+  <text x="270" y="148" class="dsub" text-anchor="middle">clock &middot; GP1</text>
+
+  <rect x="342" y="52" width="230" height="112" rx="10" class="wk-oled-pcb"/>
+  <rect x="358" y="70" width="198" height="76" rx="4" class="wk-oled-glass"/>
+  <text x="374" y="100" class="oledtxt">Hello</text>
+  <text x="374" y="132" class="oledtxt">STEM LAB</text>
+  <text x="457" y="186" class="dlbl" text-anchor="middle">the screen on the board</text>
+  <text x="457" y="206" class="dsub" text-anchor="middle">128 pixels across, 64 down</text>
+
+  <path d="M572 108 L660 108" class="arrow"/>
+  <rect x="666" y="76" width="98" height="64" rx="10" class="pinbox"/>
+  <text x="715" y="102" class="dlbl" text-anchor="middle">anyone</text>
+  <text x="715" y="122" class="dlbl" text-anchor="middle">can read it</text>
+  <text x="390" y="236" class="dsub" text-anchor="middle">No laptop, no console, no cable. The board says it itself.</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>A screen of its own</h4><p>128 by 64 tiny lights. Words go on it in rows, at
+    positions you choose.</p></div>
+    <div class="mini"><h4>A bus, not a wire</h4><p>Two wires that eight different parts share, each with
+    its own address.</p></div>
+    <div class="mini"><h4>Your first library</h4><p>A file of ready-made instructions that has to be put
+    on the Pico before it will work.</p></div>
+    <div class="mini"><h4>Write, then show</h4><p>Words go onto a page in memory first. Nothing appears
+    until you say <em>show</em>.</p></div>
+  </div>
+
+  <div class="cal info"><b>You need Activities 1 to 5 first</b>
+  Naming a pin, the forever-loop and how to stop it, <code>print()</code>, <code>if</code> and
+  <code>else</code>, the double equals, <code>and</code> / <code>or</code> / <code>not</code>, comments
+  and both levels of indentation are all assumed here, and none of them is taught again.</div>
+
+  <h3>Which route are you taking?</h3>
+  <table>
+    <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. You add a screen part and draw four wires.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
+    </tbody>
+  </table>
+  <div class="cal warn"><b>New hardware today &mdash; for the first time since Activity 3</b>
+  A real part, on real wires, with a real circuit to build in Wokwi. Both routes also need one extra
+  step nothing before this activity has needed: <strong>putting a file on the Pico</strong>. Read
+  <a href="#library">Adding a library</a> before you start typing, whichever route you take.</div>
+</section>
+
+<section id="screen">
+  <h2>&#128421;&#65039; Meet the screen</h2>
+  <p>Your board has a small <strong>OLED screen</strong> above the buttons. OLED means every dot on it
+  makes its own light &mdash; there is no backlight behind it, which is why the black parts are properly
+  black and why it is readable from the side.</p>
+  <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above, with the small OLED screen near the top" loading="lazy"><figcaption>Your LilEx5 board. The small dark rectangle is the OLED screen &mdash; it is blank until a program puts something on it.</figcaption></figure>
+
+  <h3>It is a grid of tiny lights, and nothing else</h3>
+  <p>The screen is <strong>128 dots across and 64 dots down</strong>. Each dot &mdash; each
+  <strong>pixel</strong> &mdash; is either on or off. There is no grey and no colour. Everything you will
+  ever put on this screen is made of those 8192 dots.</p>
+
+<svg class="dia wide" viewBox="0 0 780 386" role="img" aria-label="The screen drawn as a grid. It is 128 pixels wide and 64 pixels tall. The across direction is measured from zero at the left edge, and the down direction from zero at the top edge. A word sitting at across zero, down zero is shown in the top left corner.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">128 across, 64 down &mdash; and the counting starts at 0</text>
+  <text x="384" y="54" class="dlbl" text-anchor="middle">across &mdash; how far from the left edge</text>
+  <text x="128" y="78" class="dsub" text-anchor="middle">0</text>
+  <text x="384" y="78" class="dsub" text-anchor="middle">64</text>
+  <text x="640" y="78" class="dsub" text-anchor="middle">128</text>
+  <rect x="128" y="88" width="512" height="256" rx="6" class="wk-oled-glass"/>
+  <g class="gridline">
+    <path d="M192 88 L192 344"/><path d="M256 88 L256 344"/><path d="M320 88 L320 344"/>
+    <path d="M384 88 L384 344"/><path d="M448 88 L448 344"/><path d="M512 88 L512 344"/>
+    <path d="M576 88 L576 344"/>
+    <path d="M128 120 L640 120"/><path d="M128 152 L640 152"/><path d="M128 184 L640 184"/>
+    <path d="M128 216 L640 216"/><path d="M128 248 L640 248"/><path d="M128 280 L640 280"/>
+    <path d="M128 312 L640 312"/>
+  </g>
+  <text x="136" y="114" class="oledtxt">Hello</text>
+  <text x="116" y="94" class="dsub" text-anchor="end">0</text>
+  <text x="116" y="220" class="dsub" text-anchor="end">32</text>
+  <text x="116" y="348" class="dsub" text-anchor="end">64</text>
+  <text x="56" y="216" class="dlbl" text-anchor="middle" transform="rotate(-90 56 216)">down</text>
+  <text x="712" y="200" class="dsub" text-anchor="middle">each square</text>
+  <text x="712" y="220" class="dsub" text-anchor="middle">drawn here is</text>
+  <text x="712" y="240" class="dsub" text-anchor="middle">16 &times; 8 pixels</text>
+  <text x="390" y="376" class="dsub" text-anchor="middle">The grid is only drawn to help you count. On the real screen the pixels are far too small to see.</text>
+</svg>
+
+  <div class="cal note"><b>Down is measured downwards</b>
+  In maths lessons, bigger numbers go <em>up</em>. On a screen they go <strong>down</strong>: 0 is the
+  top row and 63 is the bottom one. Every screen ever made counts this way, so it is worth getting used
+  to now rather than arguing with it later.</div>
+
+  <h3>A letter is eight pixels wide and eight tall</h3>
+  <p>You will not be switching pixels on one at a time. The library does that for you: you hand it some
+  words and a position, and it draws the letters. Each letter is a block <strong>8 pixels wide and 8
+  pixels tall</strong>, which is the only size this screen&rsquo;s built-in lettering comes in.</p>
+  <p>That gives the screen exactly <strong>16 letters across</strong> and <strong>8 rows down</strong>.
+  If you count on your fingers you will get the same numbers: 128 &divide; 8 is 16, and 64 &divide; 8 is 8.</p>
+
+<svg class="dia wide" viewBox="0 0 780 400" role="img" aria-label="How letters sit on the screen. Sixteen letter-sized boxes fit across and eight fit down. A word placed at across zero, down zero fills the first row. A second word placed at across zero, down sixteen sits two rows lower, with one empty row between them.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">16 letters across &middot; 8 rows down</text>
+  <text x="132" y="66" class="dsub" text-anchor="middle">0</text>
+  <text x="388" y="66" class="dsub" text-anchor="middle">64</text>
+  <text x="644" y="66" class="dsub" text-anchor="middle">128</text>
+  <rect x="132" y="78" width="512" height="256" rx="6" class="wk-oled-glass"/>
+  <g class="gridline">
+    <path d="M164 78 L164 334"/><path d="M196 78 L196 334"/><path d="M228 78 L228 334"/>
+    <path d="M260 78 L260 334"/><path d="M292 78 L292 334"/><path d="M324 78 L324 334"/>
+    <path d="M356 78 L356 334"/><path d="M388 78 L388 334"/><path d="M420 78 L420 334"/>
+    <path d="M452 78 L452 334"/><path d="M484 78 L484 334"/><path d="M516 78 L516 334"/>
+    <path d="M548 78 L548 334"/><path d="M580 78 L580 334"/><path d="M612 78 L612 334"/>
+    <path d="M132 110 L644 110"/><path d="M132 142 L644 142"/><path d="M132 174 L644 174"/>
+    <path d="M132 206 L644 206"/><path d="M132 238 L644 238"/><path d="M132 270 L644 270"/>
+    <path d="M132 302 L644 302"/>
+  </g>
+  <rect x="132" y="78" width="160" height="32" class="oledcell"/>
+  <text x="138" y="102" class="oledtxt">Hello</text>
+  <rect x="132" y="142" width="256" height="32" class="oledcell"/>
+  <text x="138" y="166" class="oledtxt">STEM LAB</text>
+  <text x="120" y="98" class="dsub" text-anchor="end">down 0</text>
+  <text x="120" y="130" class="dsub" text-anchor="end">down 8</text>
+  <text x="120" y="162" class="dsub" text-anchor="end">down 16</text>
+  <text x="712" y="138" class="dsub" text-anchor="middle">two rows</text>
+  <text x="712" y="158" class="dsub" text-anchor="middle">apart, so they</text>
+  <text x="712" y="178" class="dsub" text-anchor="middle">do not touch</text>
+  <text x="390" y="366" class="dsub" text-anchor="middle">Rows 0, 8, 16, 24 and so on are all valid. Using every other one leaves a gap and reads far better.</text>
+  <text x="390" y="388" class="dsub" text-anchor="middle">One shaded square here is one letter: 8 pixels wide and 8 pixels tall.</text>
+</svg>
+
+  <h3>Which pins it uses</h3>
+  <table>
+    <thead><tr><th>Wire</th><th>What it carries</th><th>Pin you name in code</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SDA</strong></td><td>The <em>data</em> &mdash; the words themselves, one bit at a time</td><td><span class="gp">0</span></td></tr>
+      <tr><td><strong>SCL</strong></td><td>The <em>clock</em> &mdash; a tick that says &ldquo;here comes the next bit&rdquo;</td><td><span class="gp">1</span></td></tr>
+      <tr><td><strong>VCC</strong></td><td>Power in, 3.3&nbsp;V</td><td>&mdash; not a GP pin</td></tr>
+      <tr><td><strong>GND</strong></td><td>Ground, the return path</td><td>&mdash; not a GP pin</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Two wires do the talking, two wires do the feeding</b>
+  Only SDA and SCL carry anything you will ever type. VCC and GND are there because a screen needs
+  electricity, exactly like the LED did &mdash; no program mentions them.</div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>I found the screen on the board (or on the Wokwi part list)</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I can say how many pixels across and down it is</span></label>
+  <label class="chk"><input type="checkbox" data-p="s3"><span>I know which GP number is SDA and which is SCL</span></label>
+</section>
+
+<section id="bus">
+  <h2>&#128658; Two wires, eight parts &mdash; what a bus is</h2>
+  <p class="lede">Every part you have used so far had a pin to itself. The screen does not, and neither
+  will any of the sensors. They all share one pair of wires called a <strong>bus</strong>.</p>
+
+  <p>Think about what would happen if each part had its own wires. The LilEx5 carries a screen, a
+  temperature sensor, a motion sensor, a compass, a light sensor, an air sensor and more &mdash; eight
+  parts in all. Two wires each is sixteen pins, and the Pico has twenty-six.</p>
+
+<svg class="dia wide" viewBox="0 0 780 350" role="img" aria-label="A comparison. On the left, eight parts each wired separately to the Pico, needing sixteen pins and a tangle of wires. On the right, the same eight parts all hanging off one pair of wires, needing two pins.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The reason a bus exists</text>
+
+  <rect x="16" y="46" width="360" height="284" rx="12" class="pane"/>
+  <text x="196" y="74" class="dlbl" text-anchor="middle">one pair of wires each</text>
+  <rect x="40" y="96" width="54" height="176" rx="8" class="step"/>
+  <text x="67" y="184" class="dsub" text-anchor="middle" transform="rotate(-90 67 184)">the Pico</text>
+  <g class="lead">
+    <path d="M94 112 L246 112"/><path d="M94 122 L246 122"/>
+    <path d="M94 148 L246 148"/><path d="M94 158 L246 158"/>
+    <path d="M94 184 L246 184"/><path d="M94 194 L246 194"/>
+    <path d="M94 220 L246 220"/><path d="M94 230 L246 230"/>
+    <path d="M94 254 L200 254"/><path d="M94 264 L200 264"/>
+  </g>
+  <rect x="252" y="102" width="106" height="30" rx="6" class="part"/>
+  <text x="305" y="122" class="dsub" text-anchor="middle">screen</text>
+  <rect x="252" y="138" width="106" height="30" rx="6" class="part"/>
+  <text x="305" y="158" class="dsub" text-anchor="middle">temperature</text>
+  <rect x="252" y="174" width="106" height="30" rx="6" class="part"/>
+  <text x="305" y="194" class="dsub" text-anchor="middle">motion</text>
+  <rect x="252" y="210" width="106" height="30" rx="6" class="part"/>
+  <text x="305" y="230" class="dsub" text-anchor="middle">compass</text>
+  <text x="272" y="264" class="dsub">&hellip; and four more</text>
+  <text x="196" y="304" class="dwarn" text-anchor="middle">16 PINS GONE, AND THE PICO HAS 26</text>
+
+  <rect x="404" y="46" width="360" height="284" rx="12" class="pane"/>
+  <text x="584" y="74" class="dlbl" text-anchor="middle">one pair of wires, shared</text>
+  <rect x="424" y="96" width="54" height="176" rx="8" class="step"/>
+  <text x="451" y="184" class="dsub" text-anchor="middle" transform="rotate(-90 451 184)">the Pico</text>
+  <path d="M478 122 L706 122" class="buswire"/>
+  <path d="M478 142 L706 142" class="buswire"/>
+  <text x="722" y="126" class="dsub">SDA</text>
+  <text x="722" y="146" class="dsub">SCL</text>
+  <g class="lead">
+    <path d="M512 142 L512 190"/><path d="M568 142 L568 190"/>
+    <path d="M624 142 L624 190"/><path d="M680 142 L680 190"/>
+  </g>
+  <rect x="490" y="190" width="44" height="44" rx="6" class="part"/>
+  <text x="512" y="218" class="dsub" text-anchor="middle">1</text>
+  <rect x="546" y="190" width="44" height="44" rx="6" class="part"/>
+  <text x="568" y="218" class="dsub" text-anchor="middle">2</text>
+  <rect x="602" y="190" width="44" height="44" rx="6" class="part"/>
+  <text x="624" y="218" class="dsub" text-anchor="middle">3</text>
+  <rect x="658" y="190" width="44" height="44" rx="6" class="part"/>
+  <text x="680" y="218" class="dsub" text-anchor="middle">4</text>
+  <text x="596" y="258" class="dsub" text-anchor="middle">&hellip; up to eight of them,</text>
+  <text x="596" y="278" class="dsub" text-anchor="middle">all on the same two wires</text>
+  <text x="584" y="304" class="dlbl" text-anchor="middle">2 pins, whatever you plug in</text>
+</svg>
+
+  <p>The shared pair is called <strong>I&sup2;C</strong> &mdash; say it &ldquo;eye-squared-see&rdquo;.
+  One wire, <strong>SDA</strong>, carries the message. The other, <strong>SCL</strong>, ticks like a
+  metronome so that both ends agree where one bit ends and the next begins.</p>
+
+  <h3>If they all share, how does one part know it is being spoken to?</h3>
+  <p>Every part on the bus has a number of its own, called its <strong>address</strong>. The Pico puts
+  the address on the wire first, then the message. Seven parts hear their own address is not being
+  called and ignore everything that follows; one part hears its own and listens.</p>
+
+<svg class="dia wide" viewBox="0 0 780 280" role="img" aria-label="How addressing works on the bus. The Pico calls out an address, three C, followed by a message. Four parts are listening. The screen, whose address is three C, takes the message. The temperature sensor, the motion sensor and the compass all have different addresses and ignore it.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Everybody hears it &middot; one part answers</text>
+  <rect x="24" y="60" width="120" height="60" rx="10" class="step"/>
+  <text x="84" y="86" class="dlbl" text-anchor="middle">the Pico</text>
+  <text x="84" y="106" class="dsub" text-anchor="middle">calls out</text>
+  <rect x="164" y="62" width="96" height="56" rx="10" class="pinbox"/>
+  <text x="212" y="86" class="dsub" text-anchor="middle">address</text>
+  <text x="212" y="106" class="dmono" text-anchor="middle">0x3C</text>
+  <rect x="268" y="62" width="120" height="56" rx="10" class="namebox"/>
+  <text x="328" y="86" class="dsub" text-anchor="middle">then the</text>
+  <text x="328" y="106" class="dsub" text-anchor="middle">message</text>
+  <path d="M144 90 L160 90" class="arrow2"/>
+  <path d="M388 90 L440 90 L440 138" class="arrow"/>
+  <path d="M60 148 L740 148" class="buswire"/>
+  <path d="M60 160 L740 160" class="buswire"/>
+  <text x="618" y="132" class="dsub" text-anchor="middle">the same two wires reach all of them</text>
+
+  <g class="lead">
+    <path d="M120 160 L120 186"/><path d="M300 160 L300 186"/>
+    <path d="M480 160 L480 186"/><path d="M660 160 L660 186"/>
+  </g>
+  <rect x="60" y="186" width="120" height="52" rx="8" class="pinbox"/>
+  <text x="120" y="208" class="dlbl" text-anchor="middle">screen</text>
+  <text x="120" y="228" class="dmono" text-anchor="middle">0x3C</text>
+  <text x="120" y="262" class="dlbl" text-anchor="middle">&#10003; that is me</text>
+
+  <rect x="240" y="186" width="120" height="52" rx="8" class="part"/>
+  <text x="300" y="208" class="dsub" text-anchor="middle">temperature</text>
+  <text x="300" y="228" class="dsub" text-anchor="middle">0x76</text>
+  <text x="300" y="262" class="dsub" text-anchor="middle">not me</text>
+
+  <rect x="420" y="186" width="120" height="52" rx="8" class="part"/>
+  <text x="480" y="208" class="dsub" text-anchor="middle">motion</text>
+  <text x="480" y="228" class="dsub" text-anchor="middle">0x68</text>
+  <text x="480" y="262" class="dsub" text-anchor="middle">not me</text>
+
+  <rect x="600" y="186" width="120" height="52" rx="8" class="part"/>
+  <text x="660" y="208" class="dsub" text-anchor="middle">compass</text>
+  <text x="660" y="228" class="dsub" text-anchor="middle">0x7C</text>
+  <text x="660" y="262" class="dsub" text-anchor="middle">not me</text>
+</svg>
+
+  <div class="cal note"><b>Why the addresses look so strange</b>
+  <code>0x3C</code> is a number written in <strong>hexadecimal</strong> &mdash; a way of writing numbers
+  that hardware people prefer. In the ordinary numbers you count with, <code>0x3C</code> is
+  <strong>60</strong>. You do not need to be able to convert them; you need to be able to recognise one
+  when a datasheet hands you one.</div>
+
+  <div class="cal warn"><b>The same screen, two different numbers &mdash; and both are &ldquo;right&rdquo;</b>
+  A datasheet for this screen will very often print its address as <code>0x78</code>. That is the same
+  address, written in the style that includes an extra bit on the end for &ldquo;am I speaking or
+  listening&rdquo;. MicroPython wants the plain form, <code>0x3C</code>. You are not going to type either
+  of them today &mdash; the library already knows &mdash; but when you meet <code>0x78</code> in a
+  datasheet later, it is not a different screen.</div>
+
+  <label class="chk"><input type="checkbox" data-p="b1"><span>I can say why eight parts share two wires instead of having sixteen</span></label>
+  <label class="chk"><input type="checkbox" data-p="b2"><span>I can say what an address is for</span></label>
+</section>
+
+<section id="library">
+  <h2>&#128218; Adding a library &mdash; the second new idea</h2>
+  <p class="lede">Python has come with everything you needed so far. It does not come with this. The
+  screen and the library are one lesson, not two: the screen is the reason to add a library, and the
+  library is the only way to use the screen.</p>
+
+  <p>You have been borrowing tools since Activity 1:</p>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQw==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>That line works the moment you switch the Pico on, because <code>machine</code> is
+  <strong>built in</strong> &mdash; it arrived inside MicroPython itself, along with <code>time</code>.
+  Today&rsquo;s line does not:</p>
+  <span class="codeimg" data-code="ZnJvbSBzc2QxMzA2IGltcG9ydCBTU0QxMzA2X0kyQw==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Type that today and Python will say it has never heard of it, because
+  <strong><code>ssd1306</code> is a file that somebody wrote and you have to put it on the Pico
+  yourself</strong>. That file is a <strong>library</strong>: a few hundred lines that turn the tedious
+  business of talking to a screen chip into three or four instructions you can actually use.</p>
+
+  <div class="cal info"><b>SSD1306 is the name of the chip, not the name of the screen</b>
+  Behind the glass is a little controller chip called an SSD1306, and it is the chip the library knows
+  how to drive. Thousands of different screens use it, which is exactly why one library file is worth
+  writing and sharing.</div>
+
+  <h3>Where the file has to go</h3>
+  <p>The Pico has a small disk inside it. Your program lives on it, and the library file has to live on
+  it too, <strong>beside your program</strong>. If it is on your laptop, in your downloads, or open in an
+  editor window, that is not the same thing &mdash; it has to be on the Pico.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The Pico's own disk, drawn as a box. On the laptop side sits a downloaded library file, which does no good there. An arrow shows it being copied onto the Pico, where it sits alongside the student's own program file. Underneath, a note that a folder called lib works just as well as the top level.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The library file has to be on the Pico, not on your computer</text>
+
+  <rect x="20" y="60" width="220" height="150" rx="12" class="pane"/>
+  <text x="130" y="86" class="dlbl" text-anchor="middle">your computer</text>
+  <rect x="52" y="108" width="156" height="48" rx="8" class="part"/>
+  <text x="130" y="130" class="dsub" text-anchor="middle">the library file</text>
+  <text x="130" y="148" class="dsub" text-anchor="middle">just downloaded</text>
+  <text x="130" y="184" class="dwarn" text-anchor="middle">NO USE TO THE PICO HERE</text>
+
+  <path d="M244 134 L322 134" class="arrow"/>
+  <text x="283" y="122" class="dsub" text-anchor="middle">copy</text>
+  <text x="283" y="158" class="dsub" text-anchor="middle">it across</text>
+
+  <rect x="330" y="60" width="290" height="196" rx="12" class="pinbox"/>
+  <text x="475" y="88" class="dlbl" text-anchor="middle">the Pico&rsquo;s own disk</text>
+  <rect x="356" y="106" width="238" height="46" rx="8" class="step"/>
+  <text x="475" y="128" class="dlbl" text-anchor="middle">your program</text>
+  <text x="475" y="144" class="dsub" text-anchor="middle">the one you are about to write</text>
+  <rect x="356" y="164" width="238" height="46" rx="8" class="step"/>
+  <text x="475" y="186" class="dlbl" text-anchor="middle">the library</text>
+  <text x="475" y="202" class="dsub" text-anchor="middle">right beside it</text>
+  <text x="475" y="236" class="dsub" text-anchor="middle">now the import line works</text>
+
+  <rect x="636" y="106" width="126" height="104" rx="10" class="namebox"/>
+  <text x="699" y="136" class="dsub" text-anchor="middle">a folder</text>
+  <text x="699" y="156" class="dsub" text-anchor="middle">called</text>
+  <text x="699" y="176" class="dmono" text-anchor="middle">lib</text>
+  <text x="699" y="196" class="dsub" text-anchor="middle">is fine too</text>
+  <text x="390" y="284" class="dsub" text-anchor="middle">Python looks in the top level first and then inside <tspan class="dmono">lib</tspan>. Either place works; do not put it in both.</text>
+</svg>
+
+  <h3>Getting it there &mdash; and the two routes are genuinely different</h3>
+  <p>This is the one place in the whole module where Wokwi and the real board do not do the same thing.
+  Read the one that applies to you, and skim the other so you know what your neighbour is doing.</p>
+
+<svg class="dia wide" viewBox="0 0 780 268" role="img" aria-label="The two routes to getting the library onto the Pico. On the Wokwi route there is no cable and no copying: you add a second file to the project itself, and Wokwi puts every project file onto the simulated Pico when you press play. On the real board route, Thonny copies the file from the computer onto the Pico over the USB cable.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Same destination, two different journeys</text>
+
+  <rect x="16" y="50" width="368" height="196" rx="12" class="pane"/>
+  <text x="200" y="78" class="dlbl" text-anchor="middle">Route A &mdash; Wokwi</text>
+  <rect x="44" y="100" width="112" height="44" rx="8" class="namebox"/>
+  <text x="100" y="120" class="dsub" text-anchor="middle">a second file</text>
+  <text x="100" y="136" class="dsub" text-anchor="middle">in the project</text>
+  <path d="M156 122 L232 122" class="arrow"/>
+  <text x="194" y="112" class="dsub" text-anchor="middle">Play</text>
+  <rect x="240" y="100" width="112" height="44" rx="8" class="step"/>
+  <text x="296" y="127" class="dsub" text-anchor="middle">the Pico</text>
+  <text x="200" y="176" class="dsub" text-anchor="middle">Nothing is copied by hand. Wokwi</text>
+  <text x="200" y="196" class="dsub" text-anchor="middle">loads every file in the project onto</text>
+  <text x="200" y="216" class="dsub" text-anchor="middle">the simulated Pico each time you run.</text>
+
+  <rect x="396" y="50" width="368" height="196" rx="12" class="pane"/>
+  <text x="580" y="78" class="dlbl" text-anchor="middle">Route B &mdash; the real board</text>
+  <rect x="424" y="100" width="112" height="44" rx="8" class="part"/>
+  <text x="480" y="127" class="dsub" text-anchor="middle">the file</text>
+  <path d="M536 122 L612 122" class="arrow"/>
+  <text x="574" y="112" class="dsub" text-anchor="middle">Thonny</text>
+  <rect x="620" y="100" width="112" height="44" rx="8" class="step"/>
+  <text x="676" y="127" class="dsub" text-anchor="middle">the Pico</text>
+  <text x="580" y="176" class="dsub" text-anchor="middle">A real file is copied down the</text>
+  <text x="580" y="196" class="dsub" text-anchor="middle">USB cable and it stays there,</text>
+  <text x="580" y="216" class="dsub" text-anchor="middle">even after you unplug it.</text>
+</svg>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Open the file menu</h4>
+      <p>Above the code editor there are two tabs, <strong>main.py</strong> and
+      <strong>diagram.json</strong>, and a small <strong>&#9662;</strong> arrow beside them. Click the
+      arrow. The menu has <em>Rename</em>, <em>Delete</em>, <strong>New file&hellip;</strong> and
+      <em>Upload file(s)&hellip;</em>.</p>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Make a new file called <code>ssd1306.py</code></h4>
+      <p>Choose <strong>New file&hellip;</strong> and type the name exactly:
+      lower case, and ending in <code>.py</code>. A third tab appears, empty.</p>
+    </div></div>
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Paste the library into it</h4>
+      <p>Open the library file from
+      <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the STEM LAB
+      library repository</a>, select all of it, and paste it into the new tab.</p>
+      <div class="cal tip"><b>Yes, paste. This once.</b>
+      Everywhere else on this site you type things out, because typing is how you learn them. A library
+      is different: it is somebody else&rsquo;s tool, you are never going to read all of it, and nobody
+      &mdash; not even engineers &mdash; retypes one. Copy it. Then go back to typing your own program.</div>
+    </div></div>
+    <div class="step"><div class="idx">4</div><div class="body">
+      <h4>Go back to <code>main.py</code></h4>
+      <p>Your own program still goes there. Wokwi puts <em>every</em> file in the project onto the
+      simulated Pico when you press <strong>&#9654; Play</strong>, so the import line will now find it.</p>
+      <label class="chk"><input type="checkbox" data-p="l1"><span>My Wokwi project has three tabs: main.py, ssd1306.py and diagram.json</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Get the file onto your computer</h4>
+      <p>Download <code>ssd1306.py</code> from
+      <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the STEM LAB
+      library repository</a>. Your teacher may already have it on a shared drive.</p>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Open it in Thonny</h4>
+      <p><strong>File &rarr; Open&hellip;</strong>, choose <strong>This computer</strong>, and open
+      <code>ssd1306.py</code>. Do not change anything in it.</p>
+    </div></div>
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Save it <em>onto the Pico</em></h4>
+      <p><strong>File &rarr; Save as&hellip;</strong> and &mdash; this is the step everybody misses
+      &mdash; choose <strong>Raspberry Pi Pico</strong> rather than This computer. Keep the name
+      <code>ssd1306.py</code> exactly.</p>
+      <div class="cal warn"><b>Saving it on your computer again does nothing</b>
+      The file is already on your computer. If the dialogue did not ask you <em>where</em>, the Pico is
+      not connected &mdash; check the bottom-right corner of Thonny first.</div>
+    </div></div>
+    <div class="step"><div class="idx">4</div><div class="body">
+      <h4>Check it landed</h4>
+      <p>Turn on <strong>View &rarr; Files</strong>. The lower panel lists what is on the Pico. You
+      should see <code>ssd1306.py</code> there. It stays there for good &mdash; you will not have to do
+      this again in Activity 7.</p>
+      <label class="chk"><input type="checkbox" data-p="l1b"><span>I can see ssd1306.py in Thonny&rsquo;s list of files on the Pico</span></label>
+    </div></div>
+    <details>
+      <summary>&#128230; The other way, if your computer has internet in the lab</summary>
+      <p><strong>Tools &rarr; Manage packages&hellip;</strong>, search for
+      <code>micropython-ssd1306</code>, and press Install. Thonny fetches it and puts it in a
+      <code>lib</code> folder on the Pico for you. It is the same file arriving by a different road, and
+      the import line does not change.</p>
+    </details>
+  </div>
+
+  <div class="cal warn"><b>The error message you will meet, and what it really means</b>
+  <code>ImportError: no module named 'ssd1306'</code> does <em>not</em> mean your program is wrong.
+  It means Python looked on the Pico&rsquo;s disk for a file with that name and did not find one. Nine
+  times out of ten the file is on the computer instead of the Pico, or it is spelt
+  <code>SSD1306.py</code> or <code>ssd1306.py.txt</code>. Fix the file, not the program.</div>
+
+  <label class="chk"><input type="checkbox" data-p="l2"><span>I can say the difference between a built-in tool and a library</span></label>
+  <label class="chk"><input type="checkbox" data-p="l3"><span>I know what &ldquo;no module named&rdquo; is telling me</span></label>
+</section>
+
+<section id="try">
+  <h2>&#128268; Try it before you write it</h2>
+  <p>A screen does not work the way a light does. Words go onto a <strong>page held in memory</strong>
+  first, and the page is only put on the glass when you say <strong>show</strong>. Both are drawn below.
+  Press the buttons in any order and watch which box changes.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div style="text-align:center">
+        <div class="oledbox" id="oledmem"><b> </b><b> </b><b> </b><b> </b></div>
+        <span class="readlbl">the page &mdash; in memory</span>
+      </div>
+      <div style="text-align:center">
+        <div class="oledbox lit" id="oledscr"><b> </b><b> </b><b> </b><b> </b></div>
+        <span class="readlbl">the screen &mdash; on the board</span>
+      </div>
+    </div>
+    <div class="sim-ctl">
+      <button class="btn ghost" type="button" data-oled="wipe">Wipe the page</button>
+      <button class="btn ghost" type="button" data-oled="l1">Write HELLO at the top</button>
+      <button class="btn ghost" type="button" data-oled="l2">Write STEM LAB lower down</button>
+      <button class="btn" id="oledrun" type="button">&#128065;&#65039; Show it</button>
+    </div>
+    <div class="sim-out tall" id="oledout">Nothing has happened yet. Write something on the page, and watch that the screen does not change until you press Show it.</div>
+  </div>
+
+  <div class="cal tip"><b>Three things to try on purpose</b>
+  Write both lines and press <strong>Show it</strong> only at the end &mdash; both appear at once. Then
+  press <strong>Wipe the page</strong> and look at the screen: it is still showing the old words, because
+  wiping the page is not the same as clearing the glass. Then press Show it and watch them go.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I saw that writing changes the page but not the screen</span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I saw that wiping the page does nothing until I show it</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; Build the circuit</h2>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-c" aria-selected="true" aria-controls="pan-c">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-d" aria-selected="false" aria-controls="pan-d">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-c" role="tabpanel" aria-labelledby="tab-c">
+    <p>Start a <strong>fresh</strong> project this time. There is nothing from Activity 5 worth keeping
+    &mdash; no buttons, no LED, no resistor. A Pico, a screen and four wires.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Add the screen</h4>
+      <p>Click the blue <strong>+</strong> and type <em>ssd1306</em>. One part comes back:
+      <strong>SSD1306 OLED display</strong>, under <em>Display</em>. Add it and drag it clear of the
+      Pico so you can see all four of its pads.</p>
+      <label class="chk"><input type="checkbox" data-p="c1"><span>The blue screen part is on the diagram</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Draw the four wires</h4>
+      <p>The screen has four pads in a row along its top edge, labelled in tiny white letters:
+      <strong>GND</strong>, <strong>VCC</strong>, <strong>SCL</strong>, <strong>SDA</strong>. There is no
+      resistor and nothing is diagonal &mdash; each pad goes to exactly one pin.</p>
+
+<svg class="dia wide" viewBox="0 0 780 660" role="img" aria-label="The Wokwi circuit for Activity 6, drawn the way Wokwi draws it. The blue screen module sits to the left of the Pico with four pads along its top edge. The SDA pad is wired to physical pin 1, which is GP0. The SCL pad is wired to physical pin 2, which is GP1. The GND pad is wired round to physical pin 3, which is a ground. The VCC pad is wired all the way round to physical pin 36, which is the three point three volt supply on the far side of the board.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Four wires, and two of them are only power</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+<g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="400" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 400)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+  <circle cx="555" cy="134" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="154" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="174" r="10.5" class="wk-ring"/>
+  <circle cx="735" cy="214" r="10.5" class="wk-ring"/>
+
+  <g transform="translate(60,200) scale(9)">
+    <path d="m0 0v22.6h6.7v-0.488c0-0.61 0.491-1.1 1.1-1.1h12.8c0.61 0 1.1 0.491 1.1 1.1v0.488h5.98v-22.6z" class="wk-oled-pcb"/>
+    <rect x=".401" y="4.2" width="26.9" height="14.8" class="wk-oled-bezel"/>
+    <rect x="1.46" y="5.27" width="24.8" height="12.4" class="wk-oled-glass"/>
+    <rect x=".39" y="18.9" width="27" height=".634" class="wk-oled-seam"/>
+    <rect x="8.16" y="19.7" width="12" height="1.9" rx=".33" class="wk-oled-tab"/>
+    <circle cx="2.02" cy="1.87" r="1.24" class="wk-oled-hole"/>
+    <circle cx="25.6" cy="1.87" r="1.24" class="wk-oled-hole"/>
+    <circle cx="2.02" cy="21" r="1.24" class="wk-oled-hole"/>
+    <circle cx="25.6" cy="21" r="1.24" class="wk-oled-hole"/>
+    <circle cx="10.1" cy="1.71" r=".706" class="wk-oled-pad"/>
+    <circle cx="12.6" cy="1.71" r=".706" class="wk-oled-pad"/>
+    <circle cx="15.1" cy="1.71" r=".706" class="wk-oled-pad"/>
+    <circle cx="17.7" cy="1.71" r=".706" class="wk-oled-pad"/>
+  </g>
+  <text x="150.9" y="232" class="wk-oled-lbl" text-anchor="middle">GND</text>
+  <text x="173.4" y="232" class="wk-oled-lbl" text-anchor="middle">VCC</text>
+  <text x="195.9" y="232" class="wk-oled-lbl" text-anchor="middle">SCL</text>
+  <text x="219.3" y="232" class="wk-oled-lbl" text-anchor="middle">SDA</text>
+  <text x="184" y="428" class="dlbl" text-anchor="middle">SSD1306 OLED display</text>
+
+  <path d="M173.4 215.4 L173.4 186 L24 186 L24 620 L772 620 L772 214 L755 214" class="wkwire red"/>
+  <path d="M150.9 215.4 L150.9 196 L40 196 L40 596 L516 596 L516 174 L537 174" class="wkwire black"/>
+  <path d="M195.9 215.4 L195.9 154 L537 154" class="wkwire blue"/>
+  <path d="M219.3 215.4 L219.3 134 L537 134" class="wkwire green"/>
+
+  <rect x="336" y="238" width="184" height="150" rx="10" class="pane"/>
+  <path d="M352 266 L378 266" class="wkwire green"/>
+  <text x="388" y="271" class="dsub">SDA &rarr; GP0 &middot; pin 1</text>
+  <path d="M352 300 L378 300" class="wkwire blue"/>
+  <text x="388" y="305" class="dsub">SCL &rarr; GP1 &middot; pin 2</text>
+  <path d="M352 334 L378 334" class="wkwire black"/>
+  <text x="388" y="339" class="dsub">GND &rarr; pin 3</text>
+  <path d="M352 368 L378 368" class="wkwire red"/>
+  <text x="388" y="373" class="dsub">VCC &rarr; 3V3 &middot; pin 36</text>
+  <text x="286" y="566" class="dsub" text-anchor="middle">The two long wires are only power. Their length means nothing at all.</text>
+</svg>
+
+      <p><strong>In words:</strong> the green and blue wires are the two your program uses. The black one
+      is ground and the red one is power &mdash; they are long because the 3.3&nbsp;V pin is on the other
+      side of the board, and that is fine. A wire&rsquo;s length means nothing.</p>
+
+      <table>
+        <thead><tr><th>Physical pin</th><th>Name on the board</th><th>Screen pad</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td><span class="gp">GP0</span></td><td><strong>SDA</strong> &mdash; the data</td></tr>
+          <tr><td><strong>2</strong></td><td><span class="gp">GP1</span></td><td><strong>SCL</strong> &mdash; the clock</td></tr>
+          <tr><td><strong>3</strong></td><td>GND</td><td><strong>GND</strong></td></tr>
+          <tr><td><strong>36</strong></td><td>3V3</td><td><strong>VCC</strong> &mdash; power in</td></tr>
+        </tbody>
+      </table>
+
+      <div class="cal note"><b>Two sets of numbers again, and it matters more than usual here</b>
+      GP0 is physical pin <strong>1</strong> and GP1 is physical pin <strong>2</strong>. For once the two
+      numbers are almost the same, which makes it easier to mix them up, not harder. The wire goes to the
+      pin; the number you type is the GP.</div>
+
+      <div class="cal warn"><b>VCC goes to 3V3, not to 5V</b>
+      Physical pin <strong>36</strong> is the 3.3&nbsp;V supply and it is the one to use. Pins 39 and 40
+      also look like power and are not &mdash; they are 5&nbsp;V, and 5&nbsp;V is the one rule this module
+      has repeated since Activity 1.</div>
+
+      <label class="chk"><input type="checkbox" data-p="c2"><span>SDA &rarr; GP0 (physical pin 1)</span></label>
+      <label class="chk"><input type="checkbox" data-p="c3"><span>SCL &rarr; GP1 (physical pin 2)</span></label>
+      <label class="chk"><input type="checkbox" data-p="c4"><span>GND &rarr; a ground pin, and VCC &rarr; 3V3</span></label>
+
+      <div class="cal tip"><b>Any GND pad still works</b>
+      Physical pin 3 is drawn here only because it is nearest. All eight grounds are the same piece of
+      metal inside the Pico.</div>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
+    <p>Nothing to wire. The screen is already joined to GP0 and GP1 inside the board, in copper, along
+    with every sensor on it.</p>
+    <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above, showing the small OLED screen" loading="lazy"><figcaption>The screen sits above the buttons. Its four connections are already made inside the circuit board.</figcaption></figure>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Plug in and power up</h4>
+      <p>USB cable in, power switch <strong>SW5</strong> on.</p>
+      <label class="chk"><input type="checkbox" data-p="d1"><span>The Pico&rsquo;s power light is on</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Find the Pico in Thonny</h4>
+      <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
+      choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
+      Shell.</p>
+      <label class="chk"><input type="checkbox" data-p="d2"><span>The Shell shows &gt;&gt;&gt;</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Make sure the library is on the Pico</h4>
+      <p>This is the step that replaces wiring for you. Go back to
+      <a href="#library">Adding a library</a> and finish it before you write a line of the program.</p>
+      <label class="chk"><input type="checkbox" data-p="d3"><span>ssd1306.py is on the Pico, not just on my computer</span></label>
+    </div></div>
+
+    <div class="cal warn"><b>The safety rules have not gone away</b>
+    Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
+    GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>Start a new file. It is short, and it does not loop &mdash; this is the first program since Activity
+  1 that runs once, finishes, and leaves its result behind.</p>
+
+  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgd2lyZXMsIEkyQyBmb3IgdGhlIGJ1cywgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKCiMgVGhlIGJ1czogU0RBIGlzIEdQMCBhbmQgU0NMIGlzIEdQMQppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKCiMgVGhlIHNjcmVlbjogMTI4IHBpeGVscyBhY3Jvc3MsIDY0IGRvd24sIHNpdHRpbmcgb24gdGhhdCBidXMKb2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYykKCm9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZSBjbGVhbgpvbGVkLnRleHQoIkhlbGxvIiwgMCwgMCkgICAgICAjIGZpcnN0IGxpbmUsIHJpZ2h0IGF0IHRoZSB0b3AKb2xlZC50ZXh0KCJTVEVNIExBQiIsIDAsIDE2KSAgIyBzZWNvbmQgbGluZSwgMTYgcGl4ZWxzIGxvd2VyIGRvd24Kb2xlZC5zaG93KCkgICAgICAgICAgICAgICAgICAgIyBub3RoaW5nIGFwcGVhcnMgdW50aWwgeW91IHNheSB0aGlz" role="img" aria-label="Python code, 14 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
+  Two lines here are unlike anything you have typed before &mdash; the one that makes the bus and the one
+  that makes the screen. Go slowly through the brackets, the commas and the equals signs inside them, and
+  mind the capitals: <code>SSD1306_I2C</code> has an underscore in it and every letter is a capital.</div>
+
+  <h3>Type it here first</h3>
+  <p>The five lines that matter. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from ssd1306 import SSD1306_I2C" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="i2c = I2C(0, sda=Pin(0), scl=Pin(1))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="oled = SSD1306_I2C(128, 64, i2c)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder='oled.text("Hello", 0, 0)' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="oled.show()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Watch the capitals in line 1 and line 3 &mdash; they are the two that catch people.</p>
+  </div>
+  <div class="cal note"><b>Nothing on this page is indented</b>
+  There is no loop and no decision today, so every line starts at the left-hand edge. If your editor has
+  put spaces in front of a line, take them out.</div>
+  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each line is doing</h3>
+  <table>
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQw==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Two tools out of the same built-in box this time. <code>Pin</code> you have used since
+          Activity 1; <code>I2C</code> is the one that knows how to run a bus.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBzc2QxMzA2IGltcG9ydCBTU0QxMzA2X0kyQw==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>The library.</strong> This is the line that fails if the file is not on the Pico.
+          The long name with the underscore is the particular tool inside it that drives a screen wired
+          to a bus.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="aTJjID0gSTJDKDAsIHNkYT1QaW4oMCksIHNjbD1QaW4oMSkp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Making the bus.</strong> The first <code>0</code> is which of the Pico&rsquo;s two
+          bus controllers to use; then which pin carries the data and which carries the clock. Naming a
+          bus, exactly like naming a pin.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYyk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Making the screen.</strong> How wide, how tall, and which bus to find it on. From
+          here on, <code>oled</code> is the screen&rsquo;s name, the way <code>led</code> was the
+          light&rsquo;s.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZC5maWxsKDAp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Fill the whole page with 0 &mdash; that is, with <em>off</em>. A clean page to write on.
+          <code>1</code> would fill it with lit pixels, which is worth trying once.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZC50ZXh0KCJIZWxsbyIsIDAsIDAp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>The words, then how far <strong>across</strong>, then how far <strong>down</strong>. Both
+          zero means the very top left corner.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZC50ZXh0KCJTVEVNIExBQiIsIDAsIDE2KQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Same again, 16 pixels further down &mdash; two letter-heights, so there is a clear gap
+          between the lines.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b2xlZC5zaG93KCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Put the page on the glass.</strong> Leave this out and the program runs perfectly,
+          reports no error, and the screen stays black.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Write, then show &mdash; and why it works that way</h3>
+
+<svg class="dia wide" viewBox="0 0 780 260" role="img" aria-label="The three steps in order. First fill wipes the page held in memory. Then each text instruction writes words onto that page. The screen has not changed at all during either step. Finally show copies the whole page onto the glass in one go, and everything appears at once.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three steps, and only the last one touches the glass</text>
+  <rect x="20" y="58" width="150" height="88" rx="10" class="step"/>
+  <text x="95" y="88" class="dlbl" text-anchor="middle">wipe</text>
+  <text x="95" y="110" class="dsub" text-anchor="middle">the page goes</text>
+  <text x="95" y="128" class="dsub" text-anchor="middle">blank</text>
+  <path d="M170 102 L206 102" class="arrow2"/>
+  <rect x="212" y="58" width="150" height="88" rx="10" class="step"/>
+  <text x="287" y="88" class="dlbl" text-anchor="middle">write</text>
+  <text x="287" y="110" class="dsub" text-anchor="middle">words land on</text>
+  <text x="287" y="128" class="dsub" text-anchor="middle">the page</text>
+  <path d="M362 102 L398 102" class="arrow2"/>
+  <rect x="404" y="58" width="150" height="88" rx="10" class="pinbox"/>
+  <text x="479" y="88" class="dlbl" text-anchor="middle">show</text>
+  <text x="479" y="110" class="dsub" text-anchor="middle">the page goes</text>
+  <text x="479" y="128" class="dsub" text-anchor="middle">on the glass</text>
+  <path d="M554 102 L596 102" class="arrow"/>
+  <rect x="602" y="56" width="158" height="92" rx="8" class="wk-oled-glass"/>
+  <text x="618" y="90" class="oledtxt">Hello</text>
+  <text x="618" y="122" class="oledtxt">STEM LAB</text>
+
+  <g class="lead"><path d="M20 176 L362 176"/><path d="M20 170 L20 182"/><path d="M362 170 L362 182"/></g>
+  <text x="191" y="198" class="dsub" text-anchor="middle">the screen shows nothing new during either of these</text>
+  <text x="681" y="182" class="dlbl" text-anchor="middle">&hellip; and now it does</text>
+  <text x="390" y="236" class="dsub" text-anchor="middle">This is why a screen never flickers halfway through a sentence: the whole page arrives in one go.</text>
+</svg>
+
+  <div class="cal info"><b>The single most common thing that goes wrong today</b>
+  A program with no <code>show</code> at the end behaves <em>exactly</em> like a program that ran
+  perfectly. No error, no warning, no clue. If your screen is black, look at the last line first.</div>
+
+  <details>
+    <summary>&#128269; How do I check the screen is even there?</summary>
+    <p>Type this one line into the Shell, or add it after the bus line, and run it. It asks the bus to
+    call out every address in turn and report who answers:</p>
+    <span class="codeimg" data-code="cHJpbnQoaTJjLnNjYW4oKSk=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>A working screen answers with a list containing <strong>60</strong> &mdash; which is
+    <code>0x3C</code> written in ordinary numbers. An empty list means nothing on the bus answered at
+    all, and that is a wiring problem, never a program problem.</p>
+  </details>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it and run it</h2>
+  <table>
+    <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button</td><td>The screen part on the diagram</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>hello.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>The screen on the board itself</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Nothing to stop this time</b>
+  There is no loop in this program, so it ends by itself &mdash; and the words stay on the screen after
+  it has ended, because the screen keeps showing whatever it was last given. Unplug the board and plug it
+  back in and they are gone, because the screen was switched off in between.</div>
+
+  <h3>&#9989; What you should see</h3>
+
+<svg class="dia wide" viewBox="0 0 780 280" role="img" aria-label="What the finished screen looks like. The word Hello sits in the top left corner. The words STEM LAB sit two rows lower, also starting at the left edge. The rest of the screen is black. Beside it, a picture of the same screen with the second line missing, which is what a wrong down-number produces.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two lines, left-aligned, with a gap between them</text>
+
+  <rect x="40" y="52" width="320" height="160" rx="8" class="wk-oled-bezel"/>
+  <rect x="52" y="64" width="296" height="136" rx="4" class="wk-oled-glass"/>
+  <text x="64" y="96" class="oledtxt">Hello</text>
+  <text x="64" y="152" class="oledtxt">STEM LAB</text>
+  <text x="200" y="238" class="dlbl" text-anchor="middle">&#10003; this is right</text>
+  <text x="200" y="260" class="dsub" text-anchor="middle">both lines start hard against the left edge</text>
+
+  <rect x="420" y="52" width="320" height="160" rx="8" class="wk-oled-bezel"/>
+  <rect x="432" y="64" width="296" height="136" rx="4" class="wk-oled-glass"/>
+  <text x="444" y="96" class="oledtxt">Hello</text>
+  <text x="444" y="112" class="oledtxt2">STEM LAB</text>
+  <text x="580" y="238" class="dwarn" text-anchor="middle">&#10007; THE SECOND DOWN-NUMBER IS TOO SMALL</text>
+  <text x="580" y="260" class="dsub" text-anchor="middle">the two lines are sitting on top of each other</text>
+</svg>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>Words appeared on the screen, not just in the Shell</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>Both lines are there, and there is a clear gap between them</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>I changed the words to my own name and ran it again</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>I moved a line by changing its down-number and saw it move</span></label>
+  <label class="chk"><input type="checkbox" data-p="r5"><span>I deleted the show line on purpose, saw a black screen, and put it back</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><code>ImportError: no module named 'ssd1306'</code></td><td>The library file is not on the Pico. Go back to <a href="#library">Adding a library</a>. Check the spelling too &mdash; all lower case, and ending <code>.py</code> and nothing else.</td></tr>
+      <tr><td><strong>The program runs, no error, screen stays black</strong></td><td>The <code>show</code> line is missing, or it is above the <code>text</code> lines instead of below them. Everything has to be written before it is shown.</td></tr>
+      <tr><td><code>OSError: [Errno 5] EIO</code></td><td>Nothing answered on the bus. On Wokwi: a wire is on the wrong pad, or VCC has no power. On the board: this normally means the pin numbers in the bus line are not 0 and 1.</td></tr>
+      <tr><td><strong>Half a word, or letters running off the edge</strong></td><td>The across-number is too big. 16 letters is the whole width, so a word starting at 100 has only three letters of room.</td></tr>
+      <tr><td><strong>The two lines are on top of each other</strong></td><td>The two down-numbers are too close together. A letter is 8 pixels tall, so 0 and 16 are safe; 0 and 4 are not.</td></tr>
+      <tr><td><strong>Old words are still there underneath the new ones</strong></td><td>You wrote without wiping first. <code>fill(0)</code> before the text lines, every time.</td></tr>
+      <tr><td><code>NameError: name 'I2C' is not defined</code></td><td><code>I2C</code> is missing from the top line. It comes out of the same box as <code>Pin</code>, with a comma between them.</td></tr>
+      <tr><td><code>NameError: name 'SSD1306_I2C' is not defined</code></td><td>Different from the one above: here the file was found but the name was typed wrongly. Capitals all the way, and an underscore before <code>I2C</code>.</td></tr>
+      <tr><td><strong>It works in Wokwi but not on the board</strong></td><td>The library is on the Wokwi project but not on your real Pico. They are two different disks.</td></tr>
+      <tr><td><strong>It worked, then I unplugged it and the screen went blank</strong></td><td>That is correct. The screen only holds what it was last given while it has power. Run the program again.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; put the buttons on the screen</h2>
+  <p class="lede">A fixed message is a poster. Make the screen say something that <strong>changes</strong>
+  &mdash; and you will have built the thing every piece of test equipment in the world is.</p>
+  <p><strong>Task:</strong> the screen shows two labelled lines, one for SW1 and one for SW2. Beside each
+  label it says <strong>HELD</strong> while that button is held down and <strong>UP</strong> when it is
+  not. It keeps up with you, for as long as you leave it running.</p>
+  <ul>
+    <li>SW1 is <span class="gp">2</span>, SW2 is <span class="gp">3</span> &mdash; both from Activity 3,
+    both still reading 0 when pressed</li>
+    <li>Use the top row and the row 16 pixels below it, as in the program you have just written</li>
+    <li>Wokwi route: you will need to add two pushbuttons to the diagram as well &mdash; the same
+    diagonally-opposite legs as <a href="activity-3.html#build">Activity 3</a></li>
+  </ul>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The four things the finished screen has to do. With nothing held, both lines read UP. With SW1 held, the first line reads HELD and the second still reads UP. With SW2 held, the first reads UP and the second reads HELD. With both held, both lines read HELD. In every case the labels SW1 and SW2 stay where they are.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Four states, and the labels never move</text>
+
+  <rect x="14" y="48" width="176" height="106" rx="6" class="wk-oled-glass"/>
+  <text x="26" y="76" class="oledtxt">SW1  UP</text>
+  <text x="26" y="120" class="oledtxt">SW2  UP</text>
+  <text x="102" y="176" class="dsub" text-anchor="middle">nothing held</text>
+
+  <rect x="206" y="48" width="176" height="106" rx="6" class="wk-oled-glass"/>
+  <text x="218" y="76" class="oledtxt">SW1  HELD</text>
+  <text x="218" y="120" class="oledtxt">SW2  UP</text>
+  <text x="294" y="176" class="dsub" text-anchor="middle">SW1 held</text>
+
+  <rect x="398" y="48" width="176" height="106" rx="6" class="wk-oled-glass"/>
+  <text x="410" y="76" class="oledtxt">SW1  UP</text>
+  <text x="410" y="120" class="oledtxt">SW2  HELD</text>
+  <text x="486" y="176" class="dsub" text-anchor="middle">SW2 held</text>
+
+  <rect x="590" y="48" width="176" height="106" rx="6" class="wk-oled-glass"/>
+  <text x="602" y="76" class="oledtxt">SW1  HELD</text>
+  <text x="602" y="120" class="oledtxt">SW2  HELD</text>
+  <text x="678" y="176" class="dsub" text-anchor="middle">both held</text>
+
+  <rect x="14" y="204" width="752" height="72" rx="10" class="pane"/>
+  <text x="390" y="232" class="dlbl" text-anchor="middle">The word changes. The label does not, and neither does the row it sits on.</text>
+  <text x="390" y="256" class="dsub" text-anchor="middle">If a label jumps about while you press, the page is not being wiped between rounds.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="e1"><span>Both lines say UP when I am not touching anything</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>Holding SW1 changes only the first line</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>Holding SW2 changes only the second line</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>Holding both changes both</span></label>
+  <label class="chk"><input type="checkbox" data-p="e5"><span>The words go back as soon as I let go</span></label>
+  <label class="chk"><input type="checkbox" data-p="e6"><span>Nothing is left over on the screen from the round before</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
+    <p>Do not start a new file. Start from the program you have just written and add to it.</p>
+    <p>Four names go at the top before anything else happens: the bus, the screen, and one for each
+    button. Two of them you already have; the other two are Activity 3&rsquo;s lines, unchanged:</p>
+    <span class="codeimg" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQ==" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Then ask yourself the question that decides the whole shape: today&rsquo;s program ran once and
+    stopped. Can a screen that has to keep up with your finger do that?</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; what happens on each round?</summary>
+    <p>Everything after the four names goes inside a forever-loop, and each round through it does the
+    same four things in the same order:</p>
+
+<svg class="dia" viewBox="0 0 720 250" role="img" aria-label="The four things one round of the loop has to do, in order. First wipe the page. Then look at the buttons and write the right words onto the page. Then show the page. Then wait a moment, and start again.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">One round of the loop</text>
+  <rect x="28" y="60" width="140" height="70" rx="10" class="step"/>
+  <text x="98" y="92" class="dlbl" text-anchor="middle">1. wipe</text>
+  <text x="98" y="112" class="dsub" text-anchor="middle">the page</text>
+  <path d="M168 95 L204 95" class="arrow2"/>
+  <rect x="210" y="60" width="160" height="70" rx="10" class="pinbox"/>
+  <text x="290" y="86" class="dlbl" text-anchor="middle">2. decide and</text>
+  <text x="290" y="106" class="dlbl" text-anchor="middle">write</text>
+  <text x="290" y="124" class="dsub" text-anchor="middle">four short lines</text>
+  <path d="M370 95 L406 95" class="arrow2"/>
+  <rect x="412" y="60" width="140" height="70" rx="10" class="step"/>
+  <text x="482" y="92" class="dlbl" text-anchor="middle">3. show</text>
+  <text x="482" y="112" class="dsub" text-anchor="middle">it</text>
+  <path d="M552 95 L588 95" class="arrow2"/>
+  <rect x="594" y="60" width="102" height="70" rx="10" class="step"/>
+  <text x="645" y="92" class="dlbl" text-anchor="middle">4. wait</text>
+  <text x="645" y="112" class="dsub" text-anchor="middle">a moment</text>
+  <path d="M645 130 L645 176 L98 176 L98 138" class="arrow"/>
+  <text x="372" y="198" class="dsub" text-anchor="middle">&hellip; and round again, ten times a second</text>
+  <text x="360" y="230" class="dsub" text-anchor="middle">Step 2 is where <tspan class="dmono">if</tspan> and <tspan class="dmono">else</tspan> come back. Each button gets its own decision, exactly as in Activity 4.</text>
+</svg>
+
+    <p>The label and the word are <strong>two separate things written on the same row</strong>. Put the
+    label at the left edge, and start the word far enough across that they never touch: a letter is 8
+    pixels wide, so six letters of clearance is 48.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Five things to check before you decide it is broken:</p>
+    <ul>
+      <li>Is the wipe <strong>inside</strong> the loop? Outside it, the page is only cleaned once and
+      everything piles up.</li>
+      <li>Is the show the <strong>last</strong> thing before the wait? Anything written after it will not
+      appear until the next round.</li>
+      <li>Are you comparing with <strong>0</strong>? A button reads 0 while it is pressed &mdash;
+      <a href="activity-3.html#trap">Activity 3&rsquo;s trap</a>, and it has not changed.</li>
+      <li>Are the two rows far enough apart? 0 and 16.</li>
+      <li>Do the two buttons have <strong>their own names</strong> and <strong>their own decisions</strong>?
+      Two labels, two words, two <code>if</code>/<code>else</code> pairs, both at four spaces.</li>
+    </ul>
+    <p>Test it by holding SW2 <em>on its own</em>. If the first line changes too, the second decision is
+    reading the first button.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by pressing
+  the buttons rather than by reading. Your teacher has the worked answer if the class needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li>Move a word to the <strong>middle</strong> of the screen. You will have to work out the
+    across-number yourself: count the letters, multiply by 8, and take that away from 128.</li>
+    <li>Make the screen show <strong>BOTH</strong> on a third row when SW1 and SW2 are held together
+    &mdash; one more decision, using <code>and</code> from Activity 5.</li>
+    <li>Light LED1 on <span class="gp">11</span> at the same moment the screen says HELD, so the light
+    and the words agree. If they ever disagree, you have found a real bug.</li>
+    <li>Fill the page with <code>1</code> instead of <code>0</code> and see what happens to your words.
+    Explain it before you undo it.</li>
+    <li>Put the slide switch <strong>SW4</strong> on <span class="gp">15</span> on a fourth row. Find out
+    for yourself which way round it reads.</li>
+    <li>Count how many rows you can fit before words start falling off the bottom. Predict the number
+    first.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now say
+  things out loud, on its own screen, with nobody&rsquo;s computer attached &mdash; and you know how to
+  give Python a tool it did not come with. Next up &mdash; Activity 7, where the numbers on that screen
+  start coming from the world instead of from you.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>OLED</strong></td><td>A screen where every dot makes its own light. No backlight, so black is really black.</td></tr>
+      <tr><td><strong>Pixel</strong></td><td>One dot. This screen has 128 &times; 64 of them and each one is only on or off.</td></tr>
+      <tr><td><strong>Bus</strong></td><td>Wires that several parts share instead of each having their own.</td></tr>
+      <tr><td><strong>I&sup2;C</strong></td><td>The particular two-wire bus this board uses: SDA carries the data, SCL carries the clock.</td></tr>
+      <tr><td><strong>SDA &middot; SCL</strong></td><td>Data and clock. On the LilEx5 they are <span class="gp">GP0</span> and <span class="gp">GP1</span>.</td></tr>
+      <tr><td><strong>Address</strong></td><td>The number that tells one part on the bus that a message is meant for it. The screen&rsquo;s is <code>0x3C</code>.</td></tr>
+      <tr><td><strong>Library</strong></td><td>A file of ready-made instructions that somebody else wrote. It has to be on the Pico before you can import it.</td></tr>
+      <tr><td><strong>Built in</strong></td><td>Already inside MicroPython &mdash; <code>machine</code> and <code>time</code>. Nothing to install, ever.</td></tr>
+      <tr><td><strong>The page</strong></td><td>The copy of the screen that lives in memory. You write on the page; <code>show</code> puts it on the glass.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from ssd1306 import SSD1306_I2C",
+    "i2c = I2C(0, sda=Pin(0), scl=Pin(1))",
+    "oled = SSD1306_I2C(128, 64, i2c)",
+    "oled.text(\"Hello\", 0, 0)",
+    "oled.show()"
+  ],
+  quiz: [
+    { q: 'Which two pins does the screen actually talk on?',
+      opts: ['GP0 and GP1', 'GP11 and GP12', 'GP2 and GP3', 'Any two you like'],
+      right: 0,
+      why: 'SDA is GP0 and SCL is GP1. The other two wires, VCC and GND, are only power — no program mentions them.' },
+    { q: 'Your program runs with no error at all and the screen stays black. What is missing?',
+      opts: ['The library file', 'The wipe', 'The show at the end', 'A forever-loop'],
+      right: 2,
+      why: 'Words go onto the page in memory. Until you show it, nothing reaches the glass — and nothing complains.' },
+    { q: '<code>ImportError: no module named ssd1306</code>. What is actually wrong?',
+      opts: ['The screen is unplugged', 'The library file is not on the Pico', 'The address is wrong', 'The program has a typing mistake in it'],
+      right: 1,
+      why: 'Python looked on the Pico&rsquo;s own disk for a file with that name and did not find one. Fix the file, not the program.' },
+    { q: 'Eight different parts share the same two wires. How does one of them know a message is for it?',
+      opts: ['It takes turns with the others', 'The Pico switches the other wires off', 'Each part has its own address, and the address is sent first', 'They all read every message'],
+      right: 2,
+      why: 'The address goes on the wire first. Everybody hears it; only the part whose address it is takes any notice.' },
+    { q: 'In a loop that keeps redrawing the screen, why does the wipe have to be inside the loop?',
+      opts: ['Otherwise the old words stay underneath the new ones', 'Otherwise the screen runs out of memory', 'Otherwise the loop runs too fast', 'It does not — outside is fine'],
+      right: 0,
+      why: 'Writing does not erase what was there. Without a wipe each round, HELD and UP end up printed on top of each other.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

@@ -46,21 +46,34 @@
     });
   }
 
-  /* ---------- route tabs ---------- */
-  var tabA = document.getElementById('tab-a'), tabB = document.getElementById('tab-b');
-  var panA = document.getElementById('pan-a'), panB = document.getElementById('pan-b');
-  if(tabA && tabB && panA && panB){
-    var pick = function(which){
+  /* ---------- route tabs ----------
+     One pair per group. Every page up to Activity 5 has exactly one group,
+     tab-a / tab-b; Activity 6 has a second, tab-c / tab-d, because the two
+     routes differ twice on that page (getting the library on, and wiring). All
+     groups share one stored choice, so picking Wokwi once picks it everywhere.
+     A page without a group is left alone. */
+  var pickers = [];
+  var wire = function(aId, bId, panAId, panBId){
+    var tabA = document.getElementById(aId), tabB = document.getElementById(bId);
+    var panA = document.getElementById(panAId), panB = document.getElementById(panBId);
+    if(!(tabA && tabB && panA && panB)) return;
+    var show = function(which){
       var a = which === 'a';
       tabA.setAttribute('aria-selected', a ? 'true' : 'false');
       tabB.setAttribute('aria-selected', a ? 'false' : 'true');
       panA.hidden = !a; panB.hidden = a;
-      state.route = which; save(state);
     };
+    var pick = function(which){
+      state.route = which; save(state);
+      pickers.forEach(function(f){ f(which); });
+    };
+    pickers.push(show);
     tabA.addEventListener('click', function(){ pick('a'); });
     tabB.addEventListener('click', function(){ pick('b'); });
-    if(state.route === 'b') pick('b');
-  }
+  };
+  wire('tab-a', 'tab-b', 'pan-a', 'pan-b');
+  wire('tab-c', 'tab-d', 'pan-c', 'pan-d');
+  if(state.route === 'b') pickers.forEach(function(f){ f('b'); });
 
   /* ---------- board simulator ---------- */
   var simrun = document.getElementById('simrun');
@@ -520,6 +533,73 @@
         if(!ltimer) lshow(true);
       });
     });
+  }
+
+  /* ---------- screen widget (guarded by #oledrun) ----------
+     Activity 6. Two boxes: the page held in memory and the glass itself. The
+     whole point is that writing changes the left-hand box and nothing else --
+     the right-hand one only catches up when Show it is pressed. As with every
+     widget here the output is written in words and never prints a line of code
+     (CONTEXT.md rule 5.1). */
+  var oledrun = document.getElementById('oledrun');
+  if(oledrun){
+    var omem = document.getElementById('oledmem');
+    var oscr = document.getElementById('oledscr');
+    var oout = document.getElementById('oledout');
+    var page = ['', '', '', ''];
+    var glass = ['', '', '', ''];
+    var shown = 0, written = 0;
+
+    var opaint = function(box, rows){
+      var kids = box.querySelectorAll('b');
+      for(var i = 0; i < kids.length; i++){
+        kids[i].textContent = rows[i] ? rows[i] : ' ';
+      }
+    };
+    var orefresh = function(){ opaint(omem, page); opaint(oscr, glass); };
+
+    var osame = function(){
+      for(var i = 0; i < 4; i++){ if(page[i] !== glass[i]) return false; }
+      return true;
+    };
+
+    var osay = function(head){
+      var tail = osame()
+        ? '\nThe page and the screen match. There is nothing waiting to appear.'
+        : '\nThe page and the screen are different, so there is something waiting. '
+          + 'Press Show it.';
+      oout.textContent = head + tail;
+    };
+
+    [].forEach.call(document.querySelectorAll('[data-oled]'), function(b){
+      b.addEventListener('click', function(){
+        var what = b.getAttribute('data-oled');
+        if(what === 'wipe'){
+          page = ['', '', '', ''];
+          orefresh();
+          osay('Wiped the page. Every row of it is blank now — and look at the screen: '
+             + 'it has not changed at all.');
+          return;
+        }
+        if(what === 'l1'){ page[0] = 'HELLO'; written++; }
+        if(what === 'l2'){ page[2] = 'STEM LAB'; written++; }
+        orefresh();
+        osay('Written onto the page, at the row you chose. Still nothing on the screen — '
+           + 'writing and showing are two different jobs.');
+      });
+    });
+
+    oledrun.addEventListener('click', function(){
+      glass = page.slice();
+      shown++;
+      orefresh();
+      oout.textContent = 'Shown. The whole page went onto the glass in one go, which is why a '
+        + 'screen never flickers halfway through a sentence.\nTimes shown: ' + shown
+        + '  \u00b7  things written since the start: ' + written
+        + '\nThe page and the screen match again.';
+    });
+
+    orefresh();
   }
 
 })();
