@@ -4,11 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LilEx5 pin reference | Pico IoT Module</title>
-<meta name="description" content="Which GP number every part on the LilEx5 board is wired to.">
+<meta name="description" content="Which GP number every part on the LilEx5 board is wired to, and where each part sits on the board.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
 <nav class="sitenav"><div class="wrap">
   <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
@@ -21,71 +28,84 @@
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module</p>
     <h1>Pin reference</h1>
-    <p class="sub">Everything on the board is wired to a <strong>GP number</strong> on the Pico.
+    <p class="sub">Every part on the board is wired to a <strong>GP number</strong>.
     Your code has to use that number. Keep this page open while you work.</p>
   </div>
 </header>
 
 <div class="wrap">
 
-<section>
-  <div class="cal warn"><b>Board labels are not pin numbers</b>
-  The picture printed on the board uses its own labels, like <code>SW1(11)</code> or <code>SW4(37)</code>.
-  Those are positions on the connector. In code you always use the <strong>GP</strong> number.</div>
+<section id="explorer">
+  <h2>&#128269; Find a pin on the board</h2>
+  <p>Tap any row in the table &mdash; or tap a part on the board itself &mdash; and the
+  other side lights up.</p>
 
-  <h2>&#128269; Find a pin</h2>
-  <p>Type a colour, a part name or a number &mdash; the table filters as you type.</p>
+  <div class="boardwrap">
+    <img src="img/lilex5-board.png" alt="The LilEx5 board, seen from above" class="boardimg">
+    <svg class="boardlayer" viewBox="0 0 710 615" aria-hidden="true">
+      <g id="hotspots"></g>
+      <g id="marker"></g>
+    </svg>
+  </div>
+  <p class="boardcap" id="boardcap">Nothing selected yet. Tap a part on the board, or a row below.</p>
+
   <div class="finder">
     <input type="search" id="q" placeholder="try: red, buzzer, button, GP11, radio&hellip;" autocomplete="off">
     <span class="count" id="cnt"></span>
   </div>
-  <table>
-    <thead><tr><th>Part</th><th>Pin</th><th>Group</th><th>Notes</th></tr></thead>
-    <tbody id="pintable">
-      <tr data-s="LED1 &mdash; red GP11 &#128308; Outputs output"><td><strong>LED1 &mdash; red</strong></td><td><span class="gp">GP11</span></td><td>&#128308; Outputs</td><td>output</td></tr>
-      <tr data-s="LED2 &mdash; yellow GP12 &#128308; Outputs output"><td><strong>LED2 &mdash; yellow</strong></td><td><span class="gp">GP12</span></td><td>&#128308; Outputs</td><td>output</td></tr>
-      <tr data-s="LED3 &mdash; green GP13 &#128308; Outputs output"><td><strong>LED3 &mdash; green</strong></td><td><span class="gp">GP13</span></td><td>&#128308; Outputs</td><td>output</td></tr>
-      <tr data-s="Buzzer BZ1 GP14 &#128308; Outputs output, sounds at about 2.7 kHz"><td><strong>Buzzer BZ1</strong></td><td><span class="gp">GP14</span></td><td>&#128308; Outputs</td><td>output, sounds at about 2.7 kHz</td></tr>
-      <tr data-s="Button SW1 GP2 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW1</strong></td><td><span class="gp">GP2</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
-      <tr data-s="Button SW2 GP3 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW2</strong></td><td><span class="gp">GP3</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
-      <tr data-s="Button SW3 GP4 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW3</strong></td><td><span class="gp">GP4</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
-      <tr data-s="Slide switch SW4 GP15 &#128280; Inputs input"><td><strong>Slide switch SW4</strong></td><td><span class="gp">GP15</span></td><td>&#128280; Inputs</td><td>input</td></tr>
-      <tr data-s="SDA &mdash; sensor data GP0 &#128225; Sensor bus (I2C) the data wire every sensor shares"><td><strong>SDA &mdash; sensor data</strong></td><td><span class="gp">GP0</span></td><td>&#128225; Sensor bus (I2C)</td><td>the data wire every sensor shares</td></tr>
-      <tr data-s="SCL &mdash; sensor clock GP1 &#128225; Sensor bus (I2C) the clock wire every sensor shares"><td><strong>SCL &mdash; sensor clock</strong></td><td><span class="gp">GP1</span></td><td>&#128225; Sensor bus (I2C)</td><td>the clock wire every sensor shares</td></tr>
-      <tr data-s="Radio TX GP16 &#128246; Radio sends"><td><strong>Radio TX</strong></td><td><span class="gp">GP16</span></td><td>&#128246; Radio</td><td>sends</td></tr>
-      <tr data-s="Radio RX GP17 &#128246; Radio receives"><td><strong>Radio RX</strong></td><td><span class="gp">GP17</span></td><td>&#128246; Radio</td><td>receives</td></tr>
-      <tr data-s="Radio M2 GP18 &#128246; Radio mode select"><td><strong>Radio M2</strong></td><td><span class="gp">GP18</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
-      <tr data-s="Radio M1 GP19 &#128246; Radio mode select"><td><strong>Radio M1</strong></td><td><span class="gp">GP19</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
-      <tr data-s="Radio M0 GP20 &#128246; Radio mode select"><td><strong>Radio M0</strong></td><td><span class="gp">GP20</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
-      <tr data-s="Radio AUX GP21 &#128246; Radio a flag the radio raises when it is busy"><td><strong>Radio AUX</strong></td><td><span class="gp">GP21</span></td><td>&#128246; Radio</td><td>a flag the radio raises when it is busy</td></tr>
-      <tr data-s="SPI clock GP6 &#9881;&#65039; Spare for faster devices"><td><strong>SPI clock</strong></td><td><span class="gp">GP6</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
-      <tr data-s="SPI MOSI GP7 &#9881;&#65039; Spare for faster devices"><td><strong>SPI MOSI</strong></td><td><span class="gp">GP7</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
-      <tr data-s="SPI MISO GP8 &#9881;&#65039; Spare for faster devices"><td><strong>SPI MISO</strong></td><td><span class="gp">GP8</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
-      <tr data-s="SPI chip select GP9 &#9881;&#65039; Spare for faster devices"><td><strong>SPI chip select</strong></td><td><span class="gp">GP9</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
-      <tr data-s="Spare pin GP5 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP5</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
-      <tr data-s="Spare pin GP10 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP10</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
-      <tr data-s="Spare pin GP22 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP22</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
-      <tr data-s="Spare pin GP26 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP26</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
-      <tr data-s="Spare pin GP27 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP27</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
-      <tr data-s="Spare pin GP28 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP28</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+  <div class="tablescroll">
+  <table id="pintable">
+    <thead><tr><th>Pin</th><th>Code</th><th>Group</th><th>What it is joined to</th></tr></thead>
+    <tbody>
+      <tr data-gp="0" data-spot="i2c" data-part="Every sensor, and the screen" data-note="The shared data wire. Everything on the sensor bus talks over it." data-s="0 GP0 SDA — sensor data Sensor bus Every sensor, and the screen The shared data wire. Everything on the sensor bus talks over it." tabindex="0"><td><strong>SDA — sensor data</strong></td><td><span class="gp">GP0</span></td><td>&#128225; Sensor bus</td><td>Every sensor, and the screen</td></tr>
+      <tr data-gp="1" data-spot="i2c" data-part="Every sensor, and the screen" data-note="The shared clock wire that keeps the sensors in step." data-s="1 GP1 SCL — sensor clock Sensor bus Every sensor, and the screen The shared clock wire that keeps the sensors in step." tabindex="0"><td><strong>SCL — sensor clock</strong></td><td><span class="gp">GP1</span></td><td>&#128225; Sensor bus</td><td>Every sensor, and the screen</td></tr>
+      <tr data-gp="2" data-spot="sw1" data-part="Push button SW1" data-note="Reads 0 while it is held down, 1 when it is not." data-s="2 GP2 Button SW1 Inputs Push button SW1 Reads 0 while it is held down, 1 when it is not." tabindex="0"><td><strong>Button SW1</strong></td><td><span class="gp">GP2</span></td><td>&#128280; Inputs</td><td>Push button SW1 <small>(header pin 11)</small></td></tr>
+      <tr data-gp="3" data-spot="sw2" data-part="Push button SW2" data-note="Reads 0 while it is held down, 1 when it is not." data-s="3 GP3 Button SW2 Inputs Push button SW2 Reads 0 while it is held down, 1 when it is not." tabindex="0"><td><strong>Button SW2</strong></td><td><span class="gp">GP3</span></td><td>&#128280; Inputs</td><td>Push button SW2 <small>(header pin 13)</small></td></tr>
+      <tr data-gp="4" data-spot="sw3" data-part="Push button SW3" data-note="Reads 0 while it is held down, 1 when it is not." data-s="4 GP4 Button SW3 Inputs Push button SW3 Reads 0 while it is held down, 1 when it is not." tabindex="0"><td><strong>Button SW3</strong></td><td><span class="gp">GP4</span></td><td>&#128280; Inputs</td><td>Push button SW3 <small>(header pin 15)</small></td></tr>
+      <tr data-gp="5" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="5 GP5 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP5</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="6" data-spot="header" data-part="Nothing on the board" data-note="Free, but kept for faster add-on parts such as memory cards." data-s="6 GP6 SPI clock Spare  Free, but kept for faster add-on parts such as memory cards." tabindex="0"><td><strong>SPI clock</strong></td><td><span class="gp">GP6</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="7" data-spot="header" data-part="Nothing on the board" data-note="Free, but kept for faster add-on parts such as memory cards." data-s="7 GP7 SPI MOSI Spare  Free, but kept for faster add-on parts such as memory cards." tabindex="0"><td><strong>SPI MOSI</strong></td><td><span class="gp">GP7</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="8" data-spot="header" data-part="Nothing on the board" data-note="Free, but kept for faster add-on parts such as memory cards." data-s="8 GP8 SPI MISO Spare  Free, but kept for faster add-on parts such as memory cards." tabindex="0"><td><strong>SPI MISO</strong></td><td><span class="gp">GP8</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="9" data-spot="header" data-part="Nothing on the board" data-note="Free, but kept for faster add-on parts such as memory cards." data-s="9 GP9 SPI chip select Spare  Free, but kept for faster add-on parts such as memory cards." tabindex="0"><td><strong>SPI chip select</strong></td><td><span class="gp">GP9</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="10" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="10 GP10 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP10</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="11" data-spot="led1" data-part="The red LED" data-note="Write 1 to light it, 0 to switch it off." data-s="11 GP11 LED1 — red Outputs The red LED Write 1 to light it, 0 to switch it off." tabindex="0"><td><strong>LED1 — red</strong></td><td><span class="gp">GP11</span></td><td>&#128308; Outputs</td><td>The red LED</td></tr>
+      <tr data-gp="12" data-spot="led2" data-part="The yellow LED" data-note="Write 1 to light it, 0 to switch it off." data-s="12 GP12 LED2 — yellow Outputs The yellow LED Write 1 to light it, 0 to switch it off." tabindex="0"><td><strong>LED2 — yellow</strong></td><td><span class="gp">GP12</span></td><td>&#128308; Outputs</td><td>The yellow LED</td></tr>
+      <tr data-gp="13" data-spot="led3" data-part="The green LED" data-note="Write 1 to light it, 0 to switch it off." data-s="13 GP13 LED3 — green Outputs The green LED Write 1 to light it, 0 to switch it off." tabindex="0"><td><strong>LED3 — green</strong></td><td><span class="gp">GP13</span></td><td>&#128308; Outputs</td><td>The green LED</td></tr>
+      <tr data-gp="14" data-spot="buzzer" data-part="The buzzer" data-note="Makes a tone of about 2.7 kHz. Loud — not a light." data-s="14 GP14 Buzzer BZ1 Outputs The buzzer Makes a tone of about 2.7 kHz. Loud — not a light." tabindex="0"><td><strong>Buzzer BZ1</strong></td><td><span class="gp">GP14</span></td><td>&#128308; Outputs</td><td>The buzzer</td></tr>
+      <tr data-gp="15" data-spot="sw4" data-part="Slide switch SW4" data-note="Stays where you leave it, unlike the push buttons." data-s="15 GP15 Slide switch SW4 Inputs Slide switch SW4 Stays where you leave it, unlike the push buttons." tabindex="0"><td><strong>Slide switch SW4</strong></td><td><span class="gp">GP15</span></td><td>&#128280; Inputs</td><td>Slide switch SW4 <small>(header pin 37)</small></td></tr>
+      <tr data-gp="16" data-spot="radio" data-part="The radio module" data-note="Carries messages out of the Pico to the radio." data-s="16 GP16 Radio TX Radio The radio module Carries messages out of the Pico to the radio." tabindex="0"><td><strong>Radio TX</strong></td><td><span class="gp">GP16</span></td><td>&#128246; Radio</td><td>The radio module</td></tr>
+      <tr data-gp="17" data-spot="radio" data-part="The radio module" data-note="Carries messages from the radio back to the Pico." data-s="17 GP17 Radio RX Radio The radio module Carries messages from the radio back to the Pico." tabindex="0"><td><strong>Radio RX</strong></td><td><span class="gp">GP17</span></td><td>&#128246; Radio</td><td>The radio module</td></tr>
+      <tr data-gp="18" data-spot="radio" data-part="The radio module" data-note="One of three mode pins that tell the radio how to behave." data-s="18 GP18 Radio M2 Radio The radio module One of three mode pins that tell the radio how to behave." tabindex="0"><td><strong>Radio M2</strong></td><td><span class="gp">GP18</span></td><td>&#128246; Radio</td><td>The radio module <small>(header pin 40)</small></td></tr>
+      <tr data-gp="19" data-spot="radio" data-part="The radio module" data-note="One of three mode pins that tell the radio how to behave." data-s="19 GP19 Radio M1 Radio The radio module One of three mode pins that tell the radio how to behave." tabindex="0"><td><strong>Radio M1</strong></td><td><span class="gp">GP19</span></td><td>&#128246; Radio</td><td>The radio module <small>(header pin 38)</small></td></tr>
+      <tr data-gp="20" data-spot="radio" data-part="The radio module" data-note="One of three mode pins that tell the radio how to behave." data-s="20 GP20 Radio M0 Radio The radio module One of three mode pins that tell the radio how to behave." tabindex="0"><td><strong>Radio M0</strong></td><td><span class="gp">GP20</span></td><td>&#128246; Radio</td><td>The radio module <small>(header pin 36)</small></td></tr>
+      <tr data-gp="21" data-spot="radio" data-part="The radio module" data-note="The radio raises this to say it is busy." data-s="21 GP21 Radio AUX Radio The radio module The radio raises this to say it is busy." tabindex="0"><td><strong>Radio AUX</strong></td><td><span class="gp">GP21</span></td><td>&#128246; Radio</td><td>The radio module</td></tr>
+      <tr data-gp="22" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="22 GP22 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP22</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="26" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="26 GP26 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP26</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="27" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="27 GP27 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP27</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
+      <tr data-gp="28" data-spot="header" data-part="Nothing on the board" data-note="Nothing on the board uses it. Free for your own parts." data-s="28 GP28 Spare pin Spare  Nothing on the board uses it. Free for your own parts." tabindex="0"><td><strong>Spare pin</strong></td><td><span class="gp">GP28</span></td><td>&#9881;&#65039; Spare</td><td><span class="muted">&mdash; free &mdash;</span></td></tr>
     </tbody>
   </table>
+  </div>
+  <div class="cal info"><b>The numbers printed on the board</b>
+  Labels like <code>SW1(11)</code> or <code>SW4(37)</code> are positions on the black
+  connector, not pin numbers for your code. In code you always use the <strong>GP</strong>
+  number.</div>
 </section>
 
 <section>
-  <h2>&#128225; Sensor bus (I&sup2;C)</h2>
-  <p>SDA (<span class="gp">GP0</span>) and SCL (<span class="gp">GP1</span>) are two shared wires that
-  every sensor talks on, like a class where everyone takes turns. Each sensor answers to its own
-  number, called its <strong>address</strong>:</p>
+  <h2>&#128225; The sensor bus</h2>
+  <p><span class="gp">GP0</span> and <span class="gp">GP1</span> are two shared wires that
+  every sensor and the screen talk on &mdash; like a class where everyone takes turns.
+  Each one answers to its own number, called its <strong>address</strong>:</p>
   <table>
-    <thead><tr><th>Sensor</th><th>Address</th></tr></thead>
+    <thead><tr><th>Part</th><th>Address</th></tr></thead>
     <tbody>
-      <tr><td>OLED screen</td><td><code>0x78</code></td></tr>
+      <tr><td>The screen</td><td><code>0x78</code></td></tr>
       <tr><td>Temperature, humidity, pressure</td><td><code>0x76</code></td></tr>
       <tr><td>Accelerometer and gyroscope</td><td><code>0x68</code></td></tr>
       <tr><td>Compass</td><td><code>0x7C</code></td></tr>
       <tr><td>Proximity and light</td><td><code>0x60</code></td></tr>
-      <tr><td>Air quality (TVOC)</td><td><code>0x1A</code></td></tr>
+      <tr><td>Air quality</td><td><code>0x1A</code></td></tr>
       <tr><td>Analogue-to-digital converter</td><td><code>0x48</code></td></tr>
     </tbody>
   </table>
@@ -106,17 +126,17 @@
 
 <section>
   <h2>&#127922; Reading analogue values</h2>
-  <p>The four analogue inputs on connector <strong>H3</strong> (gas sensor, battery level and two
-  spares) <strong>do not go to the Pico directly</strong>. They pass through a converter chip and come
-  back over the sensor bus &mdash; so reading a voltage on this board is an <strong>I&sup2;C job</strong>,
-  not an <code>ADC()</code> job.</p>
+  <p>The four analogue inputs on connector <strong>H3</strong> (gas sensor, battery level
+  and two spares) <strong>do not go to the Pico directly</strong>. They pass through a
+  converter chip and come back over the sensor bus &mdash; so reading a voltage on this
+  board is a <strong>sensor bus job</strong>, not an <code>ADC()</code> job.</p>
 </section>
 
 <section>
   <h2>&#129535; How to hold the board</h2>
   <ul>
-    <li>The black 40-pin header sits along the <strong>top</strong> edge and the USB sockets are on the <strong>left</strong>.</li>
-    <li><strong>Pin 1</strong> is at the left-hand end of the header. The board has a small printed dot next to it.</li>
+    <li>The black 40-pin connector sits along the <strong>top</strong> edge and the USB sockets are on the <strong>left</strong>.</li>
+    <li><strong>Pin 1</strong> is the pad circled in red, at the left-hand end. The board has a small printed dot next to it.</li>
     <li><strong>Odd</strong> pins 1, 3, 5 &hellip; run along the <strong>lower</strong> row, nearest the LEDs and screen.</li>
     <li><strong>Even</strong> pins 2, 4, 6 &hellip; run along the <strong>upper</strong> row, nearest the edge of the board.</li>
   </ul>
@@ -132,25 +152,11 @@
 </section>
 
 </div>
+
 <script>
-(function(){
-  var q = document.getElementById('q');
-  var rows = [].slice.call(document.querySelectorAll('#pintable tr'));
-  var cnt = document.getElementById('cnt');
-  function run(){
-    var v = q.value.toLowerCase().trim();
-    var n = 0;
-    rows.forEach(function(r){
-      var hit = !v || r.getAttribute('data-s').toLowerCase().indexOf(v) !== -1
-                   || r.textContent.toLowerCase().indexOf(v) !== -1;
-      r.classList.toggle('hide', !hit);
-      if(hit) n++;
-    });
-    cnt.textContent = v ? (n + ' of ' + rows.length + ' pins') : '';
-  }
-  q.addEventListener('input', run);
-})();
+window.BOARD_SPOTS = {"led1": [["c", 367, 159, 40]], "led2": [["c", 450, 158, 38]], "led3": [["c", 530, 158, 38]], "buzzer": [["c", 612, 317, 60]], "sw1": [["c", 218, 570, 46]], "sw2": [["c", 348, 570, 46]], "sw3": [["c", 480, 570, 46]], "sw4": [["c", 632, 182, 54]], "radio": [["c", 582, 456, 64]], "header": [["r", 84, 26, 532, 74]], "i2c": [["r", 213, 205, 290, 300], ["c", 545, 232, 30], ["c", 522, 328, 26], ["c", 128, 570, 36], ["c", 120, 505, 28], ["c", 585, 570, 34], ["c", 152, 305, 30], ["c", 60, 415, 34]]};
 </script>
+<script src="board.js"></script>
 
 <footer>
   <div class="wrap">
@@ -160,5 +166,6 @@
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+<script src="code.js"></script>
 </body>
 </html>
