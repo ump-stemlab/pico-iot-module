@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; all activities | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes index for the LilEx5 Pico IoT Module.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>Every activity&rsquo;s instructor notes, including the exercise answers. This page is not linked
+  from any student page.</p>
+  <p><strong>Students: the answers are worth much less than the ten minutes before them.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="index.html">&larr; Back to the module home</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Teacher notes</h1>
+    <p class="sub">One page per activity: the idea being taught, the exercise answer, the mistakes to
+    expect, and what to check before the lesson.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="index.html">&#127968; Module home</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> These pages are unlisted and hidden from search
+engines, but the repository is public &mdash; anyone given a URL can read them. Share with staff, not in
+the student handout.</div>
+
+<section>
+  <h2>The activities</h2>
+  <table>
+    <thead><tr><th>#</th><th>Activity</th><th>The one idea</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1</strong></td><td><a href="activity-1.html">Light Up an LED</a></td>
+        <td>A pin makes a light come on &mdash; variables, comments, GPIO numbers. No <code>print()</code>.</td>
+        <td><a href="teacher-1.html">teacher-1</a></td></tr>
+      <tr><td><strong>2</strong></td><td><a href="activity-2.html">Make an LED Blink</a></td>
+        <td>Loops, <code>sleep</code>, and indentation. Stopping a forever-loop is taught here and assumed after.</td>
+        <td><a href="teacher-2.html">teacher-2</a></td></tr>
+      <tr><td><strong>3</strong></td><td><a href="activity-3.html">Digital Input</a></td>
+        <td>A pin can be read, and a program can print. The button reads <strong>0 when pressed</strong> &mdash; the inversion everything later depends on.</td>
+        <td><a href="teacher-3.html">teacher-3</a></td></tr>
+      <tr><td><strong>4</strong></td><td><a href="activity-4.html">Making Decisions</a></td>
+        <td><code>if</code>, then <code>else</code>. One equals puts, two equals asks. Two independent decisions in the exercise.</td>
+        <td><a href="teacher-4.html">teacher-4</a></td></tr>
+      <tr><td><strong>5</strong></td><td><a href="activity-5.html">And, Or, Not</a></td>
+        <td>Joining two whole questions into one. Each half must stand on its own.</td>
+        <td><a href="teacher-5.html">teacher-5</a></td></tr>
+      <tr><td>6&ndash;9</td><td class="muted">Screen, sensors, internet, radio</td>
+        <td class="muted">In preparation.</td><td class="muted">&mdash;</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Each activity adds exactly one idea and re-teaches nothing. If a class is struggling,
+  the fix is almost always in the previous activity rather than the current one.</p>
+</section>
+
+<section>
+  <h2>How the module is meant to run</h2>
+  <div class="grid2">
+    <div class="mini"><h4>Wokwi first, then the board</h4>
+      <p>On the LilEx5 the wiring is inside the PCB, so the simulator is the only place students see a
+      circuit. Both routes are on every page as tabs.</p></div>
+    <div class="mini"><h4>Code cannot be copied</h4>
+      <p>Every program is drawn as a picture and the clipboard is guarded. Students type, or they learn
+      nothing. This is deliberate &mdash; do not paste code into a chat for them.</p></div>
+    <div class="mini"><h4>No <code>elif</code>, ever</h4>
+      <p>Kept out of the whole module so the two-road picture of a decision survives. Nothing here
+      needs it.</p></div>
+    <div class="mini"><h4>Answers live here, not there</h4>
+      <p>Student pages carry the task, the expected result and progressive clues. The worked answer is
+      on these pages only.</p></div>
+  </div>
+  <div class="cal tip"><b>Three safety rules, every lesson</b>
+  Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to GND.
+  Switch the board off at <strong>SW5</strong> before changing wires.</div>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <table>
+    <thead><tr><th>Pin</th><th>Part</th><th>Where it is needed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>Activities 3, 4, 5 &mdash; main programs</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>Activity 5 main program; Activities 3 and 4 exercises</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>Activity 5 exercise</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activities 1, 2, 4, 5 &mdash; main programs</td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>Activity 1 and 2 exercises</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 4 and 5 exercises</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Going-further only, so far</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only, so far</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">SW5 is the power switch and is not on a GP pin. Full map:
+  <a href="pinout.html">pin reference</a>.</p>
+</section>
+
+<section>
+  <h2>Kit check, once a term</h2>
+  <ul>
+    <li>Every board: SW1, SW2 and SW3 click; LED1, LED2 and LED3 light; the buzzer sounds.</li>
+    <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
+    <li>One USB cable per board that carries <em>data</em>, not only power.</li>
+    <li>Wokwi reachable from the school network, and the <a href="pinout.html">pin reference</a>
+    bookmarked on every machine.</li>
+  </ul>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

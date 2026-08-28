@@ -73,11 +73,12 @@ Buttons idle high and read **0** when pressed.
 docs/index.html        module home, activity list
 docs/activity-N.html   one page per activity (students)
 docs/teacher-N.html    one page per activity (instructors, unlisted)
+docs/teacher.html      index of every teacher page (instructors, unlisted)
 docs/pinout.html       searchable pin reference
 docs/style.css         the whole design system — every page links it
 docs/code.js           renders code as pictures + guards the clipboard
 docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
-                       decision simulator, typing box, quiz
+                       decision simulator, logic simulator, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
@@ -148,7 +149,7 @@ Reusable classes: `.cal.tip / .warn / .info / .note` (callouts), `.step` (number
 step), `.chk` (progress checkbox), `.mini` in `.grid2` (small cards), `.gp` (pin badge),
 `.act` (activity list row), `.dia` (inline SVG diagram), `.codeimg` (code picture).
 
-## 5. Three rules that must not be broken
+## 5. The rules that must not be broken
 
 **5.1 Code is never copy-pasteable.** Students type it or they learn nothing. Code goes
 in as a picture:
@@ -183,6 +184,13 @@ different left edges, a teal bar for the loop line, a bracket for the block, and
 words in labels beside it. Single identifiers in prose are fine in `<code>`; whole lines
 are not, anywhere.
 
+**5.4 The exercise answer never appears on a student page.** Kamil's call, from Activity 5
+on. The student page carries the task, the expected-result diagram and progressive clues
+that stop short of the solution, plus a short callout saying the answer is with the
+teacher. The worked answer lives on `teacher-N.html` only. Activities 1–4 still carry an
+`<details>` answer block from before this rule; leave them unless asked, and do not add
+another one.
+
 ## 6. Anatomy of an activity page
 
 In order: hero (title, one-line mission, pills, in-page nav) → sticky progress bar →
@@ -192,7 +200,7 @@ interactive try-it widget where one fits → build the circuit (Wokwi / real boa
 numbered steps, diagrams) → write the program (code picture, "type it don't copy it",
 type-it-here box, line-by-line table) → save and run → what you should see (diagram) →
 check yourself → troubleshooting table → **exercise** (task, expected-result diagram,
-progressive clues in `<details>`, answer last) → going further → quiz → words to
+progressive clues in `<details>`, **and no answer**) → going further → quiz → words to
 remember.
 
 Per-page config, before `activity.js`:
@@ -331,7 +339,50 @@ them in the markup if they are there.
 - Activity 4 adds **no new pins** and no new hardware. It is the first activity to use an input and
   an output at the same time, which is the thing to check on each board before the lesson.
 
-### The Wokwi-look board diagrams (Activities 1, 3 and 4)
+### Activity 5 — And, Or, Not
+
+- **The one idea is joining questions**, not a new kind of decision. There is still one `if`, one
+  `else` and two roads; only the question got longer. The page says so out loud, because students
+  expect a longer question to produce more roads.
+- **Open with the contrast.** Activity 4's exercise was deliberately two separate decisions; this
+  activity is one decision that asks about two things. That sentence is in the hero, the first
+  section and the teacher page.
+- **The trap is that each half must be a whole question**, and it has two faces. `and == 0` is a
+  `SyntaxError` — the kind one. `if sw1 and sw2:` **runs**, always answers yes, and leaves a light
+  that never goes out — the dangerous one, and the one the section `#whole` is built around. It is
+  the `==` lesson of Activity 4 arriving one level up.
+- **`not` is taught to be read, not written.** It gets its own short section, a truth-table picture
+  and one warning: do not reach for it to "fix" the button inversion. That section points back to
+  `activity-3.html#trap` and `activity-4.html#zero` rather than re-teaching either. The only places
+  `not` is *written* are going-further tasks.
+- **Python's `or` is not the café's "or".** Both-is-still-yes has its own callout and is the bottom
+  row of the `or` truth-table picture; it is the row the class gets wrong.
+- Mission: **two-key safety switch** — LED1 lights only while SW1 *and* SW2 are held. Kamil's call.
+  Real machines work this way, and it is the cleanest demonstration that `and` is stricter than
+  either half.
+- Exercise: **two-of-three keypad** — green LED3 lights when at least two of SW1/SW2/SW3 are held.
+  Kamil's call. It needs `and` and `or` in one question, and the real work is listing the three
+  pairs on paper before typing. The finished condition is one long line; the page says that is
+  normal, because half a class will assume it is a mistake. **The answer is not on the student
+  page** (see rule 5.4) — clue 3 stops at a checklist.
+- **No `elif`, still**, and no booleans stored in variables — a half is written out in full every
+  time, because naming a boolean is a separate idea and this activity has enough.
+- `activity.js` gained a **logic simulator**, guarded by `#logrun`, inert on every other page.
+  Markup: `#logsw1` / `#logsw2` press-and-hold pads, `#logv1` / `#logv2` readouts, `#logled` bulb,
+  `#logout` console, `[data-logop]` (`and` / `or` / `not`). It answers each half separately and then
+  joins them, and its output is words only — it leaks no code. The `not` preset ignores the second
+  pad on purpose and says so.
+- The Wokwi diagram is Activity 4's, **with a second pushbutton on GP3**. The `<g class="wk">` group
+  was copied out of `activity-4.html` unchanged; only the rings and the wires differ. Pads used:
+  4 (GP2), 8 (GND), 5 (GP3), 13 (GND), 15 (GP11), 18 (GND); viewBox `780 × 690`. The pad-fact box
+  that Activities 1, 3 and 4 draw inside the SVG is a **table underneath the diagram** here — with
+  six wires there is no clear space left inside the picture for it.
+- Ten diagrams: the loop, two questions joined into one, a truth-table picture for each of the three
+  words, `and` versus `or` on the same wiring, the whole-question anatomy (bars and single glyphs,
+  no code), name-versus-value, the double-negative result, the four expected states, and the
+  exercise's four states.
+
+### The Wokwi-look board diagrams (Activities 1, 3, 4 and 5)
 
 Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
 physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
@@ -356,8 +407,9 @@ module does not look like two different books.
   `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
   meets a left-hand pad at `x=537` and a right-hand pad at `x=755`; the ring on a used pad is
   `<circle r="10.5" class="wk-ring">` centred on the hole.
-- The three diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3) and
-  `780 × 600` (Activity 4, which carries both circuits).
+- The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3),
+  `780 × 600` (Activity 4, which carries both circuits) and `780 × 690` (Activity 5, which adds a
+  second button below the first).
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
   long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at
@@ -444,9 +496,21 @@ teacher notes have to leave this repo.
 
 Each teacher page carries: exercise answer, going-further answers, before-the-lesson
 checklist, the mistakes students actually make, teaching notes, every link used, and a
-cumulative "pins used so far" table. From Activity 2 on it also opens with a
-short **"what is actually being taught"** section — the one idea, and which part of the
-page carries it — and links back to the previous activity's notes from the hero.
+cumulative "pins used so far" table. Every one of them opens with a short
+**"what is actually being taught"** section — the one idea, as bullets — and links back to
+the previous activity's notes and to the hub from the hero.
+
+**Keep them terse.** Kamil asked for this in Activity 5's build and all five pages were
+rewritten to match: bullets and tables rather than paragraphs, one sentence per point, and
+the tables (mistakes, going-further, pins) carrying most of the content. Nothing was
+dropped — the prose around it was. Write new ones the same way.
+
+**`docs/teacher.html` is the hub**, added in Activity 5's build: the same gate and
+`noindex`, a row per activity with its one idea and its notes link, the module-wide rules
+(Wokwi first, code is never copy-pasteable, no `elif`, answers live only here), a
+cumulative pins table and a once-a-term kit check. It is listed in `robots.txt` and, like
+the per-activity pages, **is not linked from any student page** — `index.html` mentions
+that an index exists and says to ask the STEM Lab for the link.
 
 `robots.txt` already lists `teacher-1.html` through `teacher-9.html`, so a new teacher
 page needs no change there.
@@ -458,18 +522,20 @@ page needs no change there.
    Activity 2 exercise went from a level crossing to a traffic light on one question.
    Worth asking about: the exercise, anything that needs a Wokwi project link, and
    anything about the board you cannot verify from §2.
-3. Write `docs/activity-N.html` and `docs/teacher-N.html`.
+3. Write `docs/activity-N.html` and `docs/teacher-N.html`. No exercise answer on the
+   student page (rule 5.4); the answer goes on the teacher page.
 4. Nav + footer links on every existing page (§8.2).
 5. `docs/index.html`: the activity row moves from `.act.soon` (a `<div>`) to
    `.act.live` (an `<a href>`), badge "New".
 6. `README.md`: the links table near the top, the status table (`🔜` → `✅ live` with a
    link), the repository layout block, and the "pins used so far" table if the activity
    introduced any.
-7. `CONTEXT.md`: an "Activity N" block in §7 for anything a later builder would
+7. `docs/teacher.html`: add the activity's row, and refresh the cumulative pins table.
+8. `CONTEXT.md`: an "Activity N" block in §7 for anything a later builder would
    otherwise have to guess or would get wrong.
-8. Verify (§8.1). Look at every diagram, in both themes. If the activity wires anything,
+9. Verify (§8.1). Look at every diagram, in both themes. If the activity wires anything,
    copy the Wokwi-look Pico out of `activity-4.html` rather than drawing a new one — see the
    *Wokwi-look board diagrams* note at the end of §7.
-9. Write `PROMPT-activity-N+1.md` and delete `PROMPT-activity-N.md`. Deleting needs
+10. Write `PROMPT-activity-N+1.md` and delete `PROMPT-activity-N.md`. Deleting needs
    permission on the mount — ask for it, it also unblocks git's `index.lock`.
-10. Report what changed and stop. Kamil pushes.
+11. Report what changed and stop. Kamil pushes.

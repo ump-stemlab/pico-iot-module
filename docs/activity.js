@@ -416,4 +416,110 @@
     }
   }
 
+  /* ---------- logic simulator (guarded by #logrun) ----------
+     Activity 5. Two pads, two readings, one light, and a joining word that can
+     be swapped while it runs. The point is that the two halves are answered
+     separately and then joined into a single answer. As with every simulator
+     here, the output is written in words and never prints a line of code
+     (CONTEXT.md rule 5.1). */
+  var logrun = document.getElementById('logrun');
+  if(logrun){
+    var lsw = [document.getElementById('logsw1'), document.getElementById('logsw2')];
+    var lvl = [document.getElementById('logv1'), document.getElementById('logv2')];
+    var lled = document.getElementById('logled');
+    var lout = document.getElementById('logout');
+    var ltimer = null, ldown = [false, false], lop = 'and', lround = 0;
+
+    var lname = { and: 'and', or: 'or', not: 'not' };
+
+    var lset = function(i, down){
+      ldown[i] = down;
+      lsw[i].classList.toggle('down', down);
+      lvl[i].classList.toggle('pressed', down);
+      lvl[i].textContent = down ? '0' : '1';
+      if(!ltimer) lshow(true);
+    };
+
+    var lanswer = function(){
+      var a = ldown[0], b = ldown[1];
+      if(lop === 'and') return a && b;
+      if(lop === 'or')  return a || b;
+      return !a;                       /* not — the second pad is ignored */
+    };
+
+    var lshow = function(idle){
+      var a = ldown[0], b = ldown[1];
+      var yes = lanswer();
+      var head = idle
+        ? 'Not running. Joining word: ' + lname[lop] + '.\nPress Run the loop to start asking the question.'
+        : 'Round ' + lround + ' of the loop. Joining word: ' + lname[lop] + '.';
+      var body = '\n\nFirst half — is SW1 held down?  ' + (a ? 'yes' : 'no');
+      if(lop === 'not'){
+        body += '\nThe word not turns that answer round, so the joined answer is '
+              + (yes ? 'yes' : 'no') + '.'
+              + '\n(SW2 is not part of this question at all.)';
+      } else {
+        body += '\nSecond half — is SW2 held down?  ' + (b ? 'yes' : 'no')
+              + '\nJoined with ' + lname[lop] + ', the answer is ' + (yes ? 'yes' : 'no') + '.';
+        if(lop === 'and' && !yes && (a || b)){
+          body += '\nOne is not enough — and needs both halves.';
+        }
+        if(lop === 'or' && yes && a && b){
+          body += '\nBoth halves are yes, and both is still "at least one".';
+        }
+      }
+      body += '\nSo the light is ' + (yes ? 'ON' : 'OFF') + '.';
+      lout.textContent = idle ? head : head + body;
+    };
+
+    [0, 1].forEach(function(i){
+      ['mousedown', 'touchstart'].forEach(function(ev){
+        lsw[i].addEventListener(ev, function(e){ e.preventDefault(); lset(i, true); });
+      });
+      ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(function(ev){
+        lsw[i].addEventListener(ev, function(){ lset(i, false); });
+      });
+      lsw[i].addEventListener('keydown', function(e){
+        if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); lset(i, true); }
+      });
+      lsw[i].addEventListener('keyup', function(e){
+        if(e.key === ' ' || e.key === 'Enter'){ lset(i, false); }
+      });
+      lset(i, false);
+    });
+    document.addEventListener('mouseup', function(){
+      if(ldown[0]) lset(0, false);
+      if(ldown[1]) lset(1, false);
+    });
+
+    var ltick = function(){
+      lround++;
+      lled.classList.toggle('on', lanswer());
+      lshow(false);
+      ltimer = setTimeout(ltick, 200);
+    };
+
+    logrun.addEventListener('click', function(){
+      if(ltimer){
+        clearTimeout(ltimer); ltimer = null;
+        lled.classList.remove('on');
+        logrun.textContent = '▶ Run the loop';
+        lout.textContent = 'Stopped after ' + lround + ' rounds.\n'
+          + 'A forever-loop stops the same way on a real Pico — the Stop button, '
+          + 'or Ctrl+C in the Shell.';
+        return;
+      }
+      lround = 0;
+      logrun.textContent = '■ Stop it';
+      ltick();
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-logop]'), function(b){
+      b.addEventListener('click', function(){
+        lop = b.getAttribute('data-logop');
+        if(!ltimer) lshow(true);
+      });
+    });
+  }
+
 })();

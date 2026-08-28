@@ -1,4 +1,5 @@
 User-agent: *
+Disallow: /pico-iot-module/teacher.html
 Disallow: /pico-iot-module/teacher-1.html
 Disallow: /pico-iot-module/teacher-2.html
 Disallow: /pico-iot-module/teacher-3.html

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 5 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 5.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 5 &mdash; And, Or, Not</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-5.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 5 &mdash; teacher notes</h1>
+    <p class="sub">And, Or, Not. One idea: two questions joined into one.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-5.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-4.html">&#8592; Activity 4 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea:</strong> <code>and</code>, <code>or</code> and <code>not</code> &mdash; joining
+    questions so that one decision can depend on two things. The shape of an <code>if</code> does not
+    change; only the question gets longer.</li>
+    <li><strong>Open with the contrast.</strong> Activity 4&rsquo;s exercise was deliberately
+    <em>two</em> decisions. Today is <em>one</em> decision with two halves. Say that sentence out loud
+    before anything else.</li>
+    <li><strong>The trap:</strong> each half must be a whole question. This is Activity 4&rsquo;s
+    double-equals lesson one level up, and it carries the page (section
+    <a href="activity-5.html#whole">#whole</a>).</li>
+    <li><strong>No <code>elif</code>.</strong> Kept out of the module on purpose so the two-road picture
+    survives. It will come up from someone who has looked things up; nothing here needs it.</li>
+  </ul>
+
+  <table>
+    <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
+    <tbody>
+      <tr><td>Half a question &mdash; the second comparison left unfinished</td><td><code>SyntaxError</code>, nothing runs</td><td>Kind. It announces itself.</td></tr>
+      <tr><td>Two bare pin names joined by <code>and</code></td><td>Runs. The light never goes out.</td><td><strong>Dangerous.</strong> No error at all; reads perfectly in English.</td></tr>
+      <tr><td><code>not</code> used to &ldquo;correct&rdquo; the button inversion</td><td>Runs backwards</td><td><strong>Dangerous.</strong> Send them to <a href="activity-3.html#trap">Activity 3</a>, do not re-explain.</td></tr>
+      <tr><td><code>or</code> where <code>and</code> was meant</td><td>One key lights it</td><td>Obvious on the board within seconds.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>The main program &mdash; two-key safety switch</h2>
+  <span class="codeimg" data-code="IyBUd28gdG9vbHM6IFBpbiBmb3IgdGhlIGJ1dHRvbnMgYW5kIHRoZSBsaWdodCwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBhbmQgU1cyIGFyZSBidXR0b25zLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyB0aGVtCnN3MSA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzIgPSBQaW4oMywgUGluLklOLCBQaW4uUFVMTF9VUCkKCiMgTEVEMSBpcyBhIGxpZ2h0IG9uIEdQMTEKbGVkID0gUGluKDExLCBQaW4uT1VUKQoKIyBPbmUgZGVjaXNpb24sIGFza2luZyBhYm91dCB0d28gdGhpbmdzIGF0IG9uY2UKd2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDA6ICAgIyBib3RoIGhlbGQgZG93bj8KICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBvbmx5IHRoZW4gZG9lcyBpdCBsaWdodAogICAgICAgIHByaW50KCJib3RoIGtleXMgaGVsZCIpCiAgICBlbHNlOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgb25lIGtleSwgb3Igbm9uZSwgaXMgbm90IGVub3VnaAogICAgICAgIGxlZC5vZmYoKQogICAgICAgIHByaW50KCJsb2NrZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li>Ten working lines. Exactly one of them is new.</li>
+    <li>The safety-switch story is worth thirty seconds: two buttons far apart means two hands nowhere
+    near the blade. It is why <code>and</code>, not <code>or</code>, is the right word here.</li>
+    <li>Change the one word to <code>or</code> on the projector and run it again. That single edit is
+    the clearest lesson on the page.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Exercise answer &mdash; two-of-three keypad</h2>
+  <p>Green LED3 (GP13) lights when at least two of SW1, SW2, SW3 are held. Three pairs, joined with
+  <code>or</code>:</p>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaHJlZSBrZXlzIGFuZCBvbmUgbGlnaHQKc3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzMgPSBQaW4oNCwgUGluLklOLCBQaW4uUFVMTF9VUCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIFRocmVlIHBhaXJzLCBqb2luZWQgd2l0aCBvciAtIGFueSBvbmUgcGFpciBpcyBlbm91Z2gKd2hpbGUgVHJ1ZToKICAgIGlmIChzdzEudmFsdWUoKSA9PSAwIGFuZCBzdzIudmFsdWUoKSA9PSAwKSBvciAoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3czLnZhbHVlKCkgPT0gMCkgb3IgKHN3Mi52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApOgogICAgICAgIGdyZWVuLm9uKCkKICAgIGVsc2U6CiAgICAgICAgZ3JlZW4ub2ZmKCkKICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Python code, 17 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li><strong>The thinking happens on paper.</strong> Listing the three pairs is the exercise; typing
+    them is not. A class that starts typing immediately will produce two pairs and wonder why SW1+SW3
+    does nothing.</li>
+    <li><strong>The question line is very long and that is fine.</strong> Say so, or half the room will
+    assume they have gone wrong. Brackets round each pair are not compulsory but insist on them.</li>
+    <li><strong>All three keys must also open it.</strong> If a pair &ldquo;fixes&rdquo; that with
+    <code>not</code>, they have done the first going-further task &mdash; praise it, then ask for the
+    plain version too.</li>
+    <li>Accept any sensible names. Nothing else in the program changes from the main one.</li>
+  </ul>
+  <details>
+    <summary>The same answer split over three lines, if a student asks</summary>
+    <p>Legal, and easier to read, but it needs an extra outer bracket and lines that continue inside it.
+    Show it only if asked &mdash; it is not required and it is not examined:</p>
+    <span class="codeimg" data-code="ICAgIGlmICgoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3cyLnZhbHVlKCkgPT0gMCkKICAgICAgICAgICAgb3IgKHN3MS52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApCiAgICAgICAgICAgIG9yIChzdzIudmFsdWUoKSA9PSAwIGFuZCBzdzMudmFsdWUoKSA9PSAwKSk6" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  </details>
+  <div class="cal warn"><b>Wokwi pairs need a third button</b>
+  Three pushbuttons, a green LED and its own 330&nbsp;&Omega; resistor &mdash; eight wires. Real-board
+  pairs have nothing to wire and will finish much sooner; have the going-further list ready.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <table>
+    <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Exactly two, refuse all three</td>
+      <td>Each pair gains a third half: the pair, <code>and</code> <code>not</code> the third key. One
+      pair looks like this &mdash;
+      <span class="codeimg inline" data-code="aWYgKHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDApIGFuZCBub3QgKHN3My52YWx1ZSgpID09IDApOg==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      &mdash; and there are three of them. This is the one place <code>not</code> genuinely earns its
+      keep.</td></tr>
+      <tr><td>Door alarm: SW4 arms it, buzzer sounds when SW1 is pressed</td>
+      <td><span class="codeimg" data-code="IyBTVzQgaXMgdGhlIHNsaWRlIHN3aXRjaCAtIGl0IHN0YXlzIHdoZXJlIHlvdSBwdXQgaXQKc3c0ID0gUGluKDE1LCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpidXp6ID0gUGluKDE0LCBQaW4uT1VUKQoKd2hpbGUgVHJ1ZToKICAgIGlmIHN3NC52YWx1ZSgpID09IDAgYW5kIHN3MS52YWx1ZSgpID09IDA6ICAgIyBhcm1lZCBBTkQgdGhlIGRvb3IgdG91Y2hlZAogICAgICAgIGJ1enoub24oKQogICAgZWxzZToKICAgICAgICBidXp6Lm9mZigpCiAgICBzbGVlcCgwLjEp" role="img" aria-label="Python code, 10 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
+      Which slide position gives 0 is worth finding out rather than telling: have them print the value
+      and slide it. If it is the other way round, the comparison becomes 1 &mdash; not a
+      <code>not</code>.</td></tr>
+      <tr><td>Green &ldquo;safe&rdquo; light on the two-key switch</td>
+      <td>Two lines in each road: red on and green off in one, red off and green on in the other. First
+      time a block holds two lines that do opposite things.</td></tr>
+      <tr><td>Doorbell with <code>or</code></td><td>Same program, <code>or</code> instead of
+      <code>and</code>, buzzer instead of the LED. Loud. Ten seconds is plenty.</td></tr>
+      <tr><td>All three keys needed</td><td>Two joining words in one question, all <code>and</code>.
+      Worth pointing out that they chain without brackets and without limit.</td></tr>
+      <tr><td>SW1 held <em>and</em> SW2 not held</td><td>The pair with one half flipped. Good prediction
+      question: most of the class expects it to do nothing rather than to work.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li>Activities 1&ndash;4 done. Pin naming, the loop, <code>print()</code>, <code>if</code>/
+    <code>else</code>, <code>==</code> and both indent levels are all assumed and none is re-taught.</li>
+    <li><strong>Check SW1 <em>and</em> SW2 on every board.</strong> A dead second button looks exactly
+    like a wrong condition.</li>
+    <li>Two-finger test: students must be able to hold SW1 and SW2 down together. Some will need two
+    hands.</li>
+    <li>Wokwi route: one extra pushbutton over Activity 4, three extra over that for the exercise.</li>
+    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>; <a href="pinout.html">pin
+    reference</a> open on every machine.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Bare pin names joined with <code>and</code></td><td>Light on permanently, no error</td>
+      <td>The most important moment of the lesson. Ask what the name on its own <em>is</em>. Cover one
+      half with a hand: what is left is not a question.</td></tr>
+      <tr><td>Second half unfinished</td><td><code>SyntaxError</code></td><td>Count the pieces: value,
+      two equals, number. Six of them in the exercise.</td></tr>
+      <tr><td><code>or</code> instead of <code>and</code></td><td>One key lights it</td><td>Let the board
+      tell them. Ask which word a safety switch needs.</td></tr>
+      <tr><td><code>not</code> in front of a comparison</td><td>Backwards, or unreadable</td><td>Two
+      negatives. Compare with 0 and delete the <code>not</code>.</td></tr>
+      <tr><td>Compared with 1</td><td>On except when both held</td><td>Activity 3&rsquo;s inversion,
+      third appearance. Send them to that page.</td></tr>
+      <tr><td>Both setup lines on the same pin</td><td>One key seems to do both</td><td>Read the two
+      lines side by side. GP2 and GP3.</td></tr>
+      <tr><td>Only two pairs in the exercise</td><td>One combination silently fails</td><td>Ask them to
+      test SW1+SW3 specifically. It is the pair everybody forgets.</td></tr>
+      <tr><td>Wrote <code>elif</code></td><td>Works, but off-map</td><td>Not needed anywhere in this
+      module. Do not spend the lesson on it.</td></tr>
+      <tr><td>Second button wired to two legs on the same side (Wokwi)</td><td>Nothing at all</td>
+      <td>Diagonally opposite legs. Activity 3&rsquo;s rule, unchanged.</td></tr>
+      <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Do the joining words with people first.</strong> &ldquo;Stand up if you have a phone
+    <em>and</em> a pen.&rdquo; Then <em>or</em>. The <code>or</code> round is the one that teaches
+    &mdash; half the room sits down again because they think they must pick one.</li>
+    <li><strong>The logic widget on the student page is worth five minutes on the projector.</strong>
+    Hold one pad, then both, then swap the word. Nothing to type, and it shows the two halves being
+    answered separately.</li>
+    <li><strong>The dangerous mistake is worth staging.</strong> Type the bare-names version yourself,
+    run it, and let the class work out why the light will not go out.</li>
+    <li>Keep <code>not</code> short. It is the third word, it is the fiddliest, and this activity only
+    needs students to <em>read</em> it. The going-further tasks are where it gets written.</li>
+    <li>Nothing about indentation changed today. If someone is struggling there, the problem is
+    Activity 4, not this page.</li>
+    <li>Safety rules unchanged: never 5V to a GP pin, never a power pin to GND, power off at SW5 before
+    changing wires.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-5.html">activity-5.html</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-4.html">activity-4.html</a> &middot; <a href="teacher-4.html">teacher-4.html</a></td></tr>
+      <tr><td>The inversion</td><td><a href="activity-3.html#trap">activity-3.html#trap</a></td></tr>
+      <tr><td>The double equals</td><td><a href="activity-4.html#zero">activity-4.html#zero</a></td></tr>
+      <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>Activity 5</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>required</strong></td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td><strong>required</strong> &mdash; first time it is needed in a main program</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td><strong>exercise</strong></td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td><strong>required</strong></td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td><strong>exercise</strong></td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>going-further only</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>going-further only</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Activity 5 adds no new pins. It is the first activity that needs
+  <strong>two inputs and one output at the same time</strong> &mdash; check both buttons on every board
+  before the lesson.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

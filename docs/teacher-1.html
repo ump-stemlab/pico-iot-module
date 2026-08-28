@@ -11,12 +11,6 @@
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
-  </marker>
-</defs></svg>
-
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
 <nav class="sitenav"><div class="wrap">
   <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
@@ -25,6 +19,7 @@
   <a class="nl" href="activity-2.html">Activity 2</a>
   <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
@@ -42,9 +37,10 @@
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
     <h1>Activity 1 &mdash; teacher notes</h1>
-    <p class="sub">Light Up an LED. Everything on this page is for the person running the lesson.</p>
+    <p class="sub">Light Up an LED. One idea: a name points at a pin, and a pin makes a light come on.</p>
     <div class="hero-cta">
-      <a class="cta alt" href="activity-1.html">&#9654; Open the student page</a>
+      <a class="cta alt" href="activity-1.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
       <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
     </div>
   </div>
@@ -52,38 +48,50 @@
 
 <div class="wrap">
 
-<div class="tbanner"><b>Keep this link to yourself.</b> The page is unlisted and hidden from search
-engines, but the repository is public &mdash; anyone given the URL can read it. Share it with staff, not
-in the student handout.</div>
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea:</strong> a nickname points at a pin, and switching that pin on lights
+    something. Variables, comments and GP numbers all arrive in service of it.</li>
+    <li><strong>No <code>print()</code>, on purpose.</strong> The mission is a light, and a console
+    message competes with it. <code>print()</code> arrives in Activity 3. If a student adds one, praise
+    it and move on.</li>
+    <li><strong>Do not skip Wokwi.</strong> On the LilEx5 the LED wiring is inside the PCB, so students
+    never see a circuit unless they build one. That step is where the electronics is taught.</li>
+    <li>The light stays on for ever, and nothing turns it off. Ask <em>&ldquo;what would make it
+    stop?&rdquo;</em> &mdash; that is Activity 2.</li>
+  </ul>
+</section>
 
 <section>
   <h2>Exercise answer &mdash; all three LEDs</h2>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCiMgRWFjaCBMRUQgbmVlZHMgaXRzIG93biBuaWNrbmFtZQpyZWQgPSBQaW4oMTEsIFBpbi5PVVQpCnllbGxvdyA9IFBpbigxMiwgUGluLk9VVCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIE5vdyBzd2l0Y2ggYWxsIHRocmVlIG9uCnJlZC5vbigpCnllbGxvdy5vbigpCmdyZWVuLm9uKCk=" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p>The whole point of the exercise is the second clue: <strong>one nickname can only point at one
-  pin</strong>. Students who reuse <code>led</code> three times end up with only the green LED lit, and
-  that failure is worth letting them hit before you rescue them &mdash; it is the moment variables stop
-  being decoration and start being a tool.</p>
-  <p>Accept any sensible names (<code>led1/led2/led3</code>, <code>r/y/g</code>, Malay names, anything).
-  Push back only on names that lie, e.g. calling GP13 <code>red</code>.</p>
-  <p>Order does not matter. Some students will interleave name-then-switch-on per LED rather than doing
-  all three names first &mdash; that is equally correct and worth showing to the class.</p>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCiMgRWFjaCBMRUQgbmVlZHMgaXRzIG93biBuaWNrbmFtZQpyZWQgPSBQaW4oMTEsIFBpbi5PVVQpCnllbGxvdyA9IFBpbigxMiwgUGluLk9VVCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIE5vdyBzd2l0Y2ggYWxsIHRocmVlIG9uCnJlZC5vbigpCnllbGxvdy5vbigpCmdyZWVuLm9uKCk=" role="img" aria-label="Python code, 11 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li><strong>The point is the second clue: one nickname can only point at one pin.</strong> Students
+    who reuse <code>led</code> three times light only the green LED. Let them hit that before you rescue
+    them &mdash; it is where variables stop being decoration.</li>
+    <li>Accept any sensible names. Push back only on names that lie, such as calling GP13
+    <code>red</code>.</li>
+    <li>Order does not matter. Name-then-switch-on per LED is equally correct and worth showing.</li>
+  </ul>
 </section>
 
 <section>
   <h2>Going-further answers</h2>
   <table>
-    <thead><tr><th>Task</th><th>What happens / what to say</th></tr></thead>
+    <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
     <tbody>
-      <tr><td>Only red and green</td><td>Delete the yellow lines, or just its <code>.on()</code>. Both work; ask which is tidier and why.</td></tr>
-      <tr><td>Name all three <code>led</code></td><td>Only the <strong>green</strong> LED lights. Each new
-      <code>led = Pin(...)</code> overwrites the nickname, so it ends up pointing at GP13. The first two
-      pins were never switched on. This is the single most useful misconception in the activity.</td></tr>
-      <tr><td><code>red.off()</code> at the end</td><td>The red LED appears never to light. It does &mdash;
-      for a few thousandths of a second. Sets up Activity 2, where <code>sleep</code> gives the eye time
-      to catch it.</td></tr>
-      <tr><td><code>Pin(14, Pin.OUT)</code></td><td>The buzzer sounds, continuously, until they stop the
-      program. Loud in a full lab &mdash; you may want to demonstrate this once from the front rather
-      than have thirty of them discover it at the same moment.</td></tr>
+      <tr><td>Only red and green</td><td>Delete the yellow lines, or just its <code>.on()</code>. Ask which is tidier.</td></tr>
+      <tr><td>Name all three <code>led</code></td><td>Only <strong>green</strong> lights: each new
+      <code>led = Pin(...)</code> overwrites the nickname, and the first two pins were never switched on.
+      The most useful misconception in the activity.</td></tr>
+      <tr><td><code>red.off()</code> at the end</td><td>Red appears never to light &mdash; it does, for a
+      few thousandths of a second. Sets up <code>sleep</code> in Activity 2.</td></tr>
+      <tr><td><code>Pin(14, Pin.OUT)</code></td><td>The buzzer sounds continuously. Demonstrate once from
+      the front rather than letting thirty pairs find it together.</td></tr>
     </tbody>
   </table>
 </section>
@@ -91,66 +99,56 @@ in the student handout.</div>
 <section>
   <h2>Before the lesson</h2>
   <ul>
-    <li>A LilEx5 board and USB cable per pair; check <strong>SW5</strong> (power) works on each.</li>
+    <li>A board and USB cable per pair; check <strong>SW5</strong> (power) on each.</li>
     <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
-    <li>Open the <a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">Wokwi project</a> on the projector and leave it up.</li>
-    <li>Have the <a href="pinout.html">pin reference</a> open on every machine &mdash; students need it from here on.</li>
-    <li>Decide your route. Wokwi needs no hardware and no install; the real board needs both. Most classes do Wokwi first, boards in the second half.</li>
+    <li>The <a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">Wokwi project</a> up on the projector.</li>
+    <li>The <a href="pinout.html">pin reference</a> open on every machine &mdash; needed from here on.</li>
+    <li>Decide the route. Most classes do Wokwi first and boards in the second half.</li>
   </ul>
 </section>
 
 <section>
-  <h2>The pin numbers students will get wrong</h2>
+  <h2>The pin numbers students get wrong</h2>
   <table>
-    <thead><tr><th>Part</th><th>Pin</th><th>What happens if they miss it</th></tr></thead>
+    <thead><tr><th>Part</th><th>Pin</th><th>If they miss it</th></tr></thead>
     <tbody>
       <tr><td>LED1 red</td><td><span class="gp">11</span></td><td>&mdash;</td></tr>
-      <tr><td>LED2 yellow</td><td><span class="gp">12</span></td><td>Wrong colour lights, no error message</td></tr>
-      <tr><td>LED3 green</td><td><span class="gp">13</span></td><td>Wrong colour lights, no error message</td></tr>
-      <tr><td>Buzzer BZ1</td><td><span class="gp">14</span></td><td>Loud continuous tone until they stop the program</td></tr>
+      <tr><td>LED2 yellow</td><td><span class="gp">12</span></td><td>Wrong colour lights, no error</td></tr>
+      <tr><td>LED3 green</td><td><span class="gp">13</span></td><td>Wrong colour lights, no error</td></tr>
+      <tr><td>Buzzer BZ1</td><td><span class="gp">14</span></td><td>Loud continuous tone</td></tr>
     </tbody>
   </table>
-  <p>The buzzer is the useful mistake: it is loud, obvious, and makes the &ldquo;code must match the
-  copper&rdquo; point better than any explanation. Worth demonstrating deliberately once from the front
-  &mdash; less fun when thirty students find it at the same moment.</p>
-  <p>The quiet mistake is 12 versus 13. Nothing errors; the wrong colour simply lights. Tell students
-  that a program running without an error message is not the same as a program doing what they meant.</p>
+  <p>12 versus 13 is the quiet mistake: nothing errors, the wrong colour simply lights. Say it plainly
+  &mdash; a program that runs without an error is not the same as a program that does what you meant.</p>
 </section>
 
 <section>
   <h2>Teaching notes</h2>
   <ul>
-    <li><strong>Don't skip Wokwi.</strong> On the LilEx5 the LED wiring is inside the PCB, so students
-    never see a circuit unless they build one. The Wokwi step is where the electronics is actually taught.</li>
-    <li><strong>There is no <code>print()</code> in this activity.</strong> It was removed on purpose:
-    the mission is &ldquo;a pin makes a light come on&rdquo;, and a message in a console window competes
-    with that. <code>print()</code> arrives in Activity 3, where reading a button gives it a real job.
-    If a student adds one, that is fine &mdash; praise it.</li>
-    <li>The most common typo is lowercase <code>pin</code>. MicroPython is case-sensitive;
-    <code>Pin</code> is a class name. The type-it-here box on the student page catches exactly this.</li>
-    <li><code>led</code> is not a keyword. Renaming it to <code>lamp</code> throughout is a great
-    30-second demonstration that variables are just nicknames &mdash; and it pre-teaches the exercise.</li>
-    <li><strong>Comments are new in this activity.</strong> Students often think <code>#</code> lines do
-    something. Ask them to delete every comment and re-run: identical behaviour. Then ask why anyone
-    bothers.</li>
-    <li>Students expect <code>led.on()</code> to be temporary. Ask <em>&ldquo;what would make it
-    stop?&rdquo;</em> &mdash; nothing does, which sets up Activity 2 (loops and <code>sleep</code>).</li>
-    <li>The three safety rules apply from day one: never join 5V to a GP pin, never join a power pin to
-    GND, and switch off at SW5 before changing wires.</li>
+    <li>The most common typo is lowercase <code>pin</code>. MicroPython is case-sensitive; the
+    type-it-here box on the student page catches exactly this.</li>
+    <li><code>led</code> is not a keyword. Renaming it to <code>lamp</code> throughout is a 30-second
+    demonstration that variables are nicknames &mdash; and it pre-teaches the exercise.</li>
+    <li><strong>Comments are new here.</strong> Students think <code>#</code> lines do something. Delete
+    every comment, re-run, identical behaviour &mdash; then ask why anyone bothers.</li>
+    <li>The buzzer mistake is the best one in the activity: loud, obvious, and it makes the
+    &ldquo;code must match the copper&rdquo; point better than any explanation.</li>
+    <li>Safety rules from day one: never 5V to a GP pin, never a power pin to GND, power off at SW5
+    before changing wires.</li>
   </ul>
 </section>
 
 <section>
-  <h2>Every link in this activity</h2>
+  <h2>Links</h2>
   <div class="tablescroll">
   <table>
     <tbody>
       <tr><td>Student page</td><td><a href="activity-1.html">activity-1.html</a></td></tr>
-      <tr><td>Wokwi project (Activity 1)</td><td><a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">https://wokwi.com/projects/383509156510287873</a></td></tr>
-      <tr><td>Wokwi</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
-      <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
-      <tr><td>LilEx5 pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
-      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">https://github.com/ump-stemlab/pico-iot-module</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Wokwi project (Activity 1)</td><td><a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">wokwi.com/projects/383509156510287873</a></td></tr>
+      <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
     </tbody>
   </table>
   </div>
@@ -188,6 +186,7 @@ in the student handout.</div>
        <a href="activity-2.html">Activity 2</a> &middot;
        <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
