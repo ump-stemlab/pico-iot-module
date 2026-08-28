@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /pico-iot-module/teacher-1.html
+Disallow: /pico-iot-module/teacher-2.html
+Disallow: /pico-iot-module/teacher-3.html
+Disallow: /pico-iot-module/teacher-4.html
+Disallow: /pico-iot-module/teacher-5.html
+Disallow: /pico-iot-module/teacher-6.html
+Disallow: /pico-iot-module/teacher-7.html
+Disallow: /pico-iot-module/teacher-8.html
+Disallow: /pico-iot-module/teacher-9.html

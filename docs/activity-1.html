@@ -9,6 +9,13 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
 <nav class="sitenav"><div class="wrap">
   <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
@@ -17,18 +24,16 @@
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
-
-
 <header class="hero">
   <div class="wrap">
-    <p class="eyebrow">LilEx5 · Pico IoT Module · Activity 1</p>
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 1</p>
     <h1>Light Up an LED</h1>
-    <p class="sub">Write four lines of code that make a red LED switch on — and stay on.</p>
+    <p class="sub">Write three lines of code that make a red LED switch on &mdash; and stay on.</p>
     <div class="pills">
-      <span class="pill">🐍 MicroPython</span>
-      <span class="pill">⏱ About 30 minutes</span>
-      <span class="pill">🎓 First steps — no experience needed</span>
-      <span class="pill">🧪 Works without a board</span>
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 30 minutes</span>
+      <span class="pill">&#127891; First steps &mdash; no experience needed</span>
+      <span class="pill">&#129514; Works without a board</span>
     </div>
     <div class="toc">
       <a href="#pins">Meet the LEDs</a>
@@ -38,7 +43,6 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
-      <a href="#teacher">Teacher page</a>
     </div>
   </div>
 </header>
@@ -53,52 +57,99 @@
 
 <div class="wrap">
 
-<!-- ============ MISSION ============ -->
 <section>
-  <h2>🎯 Your mission</h2>
-  <p class="lede">Tell a computer chip exactly what to do — and watch it obey.</p>
-  <p>Your LilEx5 board has a Raspberry Pi Pico on it. The Pico has pins, and each pin has a number. If you send power out of the right pin, a light comes on. That is the whole idea, and everything else in this module is built on top of it.</p>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Tell a computer chip exactly what to do &mdash; and watch it obey.</p>
+  <p>Your LilEx5 board has a Raspberry Pi Pico on it. The Pico has pins, and each pin has a number.
+  Send power out of the right pin and a light comes on. That is the whole idea, and everything else
+  in this module is built on top of it.</p>
+  
+<svg class="dia" viewBox="0 0 720 150" role="img" aria-label="What the program does: get the Pin tool, choose pin GP11 as an output, switch it on, the LED glows">
+  <rect x="20" y="34" width="150" height="62" rx="10" class="step"/>
+  <text x="95" y="60" class="dlbl" text-anchor="middle">get the tool</text>
+  <text x="95" y="80" class="dsub" text-anchor="middle">import Pin</text>
+  <path d="M178 65 L206 65" class="arrow"/>
+  <rect x="214" y="34" width="176" height="62" rx="10" class="step"/>
+  <text x="302" y="60" class="dlbl" text-anchor="middle">choose the pin</text>
+  <text x="302" y="80" class="dsub" text-anchor="middle">GP11, pointing out</text>
+  <path d="M398 65 L426 65" class="arrow"/>
+  <rect x="434" y="34" width="150" height="62" rx="10" class="step"/>
+  <text x="509" y="60" class="dlbl" text-anchor="middle">send the power</text>
+  <text x="509" y="80" class="dsub" text-anchor="middle">led.on()</text>
+  <path d="M592 65 L620 65" class="arrow"/>
+  <circle cx="662" cy="65" r="26" fill="#FF2B2B" opacity="0.28"/>
+  <circle cx="662" cy="65" r="20" fill="#FF2B2B"/>
+  <text x="662" y="120" class="dsub" text-anchor="middle">it glows</text>
+</svg>
+
 
   <h3>What you will learn</h3>
   <div class="grid2">
     <div class="mini"><h4>What a GPIO pin is</h4><p>And why every pin has a number you must get right.</p></div>
     <div class="mini"><h4>How to send power out</h4><p>Setting a pin to <em>output</em> and switching it on.</p></div>
+    <div class="mini"><h4>How to leave yourself notes</h4><p>Comments &mdash; lines the Pico ignores but people can read.</p></div>
     <div class="mini"><h4>How to type, save and run</h4><p>Using Thonny, or the Wokwi simulator in a browser.</p></div>
-    <div class="mini"><h4>That code must match copper</h4><p>The wrong number does the wrong thing — loudly.</p></div>
   </div>
 
   <h3>Which route are you taking?</h3>
   <table>
     <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
     <tbody>
-      <tr><td><strong>A — Wokwi</strong> (online)</td><td>A web browser only. Nothing to plug in.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
-      <tr><td><strong>B — the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
+      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. Nothing to plug in.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
     </tbody>
   </table>
-  <div class="cal tip"><b>Start in Wokwi — even if the board is on your desk</b>
-  Wiring it yourself is half of what you are learning. On the LilEx5 that wiring is hidden inside the printed circuit board, so the simulator is the only place you actually get to build the circuit.</div>
+  <div class="cal tip"><b>Start in Wokwi &mdash; even if the board is on your desk</b>
+  Wiring it yourself is half of what you are learning. On the LilEx5 that wiring is hidden inside the
+  printed circuit board, so the simulator is the only place you actually get to build the circuit.</div>
 </section>
 
-<!-- ============ PINS ============ -->
 <section id="pins">
-  <h2>💡 Meet the three LEDs</h2>
-  <p>An LED is a tiny lamp. Your board has three. Each one is joined to a different pin, and in your code you always use the <strong>GP number</strong>.</p>
+  <h2>&#128161; Meet the three LEDs</h2>
+  <p>An LED is a tiny lamp. Your board has three, plus a buzzer. Each one is joined to a different
+  pin, and in your code you always use the <strong>GP number</strong>.</p>
+  
+<svg class="dia" viewBox="0 0 720 250" role="img" aria-label="The LilEx5 board with LED1 red on GP11, LED2 yellow on GP12, LED3 green on GP13 and the buzzer on GP14">
+  <rect x="60" y="46" width="600" height="118" rx="14" class="pcb"/>
+  <text x="360" y="30" class="dttl" text-anchor="middle">The four things you can switch on</text>
+  <circle cx="165" cy="105" r="27" fill="#FF2B2B"/>
+  <circle cx="315" cy="105" r="27" fill="#FFD426"/>
+  <circle cx="465" cy="105" r="27" fill="#2BE06A"/>
+  <rect x="578" y="80" width="50" height="50" rx="9" fill="#B9C2FF"/>
+  <path d="M603 92 l0 26 M594 97 l0 16 M612 97 l0 16" stroke="#3a3f66" stroke-width="3" stroke-linecap="round"/>
+  <g class="lead"><path d="M165 140 L165 178"/><path d="M315 140 L315 178"/><path d="M465 140 L465 178"/><path d="M603 140 L603 178"/></g>
+  <g text-anchor="middle">
+    <text x="165" y="199" class="dlbl">LED1 &middot; red</text>
+    <text x="315" y="199" class="dlbl">LED2 &middot; yellow</text>
+    <text x="465" y="199" class="dlbl">LED3 &middot; green</text>
+    <text x="603" y="199" class="dlbl">BZ1 &middot; buzzer</text>
+    <text x="165" y="222" class="dpin">GP11</text>
+    <text x="315" y="222" class="dpin">GP12</text>
+    <text x="465" y="222" class="dpin">GP13</text>
+    <text x="603" y="222" class="dpin">GP14</text>
+  </g>
+  <text x="603" y="243" class="dwarn" text-anchor="middle">not a light!</text>
+</svg>
+
 
   <table>
-    <thead><tr><th>LED</th><th>Colour</th><th>Pin you type in code</th></tr></thead>
+    <thead><tr><th>Part</th><th>Colour</th><th>Pin you type in code</th></tr></thead>
     <tbody>
-      <tr><td>LED1</td><td>🔴 Red</td><td><span class="gp">11</span></td></tr>
-      <tr><td>LED2</td><td>🟡 Yellow</td><td><span class="gp">12</span></td></tr>
-      <tr><td>LED3</td><td>🟢 Green</td><td><span class="gp">13</span></td></tr>
-      <tr><td>BZ1</td><td>🔔 Buzzer — <em>not a light</em></td><td><span class="gp">14</span></td></tr>
+      <tr><td>LED1</td><td>&#128308; Red</td><td><span class="gp">11</span></td></tr>
+      <tr><td>LED2</td><td>&#128993; Yellow</td><td><span class="gp">12</span></td></tr>
+      <tr><td>LED3</td><td>&#128994; Green</td><td><span class="gp">13</span></td></tr>
+      <tr><td>BZ1</td><td>&#128276; Buzzer &mdash; <em>not a light</em></td><td><span class="gp">14</span></td></tr>
     </tbody>
   </table>
 
-  <div class="cal warn"><b>Careful — these numbers are new</b>
-  Older worksheets used 14, 13 and 12 for the LEDs. On the <strong>LilEx5</strong>, <strong>GP14 is the buzzer</strong>. Type 14 by mistake and you get a beep instead of a light. And old "green = 12" is now <em>yellow</em>, which lights the wrong colour with no error at all.</div>
+  <div class="cal warn"><b>GP14 is the buzzer, not a light</b>
+  It sits right next to the three LEDs in the list, so it is easy to type by mistake. If your program
+  makes a noise instead of a light, you have used <strong>14</strong> when you wanted
+  <strong>11</strong>.</div>
 
   <h3>Try it before you build it</h3>
-  <p>Type a pin number below and press <strong>Run</strong>. This is exactly what your code will do in a minute — see if you can find the red LED without scrolling back up.</p>
+  <p>Type a pin number below and press <strong>Run</strong>. This is exactly what your code will do in
+  a minute &mdash; see if you can find the red LED without scrolling back up.</p>
 
   <div class="sim">
     <div class="board">
@@ -110,8 +161,8 @@
     <div class="sim-ctl">
       <label for="pinin">led = Pin(</label>
       <input type="number" id="pinin" value="11" min="0" max="28">
-      <label>, Pin.OUT) &nbsp;→&nbsp; led.on()</label>
-      <button class="btn" id="simrun" type="button">▶ Run</button>
+      <label>, Pin.OUT) &nbsp;&rarr;&nbsp; led.on()</label>
+      <button class="btn" id="simrun" type="button">&#9654; Run</button>
       <button class="btn ghost" id="simoff" type="button">Reset board</button>
     </div>
     <div class="sim-out" id="simout">Nothing running yet. Pick a pin and press Run.</div>
@@ -120,37 +171,67 @@
   <label class="chk"><input type="checkbox" data-p="p1"><span>I found the pin number that lights the <strong>red</strong> LED</span></label>
 
   <details>
-    <summary>🤔 Why does the red LED get GP11 and not GP14?</summary>
-    <p>The numbers are not chosen by you — they are decided by whoever designed the board and soldered the copper tracks. On the LilEx5 the designer ran a track from the Pico's GP11 pad to the red LED, GP12 to the yellow one, GP13 to the green one, and GP14 to the buzzer.</p>
-    <p>Your code has to match the copper. If you tell GP14 to switch on, the electricity goes where GP14's track goes — to the buzzer — no matter what you <em>meant</em>.</p>
-    <p>This is why every board comes with a <strong>pinout sheet</strong>. Ours is <a href="pinout.html" target="_blank" rel="noopener">PINOUT.md</a>. Engineers check it constantly; nobody memorises it.</p>
+    <summary>&#129300; Why does the red LED get GP11 and not GP14?</summary>
+    <p>The numbers are not chosen by you &mdash; they are decided by whoever designed the board and
+    soldered the copper tracks. On the LilEx5 the designer ran a track from the Pico's GP11 pad to the
+    red LED, GP12 to the yellow one, GP13 to the green one, and GP14 to the buzzer.</p>
+    <p>Your code has to match the copper. If you tell GP14 to switch on, the electricity goes where
+    GP14's track goes &mdash; to the buzzer &mdash; no matter what you <em>meant</em>.</p>
+    <p>This is why every board comes with a <strong>pinout sheet</strong>. Ours is
+    <a href="pinout.html">the pin reference</a>. Engineers check it constantly; nobody memorises it.</p>
   </details>
 
   <div class="cal info"><b>Board labels are not pin numbers</b>
-  The picture printed on the board uses its own labels, like <code>SW1(11)</code> or <code>SW4(37)</code>. Those are positions on the connector. In code you always use the <strong>GP</strong> number.</div>
+  The picture printed on the board uses its own labels, like <code>SW1(11)</code> or <code>SW4(37)</code>.
+  Those are positions on the connector. In code you always use the <strong>GP</strong> number.</div>
 </section>
 
-<!-- ============ BUILD ============ -->
 <section id="build">
-  <h2>🔧 Build the circuit</h2>
+  <h2>&#128295; Build the circuit</h2>
   <div class="tabs" role="tablist">
-    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">🧪 Route A — Wokwi</button>
-    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">🔌 Route B — real board</button>
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
   </div>
 
   <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
-    <p>Wokwi is a free website that pretends to be a real Pico. You build the circuit by dragging parts and drawing wires, then press Play. <strong>Nothing can break and nothing can burn out.</strong></p>
+    <p>Wokwi is a free website that pretends to be a real Pico. You build the circuit by dragging parts
+    and drawing wires, then press Play. <strong>Nothing can break and nothing can burn out.</strong></p>
 
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Start a new project</h4>
-      <p>Go to <a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a>, click <strong>New Project</strong>, then choose <strong>Raspberry Pi Pico</strong> and <strong>MicroPython</strong>.</p>
+      <p>Go to <a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a>, click
+      <strong>New Project</strong>, then choose <strong>Raspberry Pi Pico</strong> and <strong>MicroPython</strong>.</p>
       <label class="chk"><input type="checkbox" data-p="a1"><span>I have a new Pico + MicroPython project open</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Find your way around</h4>
-      <p>The screen splits in two: your code (<code>main.py</code>) on one side, your circuit on the other. The <strong>Serial Monitor</strong> sits underneath — that is where <code>print()</code> messages appear.</p>
-      <label class="chk"><input type="checkbox" data-p="a2"><span>I can see main.py, the diagram, and the Serial Monitor</span></label>
+      <p>The screen splits in two: your code on the left, your circuit on the right, and the Serial
+      Monitor underneath.</p>
+      
+<svg class="dia" viewBox="0 0 720 290" role="img" aria-label="The Wokwi screen: your code on the left, your circuit on the right, the serial monitor underneath">
+  <text x="360" y="24" class="dttl" text-anchor="middle">What the Wokwi screen looks like</text>
+  <rect x="30" y="40" width="660" height="222" rx="12" class="win"/>
+  <rect x="30" y="40" width="660" height="30" rx="12" class="wintop"/>
+  <circle cx="52" cy="55" r="5" fill="#FF5F57"/><circle cx="70" cy="55" r="5" fill="#FEBC2E"/><circle cx="88" cy="55" r="5" fill="#28C840"/>
+  <rect x="44" y="84" width="300" height="110" rx="8" class="pane"/>
+  <text x="60" y="106" class="dlbl">main.py</text>
+  <g class="codeline"><path d="M60 124 L250 124"/><path d="M60 142 L200 142"/><path d="M60 160 L230 160"/></g>
+  <text x="194" y="212" class="dsub" text-anchor="middle">your code goes here</text>
+  <rect x="372" y="84" width="304" height="110" rx="8" class="pane"/>
+  <text x="388" y="106" class="dlbl">diagram</text>
+  <circle cx="562" cy="150" r="16" fill="#FF2B2B"/>
+  <path d="M470 150 L546 150" class="wire"/>
+  <rect x="428" y="142" width="34" height="16" rx="4" class="part"/>
+  <text x="524" y="212" class="dsub" text-anchor="middle">your circuit goes here</text>
+  <circle cx="656" cy="55" r="13" fill="#28C840"/>
+  <path d="M652 49 l9 6 l-9 6 Z" fill="#0d2b2f"/>
+  <text x="628" y="60" class="dsub" text-anchor="end">press Play</text>
+  <rect x="44" y="206" width="632" height="42" rx="8" class="pane"/>
+  <text x="60" y="232" class="dsub">Serial Monitor &mdash; messages from the Pico appear here</text>
+</svg>
+
+      <label class="chk"><input type="checkbox" data-p="a2"><span>I can see main.py, the diagram, and the Play button</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -162,25 +243,194 @@
           <tr><td><strong>Resistor</strong></td><td>click it, then set its resistance to <strong>330</strong></td></tr>
         </tbody>
       </table>
-      <label class="chk"><input type="checkbox" data-p="a3"><span>Red LED and 330 Ω resistor are on the diagram</span></label>
+      <p>An LED only works one way round. The two legs are different lengths, and that is how you tell
+      them apart:</p>
+      
+<svg class="dia" viewBox="0 0 620 270" role="img" aria-label="An LED has a long leg called A which goes to the resistor, and a short leg called C which goes to ground">
+  <text x="310" y="28" class="dttl" text-anchor="middle">Which way round does an LED go?</text>
+  <path d="M126 108 a34 34 0 0 1 68 0 l0 30 l-68 0 Z" fill="#FF2B2B"/>
+  <rect x="120" y="134" width="80" height="10" rx="4" fill="#c01f1f"/>
+  <path d="M143 144 L143 224" class="leg"/>
+  <path d="M177 144 L177 188" class="leg"/>
+  <circle cx="143" cy="224" r="5" class="legdot"/>
+  <circle cx="177" cy="188" r="5" class="legdot"/>
+  <g class="lead"><path d="M186 184 L268 184"/><path d="M152 220 L268 220"/></g>
+  <text x="278" y="180" class="dlbl">C &mdash; short leg</text>
+  <text x="278" y="200" class="dsub">goes to GND</text>
+  <text x="278" y="228" class="dlbl">A &mdash; long leg</text>
+  <text x="278" y="248" class="dsub">goes to the resistor</text>
+  <rect x="392" y="56" width="200" height="92" rx="12" class="note"/>
+  <text x="412" y="86" class="dlbl">Remember</text>
+  <text x="412" y="112" class="dsub">The long leg is the one</text>
+  <text x="412" y="132" class="dsub">that gets the power.</text>
+</svg>
+
+      <label class="chk"><input type="checkbox" data-p="a3"><span>Red LED and 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">4</div><div class="body">
       <h4>Draw the wires</h4>
-      <p>Click one pin, then click the pin you want to join it to. A wire appears. Press <kbd>Esc</kbd> if you start the wrong one.</p>
-      <pre class="code"><span class="c">Pico GP11</span> ──[ 330 Ω ]── <span class="c">A (long leg)</span>  🔴  <span class="c">C (short leg)</span> ── <span class="c">Pico GND</span></pre>
-      <p>The LED's <strong>long leg (A)</strong> goes through the resistor to <strong>GP11</strong>. The <strong>short leg (C)</strong> goes to <strong>GND</strong>.</p>
-      <label class="chk"><input type="checkbox" data-p="a4"><span>Long leg → resistor → GP11</span></label>
-      <label class="chk"><input type="checkbox" data-p="a5"><span>Short leg → GND</span></label>
+      <p>Click one pin, then click the pin you want to join it to. A wire appears. Press <kbd>Esc</kbd>
+      if you start the wrong one.</p>
+      <svg class="dia wide" viewBox="0 0 780 530" role="img" aria-label="The Wokwi wiring: physical pin 15 (GP11) goes through a 330 ohm resistor to the LED long leg, and the LED short leg returns to physical pin 18 (GND)">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What it looks like in Wokwi</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The small numbers are the physical pins. In your code you type the GP number.</text>
+  <rect x="470" y="74" width="182" height="396.6" rx="9" class="pico"/>
+  <rect x="533" y="62" width="56" height="20" rx="4" class="usb"/>
+  <text x="561" y="456.6" class="silkbig" text-anchor="middle">Raspberry Pi Pico</text>
+  <rect x="457" y="90.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="100" class="padn2" text-anchor="end">1</text>
+  <text x="502" y="100" class="silk">GP0</text>
+  <rect x="457" y="107.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="117.4" class="padn2" text-anchor="end">2</text>
+  <text x="502" y="117.4" class="silk">GP1</text>
+  <rect x="457" y="125.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="134.8" class="padn2" text-anchor="end">3</text>
+  <text x="502" y="134.8" class="silk">GND</text>
+  <rect x="457" y="142.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="152.2" class="padn2" text-anchor="end">4</text>
+  <text x="502" y="152.2" class="silk">GP2</text>
+  <rect x="457" y="160.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="169.6" class="padn2" text-anchor="end">5</text>
+  <text x="502" y="169.6" class="silk">GP3</text>
+  <rect x="457" y="177.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="187" class="padn2" text-anchor="end">6</text>
+  <text x="502" y="187" class="silk">GP4</text>
+  <rect x="457" y="194.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="204.4" class="padn2" text-anchor="end">7</text>
+  <text x="502" y="204.4" class="silk">GP5</text>
+  <rect x="457" y="212.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="221.8" class="padn2" text-anchor="end">8</text>
+  <text x="502" y="221.8" class="silk">GND</text>
+  <rect x="457" y="229.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="239.2" class="padn2" text-anchor="end">9</text>
+  <text x="502" y="239.2" class="silk">GP6</text>
+  <rect x="457" y="247.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="256.6" class="padn2" text-anchor="end">10</text>
+  <text x="502" y="256.6" class="silk">GP7</text>
+  <rect x="457" y="264.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="274" class="padn2" text-anchor="end">11</text>
+  <text x="502" y="274" class="silk">GP8</text>
+  <rect x="457" y="281.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="291.4" class="padn2" text-anchor="end">12</text>
+  <text x="502" y="291.4" class="silk">GP9</text>
+  <rect x="457" y="299.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="308.8" class="padn2" text-anchor="end">13</text>
+  <text x="502" y="308.8" class="silk">GND</text>
+  <rect x="457" y="316.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="326.2" class="padn2" text-anchor="end">14</text>
+  <text x="502" y="326.2" class="silk">GP10</text>
+  <rect x="457" y="334.1" width="13" height="11" rx="2" class="padhot"/>
+  <text x="494" y="343.6" class="padn2" text-anchor="end">15</text>
+  <text x="502" y="343.6" class="silk">GP11</text>
+  <rect x="457" y="351.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="361" class="padn2" text-anchor="end">16</text>
+  <text x="502" y="361" class="silk">GP12</text>
+  <rect x="457" y="368.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="378.4" class="padn2" text-anchor="end">17</text>
+  <text x="502" y="378.4" class="silk">GP13</text>
+  <rect x="457" y="386.3" width="13" height="11" rx="2" class="padgnd"/>
+  <text x="494" y="395.8" class="padn2" text-anchor="end">18</text>
+  <text x="502" y="395.8" class="silk">GND</text>
+  <rect x="457" y="403.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="413.2" class="padn2" text-anchor="end">19</text>
+  <text x="502" y="413.2" class="silk">GP14</text>
+  <rect x="457" y="421.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="430.6" class="padn2" text-anchor="end">20</text>
+  <text x="502" y="430.6" class="silk">GP15</text>
+  <rect x="652" y="90.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="100" class="silk" text-anchor="end">VBUS</text>
+  <text x="628" y="100" class="padn2">40</text>
+  <rect x="652" y="107.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="117.4" class="silk" text-anchor="end">VSYS</text>
+  <text x="628" y="117.4" class="padn2">39</text>
+  <rect x="652" y="125.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="134.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="134.8" class="padn2">38</text>
+  <rect x="652" y="142.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="152.2" class="silk" text-anchor="end">3V3_EN</text>
+  <text x="628" y="152.2" class="padn2">37</text>
+  <rect x="652" y="160.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="169.6" class="silk" text-anchor="end">3V3</text>
+  <text x="628" y="169.6" class="padn2">36</text>
+  <rect x="652" y="177.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="187" class="silk" text-anchor="end">ADC_VREF</text>
+  <text x="628" y="187" class="padn2">35</text>
+  <rect x="652" y="194.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="204.4" class="silk" text-anchor="end">GP28</text>
+  <text x="628" y="204.4" class="padn2">34</text>
+  <rect x="652" y="212.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="221.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="221.8" class="padn2">33</text>
+  <rect x="652" y="229.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="239.2" class="silk" text-anchor="end">GP27</text>
+  <text x="628" y="239.2" class="padn2">32</text>
+  <rect x="652" y="247.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="256.6" class="silk" text-anchor="end">GP26</text>
+  <text x="628" y="256.6" class="padn2">31</text>
+  <rect x="652" y="264.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="274" class="silk" text-anchor="end">RUN</text>
+  <text x="628" y="274" class="padn2">30</text>
+  <rect x="652" y="281.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="291.4" class="silk" text-anchor="end">GP22</text>
+  <text x="628" y="291.4" class="padn2">29</text>
+  <rect x="652" y="299.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="308.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="308.8" class="padn2">28</text>
+  <rect x="652" y="316.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="326.2" class="silk" text-anchor="end">GP21</text>
+  <text x="628" y="326.2" class="padn2">27</text>
+  <rect x="652" y="334.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="343.6" class="silk" text-anchor="end">GP20</text>
+  <text x="628" y="343.6" class="padn2">26</text>
+  <rect x="652" y="351.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="361" class="silk" text-anchor="end">GP19</text>
+  <text x="628" y="361" class="padn2">25</text>
+  <rect x="652" y="368.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="378.4" class="silk" text-anchor="end">GP18</text>
+  <text x="628" y="378.4" class="padn2">24</text>
+  <rect x="652" y="386.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="395.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="395.8" class="padn2">23</text>
+  <rect x="652" y="403.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="413.2" class="silk" text-anchor="end">GP17</text>
+  <text x="628" y="413.2" class="padn2">22</text>
+  <rect x="652" y="421.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="430.6" class="silk" text-anchor="end">GP16</text>
+  <text x="628" y="430.6" class="padn2">21</text>
+  <path d="M457 339.6 L360 339.6" class="wireR"/>
+  <rect x="252" y="324.6" width="104" height="30" rx="6" class="part"/>
+  <path d="M262 339.6 l9 -8 l13 16 l13 -16 l13 16 l13 -16 l9 8" class="zig"/>
+  <path d="M252 339.6 L214 339.6" class="wireR"/>
+  <text x="304" y="313.6" class="dlbl" text-anchor="middle">330 &#8486;</text>
+  <circle cx="188" cy="339.6" r="26" fill="#FF2B2B"/>
+  <text x="188" y="301.6" class="dlbl" text-anchor="middle">red LED</text>
+  <text x="214" y="383.6" class="dsub" text-anchor="middle">A</text>
+  <text x="162" y="383.6" class="dsub" text-anchor="middle">C</text>
+  <path d="M162 339.6 L112 339.6 L112 496.6 L426 496.6 L426 391.8" class="wireK"/>
+  <path d="M426 391.8 L457 391.8" class="wireK"/>
+  <text x="300" y="486.6" class="dsub" text-anchor="middle">back to GND</text>
+  <rect x="150" y="72" width="250" height="74" rx="10" class="note"/>
+  <text x="166" y="98" class="dlbl">Use these two pins</text>
+  <text x="166" y="120" class="dsub">pin 15 is GP11 &mdash; the one you type</text>
+  <text x="166" y="138" class="dsub">pin 18 is the nearest GND</text>
+  </svg>
+      <p><strong>In words:</strong> the LED's <strong>long leg (A)</strong> goes through the resistor to
+      <strong>GP11</strong>. The <strong>short leg (C)</strong> goes to <strong>GND</strong>.</p>
+      <label class="chk"><input type="checkbox" data-p="a4"><span>Long leg &rarr; resistor &rarr; GP11</span></label>
+      <label class="chk"><input type="checkbox" data-p="a5"><span>Short leg &rarr; GND</span></label>
       <details>
-        <summary>⚡ Why the resistor?</summary>
-        <p>On a real board, too much electricity rushes through the LED and burns it out in about a second. The resistor slows the flow down — think of it as a <strong>narrow gate in a wide corridor</strong>.</p>
+        <summary>&#9889; Why the resistor?</summary>
+        <p>On a real board, too much electricity rushes through the LED and burns it out in about a
+        second. The resistor slows the flow down &mdash; think of it as a <strong>narrow gate in a wide
+        corridor</strong>.</p>
         <p>Wokwi checks for this too: leave the resistor out and it shows a warning triangle on the LED.</p>
       </details>
     </div></div>
 
     <div class="cal tip"><b>Stuck? Compare with the finished one</b>
-    Build yours first, then open the <a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">ready-made Wokwi project</a> to check it.</div>
+    Build yours first, then open the <a href="%WOKWI%" target="_blank" rel="noopener">ready-made Wokwi
+    project</a> to check it.</div>
   </div>
 
   <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
@@ -188,424 +438,318 @@
 
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in your Pico</h4>
-      <p>Connect the Pico to your computer with the USB cable, and make sure the board's power switch <strong>SW5</strong> is on. A small light on the Pico turns on. Nothing else happens yet — that is normal.</p>
+      <p>Connect the Pico to your computer with the USB cable, and make sure the board's power switch
+      <strong>SW5</strong> is on. A small light on the Pico turns on. Nothing else happens yet &mdash;
+      that is normal.</p>
       <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Open Thonny and find the Pico</h4>
-      <p>Open <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>. Look at the <strong>bottom-right corner</strong> of the window and choose <code>MicroPython (Raspberry Pi Pico)</code>.</p>
-      <p>If <code>&gt;&gt;&gt;</code> appears in the <strong>Shell</strong> at the bottom, Thonny has found your Pico. Well done.</p>
+      <p>Open <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>. Look at the
+      <strong>bottom-right corner</strong> and choose <code>MicroPython (Raspberry Pi Pico)</code>.
+      When <code>&gt;&gt;&gt;</code> appears in the Shell, Thonny has found your Pico.</p>
+      
+<svg class="dia" viewBox="0 0 720 300" role="img" aria-label="The Thonny window: the green Run arrow at the top, the Shell at the bottom, and the interpreter chooser in the bottom right corner">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Two things to find in Thonny</text>
+  <rect x="30" y="40" width="660" height="230" rx="12" class="win"/>
+  <rect x="30" y="40" width="660" height="34" rx="12" class="wintop"/>
+  <circle cx="70" cy="57" r="20" class="ring"/>
+  <circle cx="70" cy="57" r="12" fill="#28C840"/>
+  <path d="M65 51 l11 6 l-11 6 Z" fill="#0d2b2f"/>
+  <text x="100" y="62" class="dlbl">Run</text>
+  <text x="152" y="62" class="dsub">&#9312; press this to run your program</text>
+  <rect x="44" y="88" width="632" height="96" rx="8" class="pane"/>
+  <text x="60" y="110" class="dlbl">led_light.py</text>
+  <g class="codeline"><path d="M60 130 L280 130"/><path d="M60 148 L220 148"/><path d="M60 166 L180 166"/></g>
+  <rect x="44" y="196" width="632" height="42" rx="8" class="pane"/>
+  <text x="60" y="222" class="dmono">&gt;&gt;&gt;</text>
+  <text x="104" y="222" class="dsub">the Shell &mdash; this prompt means Thonny found your Pico</text>
+  <rect x="404" y="246" width="272" height="20" rx="6" class="chip"/>
+  <text x="540" y="261" class="dchip" text-anchor="middle">MicroPython (Raspberry Pi Pico)</text>
+  <text x="392" y="261" class="dsub" text-anchor="end">&#9313; set this here</text>
+</svg>
+
       <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Wire the LED</h4>
-      <p><strong>There is nothing to wire.</strong> The three LEDs are already joined to pins 11, 12 and 13 inside the LilEx5 board — the same circuit you just built in Wokwi, made permanent in copper.</p>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>Understood — go straight to the code</span></label>
+      <p><strong>There is nothing to wire.</strong> The three LEDs are already joined to pins 11, 12 and
+      13 inside the LilEx5 board &mdash; the same circuit you just built in Wokwi, made permanent in copper.</p>
+      <label class="chk"><input type="checkbox" data-p="b3"><span>Understood &mdash; go straight to the code</span></label>
     </div></div>
 
     <div class="cal warn"><b>Three safety rules</b>
-    Never connect a 5V pin to a GP pin — GP pins are 3.3 V only. Never join a power pin to a GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+    Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
+    GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
 </section>
 
-<!-- ============ CODE ============ -->
 <section id="code">
-  <h2>⌨️ Write the program</h2>
-  <p>In Wokwi, click on <code>main.py</code>. In Thonny, choose <strong>File ▸ New</strong>. Then type this in exactly. Capital letters matter: <code>Pin</code> is not the same as <code>pin</code>.</p>
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>In Wokwi, click on <code>main.py</code>. In Thonny, choose <strong>File &#9654; New</strong>.
+  Then type this in exactly. Capital letters matter: <code>Pin</code> is not the same as <code>pin</code>.</p>
 
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMSwgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIlRoZSBMRUQgaXMgb24hIik=" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <span class="codeimg" data-code="IyBCb3Jyb3cgdGhlIFBpbiB0b29sIGZyb20gdGhlIFBpY28ncyB0b29sYm94CmZyb20gbWFjaGluZSBpbXBvcnQgUGluCgojIExFRDEgaXMgdGhlIHJlZCBvbmUuIEl0IGlzIHdpcmVkIHRvIHBpbiBHUDExLgojIE9VVCBtZWFuczogc2VuZCBwb3dlciBvdXQgb2YgdGhpcyBwaW4uCmxlZCA9IFBpbigxMSwgUGluLk9VVCkKCiMgU3dpdGNoIGl0IG9uCmxlZC5vbigp" role="img" aria-label="Python code, 9 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal info"><b>The grey lines starting with #</b>
+  Those are <strong>comments</strong> &mdash; notes for humans. The Pico ignores everything after a
+  <code>#</code>, so you can write whatever helps you remember. Good programmers use them constantly.
+  Type them if you like, or skip them: the program runs either way.</div>
 
   <div class="cal warn"><b>Type it, don't copy it</b>
-  Typing every character yourself is how your fingers and your brain learn the language. Copy-paste teaches you nothing — and you will meet these same lines again in every activity from now on.</div>
+  Typing every character yourself is how your fingers and your brain learn the language. Copy-paste
+  teaches you nothing &mdash; and you will meet these same lines again in every activity from now on.</div>
 
   <h3>Type it here first</h3>
-  <p>Practise the four lines below. The box turns green when a line is exactly right.</p>
+  <p>Practise the three working lines below. The box turns green when a line is exactly right.</p>
 
   <div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="led = Pin(11, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="led.on()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
-    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder='print("The LED is on!")' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
-    <p class="typer-msg" id="typermsg">Four boxes, four lines. Take your time.</p>
+    <p class="typer-msg" id="typermsg">Three boxes, three lines. Take your time.</p>
   </div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed all four lines myself, into Wokwi or Thonny</span></label>
+  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
-  <h3>🔍 What each line is doing</h3>
+  <h3>&#128269; What each line is doing</h3>
   <table>
     <thead><tr><th>Code</th><th>What it means</th></tr></thead>
     <tbody>
-      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Borrow the <strong>Pin</strong> tool out of the Pico's toolbox. Without this line the Pico does not know the word <code>Pin</code>.</td></tr>
-      <tr><td><span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Pick pin <strong>11</strong> and set it to <strong>OUT</strong> — <em>I want to send power out of this pin</em>. Give it the nickname <code>led</code>.</td></tr>
-      <tr><td><span class="codeimg inline" data-code="bGVkLm9uKCk=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td><strong>Send the power.</strong> The LED lights up.</td></tr>
-      <tr><td><span class="codeimg inline" data-code="cHJpbnQoIlRoZSBMRUQgaXMgb24hIik=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Write a message where you can see it: the Shell in Thonny, or the Serial Monitor in Wokwi.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="IyBhIG5vdGUgdG8geW91cnNlbGY=" role="img" aria-label="A comment line"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td>
+          <td>A <strong>comment</strong>. Everything after the <code>#</code> is ignored by the Pico. It is
+          there to remind you (and whoever reads your code next) what is going on.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td>
+          <td>Borrow the <strong>Pin</strong> tool out of the Pico's toolbox. Without this line the Pico
+          does not know the word <code>Pin</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td>
+          <td>Pick pin <strong>11</strong> and set it to <strong>OUT</strong> &mdash; <em>I want to send
+          power out of this pin</em>. Give it the nickname <code>led</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bGVkLm9uKCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td>
+          <td><strong>Send the power.</strong> The LED lights up, and stays lit.</td></tr>
     </tbody>
   </table>
 
   <details>
-    <summary>🏷️ What is <code>led</code>, exactly?</summary>
-    <p><code>led</code> is a <strong>variable</strong> — a nickname. It is not a special Python word. You could call it <code>lamp</code> or <code>my_light</code>, as long as you use the same name on every line:</p>
+    <summary>&#127991;&#65039; What is <code>led</code>, exactly?</summary>
+    <p><code>led</code> is a <strong>variable</strong> &mdash; a nickname. It is not a special Python
+    word. You could call it <code>lamp</code> or <code>my_light</code>, as long as you use the same name
+    on every line:</p>
     <span class="codeimg" data-code="bGFtcCA9IFBpbigxMSwgUGluLk9VVCkKbGFtcC5vbigp" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-    <p>This works exactly the same. Try it — it is a good way to prove to yourself that the computer does not "know" what an LED is.</p>
+    <p>This works exactly the same. Try it &mdash; it is a good way to prove to yourself that the
+    computer does not &ldquo;know&rdquo; what an LED is.</p>
   </details>
 </section>
 
-<!-- ============ RUN ============ -->
 <section id="run">
-  <h2>▶️ Save it and run it</h2>
+  <h2>&#9654;&#65039; Save it and run it</h2>
   <table>
     <thead><tr><th></th><th>Save</th><th>Run</th></tr></thead>
     <tbody>
-      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd> saves the project.</td><td>Click the big green <strong>▶ Play</strong> button above the diagram.</td></tr>
-      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>led_light.py</code>.</td><td>Click the green <strong>▶ Run</strong> arrow, or press <kbd>F5</kbd>.</td></tr>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd> saves the project.</td><td>Click the big green <strong>&#9654; Play</strong> button above the diagram.</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>led_light.py</code>.</td><td>Click the green <strong>&#9654; Run</strong> arrow, or press <kbd>F5</kbd>.</td></tr>
     </tbody>
   </table>
   <p>The <code>.py</code> at the end tells the computer this is a Python file.</p>
 
-  <h3>✅ What you should see</h3>
-  <pre class="code">🔴 ON        ⚫ off        ⚫ off
-LED1 red    LED2 yellow  LED3 green
+  <h3>&#9989; What you should see</h3>
+  
+<svg class="dia" viewBox="0 0 560 190" role="img" aria-label="What you should see: the red LED glowing, the yellow and green LEDs dark">
+  <rect x="30" y="26" width="500" height="100" rx="12" class="pcb"/>
+  <circle cx="150" cy="76" r="30" fill="#FF2B2B" opacity="0.28"/>
+  <circle cx="150" cy="76" r="24" fill="#FF2B2B"/>
+  <circle cx="280" cy="76" r="24" fill="#3a3210"/>
+  <circle cx="410" cy="76" r="24" fill="#0f3a1a"/>
+  <g text-anchor="middle">
+    <text x="150" y="152" class="dlbl">red &mdash; ON</text>
+    <text x="280" y="152" class="dsub">yellow &mdash; off</text>
+    <text x="410" y="152" class="dsub">green &mdash; off</text>
+    <text x="150" y="174" class="dpin">GP11</text>
+    <text x="280" y="174" class="dpin">GP12</text>
+    <text x="410" y="174" class="dpin">GP13</text>
+  </g>
+</svg>
 
-Shell / Serial Monitor:
-&gt;&gt;&gt; The LED is on!</pre>
   <p>The red LED comes on and <strong>stays on</strong>. The other two stay dark.</p>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The <strong>red</strong> LED is glowing — on the board, or in the Wokwi diagram</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The message <code>The LED is on!</code> appeared in the Shell or Serial Monitor</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>The LED does <strong>not</strong> switch off again — my program never told it to</span></label>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>The <strong>red</strong> LED is glowing &mdash; on the board, or in the Wokwi diagram</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>The yellow and green LEDs stay dark</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>The LED does <strong>not</strong> switch off again &mdash; my program never told it to</span></label>
   <label class="chk"><input type="checkbox" data-p="r4"><span>Nothing is beeping</span></label>
 </section>
 
-<!-- ============ TROUBLESHOOT ============ -->
 <section id="fix">
-  <h2>🛠️ If it is not working</h2>
+  <h2>&#128736;&#65039; If it is not working</h2>
   <table>
     <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
     <tbody>
-      <tr><td><code>NameError: name 'Pin' is not defined</code></td><td>The first line is missing or misspelled. It must be <code>from machine import Pin</code></td></tr>
+      <tr><td><code>NameError: name 'Pin' is not defined</code></td><td>The first code line is missing or misspelled. It must be <code>from machine import Pin</code></td></tr>
       <tr><td><code>SyntaxError</code></td><td>Look for a missing bracket <code>)</code> or a missing comma. The broken line is shown in red.</td></tr>
       <tr><td><strong>A buzzer beeps, no light</strong></td><td>You used pin <strong>14</strong>. On the LilEx5 that is the buzzer. Change it to <strong>11</strong>.</td></tr>
       <tr><td><strong>The wrong LED lights up</strong></td><td>Red is <strong>11</strong>, yellow is <strong>12</strong>, green is <strong>13</strong>.</td></tr>
       <tr><td><strong>Nothing happens</strong> (real board)</td><td>Check the bottom-right of Thonny says <code>MicroPython (Raspberry Pi Pico)</code>. And check <strong>SW5</strong> is on.</td></tr>
-      <tr><td><strong>Nothing happens</strong> (Wokwi)</td><td>Did you press the green ▶ Play button? The program only runs while the simulation is running.</td></tr>
+      <tr><td><strong>Nothing happens</strong> (Wokwi)</td><td>Did you press the green &#9654; Play button? The program only runs while the simulation is running.</td></tr>
       <tr><td><strong>Warning triangle on the LED</strong> (Wokwi)</td><td>Your LED has no resistor. Add one and set it to <strong>330</strong>.</td></tr>
-      <tr><td><strong>The LED stays dark</strong> (Wokwi)</td><td>The LED is round the wrong way, or a wire is on the wrong pin. <strong>A</strong> (long leg) → resistor, <strong>C</strong> (short leg) → GND.</td></tr>
+      <tr><td><strong>The LED stays dark</strong> (Wokwi)</td><td>The LED is round the wrong way, or a wire is on the wrong pin. <strong>A</strong> (long leg) &rarr; resistor, <strong>C</strong> (short leg) &rarr; GND.</td></tr>
     </tbody>
   </table>
 </section>
 
-<!-- ============ EXERCISE ============ -->
 <section id="exercise">
-  <h2>🚀 Exercise — Traffic light check</h2>
-  <p class="lede">Now prove you understand the pin numbers.</p>
-  <p><strong>Task:</strong> make the <strong>green</strong> LED come on instead of the red one, and print a different message.</p>
+  <h2>&#128640; Exercise &mdash; light up all three</h2>
+  <p class="lede">One LED was the warm-up. Now do the whole row.</p>
+  <p><strong>Task:</strong> make the <strong>red, yellow and green</strong> LEDs all come on at the same
+  time, and leave them on.</p>
+  
+<svg class="dia" viewBox="0 0 560 190" role="img" aria-label="Exercise result: all three LEDs glowing at once">
+  <rect x="30" y="26" width="500" height="100" rx="12" class="pcb"/>
+  <circle cx="150" cy="76" r="30" fill="#FF2B2B" opacity="0.28"/>
+  <circle cx="150" cy="76" r="24" fill="#FF2B2B"/>
+  <circle cx="280" cy="76" r="30" fill="#FFD426" opacity="0.28"/>
+  <circle cx="280" cy="76" r="24" fill="#FFD426"/>
+  <circle cx="410" cy="76" r="30" fill="#2BE06A" opacity="0.28"/>
+  <circle cx="410" cy="76" r="24" fill="#2BE06A"/>
+  <g text-anchor="middle">
+    <text x="150" y="152" class="dlbl">red &mdash; ON</text>
+    <text x="280" y="152" class="dlbl">yellow &mdash; ON</text>
+    <text x="410" y="152" class="dlbl">green &mdash; ON</text>
+    <text x="150" y="174" class="dpin">GP11</text>
+    <text x="280" y="174" class="dpin">GP12</text>
+    <text x="410" y="174" class="dpin">GP13</text>
+  </g>
+</svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>Only the green LED is glowing</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>Red and yellow stay dark</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>My own message appears in the Shell</span></label>
 
-  <details><summary>💡 Hint 1 — I don't know where to start</summary>
-    <p>You only need to change <strong>two things</strong> in the program you already have. Look at the LED table again, and look at the text inside the <code>print()</code> brackets.</p>
-  </details>
-  <details><summary>💡 Hint 2 — which number?</summary>
-    <p>Green is LED3, and LED3 is on <strong>GP13</strong>. So <code>Pin(11, Pin.OUT)</code> becomes <code>Pin(13, Pin.OUT)</code>.</p>
-  </details>
-  <details><summary>✅ Answer — only open this after you have really tried</summary>
-    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMywgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIkdyZWVuIG1lYW5zIGdvISIp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <label class="chk"><input type="checkbox" data-p="e1"><span>All three LEDs are glowing at once</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>They stay on &mdash; they do not flicker or switch off</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>I used a comment to explain what my program does</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
+    <p>You already know how to switch on <em>one</em> LED. Do not throw that away &mdash; you are going
+    to do the same thing three times, once for each colour.</p>
+    <p>Look at the LED table again and write down the three pin numbers before you type anything.</p>
   </details>
 
-  <h3>🌟 Going further</h3>
-  <p>Finished early? Try these — no answers given.</p>
+  <details><summary>&#128161; Clue 2 &mdash; give each LED its own name</summary>
+    <p>Here is the trap. <code>led</code> is just a nickname, and <strong>a nickname can only point at
+    one pin at a time</strong>. If you write <code>led</code> three times, the third one wins and the
+    first two are forgotten.</p>
+    <p>So give each LED a name of its own. Good names say what they are:</p>
+    
+<svg class="dia" viewBox="0 0 700 235" role="img" aria-label="Each LED needs its own nickname: red points at GP11, yellow at GP12, green at GP13">
+  <text x="350" y="26" class="dttl" text-anchor="middle">One nickname can only point at one pin</text>
+  <rect x="30" y="52" width="150" height="40" rx="9" class="namebox"/>
+  <text x="105" y="78" class="dmono2" text-anchor="middle">red</text>
+  <rect x="30" y="112" width="150" height="40" rx="9" class="namebox"/>
+  <text x="105" y="138" class="dmono2" text-anchor="middle">yellow</text>
+  <rect x="30" y="172" width="150" height="40" rx="9" class="namebox"/>
+  <text x="105" y="198" class="dmono2" text-anchor="middle">green</text>
+  <g class="arrow2">
+    <path d="M188 72 L286 72"/>
+    <path d="M188 132 L286 132"/>
+    <path d="M188 192 L286 192"/>
+  </g>
+  <rect x="294" y="52" width="120" height="40" rx="9" class="pinbox"/>
+  <text x="354" y="78" class="dmono2" text-anchor="middle">GP11</text>
+  <rect x="294" y="112" width="120" height="40" rx="9" class="pinbox"/>
+  <text x="354" y="138" class="dmono2" text-anchor="middle">GP12</text>
+  <rect x="294" y="172" width="120" height="40" rx="9" class="pinbox"/>
+  <text x="354" y="198" class="dmono2" text-anchor="middle">GP13</text>
+  <g class="arrow2">
+    <path d="M422 72 L510 72"/>
+    <path d="M422 132 L510 132"/>
+    <path d="M422 192 L510 192"/>
+  </g>
+  <circle cx="550" cy="72" r="22" fill="#FF2B2B"/>
+  <circle cx="550" cy="132" r="22" fill="#FFD426"/>
+  <circle cx="550" cy="192" r="22" fill="#2BE06A"/>
+  <text x="590" y="78" class="dsub">red LED</text>
+  <text x="590" y="138" class="dsub">yellow LED</text>
+  <text x="590" y="198" class="dsub">green LED</text>
+</svg>
+
+    <p><code>red</code>, <code>yellow</code> and <code>green</code> are perfect. Each one needs its own
+    <code>Pin(...)</code> line.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; I have three names, now what?</summary>
+    <p>Switching on is the same as before &mdash; <code>.on()</code> &mdash; but each nickname needs its
+    own line. Three LEDs, three names, three <code>.on()</code> lines.</p>
+    <p>Your program will be about nine lines long. That is normal.</p>
+  </details>
+
+  <details><summary>&#9989; Answer &mdash; only open this after you have really tried</summary>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCiMgRWFjaCBMRUQgbmVlZHMgaXRzIG93biBuaWNrbmFtZQpyZWQgPSBQaW4oMTEsIFBpbi5PVVQpCnllbGxvdyA9IFBpbigxMiwgUGluLk9VVCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIE5vdyBzd2l0Y2ggYWxsIHRocmVlIG9uCnJlZC5vbigpCnllbGxvdy5vbigpCmdyZWVuLm9uKCk=" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Notice the pattern: <strong>name it, then switch it on</strong>, once per LED.</p>
+  </details>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
   <ol>
-    <li>Can you switch on <strong>two</strong> LEDs at once? You will need a second variable with a different nickname.</li>
-    <li>What happens if you add <code>led.off()</code> on a new line at the end? Why does it look like nothing happened?</li>
-    <li>What do you think <code>Pin(14, Pin.OUT)</code> then <code>led.on()</code> would do? Try it — but keep your finger near the stop button.</li>
+    <li>Switch on <strong>only</strong> red and green, leaving yellow dark. Like a broken traffic light.</li>
+    <li>What happens if you name all three LEDs <code>led</code> instead of three different names?
+    Try it, then explain what you see.</li>
+    <li>Add <code>red.off()</code> at the very end. Why does it look like the red LED never came on at all?</li>
+    <li>What do you think <code>Pin(14, Pin.OUT)</code> would do? Try it &mdash; but keep your finger
+    near the stop button.</li>
   </ol>
 </section>
 
-<!-- ============ QUIZ ============ -->
 <section id="quiz">
-  <h2>🧠 Quick quiz</h2>
-  <p class="lede">Three questions. No marks, no pressure — just check it stuck.</p>
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
   <div id="quizbox"></div>
-  <div class="win" id="quizwin" hidden>🎉 <strong>All three right.</strong> You have got the idea: a pin is a number, and the number has to match the board. Next up — Activity 2, where you make it blink.</div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> You have got the idea:
+  a pin is a number, the number has to match the board, and every LED needs its own name. Next up &mdash;
+  Activity 2, where you make it blink.</div>
 </section>
 
-<!-- ============ WORDS ============ -->
 <section>
-  <h2>📖 Words to remember</h2>
+  <h2>&#128214; Words to remember</h2>
   <table>
     <tbody>
-      <tr><td><strong>GPIO</strong></td><td>General Purpose Input/Output — a pin you can control from code.</td></tr>
+      <tr><td><strong>GPIO</strong></td><td>General Purpose Input/Output &mdash; a pin you can control from code.</td></tr>
       <tr><td><strong>GP number</strong></td><td>The number the Pico knows a pin by. The one you type in code.</td></tr>
       <tr><td><strong>Output</strong></td><td>A pin set up to <em>send</em> power out.</td></tr>
       <tr><td><strong>LED</strong></td><td>Light Emitting Diode. A tiny lamp with a long leg (A) and a short leg (C).</td></tr>
       <tr><td><strong>Resistor</strong></td><td>A part that slows the flow of electricity so the LED survives.</td></tr>
-      <tr><td><strong>Variable</strong></td><td>A nickname for something, like <code>led</code>.</td></tr>
-      <tr><td><strong>Shell / Serial Monitor</strong></td><td>The window where <code>print()</code> messages appear.</td></tr>
+      <tr><td><strong>Variable</strong></td><td>A nickname for something, like <code>led</code> or <code>green</code>.</td></tr>
+      <tr><td><strong>Comment</strong></td><td>A note starting with <code>#</code>. The Pico ignores it; people read it.</td></tr>
     </tbody>
   </table>
 </section>
 
 </div>
 
-
-
-
-<div class="wrap">
-<section id="teacher">
-  <h2>&#128105;&#8205;&#127979; Teacher page</h2>
-  <p class="lede">Everything below is for the person running the lesson.</p>
-
-  <details><summary>Exercise answer</summary>
-    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMywgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIkdyZWVuIG1lYW5zIGdvISIp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-    <p>Only the pin number and the message change. Students who rewrite the whole program have
-    missed the point that a variable is a <em>nickname</em> &mdash; the rest of the code does not
-    care which pin it points at.</p>
-  </details>
-
-  <details><summary>Before the lesson</summary>
-    <ul>
-      <li>A LilEx5 board and USB cable per pair; check <strong>SW5</strong> (power) works on each.</li>
-      <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
-      <li>Open the <a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">Wokwi project</a> on the projector and leave it up.</li>
-      <li>Have the <a href="pinout.html">pin reference</a> open on every machine &mdash; students need it from here on.</li>
-    </ul>
-  </details>
-
-  <details open><summary>&#9888;&#65039; Pin numbers changed from the older module</summary>
-    <p>This activity previously used <strong>GP14 = red, GP13 = yellow, GP12 = green</strong>, which
-    came from a different board. On the <strong>LilEx5</strong>:</p>
-    <table>
-      <thead><tr><th></th><th>Old module</th><th>LilEx5</th></tr></thead>
-      <tbody>
-        <tr><td>Red LED1</td><td>14</td><td><span class="gp">11</span></td></tr>
-        <tr><td>Yellow LED2</td><td>13</td><td><span class="gp">12</span></td></tr>
-        <tr><td>Green LED3</td><td>12</td><td><span class="gp">13</span></td></tr>
-        <tr><td>Buzzer BZ1</td><td>&mdash;</td><td><span class="gp">14</span></td></tr>
-      </tbody>
-    </table>
-    <p>The failure mode is loud and obvious: a student following an old printout types <code>14</code>
-    and the board <strong>beeps</strong>. Worth demonstrating deliberately once &mdash; it makes the
-    &ldquo;code must match the copper&rdquo; point better than any explanation.</p>
-    <p>Note also that <strong>old green (12) is now yellow</strong>, so a stale worksheet lights the
-    wrong colour with no error message at all. Collect any old printouts.</p>
-  </details>
-
-  <details><summary>Teaching notes</summary>
-    <ul>
-      <li><strong>Don't skip Wokwi.</strong> On the LilEx5 the LED wiring is inside the PCB, so students
-      never see a circuit unless they build one. The Wokwi step is where the electronics is actually taught.</li>
-      <li>The most common typo is lowercase <code>pin</code>. MicroPython is case-sensitive; <code>Pin</code> is a class name.</li>
-      <li><code>led</code> is not a keyword. Renaming it to <code>lamp</code> throughout is a great
-      30-second demonstration that variables are just nicknames.</li>
-      <li>Students expect <code>led.on()</code> to be temporary. Ask <em>&ldquo;what would make it stop?&rdquo;</em>
-      &mdash; nothing does, which sets up Activity 2 (loops and <code>sleep</code>).</li>
-      <li>The three safety rules apply from day one: never join 5V to a GP pin, never join a power pin
-      to GND, and switch off at SW5 before changing wires.</li>
-    </ul>
-  </details>
-
-  <details><summary>Every link in this activity</summary>
-    <table>
-      <tbody>
-        <tr><td>Wokwi project (Activity 1)</td><td><a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">wokwi.com/projects/383509156510287873</a></td></tr>
-        <tr><td>Wokwi</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
-        <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
-        <tr><td>LilEx5 pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
-      </tbody>
-    </table>
-  </details>
-
-  <details><summary>Pins used so far</summary>
-    <table>
-      <thead><tr><th>Pin</th><th>Used for</th><th>First seen</th></tr></thead>
-      <tbody>
-        <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activity 1</td></tr>
-        <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 1 (exercise)</td></tr>
-      </tbody>
-    </table>
-  </details>
-</section>
-</div>
-
 <script>
-(function(){
-  "use strict";
-  var KEY = "lilex5-a1-v1";
-
-  /* ---------- storage helpers (never throw) ---------- */
-  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
-  function save(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} }
-  var state = load();
-
-  /* ---------- progress checkboxes ---------- */
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('.chk input[type=checkbox]'));
-  function paint(){
-    var done = 0;
-    boxes.forEach(function(b){
-      if(b.checked){ done++; b.parentElement.classList.add('done'); }
-      else { b.parentElement.classList.remove('done'); }
-    });
-    var pct = boxes.length ? Math.round(done / boxes.length * 100) : 0;
-    document.getElementById('pfill').style.width = pct + '%';
-    document.getElementById('pcount').textContent = done + ' / ' + boxes.length + ' done';
-  }
-  boxes.forEach(function(b){
-    var k = b.getAttribute('data-p');
-    if(state[k]) b.checked = true;
-    b.addEventListener('change', function(){
-      state[k] = b.checked; save(state); paint();
-    });
-  });
-  paint();
-
-  document.getElementById('reset').addEventListener('click', function(){
-    boxes.forEach(function(b){ b.checked = false; state[b.getAttribute('data-p')] = false; });
-    save(state); paint();
-  });
-
-  /* ---------- tabs ---------- */
-  var tabA = document.getElementById('tab-a'), tabB = document.getElementById('tab-b');
-  var panA = document.getElementById('pan-a'), panB = document.getElementById('pan-b');
-  function pick(which){
-    var a = which === 'a';
-    tabA.setAttribute('aria-selected', a ? 'true' : 'false');
-    tabB.setAttribute('aria-selected', a ? 'false' : 'true');
-    panA.hidden = !a; panB.hidden = a;
-    state.route = which; save(state);
-  }
-  tabA.addEventListener('click', function(){ pick('a'); });
-  tabB.addEventListener('click', function(){ pick('b'); });
-  if(state.route === 'b') pick('b');
-
-  /* ---------- board simulator ---------- */
-  var MAP = {
-    11: {id:'b11', name:'LED1 — red',    kind:'led'},
-    12: {id:'b12', name:'LED2 — yellow', kind:'led'},
-    13: {id:'b13', name:'LED3 — green',  kind:'led'},
-    14: {id:'b14', name:'BZ1 — buzzer',  kind:'buzzer'}
-  };
-  var out = document.getElementById('simout');
-  function clearBoard(){
-    ['b11','b12','b13','b14'].forEach(function(id){
-      document.getElementById(id).classList.remove('on');
-    });
-  }
-  document.getElementById('simoff').addEventListener('click', function(){
-    clearBoard();
-    out.textContent = 'Board reset. Everything is off.';
-  });
-  document.getElementById('simrun').addEventListener('click', function(){
-    var n = parseInt(document.getElementById('pinin').value, 10);
-    clearBoard();
-    if(isNaN(n)){ out.textContent = 'Type a pin number first.'; return; }
-    var hit = MAP[n];
-    if(!hit){
-      out.textContent = '>>> led = Pin(' + n + ', Pin.OUT)\n>>> led.on()\n\n'
-        + 'No error — but nothing lights up.\nGP' + n + ' is not wired to an LED on the LilEx5.\n'
-        + 'The LEDs are on GP11, GP12 and GP13.';
-      return;
-    }
-    document.getElementById(hit.id).classList.add('on');
-    if(hit.kind === 'buzzer'){
-      out.textContent = '>>> led = Pin(14, Pin.OUT)\n>>> led.on()\n\n'
-        + '🔔 BEEEEEP — that is the buzzer, not a light!\n'
-        + 'GP14 goes to BZ1 on the LilEx5. The red LED is GP11.';
-    } else {
-      out.textContent = '>>> led = Pin(' + n + ', Pin.OUT)\n>>> led.on()\n\n'
-        + '💡 ' + hit.name + ' is now on, and it stays on.';
-    }
-  });
-
-  /* ---------- typing exercise ---------- */
-  var TARGET = [
-    'from machine import Pin',
-    'led = Pin(11, Pin.OUT)',
-    'led.on()',
-    'print("The LED is on!")'
-  ];
-  var norm = function(s){ return s.replace(/\s+/g,' ').trim(); };
-  var inputs = Array.prototype.slice.call(document.querySelectorAll('#typer input'));
-  var msg = document.getElementById('typermsg');
-  function checkTyper(){
-    var ok = 0, note = '';
-    inputs.forEach(function(inp, i){
-      var mark = inp.parentElement.querySelector('.mark');
-      var v = inp.value;
-      inp.classList.remove('ok','bad');
-      mark.textContent = '';
-      if(!v) return;
-      if(norm(v) === norm(TARGET[i])){
-        inp.classList.add('ok'); mark.textContent = '✓'; ok++;
-      } else if(norm(v).toLowerCase() === norm(TARGET[i]).toLowerCase()){
-        inp.classList.add('bad'); mark.textContent = '✗';
-        note = 'Line ' + (i+1) + ': the letters are right but the capitals are not. Python cares — Pin is not pin.';
-        return;
-      } else {
-        inp.classList.add('bad'); mark.textContent = '✗';
-      }
-    });
-    if(ok === 4){ msg.textContent = '✅ All four lines exactly right. Now type them into Wokwi or Thonny.'; }
-    else if(note){ msg.textContent = note; }
-    else { msg.textContent = ok + ' of 4 lines correct.'; }
-  }
-  inputs.forEach(function(inp){ inp.addEventListener('input', checkTyper); });
-
-  /* ---------- quiz ---------- */
-  var QUIZ = [
-    { q: 'Which pin number lights the red LED on the LilEx5?',
+window.ACTIVITY = {
+  typer: [
+    "from machine import Pin",
+    "led = Pin(11, Pin.OUT)",
+    "led.on()"
+  ],
+  quiz: [
+    { q: 'Which pin number lights the <b>red</b> LED?',
       opts: ['11','12','13','14'], right: 0,
-      why: 'GP11 goes to LED1, the red one. GP14 is the buzzer.' },
+      why: 'GP11 goes to LED1, the red one.' },
     { q: 'What does <code>Pin.OUT</code> mean?',
       opts: ['The pin is broken','The pin will send power out','The pin will read a button','The pin is switched off'],
       right: 1,
       why: 'OUT means output — the pin sends power out, which is what lights an LED.' },
-    { q: 'Your program runs, nothing lights up, but the board beeps. What did you type?',
-      opts: ['pin instead of Pin','led.off() instead of led.on()','14 instead of 11','You forgot the resistor'],
+    { q: 'What does the Pico do with a line that starts with <code>#</code>?',
+      opts: ['Runs it twice','Shows it on the screen','Ignores it completely','Stops the program'],
       right: 2,
-      why: 'GP14 is the buzzer BZ1. Change it to 11 for the red LED.' }
-  ];
-  var box = document.getElementById('quizbox');
-  var scored = QUIZ.map(function(){ return false; });
-  QUIZ.forEach(function(item, qi){
-    var d = document.createElement('div');
-    d.className = 'q';
-    var p = document.createElement('p');
-    p.className = 'qt';
-    p.innerHTML = (qi + 1) + '. ' + item.q;
-    d.appendChild(p);
-    var fb = document.createElement('div');
-    fb.className = 'fb';
-    item.opts.forEach(function(text, oi){
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'opt'; b.textContent = text;
-      b.addEventListener('click', function(){
-        var all = d.querySelectorAll('.opt');
-        Array.prototype.forEach.call(all, function(x){ x.classList.remove('right','wrong'); });
-        if(oi === item.right){
-          b.classList.add('right');
-          fb.textContent = '✅ ' + item.why;
-          fb.style.color = '#1F9D55';
-          scored[qi] = true;
-        } else {
-          b.classList.add('wrong');
-          fb.textContent = '❌ Not quite — have another go.';
-          fb.style.color = '#C80000';
-          scored[qi] = false;
-        }
-        var won = scored.every(function(x){ return x === true; });
-        document.getElementById('quizwin').hidden = !won;
-      });
-      d.appendChild(b);
-    });
-    d.appendChild(fb);
-    box.appendChild(d);
-  });
-})();
+      why: 'A comment is a note for humans. The Pico skips straight past it.' },
+    { q: 'You want all three LEDs on, so you write <code>led = Pin(11...)</code>, then <code>led = Pin(12...)</code>, then <code>led = Pin(13...)</code>, and switch <code>led</code> on. What happens?',
+      opts: ['All three light up','Only the green one lights up','Only the red one lights up','An error message'],
+      right: 1,
+      why: 'One nickname can only point at one pin. Each new line replaces the last, so led ends up meaning GP13 — the green one. That is why each LED needs its own name.' }
+  ]
+};
 </script>
+<script src="activity.js"></script>
 
 <footer>
   <div class="wrap">
@@ -615,8 +759,6 @@ Shell / Serial Monitor:
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
-
 <script src="code.js"></script>
-
 </body>
 </html>
