@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LilEx5 Pico IoT Module | UMPSA STEM LAB</title>
+<meta name="description" content="Interactive MicroPython tutorials for the LilEx5 Raspberry Pi Pico IoT board.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html" aria-current="page">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">UMPSA STEM LAB</p>
+    <h1>Pico IoT Module</h1>
+    <p class="sub">Learn to code a real Internet-of-Things board, one activity at a time.<br>
+    No electronics experience needed &mdash; and you can start without a board at all.</p>
+    <div class="hero-cta">
+      <a class="cta" href="activity-1.html">&#9654; Start Activity 1</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>What this is</h2>
+  <p class="lede">A MicroPython teaching module for the <strong>LilEx5</strong> board.</p>
+  <p>The LilEx5 is a Raspberry Pi Pico with three LEDs, a buzzer, buttons, a screen, a set of sensors
+  and a long-range radio all built onto one board. These activities take you from switching on a
+  single light to sending data across the internet.</p>
+  <p>Every idea is introduced from scratch, in plain language, one step at a time.</p>
+
+  <h3>Every activity gives you two routes</h3>
+  <div class="grid2">
+    <div class="mini"><h4>&#129514; Wokwi &mdash; an online simulator</h4>
+      <p>Just a web browser. Nothing to plug in, nothing can burn out.</p></div>
+    <div class="mini"><h4>&#128268; The real LilEx5 board</h4>
+      <p>The board, a USB cable and <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>.</p></div>
+  </div>
+  <div class="cal tip"><b>We always start in Wokwi</b>
+  Even when the real board is on the desk. On the LilEx5 the wiring is hidden inside the circuit
+  board, so the simulator is the only place you get to see a circuit and build one yourself.</div>
+</section>
+
+<section id="activities">
+  <h2>Activities</h2>
+  <p class="lede">Nine activities. Each one adds exactly one new idea.</p>
+  <div class="actlist">
+    <a class="act live" href="activity-1.html"><span class="n">1</span><span class="t"><b>Light Up an LED</b><small>variables, comments, GPIO pins</small></span><span class="badge">Start here</span></a>
+    <div class="act soon"><span class="n">2</span><span class="t"><b>Make an LED Blink</b><small>loops, indentation, sleep</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">3</span><span class="t"><b>Digital Input</b><small>reading buttons, print()</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">4</span><span class="t"><b>Making Decisions</b><small>if / else</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">5</span><span class="t"><b>And, Or, Not</b><small>boolean logic</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">6</span><span class="t"><b>Words on a Screen</b><small>the OLED screen, adding a library</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">7</span><span class="t"><b>Sensors and Numbers</b><small>motion sensor, decimals, round()</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">8</span><span class="t"><b>Internet and Data</b><small>WiFi, MQTT, live dashboards</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">9</span><span class="t"><b>Radio Communication</b><small>sending messages board to board</small></span><span class="badge">Coming soon</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Before your first activity</h2>
+  <div class="step"><div class="idx">1</div><div class="body">
+    <h4>Open the pin reference</h4>
+    <p>Every part on the board has a <strong>GP number</strong>, and your code has to use the right
+    one. Keep <a href="pinout.html">the pin reference</a> somewhere you can see it.</p>
+  </div></div>
+  <div class="step"><div class="idx">2</div><div class="body">
+    <h4>If you are using the real board</h4>
+    <p>Install <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a> and set the
+    interpreter (bottom-right corner) to <code>MicroPython (Raspberry Pi Pico)</code>.</p>
+  </div></div>
+  <div class="step"><div class="idx">3</div><div class="body">
+    <h4>If you are using the simulator</h4>
+    <p>Just open <a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a>. Nothing to install.</p>
+  </div></div>
+  <div class="cal warn"><b>Three safety rules, every time</b>
+  Never connect a 5V pin to a GP pin &mdash; they are 3.3&nbsp;V only. Never join a power pin to a
+  GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+</section>
+
+<section>
+  <h2>For teachers</h2>
+  <p>Every activity page ends with a <strong>teacher section</strong>: the exercise answer,
+  before-the-lesson checks, teaching notes and a running list of which pins have been used so far.</p>
+  <div class="cal note"><b>Pin numbers changed</b>
+  On the LilEx5 the red LED is <strong>GP11</strong>, not GP14 &mdash; and <strong>GP14 is the
+  buzzer</strong>. Worksheets from the older Pico module will make the board beep.
+  See the <a href="activity-1.html#teacher">Activity 1 teacher page</a> for the full old-to-new table.</div>
+  <p>Source, and the sensor libraries the later activities use, are on GitHub:
+  <a href="https://github.com/ump-stemlab/pico-iot-module">pico-iot-module</a> &middot;
+  <a href="https://github.com/ump-stemlab/stemcube">stemcube</a>.</p>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+</body>
+</html>

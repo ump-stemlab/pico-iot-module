@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LilEx5 pin reference | Pico IoT Module</title>
+<meta name="description" content="Which GP number every part on the LilEx5 board is wired to.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="pinout.html" aria-current="page">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module</p>
+    <h1>Pin reference</h1>
+    <p class="sub">Everything on the board is wired to a <strong>GP number</strong> on the Pico.
+    Your code has to use that number. Keep this page open while you work.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <div class="cal warn"><b>Board labels are not pin numbers</b>
+  The picture printed on the board uses its own labels, like <code>SW1(11)</code> or <code>SW4(37)</code>.
+  Those are positions on the connector. In code you always use the <strong>GP</strong> number.</div>
+
+  <h2>&#128269; Find a pin</h2>
+  <p>Type a colour, a part name or a number &mdash; the table filters as you type.</p>
+  <div class="finder">
+    <input type="search" id="q" placeholder="try: red, buzzer, button, GP11, radio&hellip;" autocomplete="off">
+    <span class="count" id="cnt"></span>
+  </div>
+  <table>
+    <thead><tr><th>Part</th><th>Pin</th><th>Group</th><th>Notes</th></tr></thead>
+    <tbody id="pintable">
+      <tr data-s="LED1 &mdash; red GP11 &#128308; Outputs output"><td><strong>LED1 &mdash; red</strong></td><td><span class="gp">GP11</span></td><td>&#128308; Outputs</td><td>output</td></tr>
+      <tr data-s="LED2 &mdash; yellow GP12 &#128308; Outputs output"><td><strong>LED2 &mdash; yellow</strong></td><td><span class="gp">GP12</span></td><td>&#128308; Outputs</td><td>output</td></tr>
+      <tr data-s="LED3 &mdash; green GP13 &#128308; Outputs output"><td><strong>LED3 &mdash; green</strong></td><td><span class="gp">GP13</span></td><td>&#128308; Outputs</td><td>output</td></tr>
+      <tr data-s="Buzzer BZ1 GP14 &#128308; Outputs output, sounds at about 2.7 kHz"><td><strong>Buzzer BZ1</strong></td><td><span class="gp">GP14</span></td><td>&#128308; Outputs</td><td>output, sounds at about 2.7 kHz</td></tr>
+      <tr data-s="Button SW1 GP2 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW1</strong></td><td><span class="gp">GP2</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
+      <tr data-s="Button SW2 GP3 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW2</strong></td><td><span class="gp">GP3</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
+      <tr data-s="Button SW3 GP4 &#128280; Inputs input, idles high &mdash; reads 0 when pressed"><td><strong>Button SW3</strong></td><td><span class="gp">GP4</span></td><td>&#128280; Inputs</td><td>input, idles high &mdash; reads 0 when pressed</td></tr>
+      <tr data-s="Slide switch SW4 GP15 &#128280; Inputs input"><td><strong>Slide switch SW4</strong></td><td><span class="gp">GP15</span></td><td>&#128280; Inputs</td><td>input</td></tr>
+      <tr data-s="SDA &mdash; sensor data GP0 &#128225; Sensor bus (I2C) shared data wire"><td><strong>SDA &mdash; sensor data</strong></td><td><span class="gp">GP0</span></td><td>&#128225; Sensor bus (I2C)</td><td>shared data wire</td></tr>
+      <tr data-s="SCL &mdash; sensor clock GP1 &#128225; Sensor bus (I2C) shared clock wire"><td><strong>SCL &mdash; sensor clock</strong></td><td><span class="gp">GP1</span></td><td>&#128225; Sensor bus (I2C)</td><td>shared clock wire</td></tr>
+      <tr data-s="Radio TX GP16 &#128246; Radio sends"><td><strong>Radio TX</strong></td><td><span class="gp">GP16</span></td><td>&#128246; Radio</td><td>sends</td></tr>
+      <tr data-s="Radio RX GP17 &#128246; Radio receives"><td><strong>Radio RX</strong></td><td><span class="gp">GP17</span></td><td>&#128246; Radio</td><td>receives</td></tr>
+      <tr data-s="Radio M2 GP18 &#128246; Radio mode select"><td><strong>Radio M2</strong></td><td><span class="gp">GP18</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
+      <tr data-s="Radio M1 GP19 &#128246; Radio mode select"><td><strong>Radio M1</strong></td><td><span class="gp">GP19</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
+      <tr data-s="Radio M0 GP20 &#128246; Radio mode select"><td><strong>Radio M0</strong></td><td><span class="gp">GP20</span></td><td>&#128246; Radio</td><td>mode select</td></tr>
+      <tr data-s="Radio AUX GP21 &#128246; Radio a flag the radio raises when it is busy"><td><strong>Radio AUX</strong></td><td><span class="gp">GP21</span></td><td>&#128246; Radio</td><td>a flag the radio raises when it is busy</td></tr>
+      <tr data-s="SPI clock GP6 &#9881;&#65039; Spare for faster devices"><td><strong>SPI clock</strong></td><td><span class="gp">GP6</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
+      <tr data-s="SPI MOSI GP7 &#9881;&#65039; Spare for faster devices"><td><strong>SPI MOSI</strong></td><td><span class="gp">GP7</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
+      <tr data-s="SPI MISO GP8 &#9881;&#65039; Spare for faster devices"><td><strong>SPI MISO</strong></td><td><span class="gp">GP8</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
+      <tr data-s="SPI chip select GP9 &#9881;&#65039; Spare for faster devices"><td><strong>SPI chip select</strong></td><td><span class="gp">GP9</span></td><td>&#9881;&#65039; Spare</td><td>for faster devices</td></tr>
+      <tr data-s="Spare pin GP5 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP5</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+      <tr data-s="Spare pin GP10 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP10</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+      <tr data-s="Spare pin GP22 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP22</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+      <tr data-s="Spare pin GP26 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP26</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+      <tr data-s="Spare pin GP27 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP27</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+      <tr data-s="Spare pin GP28 &#9881;&#65039; Spare free for your own experiments"><td><strong>Spare pin</strong></td><td><span class="gp">GP28</span></td><td>&#9881;&#65039; Spare</td><td>free for your own experiments</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>&#128225; Sensor bus (I&sup2;C)</h2>
+  <p>SDA (<span class="gp">GP0</span>) and SCL (<span class="gp">GP1</span>) are two shared wires that
+  every sensor talks on, like a class where everyone takes turns. Each sensor answers to its own
+  number, called its <strong>address</strong>:</p>
+  <table>
+    <thead><tr><th>Sensor</th><th>Address</th></tr></thead>
+    <tbody>
+      <tr><td>OLED screen</td><td><code>0x78</code></td></tr>
+      <tr><td>Temperature, humidity, pressure</td><td><code>0x76</code></td></tr>
+      <tr><td>Accelerometer and gyroscope</td><td><code>0x68</code></td></tr>
+      <tr><td>Compass</td><td><code>0x7C</code></td></tr>
+      <tr><td>Proximity and light</td><td><code>0x60</code></td></tr>
+      <tr><td>Air quality (TVOC)</td><td><code>0x1A</code></td></tr>
+      <tr><td>Analogue-to-digital converter</td><td><code>0x48</code></td></tr>
+    </tbody>
+  </table>
+  <div class="cal info"><b>The fussy one</b>
+  The air quality sensor's clock must stay <strong>below 15 kHz</strong>.</div>
+</section>
+
+<section>
+  <h2>&#9889; Power pins</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>3V3</strong></td><td>3.3 volts &mdash; what almost everything on this board runs on.</td></tr>
+      <tr><td><strong>5V</strong></td><td>Stronger; used by the buzzer and the USB supply.</td></tr>
+      <tr><td><strong>GND</strong></td><td>Ground, the return path. <strong>Every circuit needs a GND connection or nothing works.</strong></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>&#127922; Reading analogue values</h2>
+  <p>The four analogue inputs on connector <strong>H3</strong> (gas sensor, battery level and two
+  spares) <strong>do not go to the Pico directly</strong>. They pass through a converter chip and come
+  back over the sensor bus &mdash; so reading a voltage on this board is an <strong>I&sup2;C job</strong>,
+  not an <code>ADC()</code> job.</p>
+</section>
+
+<section>
+  <h2>&#129535; How to hold the board</h2>
+  <ul>
+    <li>The black 40-pin header sits along the <strong>top</strong> edge and the USB sockets are on the <strong>left</strong>.</li>
+    <li><strong>Pin 1</strong> is at the left-hand end of the header. The board has a small printed dot next to it.</li>
+    <li><strong>Odd</strong> pins 1, 3, 5 &hellip; run along the <strong>lower</strong> row, nearest the LEDs and screen.</li>
+    <li><strong>Even</strong> pins 2, 4, 6 &hellip; run along the <strong>upper</strong> row, nearest the edge of the board.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>&#9888;&#65039; Three safety rules</h2>
+  <ol>
+    <li><strong>Never</strong> connect a 5V pin to a GP pin. The GP pins are <strong>3.3&nbsp;V only</strong>.</li>
+    <li><strong>Never</strong> join a 5V pin straight to a 3V3 pin, and never join any power pin to a GND pin.</li>
+    <li><strong>Switch the board off at SW5</strong> before changing any wires.</li>
+  </ol>
+</section>
+
+</div>
+<script>
+(function(){
+  var q = document.getElementById('q');
+  var rows = [].slice.call(document.querySelectorAll('#pintable tr'));
+  var cnt = document.getElementById('cnt');
+  function run(){
+    var v = q.value.toLowerCase().trim();
+    var n = 0;
+    rows.forEach(function(r){
+      var hit = !v || r.getAttribute('data-s').toLowerCase().indexOf(v) !== -1
+                   || r.textContent.toLowerCase().indexOf(v) !== -1;
+      r.classList.toggle('hide', !hit);
+      if(hit) n++;
+    });
+    cnt.textContent = v ? (n + ' of ' + rows.length + ' pins') : '';
+  }
+  q.addEventListener('input', run);
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+</body>
+</html>
