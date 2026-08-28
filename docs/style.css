@@ -216,3 +216,16 @@ footer a{color:#8FD9D5}
 .finder input:focus{outline:none;border-color:var(--teal)}
 .finder .count{font-size:13px;color:var(--muted)}
 tr.hide{display:none}
+
+/* ---------- non-copyable code ---------- */
+pre.code, code, .codeimg{
+  -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
+}
+.codeimg{display:block;margin:14px 0;max-width:100%;overflow-x:auto;
+  -webkit-touch-callout:none}
+.codeimg canvas{display:block;max-width:100%;height:auto;border-radius:10px;
+  pointer-events:none;-webkit-user-drag:none}
+.codeimg.inline{display:inline-block;margin:0;vertical-align:middle}
+.codefallback{display:inline-block;background:var(--code-bg);color:#8B949E;
+  border-radius:10px;padding:12px 16px;font-size:14px}
+.codeimg.inline .codefallback{padding:4px 9px;font-size:13px}

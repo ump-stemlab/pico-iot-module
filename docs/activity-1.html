@@ -215,11 +215,7 @@
   <h2>⌨️ Write the program</h2>
   <p>In Wokwi, click on <code>main.py</code>. In Thonny, choose <strong>File ▸ New</strong>. Then type this in exactly. Capital letters matter: <code>Pin</code> is not the same as <code>pin</code>.</p>
 
-  <pre class="code"><span class="k">from</span> machine <span class="k">import</span> <span class="f">Pin</span>
-
-led = <span class="f">Pin</span>(<span class="n">11</span>, <span class="f">Pin</span>.OUT)
-led.<span class="f">on</span>()
-<span class="f">print</span>(<span class="s">"The LED is on!"</span>)</pre>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMSwgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIlRoZSBMRUQgaXMgb24hIik=" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
 
   <div class="cal warn"><b>Type it, don't copy it</b>
   Typing every character yourself is how your fingers and your brain learn the language. Copy-paste teaches you nothing — and you will meet these same lines again in every activity from now on.</div>
@@ -240,18 +236,17 @@ led.<span class="f">on</span>()
   <table>
     <thead><tr><th>Code</th><th>What it means</th></tr></thead>
     <tbody>
-      <tr><td><code>from machine import Pin</code></td><td>Borrow the <strong>Pin</strong> tool out of the Pico's toolbox. Without this line the Pico does not know the word <code>Pin</code>.</td></tr>
-      <tr><td><code>led = Pin(11, Pin.OUT)</code></td><td>Pick pin <strong>11</strong> and set it to <strong>OUT</strong> — <em>I want to send power out of this pin</em>. Give it the nickname <code>led</code>.</td></tr>
-      <tr><td><code>led.on()</code></td><td><strong>Send the power.</strong> The LED lights up.</td></tr>
-      <tr><td><code>print("The LED is on!")</code></td><td>Write a message where you can see it: the Shell in Thonny, or the Serial Monitor in Wokwi.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Borrow the <strong>Pin</strong> tool out of the Pico's toolbox. Without this line the Pico does not know the word <code>Pin</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Pick pin <strong>11</strong> and set it to <strong>OUT</strong> — <em>I want to send power out of this pin</em>. Give it the nickname <code>led</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bGVkLm9uKCk=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td><strong>Send the power.</strong> The LED lights up.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cHJpbnQoIlRoZSBMRUQgaXMgb24hIik=" role="img" aria-label="Code line, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></td><td>Write a message where you can see it: the Shell in Thonny, or the Serial Monitor in Wokwi.</td></tr>
     </tbody>
   </table>
 
   <details>
     <summary>🏷️ What is <code>led</code>, exactly?</summary>
     <p><code>led</code> is a <strong>variable</strong> — a nickname. It is not a special Python word. You could call it <code>lamp</code> or <code>my_light</code>, as long as you use the same name on every line:</p>
-    <pre class="code">lamp = <span class="f">Pin</span>(<span class="n">11</span>, <span class="f">Pin</span>.OUT)
-lamp.<span class="f">on</span>()</pre>
+    <span class="codeimg" data-code="bGFtcCA9IFBpbigxMSwgUGluLk9VVCkKbGFtcC5vbigp" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
     <p>This works exactly the same. Try it — it is a good way to prove to yourself that the computer does not "know" what an LED is.</p>
   </details>
 </section>
@@ -318,11 +313,7 @@ Shell / Serial Monitor:
     <p>Green is LED3, and LED3 is on <strong>GP13</strong>. So <code>Pin(11, Pin.OUT)</code> becomes <code>Pin(13, Pin.OUT)</code>.</p>
   </details>
   <details><summary>✅ Answer — only open this after you have really tried</summary>
-    <pre class="code"><span class="k">from</span> machine <span class="k">import</span> <span class="f">Pin</span>
-
-led = <span class="f">Pin</span>(<span class="n">13</span>, <span class="f">Pin</span>.OUT)
-led.<span class="f">on</span>()
-<span class="f">print</span>(<span class="s">"Green means go!"</span>)</pre>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMywgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIkdyZWVuIG1lYW5zIGdvISIp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   </details>
 
   <h3>🌟 Going further</h3>
@@ -369,11 +360,7 @@ led.<span class="f">on</span>()
   <p class="lede">Everything below is for the person running the lesson.</p>
 
   <details><summary>Exercise answer</summary>
-    <pre class="code"><span class="k">from</span> machine <span class="k">import</span> <span class="f">Pin</span>
-
-led = <span class="f">Pin</span>(<span class="n">13</span>, <span class="f">Pin</span>.OUT)
-led.<span class="f">on</span>()
-<span class="f">print</span>(<span class="s">"Green means go!"</span>)</pre>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCmxlZCA9IFBpbigxMywgUGluLk9VVCkKbGVkLm9uKCkKcHJpbnQoIkdyZWVuIG1lYW5zIGdvISIp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
     <p>Only the pin number and the message change. Students who rewrite the whole program have
     missed the point that a variable is a <em>nickname</em> &mdash; the rest of the code does not
     care which pin it points at.</p>
@@ -628,5 +615,8 @@ led.<span class="f">on</span>()
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+
+<script src="code.js"></script>
+
 </body>
 </html>
