@@ -246,4 +246,76 @@
     });
   }
 
+  /* ---------- button reader (guarded by #btnrun) ---------- */
+  var btnrun = document.getElementById('btnrun');
+  if(btnrun){
+    var bsw  = document.getElementById('bsw');
+    var bval = document.getElementById('bval');
+    var bout = document.getElementById('btnout');
+    var btimer = null, bwait = 0.2, blines = [], bdown = false, bcount = 0;
+
+    var bset = function(down){
+      bdown = down;
+      bsw.classList.toggle('down', down);
+      bval.classList.toggle('pressed', down);
+      bval.textContent = down ? '0' : '1';
+    };
+    bset(false);
+
+    ['mousedown', 'touchstart'].forEach(function(ev){
+      bsw.addEventListener(ev, function(e){ e.preventDefault(); bset(true); });
+    });
+    ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(function(ev){
+      bsw.addEventListener(ev, function(){ bset(false); });
+    });
+    bsw.addEventListener('keydown', function(e){
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); bset(true); }
+    });
+    bsw.addEventListener('keyup', function(e){
+      if(e.key === ' ' || e.key === 'Enter'){ bset(false); }
+    });
+    document.addEventListener('mouseup', function(){ if(bdown) bset(false); });
+
+    var bshow = function(){
+      var head = bwait
+        ? 'Reading the pin ' + Math.round(1 / bwait) + ' times a second. Hold the button down.'
+        : 'No wait at all — hundreds of lines a second. Good luck reading it.';
+      bout.textContent = head + '\n' + blines.join('\n');
+    };
+
+    var bpush = function(){
+      blines.push(bdown ? '0' : '1');
+      bcount++;
+      if(blines.length > 6) blines = blines.slice(-6);
+    };
+
+    var btick = function(){
+      if(bwait){ bpush(); }
+      else { for(var i = 0; i < 8; i++) bpush(); }
+      bshow();
+      btimer = setTimeout(btick, bwait ? bwait * 1000 : 60);
+    };
+
+    btnrun.addEventListener('click', function(){
+      if(btimer){
+        clearTimeout(btimer); btimer = null;
+        btnrun.textContent = '▶ Run the loop';
+        bout.textContent = 'Stopped after ' + bcount + ' readings.\n'
+          + 'A forever-loop stops the same way on a real Pico — the Stop button, '
+          + 'or Ctrl+C in the Shell.';
+        return;
+      }
+      blines = []; bcount = 0;
+      btnrun.textContent = '■ Stop it';
+      btick();
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-bspeed]'), function(b){
+      b.addEventListener('click', function(){
+        bwait = parseFloat(b.getAttribute('data-bspeed')) || 0;
+        if(btimer) bshow();
+      });
+    });
+  }
+
 })();

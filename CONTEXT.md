@@ -36,6 +36,27 @@ language, one at a time.
 
 Spare: GP5, GP10, GP22, GP26–28. Power switch is **SW5**.
 
+### 2.1 The 40-pin connector H1 (authoritative)
+
+Where each GP number comes out on the black connector along the top edge. Pin **1** is the
+left-hand end of the **lower** row; odd pins run along the lower row (nearest the LEDs and
+screen), even pins along the upper row (nearest the board edge).
+
+```
+odd   1 3V3   3 GP0   5 GP1   7 GP5   9 GND  11 GP2  13 GP3  15 GP4  17 n/c  19 GP7
+     21 GP8  23 GP6  25 GND  27 GP10  29 GP11 31 GP12 33 GP13 35 GP14 37 GP15 39 GND
+even  2 5V    4 5V    6 GND   8 GP16  10 GP17 12 GP28 14 GND  16 GP27 18 GP26 20 GND
+     22 GP22 24 GP9  26 n/c  28 n/c   30 GND  32 GP21 34 GND  36 GP20 38 GP19 40 GP18
+```
+
+Source: `lilEx5 GPIO pins Layout.pdf` in the STEM LAB folder.
+
+These are the **LilEx5's own** positions, not the Raspberry Pi Pico's pin numbers, and the
+two must never be mixed in one sentence. The Wokwi diagrams in Activities 1 and 2 wire a
+bare Pico and correctly say "GP11 is physical pin 15" — on the LilEx5 the same GP11 comes
+out at header pin **29**. If a later activity ever puts the two side by side, say which
+board each number belongs to.
+
 I²C addresses: OLED `0x78`, temp/humidity/pressure `0x76`, accelerometer+gyro `0x68`,
 compass `0x7C`, proximity+light `0x60`, air quality `0x1A` (its clock must stay below
 15 kHz), ADC `0x48`.
@@ -86,6 +107,25 @@ Shapes are `["c",cx,cy,r]` or `["r",x,y,w,h]` in **image coordinates (710 × 615
 a part may have several (the sensor bus marks all eight I²C devices at once). Table rows
 carry `data-gp`, `data-spot`, `data-part`, `data-note`, `data-s` (search text). Adding a
 part means adding a spot and a row — `board.js` needs no change.
+
+It also highlights **the individual header pin**, so a student can see which pad to wire to
+and not just which part lights up. Three views stay in step: the table row, the part and pad
+on the photo, and the pin on the 40-pin strip (`svg.hdr`) drawn under the photo.
+
+- Table rows carry `data-hpin` (header pin) and `data-row` (`top` / `bottom`), and show the
+  pin in its own **Header pin** column. The old inline `<small>(header pin 11)</small>`
+  notes are gone — the column replaces them.
+- Each pin of the strip is a `<g class="hp k-KIND" data-pin>` with either `data-gp` (it
+  reaches the Pico) or `data-title` + `data-note` (power, ground, not connected). Tapping a
+  ground pin rings **all eight** at once; that is deliberate.
+- Pad centres on the photo are computed, not listed: `x0 102.5, dx 26.526, yTop 51.5,
+  yBot 77.5` in the 710 × 615 image, odd pins on the lower row. Measured off the artwork —
+  if the photo is ever replaced, re-measure them in `board.js`.
+- **The pin-1 ring is no longer painted into the PNG.** Both board images used to carry a
+  hand-drawn circle around pin 1, which clashed with the highlight rings; it was removed
+  from `lilex5-board.png` and `lilex5-board-red-on.png`, and pin 1 is now a dashed SVG
+  marker on `pinout.html` that dims when something is selected. Do not describe pin 1 as
+  "circled in red" anywhere.
 
 `gen/pinout.py` in the build scripts generated this page; the committed HTML is the
 source of truth.
@@ -207,6 +247,49 @@ them in the markup if they are there.
   — a small unfixed leak of rule 5.1.
 - Known TODO carried over: `activity-1.html` still has an unfilled `%WOKWI%` placeholder where a
   ready-made Wokwi project link should go. `teacher-1.html` has the real project id.
+
+### Activity 3 — Digital Input
+
+- **The one idea is two halves**: a pin can be *read*, and a program can *print*. Neither is worth
+  teaching alone — a value you cannot see is not worth reading. Do not split them into two activities.
+- **The inversion is the lesson**, the way indentation was Activity 2's. A button reads **1 when
+  nobody is touching it and 0 when they are**. It gets its own top-level section (`#trap`), with the
+  two pull-up state diagrams immediately before it and an expect-versus-get diagram inside it. Every
+  later input activity depends on students having *accepted* this rather than "fixed" it.
+- **`Pin.PULL_UP` is written everywhere**, on both routes. Kamil's call: the board's buttons already
+  idle high, so the line is belt-and-braces on the LilEx5 and essential in Wokwi — and one setup line
+  that works on both routes is worth more to a beginner than the distinction. The teacher page
+  explains the nuance; the student page does not.
+- **No `if`, and none smuggled in.** The mission is deliberately *watch the number change*, not
+  *press the button to light the LED* — that needs `if`, which is the whole of Activity 4. Also ruled
+  out: `not`, `1 - sw.value()`, `led.value(sw.value())`. Both the student page and the teacher page
+  say so out loud, because a keen student will try. The activity has to end with the class *wanting*
+  `if`.
+- **`sleep` comes back for a completely different reason** — throttling the console, not slowing a
+  blink. `sleep(0.2)`, five readings a second. Say it is a callback; do not re-teach `sleep`.
+- **The Serial Monitor / Thonny Shell gets its own section.** This is the first activity whose answer
+  is on the screen rather than on the board, and a student looking at the wrong panel is the single
+  biggest source of "mine isn't working".
+- **Wokwi wiring is real here**, unlike Activity 2. The four-leg pushbutton gets two diagrams: what is
+  joined to what inside, and which two legs to wire. The page teaches **"two of the four legs are
+  permanently joined; pick two that are diagonally opposite"**. That phrasing is deliberate — it is
+  true of a real tactile switch and of Wokwi's pushbutton whichever way round the internal pairs sit,
+  and it gives students a rule they can apply without knowing the part.
+- The wiring diagram is the **full 40-pin Pico**, reusing Activity 1's pad geometry, with pin 4 (GP2)
+  and pin 8 (GND) ringed. Kamil asked for this specifically: a cut-down Pico leaves students guessing
+  which of the two numbers goes in the code. Do this in every future activity that wires something.
+- Exercise: **SW1 and SW2 on one labelled line**. One line, not two — the columns have to line up for
+  the comparison to be readable, and that constraint is the point. It introduces `print` with commas,
+  which is the only genuinely new syntax in the exercise.
+- `activity.js` gained a **button reader** block, guarded by `#btnrun`, inert on every other page.
+  Markup: `#bsw` press-and-hold pad, `#bval` readout, `#btnout` console, `[data-bspeed]` presets
+  (`0.2` and `0`). Its console prints only `1` and `0`, so unlike the Activity 1 board simulator it
+  leaks no code. `style.css` gained `.pushbtn`, `.readout`, `.readlbl` and `.sim-out.tall`.
+- `teacher-3.html` wraps its three-column *mistakes* table in `.tablescroll` so it does not overflow
+  at 390 px. **`teacher-2.html` has the same table and still does overflow** — a one-line fix for
+  whoever is next in that file.
+- Activity 3 has **no ready-made Wokwi project link**, by decision. There is nothing to fill in later.
+  `activity-1.html`'s unfilled `%WOKWI%` placeholder is still outstanding.
 
 ## 8. Publishing
 

@@ -303,7 +303,74 @@ pre.code, code, .codeimg{
 #pintable small{color:var(--muted)}
 .muted{color:var(--muted)}
 
+/* ---------- the 40-pin header strip ---------- */
+.hdrscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.dia.hdr{width:760px;min-width:760px;max-width:none;margin:12px 0}
+.hdrhint{font-size:13px;color:var(--muted);text-align:center;margin:0 0 12px}
+.hdr .rowlbl{fill:var(--muted);font:600 12px -apple-system,"Segoe UI",Verdana,sans-serif}
+.hdr .hp{cursor:pointer}
+.hdr .hp .p{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.hdr .hp .pn{font:700 12px "SFMono-Regular",Consolas,monospace;fill:#fff}
+.hdr .hp .pl{font:600 10px "SFMono-Regular",Consolas,monospace;fill:var(--ink)}
+.hdr .hp:hover .p{stroke:var(--ink);stroke-width:2}
+.hdr .hp:focus{outline:none}
+.hdr .hp:focus .p{stroke:var(--teal);stroke-width:2.5}
+.hdr .k-i2c   .p{fill:var(--teal);stroke:var(--teal)}
+.hdr .k-in    .p{fill:var(--blue);stroke:var(--blue)}
+.hdr .k-out   .p{fill:var(--red);stroke:var(--red)}
+.hdr .k-radio .p{fill:var(--orange);stroke:var(--orange)}
+.hdr .k-radio .pn{fill:#4A2E00}
+.hdr .k-p3 .p,.hdr .k-p5 .p{fill:var(--green);stroke:var(--green)}
+.hdr .k-gnd   .p{fill:var(--muted);stroke:var(--muted)}
+.hdr .k-gnd   .pn{fill:var(--card)}
+.hdr .k-spare .p{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.hdr .k-spare .pn{fill:var(--ink)}
+.hdr .k-nc    .p{fill:var(--bg);stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 3}
+.hdr .k-nc    .pn{fill:var(--muted)}
+.hdr .k-gnd .pl,.hdr .k-nc .pl,.hdr .k-p3 .pl,.hdr .k-p5 .pl{fill:var(--muted)}
+.hdr.picked .hp{opacity:.34}
+.hdr.picked .hp.on{opacity:1}
+.hdr .hp.on .p{stroke:var(--ink);stroke-width:3}
+.hdr .hp.on .pl{font-weight:800;fill:var(--ink)}
+.hlegend{list-style:none;display:flex;flex-wrap:wrap;gap:7px 16px;padding:0;margin:4px 0 20px;
+  font-size:13.5px;color:var(--muted)}
+.hlegend li{display:flex;align-items:center;gap:7px}
+.hlegend .sw{width:15px;height:15px;border-radius:4px;border:1px solid transparent;flex:none}
+.hlegend .sw.k-i2c{background:var(--teal)}
+.hlegend .sw.k-in{background:var(--blue)}
+.hlegend .sw.k-out{background:var(--red)}
+.hlegend .sw.k-radio{background:var(--orange)}
+.hlegend .sw.k-p3{background:var(--green)}
+.hlegend .sw.k-gnd{background:var(--muted)}
+.hlegend .sw.k-spare{background:var(--card);border-color:var(--line)}
+.hlegend .sw.k-nc{background:var(--bg);border-color:var(--line);border-style:dashed}
+.hpin{display:inline-block;min-width:28px;text-align:center;border-radius:6px;padding:1px 7px;
+  background:rgba(245,162,29,.16);border:1px solid var(--orange);color:var(--ink);
+  font:700 13px "SFMono-Regular",Consolas,monospace}
+.hrow{display:block;font-size:11.5px;margin-top:2px;white-space:nowrap}
+.boardlayer .mkpad{fill:none;stroke:var(--orange);stroke-width:4;pointer-events:none;
+  filter:drop-shadow(0 0 5px rgba(245,162,29,.95))}
+.boardlayer #pin1{pointer-events:none;transition:opacity .2s}
+.boardlayer #pin1 circle{fill:none;stroke:#EAF7F6;stroke-width:2.5;stroke-dasharray:5 4}
+.boardlayer #pin1 text{fill:#EAF7F6;font:700 13px -apple-system,"Segoe UI",Verdana,sans-serif;
+  paint-order:stroke;stroke:rgba(6,20,32,.75);stroke-width:3px;stroke-linejoin:round}
+.boardlayer.picked #pin1{opacity:.3}
+
 /* ---------- board figures on other pages ---------- */
 figure.board{margin:18px 0}
 figure.board img{display:block;width:100%;max-width:620px;height:auto;margin:0 auto;border-radius:12px}
 figure.board figcaption{text-align:center;font-size:13.5px;color:var(--muted);margin-top:8px}
+
+/* ---------- button reader (Activity 3) ---------- */
+.pushbtn{width:78px;height:78px;border-radius:50%;border:3px solid #2c6a66;background:#123f42;
+  color:#B9E4E1;font:700 13px -apple-system,"Segoe UI",Verdana,sans-serif;cursor:pointer;
+  display:grid;place-items:center;transition:transform .07s,background .07s;
+  box-shadow:0 6px 0 #0a2a2c;touch-action:manipulation;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none}
+.pushbtn.down{background:var(--teal);color:#fff;transform:translateY(6px);box-shadow:0 0 0 #0a2a2c}
+.readout{font-family:"SFMono-Regular",Consolas,monospace;font-size:54px;font-weight:700;
+  color:#7FE3DD;line-height:78px;min-width:78px;text-align:center;transition:color .1s}
+.readout.pressed{color:#FFD426}
+.readlbl{display:block;margin-top:8px;font-size:11.5px;letter-spacing:.05em;color:#8FD9D5;
+  text-align:center;font-family:-apple-system,"Segoe UI",Verdana,sans-serif}
+.sim-out.tall{min-height:160px}

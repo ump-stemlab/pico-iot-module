@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 3 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 3.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answers for <strong>Activity 3 &mdash; Digital Input</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-3.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 3 &mdash; teacher notes</h1>
+    <p class="sub">Digital Input. Everything on this page is for the person running the lesson.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-3.html">&#9654; Open the student page</a>
+      <a class="cta alt" href="teacher-2.html">&#8592; Activity 2 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> The page is unlisted and hidden from search
+engines, but the repository is public &mdash; anyone given the URL can read it. Share it with staff, not
+in the student handout.</div>
+
+<section>
+  <h2>What is actually being taught</h2>
+  <p>One idea, in two halves that need each other: <strong>a pin can be read</strong>, and
+  <strong>a program can talk back to you</strong>. Neither is worth much alone. A value you cannot see is
+  invisible; a message with nothing to say is a party trick.</p>
+  <p>The reading is easy. <strong>The inversion is the lesson.</strong> A button reads 1 when nobody is
+  touching it and 0 when they are, and that is backwards from every student's intuition. It is this
+  activity's equivalent of Activity 2's indentation: the thing they will get wrong, and the thing that
+  will bite them again in Activity 4 when the wrong comparison makes an LED come on at exactly the wrong
+  moment. Budget time for the two pull-up diagrams and do not rush them.</p>
+  <div class="cal tip"><b>The question to ask before they type anything</b>
+  &ldquo;The Pico has done everything you told it for two whole activities. How would it ever know you
+  were in the room?&rdquo; Let them get to <em>&ldquo;it would have to look at something&rdquo;</em>, and
+  then ask the second question: <em>&ldquo;and how would it tell you what it saw?&rdquo;</em> That is the
+  whole activity, in two questions.</div>
+  <div class="cal warn"><b>There is no <code>if</code> in this activity, on purpose</b>
+  The obvious mission &mdash; press the button, light the LED &mdash; is impossible without <code>if</code>,
+  and <code>if</code> is the whole of Activity 4. The mission here is deliberately
+  <em>watch the number change</em>. Expect a student to ask for the LED version; the right answer is
+  &ldquo;yes, and that is exactly what we do next lesson.&rdquo; Do not hand them <code>if</code>, and do
+  not let a keen student smuggle it in disguised as inverting the value or feeding it straight into an
+  LED &mdash; both work, both skip the idea, and both make Activity 4 land flat.</div>
+</section>
+
+<section>
+  <h2>The main program</h2>
+  <span class="codeimg" data-code="IyBUd28gdG9vbHMgYWdhaW46IFBpbiBmb3IgdGhlIGJ1dHRvbiwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBpcyBhIGJ1dHRvbiwgd2lyZWQgdG8gR1AyLgojIElOIG1lYW5zOiBsaXN0ZW4gdG8gdGhpcyBwaW4sIGRvIG5vdCBkcml2ZSBpdC4KIyBQVUxMX1VQIGhvbGRzIHRoZSBwaW4gYXQgMSB1bnRpbCB0aGUgYnV0dG9uIHB1bGxzIGl0IGRvd24uCnN3ID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCgojIFJlYWQgdGhlIGJ1dHRvbiwgc2F5IHdoYXQgaXQgc2FpZCwgYW5kIGRvIGl0IGFnYWluCndoaWxlIFRydWU6CiAgICBwcmludChzdy52YWx1ZSgpKSAgICMgMSA9IG5vdCBwcmVzc2VkLCAwID0gcHJlc3NlZAogICAgc2xlZXAoMC4yKSAgICAgICAgICAjIGEgZmlmdGggb2YgYSBzZWNvbmQgYmV0d2VlbiByZWFkaW5ncw==" role="img" aria-label="Python code, 13 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Six working lines. The comments are optional, as always &mdash; do not mark a student down for a
+  program that has none.</p>
+  <div class="cal info"><b>The same line works on both routes</b>
+  The student page teaches one setup line, with <code>PULL_UP</code>, for Wokwi and for the LilEx5 alike.
+  In Wokwi the pull-up is doing all the work &mdash; take it out there and the pin floats and the numbers
+  go to nonsense, which is worth demonstrating once. On the board the buttons already idle high, so the
+  line behaves identically and students never have to hold two versions of it in their heads. If a
+  student asks whether the board &ldquo;needs&rdquo; it, the honest answer is that writing it costs
+  nothing and guarantees the pin is never left floating.</div>
+</section>
+
+<section>
+  <h2>Exercise answer &mdash; two buttons on one line</h2>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBPbmUgbmFtZSBmb3IgZWFjaCBidXR0b24Kc3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQoKIyBSZWFkIGJvdGgsIHNob3cgYm90aCwgb3ZlciBhbmQgb3Zlcgp3aGlsZSBUcnVlOgogICAgcHJpbnQoIlNXMSA9Iiwgc3cxLnZhbHVlKCksICIgIFNXMiA9Iiwgc3cyLnZhbHVlKCkpCiAgICBzbGVlcCgwLjIp" role="img" aria-label="Python code, 11 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>The exercise needs <strong>one thing from Activity 1</strong> (each part gets its own name) and
+  <strong>two from this one</strong> (a second input pin, and a print line carrying more than one thing).
+  The commas in <code>print</code> are the only genuinely new syntax, and they are taught in Clue 2.</p>
+  <p>Accept any sensible names and any sensible labels. Three things worth insisting on:</p>
+  <ul>
+    <li><strong>One line, not two.</strong> Two separate print lines per loop is the common answer and it
+    works, but the two columns no longer line up and the point of the exercise &mdash; telling them apart
+    at a glance &mdash; is lost. Ask them to watch their own output while pressing a button and decide
+    which is easier to read.</li>
+    <li><strong>Two names.</strong> Reusing one name for both pins is the Activity 1 mistake resurfacing.
+    The symptom is that only one button ever appears to work.</li>
+    <li><strong>Labels in quote marks.</strong> Without the quotes Python looks for a variable with that
+    name and reports a <code>NameError</code>, which is a useful accident &mdash; it is the clearest
+    demonstration in the module of what quote marks are for.</li>
+  </ul>
+  <div class="cal info"><b>If a pair finishes very early</b>
+  Ask them to make the two columns line up neatly even when a number changes width. They cannot, yet
+  &mdash; every value here is a single digit, so it always does. Then ask what would happen if one of
+  them printed 10. It pre-teaches formatting, which comes back in Activity 7 with decimals.</div>
+  <div class="cal warn"><b>Wokwi needs a second pushbutton</b>
+  Wired the same way: one leg to GP3, the diagonally opposite leg to any GND. This is where the four-leg
+  trap catches the students who got away with it the first time by luck.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <table>
+    <thead><tr><th>Task</th><th>What happens / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Add SW3 on <span class="gp">4</span></td><td>A third name and two more commas. Nothing new
+      &mdash; which is the point: the pattern scales.</td></tr>
+      <tr><td>Read the slide switch SW4 on <span class="gp">15</span></td><td>It reads exactly the same
+      way, but the value <em>stays</em> where you put it instead of springing back. This is the difference
+      between a momentary and a latching switch, and it is worth naming out loud. It also makes the
+      point that the code cannot tell the two apart &mdash; only the hardware knows.</td></tr>
+      <tr><td>Wait two seconds instead</td><td>Most taps are missed entirely. Excellent, cheap
+      demonstration that the program is not watching continuously &mdash; it is taking snapshots. Leads
+      naturally to the idea of catching an event rather than sampling a state, which this module does not
+      cover but good students will ask about.</td></tr>
+      <tr><td>Wait <code>0.01</code></td><td>A hundred lines a second. The panel becomes unusable and
+      pressing the button makes no visible difference. Same lesson as the &ldquo;no wait at all&rdquo;
+      preset on the student page.</td></tr>
+      <tr><td>Print a sentence</td><td>Any label they like. Watch for missing quote marks. A nice one to
+      show on the projector &mdash; it is the first time output has been designed for a human reader.</td></tr>
+      <tr><td>Leave the pull-up out</td><td><strong>Wokwi only &mdash; do this one in the simulator.</strong>
+      The pin floats and the numbers wander. On the real board the result is less dramatic because the
+      board's own hardware holds the line, which is itself a useful thing to point out. Do not encourage
+      poking at wires on a powered board.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li>Activities 1 and 2 must be done. Loops, indentation, <code>sleep</code>, stopping a forever-loop
+    and naming a pin are all assumed and none of them is re-taught.</li>
+    <li>A LilEx5 board and USB cable per pair; check that <strong>SW1</strong> actually clicks on each
+    board before the lesson. A dead button is very hard to distinguish from a wrong program.</li>
+    <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
+    <li><strong>Make sure the Shell panel is visible on every machine.</strong> If a student has
+    accidentally closed it, nothing this activity produces will appear anywhere and they will conclude
+    their program is broken. It is under <strong>View</strong> in Thonny.</li>
+    <li>In Wokwi, drag the <strong>Serial Monitor</strong> taller on the projector copy so the class can
+    see more than two lines of it.</li>
+    <li>Have a spare pushbutton diagram to hand &mdash; the four-leg problem will come up within ten
+    minutes and it is much easier to point at than describe.</li>
+    <li>The <a href="pinout.html">pin reference</a> open on every machine.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Assumed pressed means 1</td><td>Nothing visibly wrong &mdash; they simply describe their own
+      output backwards</td><td><strong>The big one.</strong> It does no damage today and enormous damage in
+      Activity 4. Make every student say out loud, while pressing, &ldquo;my finger is down and the number
+      is zero.&rdquo;</td></tr>
+      <tr><td>Two legs of the button on the same bar (Wokwi)</td><td>A steady column of 1s that never
+      changes</td><td>The four-leg trap. Ask them to trace which two legs are already joined. Move one
+      wire to the diagonally opposite leg.</td></tr>
+      <tr><td>Looking at the wrong panel</td><td>&ldquo;It's not doing anything&rdquo;</td><td>Very common,
+      because no previous activity produced any text at all. Point at the Serial Monitor or Shell before
+      you look at their code.</td></tr>
+      <tr><td>No <code>PULL_UP</code></td><td>Numbers that flicker between 0 and 1 at random</td>
+      <td>Beautiful failure, worth demonstrating on purpose in Wokwi. The pin is floating.</td></tr>
+      <tr><td><code>Pin.OUT</code> left in from Activity 2</td><td>A steady column of 0s, or 1s, that
+      never changes</td><td>They copied their old setup line and changed only the number. The word
+      <code>OUT</code> is the one that has to change.</td></tr>
+      <tr><td>Missing brackets after <code>value</code></td><td>Something long and cryptic printed
+      repeatedly, not a number</td><td>They printed the question instead of the answer. The empty brackets
+      are what actually asks it.</td></tr>
+      <tr><td>No wait, or the wait left outside the loop</td><td>Thousands of lines; the panel is
+      unreadable</td><td>Both produce the same symptom. Check the indentation before assuming the line is
+      missing.</td></tr>
+      <tr><td>Nothing indented under the loop line</td><td><code>IndentationError</code></td><td>Same as
+      Activity 2. The message names the line.</td></tr>
+      <tr><td>Wrong pin number</td><td>A column that never changes</td><td>Buttons are 2, 3, 4. LEDs are
+      11, 12, 13. There is no pattern &mdash; send them to the pin reference.</td></tr>
+      <tr><td>Knocked SW5</td><td>The whole board goes dead</td><td>The power switch sits in the same
+      numbering as the buttons. Expect this at least once per class.</td></tr>
+      <tr><td>Tapped too fast to be caught</td><td>An occasional press that produces no 0</td><td>Not a
+      bug. The program looks five times a second. Hold it down for a full second.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Teach the panel before you teach the program.</strong> Have the class find the Serial
+    Monitor or the Shell and print one word &mdash; anything &mdash; before any button work starts. It
+    takes two minutes and removes the single biggest source of &ldquo;mine isn't working&rdquo;.</li>
+    <li><strong>The inversion deserves a physical demonstration.</strong> Hold a finger over the button
+    without touching it and ask what the pin reads. Then press. Ask them to explain what the finger
+    <em>removed</em> rather than what it added. &ldquo;Pressing pulls the pin down&rdquo; is the sentence
+    you want back.</li>
+    <li><strong>The button widget on the student page is worth three minutes of class time.</strong> Put
+    it on the projector, run it, and hold the button. Then press <em>No wait at all</em> and hold it
+    again &mdash; the number still changes, but the output is useless. That single demonstration explains
+    the <code>sleep</code> better than any sentence.</li>
+    <li><strong>The four-leg button is the best physical prop in the whole module.</strong> If you have a
+    loose tactile switch and a multimeter, buzz out the pairs in front of the class. Nothing on a screen
+    beats hearing the beep with the button untouched.</li>
+    <li>Two sets of brackets, one inside the other, is the first nested expression in this module.
+    &ldquo;Ask the question, then show the answer&rdquo; &mdash; read it from the inside out, out loud,
+    twice.</li>
+    <li><code>print</code> arrives here rather than in Activity 1 or 2 on purpose. Both of those had a
+    light to look at; a console message would have competed with it. Here it is the only way to see
+    anything, so it earns its place. If a student has been sneaking it into earlier work, praise them.</li>
+    <li>Resist letting the class jump ahead to lighting an LED with the button. See the warning at the
+    top of this page &mdash; that is Activity 4, and it lands much better if they arrive at it
+    <em>wanting</em> it.</li>
+    <li>The safety rules still apply: never join 5V to a GP pin, never join a power pin to GND, switch
+    off at SW5 before changing wires.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Every link in this activity</h2>
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-3.html">activity-3.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-2.html">activity-2.html</a> &middot; <a href="teacher-2.html">teacher-2.html</a></td></tr>
+      <tr><td>Activity 1</td><td><a href="activity-1.html">activity-1.html</a> &middot; <a href="teacher-1.html">teacher-1.html</a></td></tr>
+      <tr><td>Wokwi</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>LilEx5 pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">https://github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>First seen</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>Activity 3</strong> &mdash; new</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td><strong>Activity 3</strong> (exercise) &mdash; new</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>Not required &mdash; Activity 3 going-further only</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activity 1</td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>Activity 1 (exercise), Activity 2 (exercise)</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 1 (exercise), Activity 2 (exercise)</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Not required &mdash; Activity 2 going-further only</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Not required &mdash; Activity 3 going-further only</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Activity 3 is the first activity to add pins since Activity 1. SW5 is the power switch
+  and is not on a GP pin at all.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

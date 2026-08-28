@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 3 &mdash; Digital Input | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 3: read a button as an input and show the answer with print().">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html" aria-current="page">Activity 3</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 3</p>
+    <h1>Digital Input</h1>
+    <p class="sub">So far the Pico has only ever done what you told it. Now it is going to tell
+    <em>you</em> something &mdash; whether your finger is on the button.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 40 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 2</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#buttons">The buttons</a>
+      <a href="#idea">A pin that listens</a>
+      <a href="#trap">1 and 0</a>
+      <a href="#print">Seeing the answer</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the code</a>
+      <a href="#run">Run it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Make the board tell you when a button is pressed. A number appears on your screen, and
+  it changes as your finger goes down and comes back up.</p>
+  <p>Everything you have written so far has gone <strong>one way</strong>. You decided, the Pico obeyed:
+  switch this on, wait, switch it off. The board had no way of knowing you were even in the room.</p>
+  <p>This activity turns a pin around. Instead of sending power <em>out</em>, the pin sits there and
+  <strong>listens</strong> &mdash; and your program can ask it, at any moment, what it can hear.</p>
+  <p>That is only half of it. A pin that listens is useless if you cannot find out what it heard, so this
+  activity also gives you your first way of getting a message out of the Pico and onto your screen.</p>
+
+<svg class="dia" viewBox="0 0 720 205" role="img" aria-label="The loop for this activity: read the pin, show the answer on the screen, wait a fifth of a second, then go back to the start and do it again for ever">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Three steps, then back to the start</text>
+  <rect x="60" y="44" width="160" height="56" rx="10" class="step"/>
+  <text x="140" y="70" class="dlbl" text-anchor="middle">read the pin</text>
+  <text x="140" y="89" class="dsub" text-anchor="middle">what can it hear?</text>
+  <path d="M228 72 L272 72" class="arrow"/>
+  <rect x="280" y="44" width="160" height="56" rx="10" class="step"/>
+  <text x="360" y="70" class="dlbl" text-anchor="middle">show the answer</text>
+  <text x="360" y="89" class="dsub" text-anchor="middle">a number on screen</text>
+  <path d="M448 72 L492 72" class="arrow"/>
+  <rect x="500" y="44" width="160" height="56" rx="10" class="step"/>
+  <text x="580" y="70" class="dlbl" text-anchor="middle">wait a moment</text>
+  <text x="580" y="89" class="dsub" text-anchor="middle">a fifth of a second</text>
+  <path d="M580 100 L580 140 L140 140 L140 106" class="arrow"/>
+  <text x="358" y="163" class="dlbl" text-anchor="middle">&hellip; and now do the whole thing again</text>
+  <text x="358" y="185" class="dsub" text-anchor="middle">so the number keeps up with your finger</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>How a pin listens</h4><p><strong>Input</strong> &mdash; setting a pin up to be read instead of driven.</p></div>
+    <div class="mini"><h4>How to ask it</h4><p><strong>value</strong> &mdash; the question you ask a pin to find out what it can hear right now.</p></div>
+    <div class="mini"><h4>How to see the answer</h4><p><strong>print</strong> &mdash; sending a message from the Pico to your screen.</p></div>
+    <div class="mini"><h4>Why a button reads 1</h4><p>The number is <em>backwards</em> from what you expect, and there is a very good reason for it.</p></div>
+  </div>
+
+  <div class="cal info"><b>You need Activities 1 and 2 first</b>
+  This one assumes you already know how to name a pin, what a loop is, what the four spaces at the start of
+  a line mean, and how to stop a program that never ends. If any of that is shaky, go back to
+  <a href="activity-2.html">Activity 2</a> &mdash; none of it is re-taught here.</div>
+
+  <h3>Which route are you taking?</h3>
+  <table>
+    <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. You will wire a real button this time.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Wokwi really matters this time</b>
+  In Activity 2 the Wokwi circuit was the same one you had already built. Here it is genuinely new
+  &mdash; a button is the first part you will meet that has <em>four legs</em>, and only two of them do
+  anything. On the LilEx5 all that is hidden inside the board, so the simulator is the only place you get
+  to see how a button is actually joined up.</div>
+</section>
+
+<section id="buttons">
+  <h2>&#128100; Meet the buttons</h2>
+  <p>Your board has <strong>three pushbuttons</strong>, in a row, labelled SW1, SW2 and SW3. Each one is
+  joined to its own pin, exactly like the LEDs were &mdash; and just like the LEDs, your code has to use
+  the right <strong>GP number</strong>.</p>
+  <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above, showing the row of pushbuttons" loading="lazy"><figcaption>Your LilEx5 board. The three small pushbuttons are SW1, SW2 and SW3; the sliding one beside them is SW4.</figcaption></figure>
+
+  <table>
+    <thead><tr><th>Part</th><th>What it is</th><th>Pin you type in code</th></tr></thead>
+    <tbody>
+      <tr><td>SW1</td><td>Pushbutton &mdash; springs back when you let go</td><td><span class="gp">2</span></td></tr>
+      <tr><td>SW2</td><td>Pushbutton</td><td><span class="gp">3</span></td></tr>
+      <tr><td>SW3</td><td>Pushbutton</td><td><span class="gp">4</span></td></tr>
+      <tr><td>SW4</td><td>Slide switch &mdash; <em>stays</em> where you put it</td><td><span class="gp">15</span></td></tr>
+      <tr><td>SW5</td><td>Power switch &mdash; not a pin at all</td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+
+  <p>This activity uses <strong>SW1</strong> on <span class="gp">2</span>. SW2 and SW3 come up in the
+  exercise, and SW4 is waiting for you in <em>going further</em>.</p>
+
+  <div class="cal warn"><b>SW5 is the power switch</b>
+  It is in the same numbering as the others, so it looks like it belongs, but it is not wired to a GP pin
+  and you cannot read it in code. Switching it off turns the board off &mdash; which is a very
+  confusing way to discover a typing mistake.</div>
+
+  <div class="cal note"><b>Check the numbers, do not remember them</b>
+  Buttons start at <span class="gp">2</span> and LEDs start at <span class="gp">11</span>. There is no
+  pattern to learn and nobody memorises this &mdash; keep <a href="pinout.html">the pin reference</a>
+  open in another tab, the way an engineer does.</div>
+
+  <label class="chk"><input type="checkbox" data-p="p1"><span>I found SW1 on the board and I know its pin number</span></label>
+  <label class="chk"><input type="checkbox" data-p="p2"><span>I know which of the switches is the power switch</span></label>
+</section>
+
+<section id="idea">
+  <h2>&#128066; The new idea &mdash; a pin that listens</h2>
+  <p class="lede">Same <code>Pin</code> tool you have used since Activity 1. One word changed, and the
+  whole thing runs backwards.</p>
+
+  <h3>1. Out, and in</h3>
+  <p>When you set up the LED you told the Pico that pin 11 was an <strong>output</strong>: <em>send power
+  out of this pin when I say so</em>. A button is the opposite. You want the pin to sit quietly and let
+  you find out what is happening to it &mdash; that is an <strong>input</strong>.</p>
+
+<svg class="dia wide" viewBox="0 0 780 280" role="img" aria-label="Two panels compared. On the left an output pin: an arrow leaves the Pico and goes to the LED. On the right an input pin: an arrow comes from the button into the Pico.">
+  <rect x="20" y="44" width="360" height="210" rx="12" class="pane"/>
+  <text x="130" y="76" class="dlbl" text-anchor="middle">An output pin</text>
+  <rect x="286" y="100" width="72" height="96" rx="8" class="pico"/>
+  <text x="322" y="152" class="silkbig" text-anchor="middle">Pico</text>
+  <circle cx="90" cy="148" r="26" fill="#FF2B2B"/>
+  <path d="M276 155 L130 155" class="arrow"/>
+  <text x="203" y="138" class="dlbl" text-anchor="middle">power goes out</text>
+  <text x="90" y="196" class="dsub" text-anchor="middle">LED1</text>
+  <text x="200" y="232" class="dsub" text-anchor="middle">you tell the pin what to be</text>
+
+  <rect x="400" y="44" width="360" height="210" rx="12" class="pane"/>
+  <text x="510" y="76" class="dlbl" text-anchor="middle">An input pin</text>
+  <rect x="666" y="100" width="72" height="96" rx="8" class="pico"/>
+  <text x="702" y="152" class="silkbig" text-anchor="middle">Pico</text>
+  <rect x="452" y="122" width="56" height="56" rx="10" class="part"/>
+  <circle cx="480" cy="150" r="15" class="chip"/>
+  <path d="M520 155 L656 155" class="arrow"/>
+  <text x="588" y="138" class="dlbl" text-anchor="middle">an answer comes in</text>
+  <text x="480" y="196" class="dsub" text-anchor="middle">SW1</text>
+  <text x="580" y="232" class="dsub" text-anchor="middle">the pin tells you what it is</text>
+  <text x="390" y="272" class="dsub" text-anchor="middle">The same Pin tool, pointed the other way.</text>
+</svg>
+
+  <p>You already know the output version by heart:</p>
+  <span class="codeimg" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>The input version is the same shape, with a different pin number and one extra thing in the
+  brackets:</p>
+  <span class="codeimg" data-code="c3cgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCk=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Reading it out loud: <em>pin number 2, set it to listen, and hold it up.</em> The nickname
+  <code>sw</code> is just a name, the same way <code>led</code> was &mdash; you could call it anything,
+  and <code>sw</code> is short for <em>switch</em>.</p>
+  <div class="cal warn"><b>Capitals, again</b>
+  <code>IN</code> and <code>PULL_UP</code> are both in capitals, and <code>PULL_UP</code> has an
+  <strong>underscore</strong> in the middle, not a space and not a dash. It is the fiddliest line in the
+  whole activity &mdash; type it slowly.</div>
+
+  <h3>2. Asking the pin what it can hear</h3>
+  <p>Setting the pin up does not tell you anything by itself. To find out what is happening
+  <em>right now</em>, you ask it:</p>
+  <span class="codeimg" data-code="c3cudmFsdWUoKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Same shape as <code>on</code> and <code>off</code>: the name of the thing, a dot, and what you want
+  from it. The difference is that <code>on</code> and <code>off</code> were <em>orders</em>, and
+  <code>value</code> is a <strong>question</strong>. Asking it gives you back a number, and there are only
+  ever two possible answers: <strong>1</strong> or <strong>0</strong>.</p>
+  <div class="cal tip"><b>The empty brackets are not optional</b>
+  They are there for the same reason as in <code>on()</code> and <code>off()</code>. Leave them off and
+  Python will not complain &mdash; it will just hand you the question instead of the answer, which is a
+  strange and hard-to-spot kind of wrong.</div>
+
+  <h3>3. The pull-up &mdash; why the pin is never left alone</h3>
+  <p>A pin that is listening has a problem. A button that is not being pressed is joined to
+  <strong>nothing at all</strong>, and a pin joined to nothing does not read 0 &mdash; it reads whatever
+  the last stray bit of electricity in the air happened to leave behind. It flickers. It is useless.</p>
+  <p>So the pin is given something to hold on to: a resistor quietly joining it up to the board's power.
+  That is a <strong>pull-up</strong>, and <code>PULL_UP</code> is you asking the Pico to switch on the one
+  it already has inside itself.</p>
+
+<svg class="dia wide" viewBox="0 0 780 360" role="img" aria-label="Two panels. Not pressed: the pull-up resistor joins the pin up to 3.3 volts and the switch is open, so the pin reads 1. Pressed: the closed switch joins the pin down to ground, so the pin reads 0.">
+  <rect x="20" y="50" width="360" height="290" rx="12" class="pane"/>
+  <text x="130" y="78" class="dlbl" text-anchor="middle">Not pressed</text>
+  <text x="130" y="104" class="dpin" text-anchor="middle">3.3 V</text>
+  <path d="M130 112 L130 130" class="wire"/>
+  <rect x="113" y="130" width="34" height="52" rx="6" class="part"/>
+  <path d="M130 134 L118 143 L142 152 L118 161 L142 170 L130 178" class="zig"/>
+  <text x="154" y="150" class="dsub">pull-up</text>
+  <text x="154" y="167" class="dsub">resistor</text>
+  <path d="M130 182 L130 210" class="wire"/>
+  <circle cx="130" cy="210" r="4" class="legdot"/>
+  <path d="M130 210 L236 210" class="wire"/>
+  <rect x="238" y="202" width="12" height="16" rx="2" class="padhot"/>
+  <rect x="250" y="176" width="104" height="68" rx="8" class="pico"/>
+  <text x="262" y="214" class="silk">GP2</text>
+  <text x="302" y="236" class="silkbig" text-anchor="middle">Pico</text>
+  <rect x="246" y="96" width="112" height="62" rx="10" class="pinbox"/>
+  <text x="302" y="118" class="dsub" text-anchor="middle">the pin reads</text>
+  <text x="302" y="146" class="dmono2" text-anchor="middle" style="font-size:26px">1</text>
+  <path d="M130 210 L130 250" class="wire"/>
+  <circle cx="130" cy="250" r="4" class="legdot"/>
+  <path d="M130 250 L162 270" class="leg"/>
+  <circle cx="130" cy="282" r="4" class="legdot"/>
+  <text x="172" y="252" class="dsub">SW1</text>
+  <path d="M130 282 L130 304" class="wire"/>
+  <g class="wire"><path d="M112 304 L148 304"/><path d="M118 311 L142 311"/><path d="M124 318 L136 318"/></g>
+  <text x="166" y="294" class="dsub">the switch is open,</text>
+  <text x="166" y="311" class="dsub">so nothing pulls the pin down</text>
+
+  <rect x="400" y="50" width="360" height="290" rx="12" class="pane"/>
+  <text x="510" y="78" class="dlbl" text-anchor="middle">Pressed</text>
+  <text x="510" y="104" class="dpin" text-anchor="middle">3.3 V</text>
+  <path d="M510 112 L510 130" class="wire"/>
+  <rect x="493" y="130" width="34" height="52" rx="6" class="part"/>
+  <path d="M510 134 L498 143 L522 152 L498 161 L522 170 L510 178" class="zig"/>
+  <text x="534" y="150" class="dsub">pull-up</text>
+  <text x="534" y="167" class="dsub">resistor</text>
+  <path d="M510 182 L510 210" class="wire"/>
+  <circle cx="510" cy="210" r="4" class="legdot"/>
+  <path d="M510 210 L616 210" class="wire"/>
+  <rect x="618" y="202" width="12" height="16" rx="2" class="padhot"/>
+  <rect x="630" y="176" width="104" height="68" rx="8" class="pico"/>
+  <text x="642" y="214" class="silk">GP2</text>
+  <text x="682" y="236" class="silkbig" text-anchor="middle">Pico</text>
+  <rect x="626" y="96" width="112" height="62" rx="10" class="pinbox"/>
+  <text x="682" y="118" class="dsub" text-anchor="middle">the pin reads</text>
+  <text x="682" y="146" class="dmono2" text-anchor="middle" style="font-size:26px">0</text>
+  <path d="M510 210 L510 250" class="wire"/>
+  <circle cx="510" cy="250" r="4" class="legdot"/>
+  <path d="M510 250 L524 266 L510 282" class="leg"/>
+  <circle cx="510" cy="282" r="4" class="legdot"/>
+  <text x="560" y="228" class="dsub" text-anchor="middle">your finger</text>
+  <path d="M560 236 L528 260" class="arrow2"/>
+  <path d="M510 282 L510 304" class="wire"/>
+  <g class="wire"><path d="M492 304 L528 304"/><path d="M498 311 L522 311"/><path d="M504 318 L516 318"/></g>
+  <text x="546" y="294" class="dsub">the switch is closed,</text>
+  <text x="546" y="311" class="dsub">so the pin is joined to ground</text>
+  <text x="390" y="354" class="dsub" text-anchor="middle">The resistor is why an untouched button reads something sensible. The button&rsquo;s only job is to pull the pin down.</text>
+</svg>
+
+  <p>The three little bars at the bottom of each picture are the symbol for <strong>ground</strong>
+  &mdash; the same GND you wired the LED back to in Activity 1. It is the bottom of everything
+  electrical, and a pin joined to it reads <strong>0</strong>.</p>
+
+  <details>
+    <summary>&#129300; Why does the resistor not just short the power to ground when I press it?</summary>
+    <p>It does join them &mdash; but through the resistor, which is deliberately large. Only a tiny
+    trickle of electricity gets through, far too little to do any harm. That is the whole reason the
+    resistor is there rather than a plain wire.</p>
+    <p>It is the same job the 330&nbsp;&Omega; resistor did for the LED in Activity 1: a narrow gate in a
+    wide corridor.</p>
+  </details>
+
+  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say the difference between an <strong>output</strong> pin and an <strong>input</strong> pin</span></label>
+  <label class="chk"><input type="checkbox" data-p="i2"><span>I know what the pull-up is holding the pin up to</span></label>
+</section>
+
+<section id="trap">
+  <h2>&#9888;&#65039; The number is backwards</h2>
+  <p class="lede">This is the part people get wrong, and it is the whole reason the section above exists.
+  Read it twice.</p>
+  <p>Everyone expects a pressed button to give 1, because pressed feels like <em>on</em>, and on feels
+  like 1. It does not. A button on this board reads:</p>
+
+<svg class="dia" viewBox="0 0 720 250" role="img" aria-label="A comparison. When your finger is off the button most people guess it gives 0, but the Pico says 1. When you are pressing, most people guess 1, but the Pico says 0.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">What you expect, and what you get</text>
+  <text x="260" y="70" class="dlbl" text-anchor="middle">not pressing</text>
+  <text x="520" y="70" class="dlbl" text-anchor="middle">pressing</text>
+  <path d="M200 84 L620 84" class="lead"/>
+  <text x="180" y="74" class="dsub" text-anchor="end">your finger</text>
+  <text x="180" y="132" class="dsub" text-anchor="end">what most people guess</text>
+  <text x="260" y="140" class="dsub" text-anchor="middle" style="font-size:24px">0</text>
+  <text x="520" y="140" class="dsub" text-anchor="middle" style="font-size:24px">1</text>
+  <g stroke="var(--red)" stroke-width="3" stroke-linecap="round">
+    <path d="M244 132 L276 132"/>
+    <path d="M504 132 L536 132"/>
+  </g>
+  <text x="180" y="200" class="dlbl" text-anchor="end">what the Pico says</text>
+  <rect x="204" y="168" width="112" height="48" rx="10" class="pinbox"/>
+  <rect x="464" y="168" width="112" height="48" rx="10" class="pinbox"/>
+  <text x="260" y="203" class="dmono2" text-anchor="middle" style="font-size:26px">1</text>
+  <text x="520" y="203" class="dmono2" text-anchor="middle" style="font-size:26px">0</text>
+  <text x="360" y="240" class="dsub" text-anchor="middle">A button that is doing nothing still has something to say &mdash; and what it says is 1.</text>
+</svg>
+
+  <p>It makes sense once you have seen the two pictures above. The pull-up holds the pin
+  <strong>up</strong> all the time. Your finger is not switching something on &mdash; it is
+  <strong>pulling the pin down</strong> to ground. Pressing does not add anything; it takes something away.</p>
+
+  <div class="cal warn"><b>Do not try to fix it</b>
+  There is a strong temptation to make the number come out &ldquo;the right way round&rdquo;. Resist it.
+  Every input you meet from here on behaves like this, and in the next activity you will tell the Pico
+  <em>when</em> to act on a value rather than trying to flip it. Learn to read 0 as
+  <strong>pressed</strong> and you will never think about it again.</div>
+
+  <div class="cal tip"><b>A way to remember it</b>
+  <strong>0 means nothing is in the way &mdash; the path to ground is open.</strong> Your finger closed a
+  gate, and closing the gate is what brought the number down.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say what a button reads when <strong>nobody is touching it</strong></span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I can explain <em>why</em> pressing makes the number go down, not up</span></label>
+</section>
+
+<section id="print">
+  <h2>&#128172; Seeing the answer &mdash; print</h2>
+  <p class="lede">A value you cannot see is not worth reading. This is the other half of the activity.</p>
+  <p>Your programs so far have said everything they had to say with a light. A number is different
+  &mdash; there is no LED that can show you a 1. You need the Pico to send a message back to your
+  computer, and the instruction that does it is <code>print</code>:</p>
+  <span class="codeimg" data-code="cHJpbnQoIkhlbGxvIik=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Whatever you put in the brackets appears on your screen. Words go in <strong>quote
+  marks</strong>; numbers and questions do not:</p>
+  <span class="codeimg" data-code="cHJpbnQoc3cudmFsdWUoKSk=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Read that one from the inside out. First the pin is asked what it can hear. Then whatever came back
+  &mdash; a 1 or a 0 &mdash; is handed to <code>print</code>, which puts it on the screen. Two sets of
+  brackets, one inside the other, because there are two things happening.</p>
+
+  <h3>Where the answer actually appears</h3>
+  <p>Not on the board. Not in your program. It appears in a panel you have probably been ignoring up to
+  now, because until today nothing ever wrote to it.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="Where printed output appears. In Wokwi it is the Serial Monitor panel underneath your code. In Thonny it is the Shell panel at the bottom of the window.">
+  <rect x="20" y="44" width="360" height="240" rx="12" class="win"/>
+  <rect x="20" y="44" width="360" height="28" rx="12" class="wintop"/>
+  <circle cx="44" cy="58" r="4.5" fill="#FF5F57"/><circle cx="60" cy="58" r="4.5" fill="#FEBC2E"/><circle cx="76" cy="58" r="4.5" fill="#28C840"/>
+  <text x="362" y="63" class="dlbl" text-anchor="end">Wokwi</text>
+  <rect x="34" y="82" width="332" height="88" rx="8" class="pane"/>
+  <text x="50" y="100" class="dsub">main.py</text>
+  <g class="codeline"><path d="M50 118 L250 118"/><path d="M50 134 L200 134"/><path d="M50 150 L226 150"/></g>
+  <rect x="34" y="182" width="332" height="88" rx="8" class="pinbox"/>
+  <text x="50" y="200" class="dsub">Serial Monitor</text>
+  <text x="50" y="224" class="dmono2">1</text>
+  <text x="50" y="244" class="dmono2">1</text>
+  <text x="50" y="264" class="dmono2">0</text>
+  <text x="200" y="306" class="dsub" text-anchor="middle">underneath your code, on the left</text>
+
+  <rect x="400" y="44" width="360" height="240" rx="12" class="win"/>
+  <rect x="400" y="44" width="360" height="28" rx="12" class="wintop"/>
+  <circle cx="424" cy="58" r="9" fill="#28C840"/>
+  <path d="M420 53 l8 5 l-8 5 Z" fill="#0d2b2f"/>
+  <text x="742" y="63" class="dlbl" text-anchor="end">Thonny</text>
+  <rect x="414" y="82" width="332" height="88" rx="8" class="pane"/>
+  <text x="430" y="100" class="dsub">buttons.py</text>
+  <g class="codeline"><path d="M430 118 L630 118"/><path d="M430 134 L580 134"/><path d="M430 150 L606 150"/></g>
+  <rect x="414" y="182" width="332" height="88" rx="8" class="pinbox"/>
+  <text x="430" y="200" class="dsub">Shell</text>
+  <text x="430" y="224" class="dmono2">1</text>
+  <text x="430" y="244" class="dmono2">1</text>
+  <text x="430" y="264" class="dmono2">0</text>
+  <text x="580" y="306" class="dsub" text-anchor="middle">the bottom panel, below the editor</text>
+</svg>
+
+  <div class="cal info"><b>Two names, one thing</b>
+  Wokwi calls it the <strong>Serial Monitor</strong>. Thonny calls it the <strong>Shell</strong> &mdash;
+  the same panel where <code>&gt;&gt;&gt;</code> appears when Thonny finds your Pico. They do the same job:
+  they are where the board talks back. From now on, when a program does not seem to be working, that
+  panel is the first place to look.</div>
+
+  <h3>Why the loop needs a small wait</h3>
+  <p>You already know <code>sleep</code>. In Activity 2 it was there to slow a blink down so your eye
+  could follow it. Here it is doing something that sounds different and is really the same: without it,
+  the Pico reads the pin and prints the answer <em>millions of times a second</em>, and your screen fills
+  with thousands of identical lines faster than you can scroll.</p>
+  <span class="codeimg" data-code="c2xlZXAoMC4yKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>A fifth of a second is about right: five lines a second, fast enough to keep up with your finger and
+  slow enough to read. Same tool as last time, completely different reason for reaching for it.</p>
+
+  <h3>Try it before you write it</h3>
+  <p>Press <strong>Run the loop</strong>, then hold the button down and let it go. Watch the number, and
+  watch the lines appear. Then press <strong>No wait at all</strong> and see what your screen would look
+  like without that one line.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div style="text-align:center">
+        <button class="pushbtn" id="bsw" type="button">hold</button>
+        <span class="readlbl">SW1 &middot; GP2</span>
+      </div>
+      <div style="text-align:center">
+        <div class="readout" id="bval">1</div>
+        <span class="readlbl">what the pin says</span>
+      </div>
+    </div>
+    <div class="sim-ctl">
+      <button class="btn" id="btnrun" type="button">&#9654; Run the loop</button>
+      <button class="btn ghost" type="button" data-bspeed="0.2">Wait 0.2 s</button>
+      <button class="btn ghost" type="button" data-bspeed="0">No wait at all</button>
+    </div>
+    <div class="sim-out tall" id="btnout">Nothing running yet. Press Run the loop, then hold the button down.</div>
+  </div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the number change from 1 to 0 while I held the button down</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw what happens with no wait in the loop</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; Build the circuit</h2>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <p>There is real wiring to do this time. Start a new project, or reuse an old one and delete the LED
+    &mdash; <a href="activity-1.html#build">Activity 1 has the step-by-step for getting a project open</a>
+    if you need reminding.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Add the button</h4>
+      <p>Click the blue <strong>+</strong> in the diagram panel and search for
+      <strong>Pushbutton</strong>. Add one. That is the only part you need &mdash; no LED, and
+      <strong>no resistor</strong>.</p>
+      <label class="chk"><input type="checkbox" data-p="a1"><span>A pushbutton is on the diagram</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Understand the four legs before you wire anything</h4>
+      <p>A pushbutton has four legs, and this catches almost everybody out: <strong>they are not four
+      separate connections</strong>. Two of them are permanently joined inside the button, and so are the
+      other two. There are really only two connections in there.</p>
+
+<svg class="dia" viewBox="0 0 720 250" role="img" aria-label="Inside a pushbutton: the top two legs are permanently joined to each other, the bottom two legs are permanently joined to each other, and pressing the button joins the top pair to the bottom pair.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">Four legs, but only two connections</text>
+  <text x="360" y="94" class="dsub" text-anchor="middle">always joined inside</text>
+  <path d="M200 110 L230 110" class="leg"/>
+  <path d="M490 110 L520 110" class="leg"/>
+  <circle cx="230" cy="110" r="5" class="legdot"/>
+  <circle cx="490" cy="110" r="5" class="legdot"/>
+  <path d="M230 110 L490 110" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M200 210 L230 210" class="leg"/>
+  <path d="M490 210 L520 210" class="leg"/>
+  <circle cx="230" cy="210" r="5" class="legdot"/>
+  <circle cx="490" cy="210" r="5" class="legdot"/>
+  <path d="M230 210 L490 210" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <text x="360" y="234" class="dsub" text-anchor="middle">always joined inside</text>
+  <path d="M360 110 L360 210" stroke="var(--muted)" stroke-width="3" stroke-dasharray="7 7" fill="none"/>
+  <text x="378" y="152" class="dsub">joined only while</text>
+  <text x="378" y="169" class="dsub">you are pressing</text>
+  <text x="190" y="115" class="dpin" text-anchor="end">1</text>
+  <text x="530" y="115" class="dpin">2</text>
+  <text x="190" y="215" class="dpin" text-anchor="end">3</text>
+  <text x="530" y="215" class="dpin">4</text>
+</svg>
+
+      <p>So if you wire the two legs on the <em>same</em> bar, you have joined a wire to itself. The
+      button will sit there doing absolutely nothing, and there is no error message to tell you why.</p>
+      <p>The safe habit, and the one every engineer uses: <strong>pick two legs that are diagonally
+      opposite each other</strong>. Diagonal legs are always one from each bar.</p>
+
+<svg class="dia wide" viewBox="0 0 780 262" role="img" aria-label="Left: the correct choice, two diagonally opposite legs, one on the top bar and one on the bottom bar. Right: the mistake, two legs on the same bar, which are already one wire.">
+  <rect x="20" y="44" width="360" height="202" rx="12" class="pane"/>
+  <text x="200" y="70" class="dlbl" text-anchor="middle">&#9989; Wire these two</text>
+  <text x="120" y="96" class="dpin" text-anchor="middle">GP2</text>
+  <path d="M120 112 L280 112" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M120 188 L280 188" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <circle cx="120" cy="112" r="5" class="legdot"/><circle cx="280" cy="112" r="5" class="legdot"/>
+  <circle cx="120" cy="188" r="5" class="legdot"/><circle cx="280" cy="188" r="5" class="legdot"/>
+  <circle cx="120" cy="112" r="12" class="ring"/>
+  <circle cx="280" cy="188" r="12" class="ring"/>
+  <text x="280" y="212" class="dpin" text-anchor="middle">GND</text>
+  <text x="150" y="232" class="dsub" text-anchor="middle">one from each bar</text>
+
+  <rect x="400" y="44" width="360" height="202" rx="12" class="pane"/>
+  <text x="580" y="70" class="dlbl" text-anchor="middle">&#10060; Not these two</text>
+  <text x="500" y="96" class="dpin" text-anchor="middle">GP2</text>
+  <text x="660" y="96" class="dpin" text-anchor="middle">GND</text>
+  <path d="M500 112 L660 112" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M500 188 L660 188" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <circle cx="500" cy="112" r="5" class="legdot"/><circle cx="660" cy="112" r="5" class="legdot"/>
+  <circle cx="500" cy="188" r="5" class="legdot"/><circle cx="660" cy="188" r="5" class="legdot"/>
+  <circle cx="500" cy="112" r="12" fill="none" stroke="var(--red)" stroke-width="3"/>
+  <circle cx="660" cy="112" r="12" fill="none" stroke="var(--red)" stroke-width="3"/>
+  <text x="580" y="214" class="dwarn" text-anchor="middle">same bar &mdash; already one wire,</text>
+  <text x="580" y="232" class="dwarn" text-anchor="middle">so nothing can ever change</text>
+</svg>
+
+      <label class="chk"><input type="checkbox" data-p="a2"><span>I know why two of the four legs are the wrong ones to use</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Draw the two wires</h4>
+      <p>One diagonal leg to <strong>GP2</strong>, the other to <strong>GND</strong>. That is the whole
+      circuit.</p>
+
+<svg class="dia wide" viewBox="0 0 780 530" role="img" aria-label="The Wokwi wiring: one leg of the pushbutton goes to GP2, which is physical pin 4, and the diagonally opposite leg goes to the GND on physical pin 8. There is no resistor anywhere in the circuit.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What it looks like in Wokwi</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The small numbers are the physical pins. In your code you type the GP number.</text>
+  <rect x="470" y="74" width="182" height="396.6" rx="9" class="pico"/>
+  <rect x="533" y="62" width="56" height="20" rx="4" class="usb"/>
+  <text x="561" y="456.6" class="silkbig" text-anchor="middle">Raspberry Pi Pico</text>
+  <rect x="457" y="90.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="100" class="padn2" text-anchor="end">1</text>
+  <text x="502" y="100" class="silk">GP0</text>
+  <rect x="457" y="107.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="117.4" class="padn2" text-anchor="end">2</text>
+  <text x="502" y="117.4" class="silk">GP1</text>
+  <rect x="457" y="125.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="134.8" class="padn2" text-anchor="end">3</text>
+  <text x="502" y="134.8" class="silk">GND</text>
+  <rect x="457" y="142.7" width="13" height="11" rx="2" class="padhot"/>
+  <text x="494" y="152.2" class="padn2" text-anchor="end">4</text>
+  <text x="502" y="152.2" class="silk">GP2</text>
+  <rect x="457" y="160.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="169.6" class="padn2" text-anchor="end">5</text>
+  <text x="502" y="169.6" class="silk">GP3</text>
+  <rect x="457" y="177.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="187" class="padn2" text-anchor="end">6</text>
+  <text x="502" y="187" class="silk">GP4</text>
+  <rect x="457" y="194.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="204.4" class="padn2" text-anchor="end">7</text>
+  <text x="502" y="204.4" class="silk">GP5</text>
+  <rect x="457" y="212.3" width="13" height="11" rx="2" class="padgnd"/>
+  <text x="494" y="221.8" class="padn2" text-anchor="end">8</text>
+  <text x="502" y="221.8" class="silk">GND</text>
+  <rect x="457" y="229.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="239.2" class="padn2" text-anchor="end">9</text>
+  <text x="502" y="239.2" class="silk">GP6</text>
+  <rect x="457" y="247.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="256.6" class="padn2" text-anchor="end">10</text>
+  <text x="502" y="256.6" class="silk">GP7</text>
+  <rect x="457" y="264.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="274" class="padn2" text-anchor="end">11</text>
+  <text x="502" y="274" class="silk">GP8</text>
+  <rect x="457" y="281.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="291.4" class="padn2" text-anchor="end">12</text>
+  <text x="502" y="291.4" class="silk">GP9</text>
+  <rect x="457" y="299.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="308.8" class="padn2" text-anchor="end">13</text>
+  <text x="502" y="308.8" class="silk">GND</text>
+  <rect x="457" y="316.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="326.2" class="padn2" text-anchor="end">14</text>
+  <text x="502" y="326.2" class="silk">GP10</text>
+  <rect x="457" y="334.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="343.6" class="padn2" text-anchor="end">15</text>
+  <text x="502" y="343.6" class="silk">GP11</text>
+  <rect x="457" y="351.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="361" class="padn2" text-anchor="end">16</text>
+  <text x="502" y="361" class="silk">GP12</text>
+  <rect x="457" y="368.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="378.4" class="padn2" text-anchor="end">17</text>
+  <text x="502" y="378.4" class="silk">GP13</text>
+  <rect x="457" y="386.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="395.8" class="padn2" text-anchor="end">18</text>
+  <text x="502" y="395.8" class="silk">GND</text>
+  <rect x="457" y="403.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="413.2" class="padn2" text-anchor="end">19</text>
+  <text x="502" y="413.2" class="silk">GP14</text>
+  <rect x="457" y="421.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="494" y="430.6" class="padn2" text-anchor="end">20</text>
+  <text x="502" y="430.6" class="silk">GP15</text>
+  <rect x="652" y="90.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="100" class="silk" text-anchor="end">VBUS</text>
+  <text x="628" y="100" class="padn2">40</text>
+  <rect x="652" y="107.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="117.4" class="silk" text-anchor="end">VSYS</text>
+  <text x="628" y="117.4" class="padn2">39</text>
+  <rect x="652" y="125.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="134.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="134.8" class="padn2">38</text>
+  <rect x="652" y="142.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="152.2" class="silk" text-anchor="end">3V3_EN</text>
+  <text x="628" y="152.2" class="padn2">37</text>
+  <rect x="652" y="160.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="169.6" class="silk" text-anchor="end">3V3</text>
+  <text x="628" y="169.6" class="padn2">36</text>
+  <rect x="652" y="177.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="187" class="silk" text-anchor="end">ADC_VREF</text>
+  <text x="628" y="187" class="padn2">35</text>
+  <rect x="652" y="194.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="204.4" class="silk" text-anchor="end">GP28</text>
+  <text x="628" y="204.4" class="padn2">34</text>
+  <rect x="652" y="212.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="221.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="221.8" class="padn2">33</text>
+  <rect x="652" y="229.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="239.2" class="silk" text-anchor="end">GP27</text>
+  <text x="628" y="239.2" class="padn2">32</text>
+  <rect x="652" y="247.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="256.6" class="silk" text-anchor="end">GP26</text>
+  <text x="628" y="256.6" class="padn2">31</text>
+  <rect x="652" y="264.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="274" class="silk" text-anchor="end">RUN</text>
+  <text x="628" y="274" class="padn2">30</text>
+  <rect x="652" y="281.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="291.4" class="silk" text-anchor="end">GP22</text>
+  <text x="628" y="291.4" class="padn2">29</text>
+  <rect x="652" y="299.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="308.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="308.8" class="padn2">28</text>
+  <rect x="652" y="316.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="326.2" class="silk" text-anchor="end">GP21</text>
+  <text x="628" y="326.2" class="padn2">27</text>
+  <rect x="652" y="334.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="343.6" class="silk" text-anchor="end">GP20</text>
+  <text x="628" y="343.6" class="padn2">26</text>
+  <rect x="652" y="351.5" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="361" class="silk" text-anchor="end">GP19</text>
+  <text x="628" y="361" class="padn2">25</text>
+  <rect x="652" y="368.9" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="378.4" class="silk" text-anchor="end">GP18</text>
+  <text x="628" y="378.4" class="padn2">24</text>
+  <rect x="652" y="386.3" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="395.8" class="silk" text-anchor="end">GND</text>
+  <text x="628" y="395.8" class="padn2">23</text>
+  <rect x="652" y="403.7" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="413.2" class="silk" text-anchor="end">GP17</text>
+  <text x="628" y="413.2" class="padn2">22</text>
+  <rect x="652" y="421.1" width="13" height="11" rx="2" class="pad"/>
+  <text x="620" y="430.6" class="silk" text-anchor="end">GP16</text>
+  <text x="628" y="430.6" class="padn2">21</text>
+  <rect x="230" y="140" width="120" height="110" rx="12" class="part"/>
+  <circle cx="290" cy="195" r="24" class="chip"/>
+  <path d="M230 160 L194 160" class="leg"/>
+  <path d="M350 160 L380 160" class="leg"/>
+  <path d="M230 230 L200 230" class="leg"/>
+  <path d="M350 230 L386 230" class="leg"/>
+  <text x="290" y="272" class="dlbl" text-anchor="middle">pushbutton</text>
+  <circle cx="463.5" cy="148.2" r="12" class="ring"/>
+  <circle cx="463.5" cy="217.8" r="12" class="ring"/>
+  <path d="M457 148.2 L410 148.2 L410 108 L168 108 L168 160 L194 160" class="wireR"/>
+  <path d="M386 230 L426 230 L426 217.8 L457 217.8" class="wireK"/>
+  <rect x="40" y="300" width="340" height="140" rx="10" class="note"/>
+  <text x="60" y="330" class="dlbl">Use these two pins</text>
+  <text x="60" y="354" class="dsub">pin 4 is GP2 &mdash; the number you type in code</text>
+  <text x="60" y="376" class="dsub">pin 8 is the nearest GND below it</text>
+  <text x="60" y="406" class="dlbl">And no resistor this time</text>
+  <text x="60" y="428" class="dsub">PULL_UP switches one on inside the Pico.</text>
+</svg>
+
+      <p><strong>In words:</strong> the button's top-left leg goes to <strong>GP2</strong>, which
+      Wokwi draws as <strong>physical pin 4</strong>. The diagonally opposite leg goes to the
+      <strong>GND</strong> on <strong>physical pin 8</strong>. The other two legs are already
+      joined to those two, so leave them empty &mdash; they have nothing to add.</p>
+      <div class="cal note"><b>Two sets of numbers, and only one of them goes in your code</b>
+      The small numbers running down the Pico are <strong>physical pins</strong> &mdash; where a
+      wire physically goes. The <strong>GP</strong> names beside them are what you type. GP2 is
+      physical pin 4, and typing 4 would give you GP4, which is a different button altogether.
+      Same trap as Activity 1, where GP11 sits on physical pin 15.</div>
+      <label class="chk"><input type="checkbox" data-p="a3"><span>One leg &rarr; GP2, the diagonally opposite leg &rarr; GND</span></label>
+      <div class="cal tip"><b>Nothing will look like it is working yet</b>
+      A button has no light in it. Until you have written the program and looked at the Serial Monitor,
+      there is no way to tell a correct circuit from a wrong one &mdash; which is exactly why this
+      activity needs <code>print</code>.</div>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <p>Nothing to wire, as usual. SW1, SW2 and SW3 are already joined to GP2, GP3 and GP4 inside the
+    board, with their resistors, in copper.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Plug in and power up</h4>
+      <p>USB cable in, power switch <strong>SW5</strong> on.</p>
+      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Find the Pico in Thonny, and find the Shell</h4>
+      <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
+      choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
+      Shell. <strong>That panel is where your numbers are going to appear</strong> &mdash; make sure you
+      can see it before you run anything.</p>
+      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt; and I can see the whole panel</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Find SW1 with your finger</h4>
+      <p>Press it once now, before there is any code. Nothing happens, and nothing should &mdash; a
+      button on its own does nothing at all until a program is asking about it.</p>
+      <label class="chk"><input type="checkbox" data-p="b3"><span>I know which of the three buttons is SW1</span></label>
+    </div></div>
+
+    <div class="cal warn"><b>The safety rules have not gone away</b>
+    Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
+    GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>Start a new file. The shape is the one you built in Activity 2 &mdash; set things up at the left
+  edge, then a loop with everything else pushed in by four spaces.</p>
+
+  <span class="codeimg" data-code="IyBUd28gdG9vbHMgYWdhaW46IFBpbiBmb3IgdGhlIGJ1dHRvbiwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBpcyBhIGJ1dHRvbiwgd2lyZWQgdG8gR1AyLgojIElOIG1lYW5zOiBsaXN0ZW4gdG8gdGhpcyBwaW4sIGRvIG5vdCBkcml2ZSBpdC4KIyBQVUxMX1VQIGhvbGRzIHRoZSBwaW4gYXQgMSB1bnRpbCB0aGUgYnV0dG9uIHB1bGxzIGl0IGRvd24uCnN3ID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCgojIFJlYWQgdGhlIGJ1dHRvbiwgc2F5IHdoYXQgaXQgc2FpZCwgYW5kIGRvIGl0IGFnYWluCndoaWxlIFRydWU6CiAgICBwcmludChzdy52YWx1ZSgpKSAgICMgMSA9IG5vdCBwcmVzc2VkLCAwID0gcHJlc3NlZAogICAgc2xlZXAoMC4yKSAgICAgICAgICAjIGEgZmlmdGggb2YgYSBzZWNvbmQgYmV0d2VlbiByZWFkaW5ncw==" role="img" aria-label="Python code, 13 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don't copy it</b>
+  The line that sets up an input pin is the longest one you have met and the easiest to get subtly
+  wrong. Typing it once beats reading it ten times.</div>
+
+<svg class="dia" viewBox="0 0 720 210" role="img" aria-label="The shape of the program shown as bars: three lines at the left edge run once at the start, then the loop line, then two lines indented by four spaces that repeat for ever.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">The shape is the one you already know</text>
+  <g class="codeline">
+    <path d="M120 58 L280 58"/>
+    <path d="M120 80 L250 80"/>
+    <path d="M120 102 L285 102"/>
+  </g>
+  <path d="M120 132 L250 132" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="codeline">
+    <path d="M168 162 L320 162"/>
+    <path d="M168 184 L280 184"/>
+  </g>
+  <path d="M154 152 L154 194 M154 152 L163 152 M154 194 L163 194" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="330" y="86" class="dsub">borrow the tools, name the button &mdash; once</text>
+  <text x="330" y="137" class="dlbl">the loop line</text>
+  <text x="330" y="178" class="dlbl">read it, show it, wait &mdash; for ever</text>
+</svg>
+
+  <h3>Type it here first</h3>
+  <p>The four lines that are new this time. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="print(&quot;Hello&quot;)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="sw = Pin(2, Pin.IN, Pin.PULL_UP)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="print(sw.value())" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="sleep(0.2)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Four boxes, four lines. Capitals and underscores matter.</p>
+  </div>
+  <div class="cal note"><b>These boxes ignore the spaces at the front</b>
+  Python does not. When you type them for real, lines 3 and 4 go <strong>inside</strong> the loop
+  &mdash; pushed in by four spaces, exactly as in Activity 2.</div>
+  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each line is doing</h3>
+  <table>
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcA==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Borrow <code>sleep</code>, same as last time. You need it again, for a completely different
+          reason.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="c3cgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>The new line. Pin <strong>2</strong>, set to <strong>listen</strong>, with the pull-up
+          switched on so it sits at 1 until something pulls it down. Nicknamed <code>sw</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="d2hpbGUgVHJ1ZTo=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>From Activity 2: do the indented lines below, over and over, for ever. A button has to be
+          checked <em>constantly</em> &mdash; asking once would only tell you about one instant.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIHByaW50KHN3LnZhbHVlKCkp" role="img" aria-label="Code line, indented"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Ask the pin what it can hear, and put the answer on the screen. Inside out: the question
+          first, then whatever came back gets shown.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIHNsZWVwKDAuMik=" role="img" aria-label="Code line, indented"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Wait a fifth of a second before asking again. Without it the answers arrive far faster than
+          you can read them.</td></tr>
+    </tbody>
+  </table>
+
+  <details>
+    <summary>&#128065;&#65039; What it looks like with the wait taken out</summary>
+    <p>This runs perfectly. There is no error. It is simply unusable:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIHByaW50KHN3LnZhbHVlKCkp" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>The Pico asks and answers thousands of times a second, and the panel scrolls so fast that pressing
+    the button makes no visible difference at all. You had the same lesson in Activity 2 with the blink
+    that was too fast to see &mdash; a computer's idea of &ldquo;fast enough&rdquo; is not yours.</p>
+  </details>
+
+  <details>
+    <summary>&#129300; Why is there no LED in this program?</summary>
+    <p>Because lighting an LED when the button goes down needs the Pico to make a <strong>decision</strong>
+    &mdash; <em>if</em> the button is pressed, then switch the light on &mdash; and you have not met that
+    yet. It is the whole of Activity 4.</p>
+    <p>What you can do today is see the value. That is genuinely the harder half: once you can watch what
+    a pin is doing, making something happen because of it is a small step.</p>
+  </details>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it and run it</h2>
+  <table>
+    <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button</td><td>The <strong>Serial Monitor</strong>, under your code</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>buttons.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>The <strong>Shell</strong>, at the bottom</td></tr>
+    </tbody>
+  </table>
+  <div class="cal tip"><b>Stopping it works exactly as before</b>
+  This program never ends either. Wokwi's red <strong>&#9632; Stop</strong>, Thonny's red
+  <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell. You learnt this in
+  <a href="activity-2.html#run">Activity 2</a> and you will need it in every activity from here on.</div>
+
+  <h3>&#9989; What you should see</h3>
+  <p>A column of <strong>1</strong>s, five a second, quietly scrolling. Hold SW1 down and they turn into
+  <strong>0</strong>s. Let go and they go back to 1.</p>
+
+<svg class="dia" viewBox="0 0 720 288" role="img" aria-label="The expected output: a column of numbers, one every fifth of a second, showing 1 while the button is up and 0 for the two readings taken while a finger is holding it down.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">One number every fifth of a second</text>
+  <rect x="286" y="152" width="88" height="64" rx="8" class="pinbox"/>
+  <text x="330" y="64" class="dlbl" text-anchor="middle">on your screen</text>
+  <path d="M270 80 L392 80" class="lead"/>
+  <text x="330" y="104" class="dmono2" text-anchor="middle" style="font-size:20px">1</text>
+  <text x="330" y="134" class="dmono2" text-anchor="middle" style="font-size:20px">1</text>
+  <text x="330" y="170" class="dmono2" text-anchor="middle" style="font-size:20px">0</text>
+  <text x="330" y="200" class="dmono2" text-anchor="middle" style="font-size:20px">0</text>
+  <text x="330" y="232" class="dmono2" text-anchor="middle" style="font-size:20px">1</text>
+  <path d="M262 158 L252 158 L252 210 L262 210" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="240" y="177" class="dsub" text-anchor="end">your finger is</text>
+  <text x="240" y="194" class="dsub" text-anchor="end">holding SW1 down</text>
+  <text x="400" y="112" class="dsub">nobody touching it</text>
+  <text x="400" y="236" class="dsub">you let go again</text>
+  <text x="360" y="270" class="dsub" text-anchor="middle">Two readings while your finger was down &mdash; press for longer and you get more of them.</text>
+</svg>
+
+  <div class="cal info"><b>Press it slowly the first time</b>
+  A quick tap can land entirely in the gap between two readings and produce no 0 at all. That is not a
+  bug &mdash; the Pico is only looking five times a second, and for a fifth of a second at a time it is
+  not looking at all. Hold it for a full second and you will see several 0s.</div>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are appearing in the Serial Monitor or the Shell, on their own</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>They are <strong>1</strong> when I am not touching the button</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>They turn into <strong>0</strong> while I hold the button down</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>They go back to 1 when I let go, and I stopped the program on purpose</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nothing appears at all</strong></td><td>You are looking at the wrong panel. Wokwi: the Serial Monitor is <em>under</em> the code, and you may have to drag it taller. Thonny: the Shell is the bottom panel &mdash; if it is missing, turn it on from the <strong>View</strong> menu.</td></tr>
+      <tr><td><strong>Always 1, never 0</strong></td><td>Wokwi: you have almost certainly wired two legs on the same bar. Move one wire to the diagonally opposite leg. Real board: check the pin number &mdash; SW1 is <span class="gp">2</span>.</td></tr>
+      <tr><td><strong>Always 0, never 1</strong></td><td>The pin is joined to GND all the time. In Wokwi, one of your two wires is on the wrong leg. Check that the pull-up is in the setup line too.</td></tr>
+      <tr><td><strong>The numbers flicker randomly</strong></td><td>The pull-up is missing from the setup line, so the pin is floating and picking up noise. It is the third thing in the brackets.</td></tr>
+      <tr><td><strong>Thousands of lines, far too fast to read</strong></td><td>The waiting line is missing, or it is not indented so it is not part of the loop.</td></tr>
+      <tr><td><strong>One number, then nothing</strong></td><td>Your two lines are not underneath the loop line, so they ran once and the program finished.</td></tr>
+      <tr><td><code>NameError: name 'sw' is not defined</code></td><td>The setup line is missing, or you nicknamed the pin something else and then asked a name that does not exist.</td></tr>
+      <tr><td><code>NameError: name 'sleep' is not defined</code></td><td>The line that borrows <code>sleep</code> from the <code>time</code> toolbox is missing.</td></tr>
+      <tr><td><code>AttributeError</code> mentioning <code>value</code></td><td>Check the spelling of <code>value</code>, and that the empty brackets are there.</td></tr>
+      <tr><td><code>IndentationError</code></td><td>Same as Activity 2: the lines inside the loop must all be pushed in by the same four spaces.</td></tr>
+      <tr><td><strong>An LED is blinking instead</strong></td><td>You are running the old file. In Thonny, make sure the tab you pressed Run on is the new one.</td></tr>
+      <tr><td><strong>I cannot save, or the Shell will not respond</strong></td><td>The previous forever-loop is still running. Press the red <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd>.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. That is the power switch, not a button.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; two buttons at once</h2>
+  <p class="lede">One button told you one thing. Now watch two of them, and be able to tell which is which.</p>
+  <p><strong>Task:</strong> read <strong>SW1</strong> and <strong>SW2</strong> and show both of them on
+  screen, so that anyone watching can tell which button you are pressing:</p>
+  <ol>
+    <li>Each trip round the loop prints <strong>one line</strong> showing both values.</li>
+    <li>Each value is <strong>labelled</strong>, so the two cannot be mixed up.</li>
+    <li>Press SW1 and only the SW1 half changes. Press SW2 and only the SW2 half changes.</li>
+    <li>Press both together and both halves change.</li>
+  </ol>
+
+<svg class="dia" viewBox="0 0 720 288" role="img" aria-label="The expected output: two labelled columns of numbers. The SW1 column drops to 0 for the readings taken while a finger holds SW1 down, while the SW2 column stays at 1 throughout.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">What you should see while you hold SW1 down</text>
+  <text x="250" y="62" class="dlbl" text-anchor="middle">SW1</text>
+  <text x="470" y="62" class="dlbl" text-anchor="middle">SW2</text>
+  <path d="M200 74 L520 74" class="lead"/>
+  <rect x="214" y="152" width="72" height="64" rx="8" class="pinbox"/>
+  <g class="dmono2" text-anchor="middle" style="font-size:20px">
+    <text x="250" y="104">1</text>
+    <text x="250" y="134">1</text>
+    <text x="250" y="170">0</text>
+    <text x="250" y="200">0</text>
+    <text x="250" y="232">1</text>
+    <text x="470" y="104">1</text>
+    <text x="470" y="134">1</text>
+    <text x="470" y="170">1</text>
+    <text x="470" y="200">1</text>
+    <text x="470" y="232">1</text>
+  </g>
+  <path d="M196 158 L188 158 L188 210 L196 210" stroke="var(--teal)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="178" y="177" class="dsub" text-anchor="end">finger down</text>
+  <text x="178" y="194" class="dsub" text-anchor="end">on SW1 only</text>
+  <text x="520" y="176" class="dsub">SW2 never changes &mdash;</text>
+  <text x="520" y="194" class="dsub">you are not touching it</text>
+  <text x="360" y="270" class="dsub" text-anchor="middle">One line every fifth of a second. Only the SW1 column moves.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="e1"><span>Both buttons appear on the same line, each with its own label</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>Pressing SW1 changes only the SW1 number</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>Pressing SW2 changes only the SW2 number</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>It keeps going until I stop it, at a speed I can read</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
+    <p>You met this problem in Activity 1 with the three LEDs, and again in Activity 2 with the traffic
+    light: <strong>one nickname can only point at one pin</strong>. Two buttons need two names, set up at
+    the top, before the loop:</p>
+    <ul>
+      <li>SW1 is <span class="gp">2</span></li>
+      <li>SW2 is <span class="gp">3</span></li>
+    </ul>
+    <p>Both lines look exactly like the one you have already written, with a different number and a
+    different name.</p>
+    <span class="codeimg" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQ==" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Careful: if you rename the pins you must rename them <em>everywhere</em>, including inside the
+    loop.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; how do I get a label next to a number?</summary>
+    <p><code>print</code> will take <strong>more than one thing</strong> if you separate them with
+    commas, and it puts a space between them for you. Words go in quote marks, questions do not:</p>
+    <span class="codeimg" data-code="cHJpbnQoIlNXMSA9Iiwgc3cxLnZhbHVlKCkp" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>That is one line of output with a label on the front. There is no limit &mdash; you can keep
+    adding commas.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Here is half of it. All of it is pushed in, because all of it repeats:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIHByaW50KCJTVzEgPSIsIHN3MS52YWx1ZSgpKQogICAgc2xlZXAoMC4yKQoKICAgICMgbm93IGdldCBTVzIgb250byB0aGUgc2FtZSBsaW5l" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>You do <strong>not</strong> want a second printing line &mdash; that would give you two lines per
+    trip round the loop and make the pairing much harder to see. Keep one line, and put SW2's label and
+    SW2's value on the end of it with two more commas.</p>
+    <p>Keep the waiting line at the bottom, and keep it inside the loop.</p>
+  </details>
+
+  <details><summary>&#9989; Answer &mdash; only open this after you have really tried</summary>
+    <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBPbmUgbmFtZSBmb3IgZWFjaCBidXR0b24Kc3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQoKIyBSZWFkIGJvdGgsIHNob3cgYm90aCwgb3ZlciBhbmQgb3Zlcgp3aGlsZSBUcnVlOgogICAgcHJpbnQoIlNXMSA9Iiwgc3cxLnZhbHVlKCksICIgIFNXMiA9Iiwgc3cyLnZhbHVlKCkpCiAgICBzbGVlcCgwLjIp" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Two names at the top, one printing line with four things in it, one wait. The extra spaces inside
+    the second label are only there to push the two halves apart on screen &mdash; take them out and it
+    still works, it is just harder to read.</p>
+    <p>In Wokwi you will need a <strong>second pushbutton</strong>, wired the same way: one leg to
+    <strong>GP3</strong>, the diagonally opposite leg to any <strong>GND</strong>.</p>
+  </details>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li>Add <strong>SW3</strong> on <span class="gp">4</span> as a third label on the same line.</li>
+    <li>The slide switch <strong>SW4</strong> is on <span class="gp">15</span>. Read it the same way.
+    How is watching it different from watching a pushbutton, and why?</li>
+    <li>Make the loop wait <strong>two whole seconds</strong> instead. Now try to catch a quick tap. How
+    many taps can you get away with before the program notices one?</li>
+    <li>Change the waiting time to <code>0.01</code> and watch what happens to your screen. Predict
+    first.</li>
+    <li>Print a word rather than a number: put a label on the front that says which button you are
+    watching, and make the line read like a sentence.</li>
+    <li>Leave the pull-up out of the setup line, run it, and touch the wire with your finger. What
+    happens, and why is a floating pin such a nuisance?</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> You can now read the
+  world as well as change it. Next up &mdash; Activity 4, where the Pico finally gets to
+  <em>decide</em> what to do about it.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Input</strong></td><td>A pin set up to be listened to rather than driven.</td></tr>
+      <tr><td><strong>Output</strong></td><td>A pin set up to send power out. What every activity before this one used.</td></tr>
+      <tr><td><strong>value</strong></td><td>The question you ask an input pin. The answer is 1 or 0, and nothing else.</td></tr>
+      <tr><td><strong>Pull-up</strong></td><td>A resistor holding a pin up at 3.3&nbsp;V, so it always reads something sensible. The Pico has one built in.</td></tr>
+      <tr><td><strong>Floating</strong></td><td>An input pin joined to nothing, reading random nonsense. What a pull-up prevents.</td></tr>
+      <tr><td><strong>Ground &middot; GND</strong></td><td>The bottom of everything electrical. A pin joined to it reads 0.</td></tr>
+      <tr><td><strong>print</strong></td><td>Send a message from the Pico to your screen.</td></tr>
+      <tr><td><strong>Serial Monitor &middot; Shell</strong></td><td>The panel where those messages arrive. Wokwi calls it one thing, Thonny the other.</td></tr>
+      <tr><td><strong>Pushbutton</strong></td><td>Four legs, two connections. Wire two legs that are diagonally opposite.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    'print("Hello")',
+    "sw = Pin(2, Pin.IN, Pin.PULL_UP)",
+    "print(sw.value())",
+    "sleep(0.2)"
+  ],
+  quiz: [
+    { q: 'Nobody is touching the button. What does asking the pin for its value give you?',
+      opts: ['0', '1', 'Nothing until you press it', 'A random number'],
+      right: 1,
+      why: 'The pull-up holds the pin up at 3.3 V all the time, so an untouched button reads 1. Pressing it is what brings the number down.' },
+    { q: 'What does <code>Pin.IN</code> tell the Pico to do with that pin?',
+      opts: ['Send power out of it','Listen to it instead of driving it','Switch it on','Join it to ground'],
+      right: 1,
+      why: 'IN sets the pin up as an input. It stops driving the pin and lets you find out what is happening to it instead.' },
+    { q: 'You run the program and no numbers appear anywhere. What is the most likely reason?',
+      opts: ['The button is broken','You are looking at the wrong panel — the Serial Monitor or Shell','The Pico cannot count','print only works on the real board'],
+      right: 1,
+      why: 'Printed messages never appear on the board or in your code. They go to the Serial Monitor in Wokwi and the Shell in Thonny — the panel that has been sitting there unused since Activity 1.' },
+    { q: 'Why does the loop need a wait of about a fifth of a second in it?',
+      opts: ['The Pico needs time to rest','Otherwise the button breaks','Otherwise thousands of lines a second arrive and you cannot read any of them','The pin cannot be read any faster'],
+      right: 2,
+      why: 'Same tool as Activity 2, different reason. The Pico can read and print millions of times a second; the wait slows it down to a speed a human can follow.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

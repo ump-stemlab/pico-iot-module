@@ -21,6 +21,7 @@ type-the-code checker, progress tracking and a quiz.
 | 🏠 **Home** | https://ump-stemlab.github.io/pico-iot-module/ |
 | 💡 **Activity 1 — Light Up an LED** | https://ump-stemlab.github.io/pico-iot-module/activity-1.html |
 | 🔁 **Activity 2 — Make an LED Blink** | https://ump-stemlab.github.io/pico-iot-module/activity-2.html |
+| 🔘 **Activity 3 — Digital Input** | https://ump-stemlab.github.io/pico-iot-module/activity-3.html |
 | 📌 **LilEx5 pin reference** | https://ump-stemlab.github.io/pico-iot-module/pinout.html |
 
 ## What the module covers
@@ -34,7 +35,7 @@ with [Thonny](https://thonny.org).
 |---|---|---|---|
 | 1 | [Light Up an LED](https://ump-stemlab.github.io/pico-iot-module/activity-1.html) | variables, comments, GPIO pins | ✅ live |
 | 2 | [Make an LED Blink](https://ump-stemlab.github.io/pico-iot-module/activity-2.html) | loops, indentation, `sleep` | ✅ live |
-| 3 | Digital Input | reading buttons, `print()` | 🔜 |
+| 3 | [Digital Input](https://ump-stemlab.github.io/pico-iot-module/activity-3.html) | reading buttons, `print()` | ✅ live |
 | 4 | Making Decisions | `if` / `else` | 🔜 |
 | 5 | And, Or, Not | boolean logic | 🔜 |
 | 6 | Words on a Screen | OLED screen, adding a library | 🔜 |
@@ -46,13 +47,18 @@ with [Thonny](https://thonny.org).
 
 | Part | Pin |
 |---|---|
+| Button SW1 | **GP2** |
+| Button SW2 | **GP3** |
+| Button SW3 | **GP4** |
 | LED1 red | **GP11** |
 | LED2 yellow | **GP12** |
 | LED3 green | **GP13** |
 | Buzzer BZ1 | **GP14** |
+| Slide switch SW4 | **GP15** |
 
-Activity 2 adds no new pins — the red LED on **GP11** again, and all three LEDs in
-the exercise.
+Activity 3 is the first activity since Activity 1 to add pins: **GP2** for SW1 in the
+main program and **GP3** for SW2 in the exercise. GP4 and GP15 appear in going-further
+only. SW5 is the power switch and is not on a GP pin at all.
 
 Full map: [pin reference](https://ump-stemlab.github.io/pico-iot-module/pinout.html).
 
@@ -65,15 +71,17 @@ docs/
   teacher-1.html    Activity 1 teacher notes (unlisted — see below)
   activity-2.html   Activity 2 — Make an LED Blink
   teacher-2.html    Activity 2 teacher notes (unlisted — see below)
+  activity-3.html   Activity 3 — Digital Input
+  teacher-3.html    Activity 3 teacher notes (unlisted — see below)
   pinout.html       LilEx5 pin reference, searchable
   style.css         shared stylesheet
   code.js           renders code blocks as pictures (non-copyable)
-  activity.js       progress, tabs, board simulator, blink simulator, typing box, quiz
+  activity.js       progress, tabs, board simulator, blink simulator, button reader, typing box, quiz
   board.js          the board explorer on pinout.html
   robots.txt        keeps teacher pages out of search engines
   img/              LilEx5 board photos
 CONTEXT.md          how this site is built — read before changing it
-PROMPT-activity-3.md  hand this to a fresh chat to build the next activity
+PROMPT-activity-4.md  hand this to a fresh chat to build the next activity
 ```
 
 GitHub Pages serves the site from the `docs/` folder on `main`. Edit a file, commit,
