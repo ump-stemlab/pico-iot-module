@@ -41,17 +41,14 @@ with [Thonny](https://thonny.org).
 | 8 | Internet and Data | WiFi, MQTT, live dashboards | 🔜 |
 | 9 | Radio Communication | board-to-board messaging | 🔜 |
 
-## ⚠️ Pin numbers differ from the older Pico module
+## Pins used so far
 
-On the LilEx5 the red LED is **GP11**, not GP14 — and **GP14 is the buzzer**. Old
-worksheets will make the board beep instead of lighting up.
-
-| | Old module | LilEx5 |
-|---|---|---|
-| Red LED1 | 14 | **11** |
-| Yellow LED2 | 13 | **12** |
-| Green LED3 | 12 | **13** |
-| Buzzer BZ1 | — | **14** |
+| Part | Pin |
+|---|---|
+| LED1 red | **GP11** |
+| LED2 yellow | **GP12** |
+| LED3 green | **GP13** |
+| Buzzer BZ1 | **GP14** |
 
 Full map: [pin reference](https://ump-stemlab.github.io/pico-iot-module/pinout.html).
 
@@ -59,14 +56,27 @@ Full map: [pin reference](https://ump-stemlab.github.io/pico-iot-module/pinout.h
 
 ```
 docs/
-  index.html       module home
-  activity-1.html  Activity 1 — Light Up an LED (+ teacher section)
-  pinout.html      LilEx5 pin reference, searchable
-  style.css        shared stylesheet
+  index.html        module home
+  activity-1.html   Activity 1 — Light Up an LED
+  teacher-1.html    Activity 1 teacher notes (unlisted — see below)
+  pinout.html       LilEx5 pin reference, searchable
+  style.css         shared stylesheet
+  code.js           renders code blocks as pictures (non-copyable)
+  activity.js       progress, tabs, board simulator, typing box, quiz
+CONTEXT.md          how this site is built — read before changing it
+PROMPT-activity-2.md  hand this to a fresh chat to build the next activity
 ```
 
 GitHub Pages serves the site from the `docs/` folder on `main`. Edit a file, commit,
 and the live site updates in about a minute.
+
+## Teacher notes
+
+Each activity has a separate teacher page (`teacher-N.html`). It is **not linked** from
+any student page and carries `noindex`, so students will not find it by browsing or by
+searching. It is not a secret, though — this repository is public, so the file is
+visible in the file list above and anyone given the URL can read it. Share the link
+with staff, not in the student handout.
 
 ## Related
 
