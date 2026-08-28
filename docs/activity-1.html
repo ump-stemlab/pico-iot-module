@@ -14,6 +14,15 @@
   <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
     <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
   </marker>
+  <radialGradient id="wkcap" cx="36%" cy="30%" r="78%">
+    <stop offset="0" stop-color="#63d963"/><stop offset=".55" stop-color="#1f9e1f"/><stop offset="1" stop-color="#0b5f0b"/>
+  </radialGradient>
+  <linearGradient id="wkled" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ff9a9a"/><stop offset=".35" stop-color="#ef4040"/><stop offset="1" stop-color="#b81c1c"/>
+  </linearGradient>
+  <linearGradient id="wkres" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#eadfc6"/><stop offset=".5" stop-color="#d5c09c"/><stop offset="1" stop-color="#bda87f"/>
+  </linearGradient>
 </defs></svg>
 
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
@@ -23,6 +32,7 @@
   <a class="nl" href="activity-1.html" aria-current="page">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
   <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
@@ -69,7 +79,7 @@
 <svg class="dia" viewBox="0 0 720 150" role="img" aria-label="What the program does: get the Pin tool, choose pin GP11 as an output, switch it on, the LED glows">
   <rect x="20" y="34" width="150" height="62" rx="10" class="step"/>
   <text x="95" y="60" class="dlbl" text-anchor="middle">get the tool</text>
-  <text x="95" y="80" class="dsub" text-anchor="middle">import Pin</text>
+  <text x="95" y="80" class="dsub" text-anchor="middle">borrow the Pin tool</text>
   <path d="M178 65 L206 65" class="arrow"/>
   <rect x="214" y="34" width="176" height="62" rx="10" class="step"/>
   <text x="302" y="60" class="dlbl" text-anchor="middle">choose the pin</text>
@@ -77,7 +87,7 @@
   <path d="M398 65 L426 65" class="arrow"/>
   <rect x="434" y="34" width="150" height="62" rx="10" class="step"/>
   <text x="509" y="60" class="dlbl" text-anchor="middle">send the power</text>
-  <text x="509" y="80" class="dsub" text-anchor="middle">led.on()</text>
+  <text x="509" y="80" class="dsub" text-anchor="middle">switch it on</text>
   <path d="M592 65 L620 65" class="arrow"/>
   <circle cx="662" cy="65" r="26" fill="#FF2B2B" opacity="0.28"/>
   <circle cx="662" cy="65" r="20" fill="#FF2B2B"/>
@@ -163,9 +173,9 @@
       <div class="led-unit"><div class="bulb buz" id="b14"></div><small>BZ1</small><b>GP14</b></div>
     </div>
     <div class="sim-ctl">
-      <label for="pinin">led = Pin(</label>
+      <label for="pinin">Name GP</label>
       <input type="number" id="pinin" value="11" min="0" max="28">
-      <label>, Pin.OUT) &nbsp;&rarr;&nbsp; led.on()</label>
+      <label>as an output, then switch it on</label>
       <button class="btn" id="simrun" type="button">&#9654; Run</button>
       <button class="btn ghost" id="simoff" type="button">Reset board</button>
     </div>
@@ -276,149 +286,213 @@
       <h4>Draw the wires</h4>
       <p>Click one pin, then click the pin you want to join it to. A wire appears. Press <kbd>Esc</kbd>
       if you start the wrong one.</p>
-      <svg class="dia wide" viewBox="0 0 780 530" role="img" aria-label="The Wokwi wiring: physical pin 15 (GP11) goes through a 330 ohm resistor to the LED long leg, and the LED short leg returns to physical pin 18 (GND)">
+      <svg class="dia wide" viewBox="0 0 780 545" role="img" aria-label="The Wokwi circuit for Activity 1, drawn the way Wokwi draws it. The LED's long leg goes through a 330 ohm resistor to physical pin 15, which is GP11, and the short leg goes back to the ground on physical pin 18.">
   <text x="390" y="26" class="dttl" text-anchor="middle">What it looks like in Wokwi</text>
-  <text x="390" y="48" class="dsub" text-anchor="middle">The small numbers are the physical pins. In your code you type the GP number.</text>
-  <rect x="470" y="74" width="182" height="396.6" rx="9" class="pico"/>
-  <rect x="533" y="62" width="56" height="20" rx="4" class="usb"/>
-  <text x="561" y="456.6" class="silkbig" text-anchor="middle">Raspberry Pi Pico</text>
-  <rect x="457" y="90.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="100" class="padn2" text-anchor="end">1</text>
-  <text x="502" y="100" class="silk">GP0</text>
-  <rect x="457" y="107.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="117.4" class="padn2" text-anchor="end">2</text>
-  <text x="502" y="117.4" class="silk">GP1</text>
-  <rect x="457" y="125.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="134.8" class="padn2" text-anchor="end">3</text>
-  <text x="502" y="134.8" class="silk">GND</text>
-  <rect x="457" y="142.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="152.2" class="padn2" text-anchor="end">4</text>
-  <text x="502" y="152.2" class="silk">GP2</text>
-  <rect x="457" y="160.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="169.6" class="padn2" text-anchor="end">5</text>
-  <text x="502" y="169.6" class="silk">GP3</text>
-  <rect x="457" y="177.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="187" class="padn2" text-anchor="end">6</text>
-  <text x="502" y="187" class="silk">GP4</text>
-  <rect x="457" y="194.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="204.4" class="padn2" text-anchor="end">7</text>
-  <text x="502" y="204.4" class="silk">GP5</text>
-  <rect x="457" y="212.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="221.8" class="padn2" text-anchor="end">8</text>
-  <text x="502" y="221.8" class="silk">GND</text>
-  <rect x="457" y="229.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="239.2" class="padn2" text-anchor="end">9</text>
-  <text x="502" y="239.2" class="silk">GP6</text>
-  <rect x="457" y="247.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="256.6" class="padn2" text-anchor="end">10</text>
-  <text x="502" y="256.6" class="silk">GP7</text>
-  <rect x="457" y="264.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="274" class="padn2" text-anchor="end">11</text>
-  <text x="502" y="274" class="silk">GP8</text>
-  <rect x="457" y="281.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="291.4" class="padn2" text-anchor="end">12</text>
-  <text x="502" y="291.4" class="silk">GP9</text>
-  <rect x="457" y="299.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="308.8" class="padn2" text-anchor="end">13</text>
-  <text x="502" y="308.8" class="silk">GND</text>
-  <rect x="457" y="316.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="326.2" class="padn2" text-anchor="end">14</text>
-  <text x="502" y="326.2" class="silk">GP10</text>
-  <rect x="457" y="334.1" width="13" height="11" rx="2" class="padhot"/>
-  <text x="494" y="343.6" class="padn2" text-anchor="end">15</text>
-  <text x="502" y="343.6" class="silk">GP11</text>
-  <rect x="457" y="351.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="361" class="padn2" text-anchor="end">16</text>
-  <text x="502" y="361" class="silk">GP12</text>
-  <rect x="457" y="368.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="378.4" class="padn2" text-anchor="end">17</text>
-  <text x="502" y="378.4" class="silk">GP13</text>
-  <rect x="457" y="386.3" width="13" height="11" rx="2" class="padgnd"/>
-  <text x="494" y="395.8" class="padn2" text-anchor="end">18</text>
-  <text x="502" y="395.8" class="silk">GND</text>
-  <rect x="457" y="403.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="413.2" class="padn2" text-anchor="end">19</text>
-  <text x="502" y="413.2" class="silk">GP14</text>
-  <rect x="457" y="421.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="494" y="430.6" class="padn2" text-anchor="end">20</text>
-  <text x="502" y="430.6" class="silk">GP15</text>
-  <rect x="652" y="90.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="100" class="silk" text-anchor="end">VBUS</text>
-  <text x="628" y="100" class="padn2">40</text>
-  <rect x="652" y="107.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="117.4" class="silk" text-anchor="end">VSYS</text>
-  <text x="628" y="117.4" class="padn2">39</text>
-  <rect x="652" y="125.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="134.8" class="silk" text-anchor="end">GND</text>
-  <text x="628" y="134.8" class="padn2">38</text>
-  <rect x="652" y="142.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="152.2" class="silk" text-anchor="end">3V3_EN</text>
-  <text x="628" y="152.2" class="padn2">37</text>
-  <rect x="652" y="160.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="169.6" class="silk" text-anchor="end">3V3</text>
-  <text x="628" y="169.6" class="padn2">36</text>
-  <rect x="652" y="177.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="187" class="silk" text-anchor="end">ADC_VREF</text>
-  <text x="628" y="187" class="padn2">35</text>
-  <rect x="652" y="194.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="204.4" class="silk" text-anchor="end">GP28</text>
-  <text x="628" y="204.4" class="padn2">34</text>
-  <rect x="652" y="212.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="221.8" class="silk" text-anchor="end">GND</text>
-  <text x="628" y="221.8" class="padn2">33</text>
-  <rect x="652" y="229.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="239.2" class="silk" text-anchor="end">GP27</text>
-  <text x="628" y="239.2" class="padn2">32</text>
-  <rect x="652" y="247.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="256.6" class="silk" text-anchor="end">GP26</text>
-  <text x="628" y="256.6" class="padn2">31</text>
-  <rect x="652" y="264.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="274" class="silk" text-anchor="end">RUN</text>
-  <text x="628" y="274" class="padn2">30</text>
-  <rect x="652" y="281.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="291.4" class="silk" text-anchor="end">GP22</text>
-  <text x="628" y="291.4" class="padn2">29</text>
-  <rect x="652" y="299.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="308.8" class="silk" text-anchor="end">GND</text>
-  <text x="628" y="308.8" class="padn2">28</text>
-  <rect x="652" y="316.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="326.2" class="silk" text-anchor="end">GP21</text>
-  <text x="628" y="326.2" class="padn2">27</text>
-  <rect x="652" y="334.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="343.6" class="silk" text-anchor="end">GP20</text>
-  <text x="628" y="343.6" class="padn2">26</text>
-  <rect x="652" y="351.5" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="361" class="silk" text-anchor="end">GP19</text>
-  <text x="628" y="361" class="padn2">25</text>
-  <rect x="652" y="368.9" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="378.4" class="silk" text-anchor="end">GP18</text>
-  <text x="628" y="378.4" class="padn2">24</text>
-  <rect x="652" y="386.3" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="395.8" class="silk" text-anchor="end">GND</text>
-  <text x="628" y="395.8" class="padn2">23</text>
-  <rect x="652" y="403.7" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="413.2" class="silk" text-anchor="end">GP17</text>
-  <text x="628" y="413.2" class="padn2">22</text>
-  <rect x="652" y="421.1" width="13" height="11" rx="2" class="pad"/>
-  <text x="620" y="430.6" class="silk" text-anchor="end">GP16</text>
-  <text x="628" y="430.6" class="padn2">21</text>
-  <path d="M457 339.6 L360 339.6" class="wireR"/>
-  <rect x="252" y="324.6" width="104" height="30" rx="6" class="part"/>
-  <path d="M262 339.6 l9 -8 l13 16 l13 -16 l13 16 l13 -16 l9 8" class="zig"/>
-  <path d="M252 339.6 L214 339.6" class="wireR"/>
-  <text x="304" y="313.6" class="dlbl" text-anchor="middle">330 &#8486;</text>
-  <circle cx="188" cy="339.6" r="26" fill="#FF2B2B"/>
-  <text x="188" y="301.6" class="dlbl" text-anchor="middle">red LED</text>
-  <text x="214" y="383.6" class="dsub" text-anchor="middle">A</text>
-  <text x="162" y="383.6" class="dsub" text-anchor="middle">C</text>
-  <path d="M162 339.6 L112 339.6 L112 496.6 L426 496.6 L426 391.8" class="wireK"/>
-  <path d="M426 391.8 L457 391.8" class="wireK"/>
-  <text x="300" y="486.6" class="dsub" text-anchor="middle">back to GND</text>
-  <rect x="150" y="72" width="250" height="74" rx="10" class="note"/>
-  <text x="166" y="98" class="dlbl">Use these two pins</text>
-  <text x="166" y="120" class="dsub">pin 15 is GP11 &mdash; the one you type</text>
-  <text x="166" y="138" class="dsub">pin 18 is the nearest GND</text>
-  </svg>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+  <g class="wk">
+  <rect x="545" y="70" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 70 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="55" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="71" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="110" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="166" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="166" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="202" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="370" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 370)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="83" r="8" class="wk-mount"/>
+  <circle cx="705" cy="83" r="8" class="wk-mount"/>
+  <rect x="537" y="98.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="104" r="3.4" class="wk-hole"/>
+  <text x="567" y="107.3" class="wk-num">1</text>
+  <text x="583" y="107.3" class="wk-silk">GP0</text>
+  <rect x="537" y="118.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="124" r="3.4" class="wk-hole"/>
+  <text x="567" y="127.3" class="wk-num">2</text>
+  <text x="583" y="127.3" class="wk-silk">GP1</text>
+  <rect x="537" y="138.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="144" r="3.4" class="wk-hole"/>
+  <text x="567" y="147.3" class="wk-num">3</text>
+  <text x="583" y="147.3" class="wk-silk">GND</text>
+  <rect x="537" y="158.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="164" r="3.4" class="wk-hole"/>
+  <text x="567" y="167.3" class="wk-num">4</text>
+  <text x="583" y="167.3" class="wk-silk">GP2</text>
+  <rect x="537" y="178.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="184" r="3.4" class="wk-hole"/>
+  <text x="567" y="187.3" class="wk-num">5</text>
+  <text x="583" y="187.3" class="wk-silk">GP3</text>
+  <rect x="537" y="198.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="204" r="3.4" class="wk-hole"/>
+  <text x="567" y="207.3" class="wk-num">6</text>
+  <text x="583" y="207.3" class="wk-silk">GP4</text>
+  <rect x="537" y="218.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="224" r="3.4" class="wk-hole"/>
+  <text x="567" y="227.3" class="wk-num">7</text>
+  <text x="583" y="227.3" class="wk-silk">GP5</text>
+  <rect x="537" y="238.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="244" r="3.4" class="wk-hole"/>
+  <text x="567" y="247.3" class="wk-num">8</text>
+  <text x="583" y="247.3" class="wk-silk">GND</text>
+  <rect x="537" y="258.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="264" r="3.4" class="wk-hole"/>
+  <text x="567" y="267.3" class="wk-num">9</text>
+  <text x="583" y="267.3" class="wk-silk">GP6</text>
+  <rect x="537" y="278.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="284" r="3.4" class="wk-hole"/>
+  <text x="567" y="287.3" class="wk-num">10</text>
+  <text x="583" y="287.3" class="wk-silk">GP7</text>
+  <rect x="537" y="298.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="304" r="3.4" class="wk-hole"/>
+  <text x="567" y="307.3" class="wk-num">11</text>
+  <text x="583" y="307.3" class="wk-silk">GP8</text>
+  <rect x="537" y="318.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="324" r="3.4" class="wk-hole"/>
+  <text x="567" y="327.3" class="wk-num">12</text>
+  <text x="583" y="327.3" class="wk-silk">GP9</text>
+  <rect x="537" y="338.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="344" r="3.4" class="wk-hole"/>
+  <text x="567" y="347.3" class="wk-num">13</text>
+  <text x="583" y="347.3" class="wk-silk">GND</text>
+  <rect x="537" y="358.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="364" r="3.4" class="wk-hole"/>
+  <text x="567" y="367.3" class="wk-num">14</text>
+  <text x="583" y="367.3" class="wk-silk">GP10</text>
+  <rect x="537" y="378.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="384" r="3.4" class="wk-hole"/>
+  <text x="567" y="387.3" class="wk-num">15</text>
+  <text x="583" y="387.3" class="wk-silk">GP11</text>
+  <rect x="537" y="398.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="404" r="3.4" class="wk-hole"/>
+  <text x="567" y="407.3" class="wk-num">16</text>
+  <text x="583" y="407.3" class="wk-silk">GP12</text>
+  <rect x="537" y="418.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="424" r="3.4" class="wk-hole"/>
+  <text x="567" y="427.3" class="wk-num">17</text>
+  <text x="583" y="427.3" class="wk-silk">GP13</text>
+  <rect x="537" y="438.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="444" r="3.4" class="wk-hole"/>
+  <text x="567" y="447.3" class="wk-num">18</text>
+  <text x="583" y="447.3" class="wk-silk">GND</text>
+  <rect x="537" y="458.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="464" r="3.4" class="wk-hole"/>
+  <text x="567" y="467.3" class="wk-num">19</text>
+  <text x="583" y="467.3" class="wk-silk">GP14</text>
+  <rect x="537" y="478.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="484" r="3.4" class="wk-hole"/>
+  <text x="567" y="487.3" class="wk-num">20</text>
+  <text x="583" y="487.3" class="wk-silk">GP15</text>
+  <rect x="727" y="478.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="484" r="3.4" class="wk-hole"/>
+  <text x="723" y="487.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="487.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="458.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="464" r="3.4" class="wk-hole"/>
+  <text x="723" y="467.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="467.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="438.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="444" r="3.4" class="wk-hole"/>
+  <text x="723" y="447.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="447.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="418.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="424" r="3.4" class="wk-hole"/>
+  <text x="723" y="427.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="427.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="398.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="404" r="3.4" class="wk-hole"/>
+  <text x="723" y="407.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="407.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="378.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="384" r="3.4" class="wk-hole"/>
+  <text x="723" y="387.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="387.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="358.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="364" r="3.4" class="wk-hole"/>
+  <text x="723" y="367.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="367.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="338.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="344" r="3.4" class="wk-hole"/>
+  <text x="723" y="347.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="347.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="318.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="324" r="3.4" class="wk-hole"/>
+  <text x="723" y="327.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="327.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="298.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="304" r="3.4" class="wk-hole"/>
+  <text x="723" y="307.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="307.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="278.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="284" r="3.4" class="wk-hole"/>
+  <text x="723" y="287.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="287.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="258.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="264" r="3.4" class="wk-hole"/>
+  <text x="723" y="267.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="267.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="238.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="244" r="3.4" class="wk-hole"/>
+  <text x="723" y="247.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="247.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="218.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="224" r="3.4" class="wk-hole"/>
+  <text x="723" y="227.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="227.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="198.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="204" r="3.4" class="wk-hole"/>
+  <text x="723" y="207.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="207.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="178.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="184" r="3.4" class="wk-hole"/>
+  <text x="723" y="187.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="187.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="158.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="164" r="3.4" class="wk-hole"/>
+  <text x="723" y="167.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="167.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="138.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="144" r="3.4" class="wk-hole"/>
+  <text x="723" y="147.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="147.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="118.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="124" r="3.4" class="wk-hole"/>
+  <text x="723" y="127.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="127.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="98.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="104" r="3.4" class="wk-hole"/>
+  <text x="723" y="107.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="107.3" class="wk-silk" text-anchor="end">VBUS</text>
+  <circle cx="555" cy="384" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="444" r="10.5" class="wk-ring"/>
+  </g>
+  <path d="M166 296 L166 271 A19 19 0 0 1 204 271 L204 296 Z" fill="url(#wkled)"/>
+  <rect x="162" y="293" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 274 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="301" width="7" height="83" rx="2" class="wk-leg"/>
+  <rect x="193" y="301" width="7" height="83" rx="2" class="wk-leg"/>
+  <text x="185" y="240" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
+  <text x="158" y="350" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="350" class="dsub">A &mdash; long leg</text>
+  <rect x="242" y="380.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbody1">
+    <path d="M284 372 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbody1)">
+    <rect x="269" y="368" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="368" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="368" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="368" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="368" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 372 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="354" class="dlbl" text-anchor="middle">330 &#8486;</text>
+  <path d="M196.5 384 L242 384" class="wkwire red"/>
+  <path d="M428 384 L537 384" class="wkwire red"/>
+  <path d="M173.5 384 L173.5 478 L505 478 L505 444 L537 444" class="wkwire black"/>
+  <rect x="250" y="128" width="250" height="92" rx="10" class="note"/>
+  <text x="266" y="156" class="dlbl">Use these two pins</text>
+  <text x="266" y="180" class="dsub">pin 15 is GP11 &mdash; the one you type</text>
+  <text x="266" y="198" class="dsub">pin 18 is the nearest ground</text>
+</svg>
       <p><strong>In words:</strong> the LED's <strong>long leg (A)</strong> goes through the resistor to
       <strong>GP11</strong>. The <strong>short leg (C)</strong> goes to <strong>GND</strong>.</p>
       <label class="chk"><input type="checkbox" data-p="a4"><span>Long leg &rarr; resistor &rarr; GP11</span></label>
@@ -432,9 +506,9 @@
       </details>
     </div></div>
 
-    <div class="cal tip"><b>Stuck? Compare with the finished one</b>
-    Build yours first, then open the <a href="%WOKWI%" target="_blank" rel="noopener">ready-made Wokwi
-    project</a> to check it.</div>
+    <div class="cal tip"><b>Stuck? Check it against the picture</b>
+    Go back over the diagram above one wire at a time: long leg, resistor, GP11; short leg, GND. Almost
+    every circuit that does not work has one wire on the pad next door.</div>
   </div>
 
   <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
@@ -764,6 +838,7 @@ window.ACTIVITY = {
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
        <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

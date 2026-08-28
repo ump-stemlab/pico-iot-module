@@ -22,6 +22,7 @@ type-the-code checker, progress tracking and a quiz.
 | 💡 **Activity 1 — Light Up an LED** | https://ump-stemlab.github.io/pico-iot-module/activity-1.html |
 | 🔁 **Activity 2 — Make an LED Blink** | https://ump-stemlab.github.io/pico-iot-module/activity-2.html |
 | 🔘 **Activity 3 — Digital Input** | https://ump-stemlab.github.io/pico-iot-module/activity-3.html |
+| 🔀 **Activity 4 — Making Decisions** | https://ump-stemlab.github.io/pico-iot-module/activity-4.html |
 | 📌 **LilEx5 pin reference** | https://ump-stemlab.github.io/pico-iot-module/pinout.html |
 
 ## What the module covers
@@ -36,7 +37,7 @@ with [Thonny](https://thonny.org).
 | 1 | [Light Up an LED](https://ump-stemlab.github.io/pico-iot-module/activity-1.html) | variables, comments, GPIO pins | ✅ live |
 | 2 | [Make an LED Blink](https://ump-stemlab.github.io/pico-iot-module/activity-2.html) | loops, indentation, `sleep` | ✅ live |
 | 3 | [Digital Input](https://ump-stemlab.github.io/pico-iot-module/activity-3.html) | reading buttons, `print()` | ✅ live |
-| 4 | Making Decisions | `if` / `else` | 🔜 |
+| 4 | [Making Decisions](https://ump-stemlab.github.io/pico-iot-module/activity-4.html) | `if` / `else`, comparing with `==` | ✅ live |
 | 5 | And, Or, Not | boolean logic | 🔜 |
 | 6 | Words on a Screen | OLED screen, adding a library | 🔜 |
 | 7 | Sensors and Numbers | motion sensor, decimals, `round()` | 🔜 |
@@ -56,9 +57,10 @@ with [Thonny](https://thonny.org).
 | Buzzer BZ1 | **GP14** |
 | Slide switch SW4 | **GP15** |
 
-Activity 3 is the first activity since Activity 1 to add pins: **GP2** for SW1 in the
-main program and **GP3** for SW2 in the exercise. GP4 and GP15 appear in going-further
-only. SW5 is the power switch and is not on a GP pin at all.
+Activity 4 adds no new pins — it is the first activity to use an **input and an output
+at the same time**: **GP2** (SW1) and **GP11** (LED1) in the main program, plus **GP3**
+(SW2) and **GP13** (LED3 green) in the exercise. GP4, GP12, GP14 and GP15 appear in
+going-further only. SW5 is the power switch and is not on a GP pin at all.
 
 Full map: [pin reference](https://ump-stemlab.github.io/pico-iot-module/pinout.html).
 
@@ -73,15 +75,18 @@ docs/
   teacher-2.html    Activity 2 teacher notes (unlisted — see below)
   activity-3.html   Activity 3 — Digital Input
   teacher-3.html    Activity 3 teacher notes (unlisted — see below)
+  activity-4.html   Activity 4 — Making Decisions
+  teacher-4.html    Activity 4 teacher notes (unlisted — see below)
   pinout.html       LilEx5 pin reference, searchable
   style.css         shared stylesheet
   code.js           renders code blocks as pictures (non-copyable)
-  activity.js       progress, tabs, board simulator, blink simulator, button reader, typing box, quiz
+  activity.js       progress, tabs, board simulator, blink simulator, button reader,
+                    decision simulator, typing box, quiz
   board.js          the board explorer on pinout.html
   robots.txt        keeps teacher pages out of search engines
   img/              LilEx5 board photos
 CONTEXT.md          how this site is built — read before changing it
-PROMPT-activity-4.md  hand this to a fresh chat to build the next activity
+PROMPT-activity-5.md  hand this to a fresh chat to build the next activity
 ```
 
 GitHub Pages serves the site from the `docs/` folder on `main`. Edit a file, commit,

@@ -90,14 +90,15 @@
       clearBoard();
       if(isNaN(n)){ out.textContent = 'Type a pin number first.'; return; }
       var hit = MAP[n];
+      var head = 'Naming GP' + n + ' as an output, then switching it on…\n\n';
       if(!hit){
-        out.textContent = '>>> led = Pin(' + n + ', Pin.OUT)\n>>> led.on()\n\n'
+        out.textContent = head
           + 'No error — but nothing lights up.\nGP' + n + ' is not wired to an LED on the LilEx5.\n'
           + 'The LEDs are on GP11, GP12 and GP13.';
         return;
       }
       document.getElementById(hit.id).classList.add('on');
-      out.textContent = '>>> led = Pin(' + n + ', Pin.OUT)\n>>> led.on()\n\n'
+      out.textContent = head
         + (hit.kind === 'buzzer'
             ? '🔔 BEEEEEP — that is the buzzer, not a light!\nGP14 goes to BZ1. The red LED is GP11.'
             : '💡 ' + hit.name + ' is now on, and it stays on.');
@@ -316,6 +317,103 @@
         if(btimer) bshow();
       });
     });
+  }
+
+  /* ---------- decision simulator (guarded by #ifrun) ----------
+     Activity 4. Shows the four things that move together: what the pin says,
+     what the question answers, which road is taken, and the light. The two
+     presets reproduce the activity's two traps — comparing with the wrong
+     number, and leaving the else out. The output is written in words on
+     purpose: it must never print a line of code (see CONTEXT.md rule 5.1). */
+  var ifrun = document.getElementById('ifrun');
+  if(ifrun){
+    var isw  = document.getElementById('ifsw');
+    var ival = document.getElementById('ifval');
+    var iled = document.getElementById('ifled');
+    var iout = document.getElementById('ifout');
+    var itimer = null, idown = false, icmp = 0, ihasElse = true, ilit = false, iround = 0;
+
+    var iset = function(down){
+      idown = down;
+      isw.classList.toggle('down', down);
+      ival.classList.toggle('pressed', down);
+      ival.textContent = down ? '0' : '1';
+      if(!itimer) ishow(true);
+    };
+
+    var ishow = function(idle){
+      var reading = idown ? 0 : 1;
+      var yes = (reading === icmp);
+      var head = idle
+        ? 'Not running. The pin says ' + reading + '.\nPress Run the loop to start asking the question.'
+        : 'Round ' + iround + ' of the loop.';
+      var body = '\n\nThe pin says ' + reading + '.'
+        + '\nIs that the same as ' + icmp + '?  ' + (yes ? 'yes' : 'no')
+        + '\nSo the Pico takes the ' + (yes ? 'first' : 'second') + ' road';
+      if(!ihasElse && !yes){
+        body += ' — and that road is empty, so nothing happens.'
+              + '\nThe light stays exactly as it was.';
+      } else {
+        body += ', and the light goes ' + (yes ? 'ON' : 'OFF') + '.';
+      }
+      if(idle){ iout.textContent = head; return; }
+      iout.textContent = head + body;
+    };
+
+    var itick = function(){
+      iround++;
+      var yes = ((idown ? 0 : 1) === icmp);
+      if(yes){ ilit = true; }
+      else if(ihasElse){ ilit = false; }
+      iled.classList.toggle('on', ilit);
+      ishow(false);
+      itimer = setTimeout(itick, 200);
+    };
+
+    ['mousedown', 'touchstart'].forEach(function(ev){
+      isw.addEventListener(ev, function(e){ e.preventDefault(); iset(true); });
+    });
+    ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(function(ev){
+      isw.addEventListener(ev, function(){ iset(false); });
+    });
+    isw.addEventListener('keydown', function(e){
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); iset(true); }
+    });
+    isw.addEventListener('keyup', function(e){
+      if(e.key === ' ' || e.key === 'Enter'){ iset(false); }
+    });
+    document.addEventListener('mouseup', function(){ if(idown) iset(false); });
+    iset(false);
+
+    ifrun.addEventListener('click', function(){
+      if(itimer){
+        clearTimeout(itimer); itimer = null;
+        ifrun.textContent = '▶ Run the loop';
+        iout.textContent = 'Stopped after ' + iround + ' rounds.\n'
+          + 'A forever-loop stops the same way on a real Pico — the Stop button, '
+          + 'or Ctrl+C in the Shell.';
+        return;
+      }
+      iround = 0; ilit = false; iled.classList.remove('on');
+      ifrun.textContent = '■ Stop it';
+      itick();
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-ifcmp]'), function(b){
+      b.addEventListener('click', function(){
+        icmp = parseInt(b.getAttribute('data-ifcmp'), 10);
+        if(!itimer) ishow(true);
+      });
+    });
+
+    var ielse = document.querySelector('[data-ifelse]');
+    if(ielse){
+      ielse.addEventListener('click', function(){
+        ihasElse = !ihasElse;
+        ielse.textContent = ihasElse ? 'Take the else away' : 'Put the else back';
+        if(!itimer) ishow(true);
+      });
+    }
   }
 
 })();

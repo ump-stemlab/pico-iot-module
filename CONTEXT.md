@@ -76,7 +76,8 @@ docs/teacher-N.html    one page per activity (instructors, unlisted)
 docs/pinout.html       searchable pin reference
 docs/style.css         the whole design system — every page links it
 docs/code.js           renders code as pictures + guards the clipboard
-docs/activity.js       progress, tabs, board simulator, blink simulator, typing box, quiz
+docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
+                       decision simulator, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
@@ -243,10 +244,16 @@ them in the markup if they are there.
 - `activity.js` gained a **blink simulator** block, guarded by `#blinkrun`, so it is inert on
   every other page. Markup: `#bblink` bulb, `#onsec` / `#offsec` number inputs, `[data-preset]`
   buttons, `#blinkout`. Its output text deliberately *describes* the loop rather than printing
-  code, unlike the Activity 1 board simulator, whose `#simout` does echo two lines of plain code
-  — a small unfixed leak of rule 5.1.
-- Known TODO carried over: `activity-1.html` still has an unfilled `%WOKWI%` placeholder where a
-  ready-made Wokwi project link should go. `teacher-1.html` has the real project id.
+  code. Every simulator since follows that rule.
+- Two long-standing rule 5.1 leaks in `activity-1.html` were closed in Activity 4's build: its
+  first flow diagram carried `import Pin` and `led.on()` as SVG `<text>`, and the board simulator's
+  labels spelled a whole runnable line around the number input. Both now say the same thing in
+  words. **Every page's rendered text now survives a select-all-and-copy with nothing runnable in
+  it** — keep it that way, and re-run the check in §8.1 step 5 on every page you touch.
+- ~~Known TODO: `activity-1.html`'s unfilled `%WOKWI%` placeholder~~ — **resolved in Activity 4's
+  build.** There is no ready-made Wokwi project for Activity 1 and there never was one on this
+  site, so the callout was rewritten to point back at the wiring diagram instead. `teacher-1.html`
+  still carries a project id; it is not linked from the student page.
 
 ### Activity 3 — Digital Input
 
@@ -286,10 +293,76 @@ them in the markup if they are there.
   (`0.2` and `0`). Its console prints only `1` and `0`, so unlike the Activity 1 board simulator it
   leaks no code. `style.css` gained `.pushbtn`, `.readout`, `.readlbl` and `.sim-out.tall`.
 - `teacher-3.html` wraps its three-column *mistakes* table in `.tablescroll` so it does not overflow
-  at 390 px. **`teacher-2.html` has the same table and still does overflow** — a one-line fix for
-  whoever is next in that file.
+  at 390 px. `teacher-2.html` and `teacher-1.html` were given the same wrapper in Activity 4's build,
+  and `.act` in `style.css` gained `min-width:0` to stop the home page's activity rows overflowing by
+  2 px at 390. **Every page now passes the `scrollWidth == clientWidth` check at 390, 768 and 1400.**
 - Activity 3 has **no ready-made Wokwi project link**, by decision. There is nothing to fill in later.
   `activity-1.html`'s unfilled `%WOKWI%` placeholder is still outstanding.
+
+### Activity 4 — Making Decisions
+
+- **The one idea arrives in two steps, and the order is load-bearing.** `if` first, demonstrated
+  until the class sees a light that will not go out; *then* `else` as the fix. The page is written
+  that way and the teacher page insists on it. Do not merge them.
+- **Two traps, and they are not equal.** The double equals gets the most page space because it is the
+  headline confusion, but it is the *safe* one — a single `=` in a condition is a `SyntaxError`, so
+  nothing runs. The dangerous trap is `== 1` instead of `== 0`: it runs perfectly and inverts the
+  whole thing. That is Activity 3's inversion finally collecting its debt, and section `#zero`
+  **points back to `activity-3.html#trap` rather than re-teaching it**. Keep it that way.
+- **No `and` / `or` / `not`, and none smuggled in.** One button, one condition, everywhere — the
+  exercise is deliberately *two separate `if`/`else` pairs* rather than one combined condition, so
+  that Activity 5 has the contrast to build on. Also ruled out: `elif`, which this module never needs.
+- **`print()` stays in the main program**, unlike the LED-only alternative. Its job here is
+  debugging: words right + light wrong means the wiring is at fault; words wrong too means the
+  decision is. That split is stated on the page and is the reason the lines are not optional.
+- The loop waits `0.1`, not Activity 3's `0.2` — the number is chosen for driving a light rather than
+  for throttling a console, and the page says so.
+- Exercise: **SW1 → red LED1 (GP11), SW2 → green LED3 (GP13)**, as two independent blocks in one
+  loop. Kamil's call. The four-state diagram (nothing / SW1 / SW2 / both) is the acceptance test, and
+  the most instructive wrong answer is the second `if` at eight spaces, which makes SW2 depend on SW1.
+- **Indentation gets its own top-level section again**, because this is the first time anything is
+  indented twice. The bar diagram has three left edges and two measuring brackets, and the brackets
+  must line up with the guide lines — they did not on the first draft.
+- `activity.js` gained a **decision simulator**, guarded by `#ifrun`, inert on every other page.
+  Markup: `#ifsw` press-and-hold pad, `#ifval` readout, `#ifled` bulb, `#ifout` console,
+  `[data-ifcmp]` (`0` / `1`) and `[data-ifelse]`. It reproduces both traps live, with nothing to
+  type — the `== 1` preset and the *take the else away* toggle are worth four minutes of class time.
+  Its output is written in **words, never code**, so it leaks nothing.
+- Activity 4 adds **no new pins** and no new hardware. It is the first activity to use an input and
+  an output at the same time, which is the thing to check on each board before the lesson.
+
+### The Wokwi-look board diagrams (Activities 1, 3 and 4)
+
+Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
+physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
+module does not look like two different books.
+
+- Colours and proportions were measured from Wokwi's own rendering by opening a real project in the
+  browser and reading the SVG out of the page. They live in `style.css` under
+  *Wokwi-look board diagrams* as a `wk-` family: `wk-pcb` `#006837`, `wk-pcb-top` `#33865f`,
+  `wk-pad` `#9a916c` with a white hole, `wk-usb` `#ccc`, `wk-chip` `#30312e`, `wk-mount` (the yellow
+  rings flanking the USB), `wk-btn-frame` / `wk-btn-face` / `wk-leg`, and `wkwire` in `green` / `red`
+  / `black`. These are the colours of a **physical object**, so they are fixed in both themes on
+  purpose — the one exception is the black wire, which lightens in dark mode or it would vanish.
+  Rule 4 ("never hard-code a colour") still applies to everything that is page furniture.
+- **Wokwi itself prints no pin names and no pin numbers on its Pico** (only `1`, `2` and `39` near
+  the corners). Both were added here deliberately, in white silkscreen on the board: the number
+  beside the pad, the name inside it. Telling the two apart is the thing students get wrong every
+  time, and it is why the diagrams carry the line *"the big white numbers are the physical pins."*
+- The board is a self-contained `<g class="wk">` and is **identical in all three files**. To wire a
+  new activity, copy that group out of `activity-4.html`, change the ring circles and the wire paths,
+  and leave everything else alone. The geometry you need:
+  board at `x=545`, width `200`, height `440`; **pin *n*'s centre line is
+  `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
+  meets a left-hand pad at `x=537` and a right-hand pad at `x=755`; the ring on a used pad is
+  `<circle r="10.5" class="wk-ring">` centred on the hole.
+- The three diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3) and
+  `780 × 600` (Activity 4, which carries both circuits).
+- Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
+  corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
+  long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at
+  both ends and orange-orange-brown-gold bands for 330 Ω. Rule 5.3 still applies — **render every
+  diagram and look at it**, in both themes. Four of Activity 4's ten needed moving after seeing them.
 
 ## 8. Publishing
 
@@ -394,7 +467,9 @@ page needs no change there.
    introduced any.
 7. `CONTEXT.md`: an "Activity N" block in §7 for anything a later builder would
    otherwise have to guess or would get wrong.
-8. Verify (§8.1). Look at every diagram.
+8. Verify (§8.1). Look at every diagram, in both themes. If the activity wires anything,
+   copy the Wokwi-look Pico out of `activity-4.html` rather than drawing a new one — see the
+   *Wokwi-look board diagrams* note at the end of §7.
 9. Write `PROMPT-activity-N+1.md` and delete `PROMPT-activity-N.md`. Deleting needs
    permission on the mount — ask for it, it also unblocks git's `index.lock`.
 10. Report what changed and stop. Kamil pushes.
