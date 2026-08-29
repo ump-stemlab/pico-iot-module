@@ -514,8 +514,13 @@ figure.board figcaption{text-align:center;font-size:13.5px;color:var(--muted);ma
 .dashbox .dashmsg{margin:auto;font-family:-apple-system,"Segoe UI",Verdana,sans-serif;
   font-size:12px;color:#4d7a78;text-align:center;line-height:1.4}
 
-/* ---------- renumbering notice (temporary, Aug 2026) ---------- */
-.cal.note .rnx{margin-top:10px;display:block;width:fit-content;font:inherit;font-size:13px;font-weight:600;
-  color:#B87708;background:transparent;border:1px solid rgba(184,119,8,.5);border-radius:7px;
-  padding:5px 12px;cursor:pointer}
-.cal.note .rnx:hover{background:rgba(245,162,29,.16)}
+/* ---------- real screenshots (Activity 8 on) ----------
+   Photographs of somebody else's website, so they are a picture with a caption
+   rather than page furniture: a thin border and a soft shadow so the white
+   Adafruit background does not bleed into a light-theme card, and so the
+   picture still reads as a picture in dark mode. */
+figure.shot{margin:16px 0 22px}
+figure.shot img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:8px;
+  border:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.10)}
+figure.shot figcaption{margin:10px auto 0;max-width:640px;text-align:center;font-size:13.5px;
+  line-height:1.55;color:var(--muted)}
