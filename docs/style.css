@@ -525,3 +525,19 @@ figure.shot img{display:block;max-width:100%;height:auto;margin:0 auto;border-ra
   border:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.10)}
 figure.shot figcaption{margin:10px auto 0;max-width:640px;text-align:center;font-size:13.5px;
   line-height:1.55;color:var(--muted)}
+
+/* ---------- Activity 9: signal graphs, the third zone, and the gold wire ----------
+   The two graph classes draw a trace on a pair of axes (analogue versus digital,
+   and the ADC's conversion line). They use theme variables, so they follow the
+   page in both themes. .warnbox is the red sibling of .pinbox and .namebox, for
+   the third of three zones. The gold wire is the colour Wokwi draws the signal
+   wire in the soil-sensor starter project, so like the rest of the wk- family it
+   is the colour of a physical thing and is fixed in both themes; it is lightened
+   slightly in dark mode, the same treatment the black wire gets. */
+.dia .trace{fill:none;stroke:var(--teal);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.dia .trace.ink{stroke:var(--ink)}
+.dia .axis{fill:none;stroke:var(--muted);stroke-width:2}
+.dia .grid{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:5 5}
+.dia .warnbox{fill:rgba(200,0,0,.12);stroke:var(--red);stroke-width:2}
+.dia .wkwire.gold{stroke:#B8860B}
+@media (prefers-color-scheme: dark){ .dia .wkwire.gold{stroke:#E8B92E} }

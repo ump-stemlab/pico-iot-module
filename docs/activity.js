@@ -953,4 +953,107 @@
     pdraw();
   }
 
+  /* ---------- soil widget (guarded by #soilrun) ----------
+     Activity 9. Move the water and watch three things at once: the raw number
+     the pin hands back, the percentage the sum makes of it, and the word the
+     decision picks. Then move the two thresholds and watch the same soil get
+     called something different, which is what calibrating is.
+
+     The raw number is modelled on the STEM Lab's Wokwi soil chip exactly, so
+     the numbers here are the numbers the simulator gives: the chip puts out
+     5 V x (100 - water) / 100 against Wokwi's 5 V reference, the RP2040's ADC
+     is 12 bits, and MicroPython's read_u16 spreads those 12 bits over 16 by
+     shifting. Water 0 gives 65535, water 15 gives 55693 and water 100 gives 0
+     - all three checked against the running simulator during this build.
+
+     Like every widget here the output is written in words and never prints a
+     line of code (CONTEXT.md rule 5.1). */
+  var soilrun = document.getElementById('soilrun');
+  if(soilrun){
+    var swater = document.getElementById('soilwater');
+    var sdryi  = document.getElementById('soildry');
+    var sweti  = document.getElementById('soilwet');
+    var sraw   = document.getElementById('soilraw');
+    var spc    = document.getElementById('soilpc');
+    var ssay   = document.getElementById('soilsay');
+    var sout   = document.getElementById('soilout');
+    var swetb  = document.getElementById('soilwetbtn');
+    var sback  = document.getElementById('soilback');
+
+    var sread = function(){
+      var w = parseInt(swater.value, 10);
+      if(isNaN(w)) w = 0;
+      var raw12 = Math.floor((100 - w) / 100 * 4095);
+      return (raw12 << 4) | (raw12 >> 8);
+    };
+    var snum = function(el, dflt){
+      var v = parseInt(el.value, 10);
+      return isNaN(v) ? dflt : v;
+    };
+
+    var spaint = function(msg){
+      var r = sread(), dry = snum(sdryi, 50000), wet = snum(sweti, 25000);
+      sraw.textContent = r;
+
+      if(dry === wet){
+        spc.textContent = '?';
+        ssay.textContent = '—';
+        sout.textContent = 'The two numbers are the same, so the sum is asked to divide by nothing '
+          + 'and the program stops with an error. Two identical thresholds leave no room for a '
+          + 'middle zone at all.';
+        return;
+      }
+
+      var pc = Math.floor((dry - r) * 100 / (dry - wet));
+      var clamped = '';
+      if(pc < 0){ pc = 0; clamped = ' The sum came out below nothing and was pulled back to 0.'; }
+      else if(pc > 100){ pc = 100; clamped = ' The sum came out past a hundred and was pulled back to 100.'; }
+      spc.textContent = pc;
+
+      var say = r > dry ? 'DRY' : (r > wet ? 'JUST RIGHT' : 'WET');
+      ssay.textContent = say;
+
+      if(dry < wet){
+        sout.textContent = 'Your dry number is smaller than your wet number, which is the wrong way '
+          + 'round. Nothing has gone wrong and nothing will: the program runs perfectly and every '
+          + 'answer it gives is nonsense. Look at the number line and work out why before you put '
+          + 'them back.';
+        return;
+      }
+
+      sout.textContent = (msg ? msg + '\n' : '')
+        + 'The pin reads ' + r + '. Above ' + dry + ' is dry and below ' + wet + ' is wet, so this '
+        + 'one is ' + say + ', at ' + pc + ' per cent.' + clamped;
+    };
+
+    swater.addEventListener('input', function(){
+      spaint('You moved the water, so the reading moved with it — downwards, if you added water.');
+    });
+    sdryi.addEventListener('input', function(){
+      spaint('You moved the dry line. The soil has not changed at all.');
+    });
+    sweti.addEventListener('input', function(){
+      spaint('You moved the wet line. The soil has not changed at all.');
+    });
+
+    soilrun.addEventListener('click', function(){
+      sdryi.value = sread();
+      spaint('Calibrated the dry end: whatever the probe reads right now is the top of your scale. '
+           + 'On a real probe you would do this holding it in the air, and then set the number a '
+           + 'little inside that rather than exactly on it.');
+    });
+    swetb.addEventListener('click', function(){
+      sweti.value = sread();
+      spaint('Calibrated the wet end: whatever the probe reads right now is the bottom of your '
+           + 'scale. On a real probe you would do this in soil you have just watered.');
+    });
+    sback.addEventListener('click', function(){
+      sdryi.value = 50000; sweti.value = 25000;
+      spaint('Back to the two numbers printed on the page — which belong to somebody '
+           + 'else’s probe, in somebody else’s soil.');
+    });
+
+    spaint('');
+  }
+
 })();

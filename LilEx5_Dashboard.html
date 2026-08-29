@@ -1,0 +1,3440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>LilEx5 Sensor Dashboard | UMPSA STEM LAB</title>
+
+<meta name="description"
+      content="Live sensor readings from the LilEx5 Raspberry Pi Pico IoT board.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+
+
+<!-- ================================================================
+     SETTINGS — the only three lines you need to change
+     ================================================================ -->
+
+<script>
+
+// ----------------------------------------------------------------
+// YOUR GOOGLE APPS SCRIPT WEB APP URL
+//
+// Deploy your Apps Script as a web app, copy the /exec address it
+// gives you, and paste it between the quotes below. Nothing else on
+// this page has to change.
+// ----------------------------------------------------------------
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbzkgdXQMhTnerYwF2XB2ZJflbJOEMp4r5EfCFIyFNNCpQ8czQGyA8O7tJa-QzG5pzN3/exec";
+
+
+// ----------------------------------------------------------------
+// HOW OFTEN TO READ         milliseconds — 5000 is five seconds
+// ----------------------------------------------------------------
+
+const REFRESH_INTERVAL = 5000;
+
+
+// ----------------------------------------------------------------
+// HOW MANY SAMPLES EACH GRAPH KEEPS TO BEGIN WITH
+//
+// 0 keeps every sample taken since the page was opened, so the
+// graphs grow as they run. Put a number here instead — 30, 100 —
+// and each graph shows only that many most recent samples.
+//
+// This is only the starting value: there is a box at the bottom of
+// the page that changes the same setting while it runs.
+// ----------------------------------------------------------------
+
+const MAX_GRAPH_POINTS = 0;
+
+</script>
+
+
+<style>
+/* ================================================================
+   LilEx5 — UMPSA STEM LAB house theme
+   Tokens, chevron strip, nav, hero, cards and footer are the same
+   ones docs/style.css uses on the module website, inlined here so
+   this dashboard works as a single standalone file.
+   ================================================================ */
+
+:root{
+  --teal:#02ADA5; --teal-dark:#0B4F4B; --blue:#0D55A7; --red:#C80000;
+  --orange:#F5A21D; --ink:#1F2933; --muted:#5B7284;
+  --bg:#F6F8F9; --card:#FFFFFF; --line:#DCE4E7; --code-bg:#0F1B22;
+  --green:#1F9D55;
+
+  /* chart series — the brand five, tuned for a light page */
+  --c-red:#C80000; --c-blue:#0D55A7; --c-teal:#02ADA5;
+  --c-orange:#D2860B; --c-green:#1F9D55;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111A1F; --card:#182429; --line:#2B3A41; --ink:#E8EEF0; --muted:#9BB0B9;
+    --c-red:#FF6B6B; --c-blue:#6FB0F5; --c-teal:#3FD5CC;
+    --c-orange:#FFC154; --c-green:#4ED37F;
+  }
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Verdana,Roboto,sans-serif;
+}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* ---------- chevron strip ---------- */
+.chev{display:flex;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#fff;-webkit-user-select:none;-moz-user-select:none;user-select:none}
+.chev span{flex:1;text-align:center;padding:7px 4px}
+.chev span:nth-child(1){background:var(--blue)}
+.chev span:nth-child(2){background:var(--red)}
+.chev span:nth-child(3){background:var(--orange)}
+.chev span:nth-child(4){background:var(--teal)}
+
+/* ---------- site nav ---------- */
+.sitenav{background:#08312F;border-bottom:1px solid rgba(255,255,255,.08)}
+.sitenav .wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.sitenav .brand{color:#fff;font-weight:700;font-size:15px;margin-right:auto;letter-spacing:-.01em}
+.sitenav .brand span{color:var(--teal)}
+.sitenav .nl{color:#B9E4E1;font-size:14px;padding:5px 12px;border-radius:7px}
+.sitenav .nl.current{background:var(--teal);color:#fff}
+
+/* ---------- hero ---------- */
+header.hero{background:var(--teal-dark);color:#fff;padding:38px 0 34px}
+header.hero .eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8FD9D5;
+  margin:0 0 10px;font-weight:700}
+header.hero h1{margin:0 0 12px;font-size:clamp(28px,5vw,42px);line-height:1.12;letter-spacing:-.02em}
+header.hero p.sub{margin:0;color:#B9E4E1;font-size:16px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#EAF7F6;
+  border-radius:999px;padding:6px 14px;font-size:13px}
+.pill b{font-weight:700}
+
+#status{font-weight:700}
+#status::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:currentColor;margin-right:7px;vertical-align:1px;
+  box-shadow:0 0 8px 1px currentColor}
+#status.ok{color:#5BE58A}
+#status.warning{color:#FFD426}
+#status.error{color:#FF8A8A}
+
+/* ---------- sections ---------- */
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:24px 26px;margin:22px 0}
+h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em}
+h2 .num{color:var(--teal);font-variant-numeric:tabular-nums}
+.lede{color:var(--muted);margin:0 0 18px;font-size:15px}
+.lede code{background:rgba(2,173,165,.13);color:var(--teal-dark);border-radius:5px;padding:1px 7px;
+  font:700 13px "SFMono-Regular",Consolas,monospace}
+@media (prefers-color-scheme: dark){ .lede code{color:#7FE3DD} }
+
+/* ---------- reading tiles ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:15px 17px;background:transparent;
+  transition:border-color .15s}
+.tile:hover{border-color:var(--teal)}
+.tile h3{margin:0;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted)}
+.tile .part{display:block;margin-top:3px;font:700 11.5px "SFMono-Regular",Consolas,monospace;
+  color:var(--teal)}
+.val{margin-top:12px;font:700 34px/1.05 "SFMono-Regular",Consolas,monospace;color:var(--ink);
+  font-variant-numeric:tabular-nums;word-break:break-all}
+.unit{margin-top:6px;font-size:12.5px;letter-spacing:.05em;color:var(--muted)}
+
+/* ---------- axis rows ---------- */
+.axes{margin-top:12px}
+.axis-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;
+  border-bottom:1px solid var(--line)}
+.axis-row:last-child{border-bottom:none}
+.axis-row .ax{font:700 12px "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;color:var(--muted)}
+.axis-row .num{font:700 19px "SFMono-Regular",Consolas,monospace;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+
+/* ---------- graphs ---------- */
+.graph{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:14px}
+.graph h3{margin:0 0 4px;font-size:16px}
+.graph p{margin:0 0 6px;font-size:13px;color:var(--muted)}
+canvas{width:100%;height:260px;display:block}
+
+/* ---------- sample-window control ---------- */
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:center;
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:14px 18px;margin:0 auto 20px;max-width:760px;text-align:left}
+.ctl label{font-size:14px;font-weight:600;color:var(--ink)}
+.ctl input[type=number]{width:96px;padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--ink);font:700 15px "SFMono-Regular",Consolas,monospace;
+  text-align:center}
+.ctl input[type=number]:focus{outline:none;border-color:var(--teal)}
+.ctl .hint{flex:1 1 260px;font-size:13px;line-height:1.5;color:var(--muted)}
+.ctl .hint b{color:var(--teal)}
+
+/* ---------- refresh ---------- */
+.refresh{text-align:center;margin:26px 0 6px}
+.btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:15px;
+  font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#019a93}
+.timestamp{color:var(--muted);margin-top:11px;font-size:13px}
+
+/* ---------- footer ---------- */
+footer{background:var(--teal-dark);color:#B9E4E1;padding:30px 0;margin-top:34px;text-align:center;
+  font-size:14px}
+footer a{color:#8FD9D5}
+footer p{margin:6px 0}
+
+/* ---------- mobile ---------- */
+@media (max-width:600px){
+  header.hero{padding:30px 0 26px}
+  section{padding:20px 17px}
+  .val{font-size:29px}
+  canvas{height:220px}
+  .graph{padding:14px 12px}
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================================================
+     CHEVRON STRIP
+     ================================================================ -->
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+
+
+<!-- ================================================================
+     SITE NAV
+     ================================================================ -->
+
+<nav class="sitenav"><div class="wrap">
+  <span class="brand">LilEx5 <span>Pico IoT Module</span></span>
+  <span class="nl current">Dashboard</span>
+</div></nav>
+
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">UMPSA STEM LAB</p>
+    <h1>LilEx5 Sensor Dashboard</h1>
+    <p class="sub">Every reading the board is sending, live from the Raspberry&nbsp;Pi&nbsp;Pico &mdash;
+    environment, motion, magnetic field and the four analogue channels.</p>
+    <div class="pills">
+      <span class="pill">Status: <span id="status">Connecting&hellip;</span></span>
+      <span class="pill">Refreshes every <b>5&nbsp;seconds</b></span>
+      <span class="pill" id="samplepill"><b>0</b> samples graphed so far</span>
+    </div>
+  </div>
+</header>
+
+
+<div class="wrap">
+
+
+<!-- ================================================================
+     01 — ENVIRONMENT
+     ================================================================ -->
+
+<section>
+
+  <h2><span class="num">01</span> &nbsp;Environment</h2>
+  <p class="lede">Temperature, humidity and pressure from the <code>BME280</code>, air quality from the
+  <code>AGS10</code>, and how close something is from the <code>VCNL36821S</code>.</p>
+
+  <div class="grid">
+
+    <div class="tile">
+      <h3>Temperature <span class="part">BME280</span></h3>
+      <div class="val" id="temperature">--</div>
+      <div class="unit">degrees Celsius (&deg;C)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Humidity <span class="part">BME280</span></h3>
+      <div class="val" id="humidity">--</div>
+      <div class="unit">relative humidity (%RH)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Pressure <span class="part">BME280</span></h3>
+      <div class="val" id="pressure">--</div>
+      <div class="unit">hectopascal (hPa)</div>
+    </div>
+
+    <div class="tile">
+      <h3>TVOC <span class="part">AGS10</span></h3>
+      <div class="val" id="tvoc">--</div>
+      <div class="unit">parts per billion (ppb)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Proximity <span class="part">VCNL36821S</span></h3>
+      <div class="val" id="proximity">--</div>
+      <div class="unit">counts</div>
+    </div>
+
+  </div>
+
+  <div class="graph">
+    <h3>Temperature and humidity</h3>
+    <p>Two different units on one picture, so each gets its own scale &mdash; temperature on the left,
+    humidity on the right.</p>
+    <canvas id="environmentGraph"></canvas>
+  </div>
+
+  <div class="graph">
+    <h3>Atmospheric pressure</h3>
+    <p>Pressure barely moves indoors, so the scale zooms right in on whatever range it finds.</p>
+    <canvas id="pressureGraph"></canvas>
+  </div>
+
+</section>
+
+
+<!-- ================================================================
+     02 — MOTION
+     ================================================================ -->
+
+<section>
+
+  <h2><span class="num">02</span> &nbsp;Motion</h2>
+  <p class="lede">The <code>BMI323</code> reports three numbers for acceleration and three for
+  turning &mdash; one for each direction the board can move in.</p>
+
+  <div class="grid">
+
+    <div class="tile">
+      <h3>Accelerometer <span class="part">BMI323</span></h3>
+      <div class="axes">
+        <div class="axis-row"><span class="ax">X</span><span class="num" id="accelX">--</span></div>
+        <div class="axis-row"><span class="ax">Y</span><span class="num" id="accelY">--</span></div>
+        <div class="axis-row"><span class="ax">Z</span><span class="num" id="accelZ">--</span></div>
+      </div>
+      <div class="unit">g &mdash; multiples of Earth&rsquo;s gravity</div>
+    </div>
+
+    <div class="tile">
+      <h3>Gyroscope <span class="part">BMI323</span></h3>
+      <div class="axes">
+        <div class="axis-row"><span class="ax">X</span><span class="num" id="gyroX">--</span></div>
+        <div class="axis-row"><span class="ax">Y</span><span class="num" id="gyroY">--</span></div>
+        <div class="axis-row"><span class="ax">Z</span><span class="num" id="gyroZ">--</span></div>
+      </div>
+      <div class="unit">degrees per second (&deg;/s)</div>
+    </div>
+
+  </div>
+
+  <div class="graph">
+    <h3>Acceleration over time</h3>
+    <p>Leave the board still and the three lines sit flat; pick it up and they separate.</p>
+    <canvas id="motionGraph"></canvas>
+  </div>
+
+</section>
+
+
+<!-- ================================================================
+     03 — MAGNETIC FIELD
+     ================================================================ -->
+
+<section>
+
+  <h2><span class="num">03</span> &nbsp;Magnetic field</h2>
+  <p class="lede">The <code>QMC6309</code> measures the magnetic field in three directions, and the
+  heading is what you get when you turn those three numbers into a compass bearing.</p>
+
+  <div class="grid">
+
+    <div class="tile">
+      <h3>Magnetic field <span class="part">QMC6309</span></h3>
+      <div class="axes">
+        <div class="axis-row"><span class="ax">X</span><span class="num" id="magX">--</span></div>
+        <div class="axis-row"><span class="ax">Y</span><span class="num" id="magY">--</span></div>
+        <div class="axis-row"><span class="ax">Z</span><span class="num" id="magZ">--</span></div>
+      </div>
+      <div class="unit">Gauss</div>
+    </div>
+
+    <div class="tile">
+      <h3>Compass heading <span class="part">QMC6309</span></h3>
+      <div class="val" id="heading">--</div>
+      <div class="unit">degrees from north</div>
+    </div>
+
+  </div>
+
+  <div class="graph">
+    <h3>Magnetic field over time</h3>
+    <p>Bring a magnet near the board and watch which of the three lines jumps.</p>
+    <canvas id="magnetGraph"></canvas>
+  </div>
+
+</section>
+
+
+<!-- ================================================================
+     04 — ANALOGUE INPUTS
+     ================================================================ -->
+
+<section>
+
+  <h2><span class="num">04</span> &nbsp;Analogue inputs</h2>
+  <p class="lede">The four channels on the <code>H3</code> connector. They go through the
+  <code>ADS1115</code> converter chip and come back over I&sup2;C &mdash; which is why
+  <code>ADC()</code> cannot read them directly.</p>
+
+  <div class="grid">
+
+    <div class="tile">
+      <h3>Channel 0 <span class="part">ADS1115 &middot; A0</span></h3>
+      <div class="val" id="ch0">--</div>
+      <div class="unit">volts (V)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Channel 1 <span class="part">ADS1115 &middot; A1</span></h3>
+      <div class="val" id="ch1">--</div>
+      <div class="unit">volts (V)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Channel 2 <span class="part">ADS1115 &middot; A2</span></h3>
+      <div class="val" id="ch2">--</div>
+      <div class="unit">volts (V)</div>
+    </div>
+
+    <div class="tile">
+      <h3>Channel 3 <span class="part">ADS1115 &middot; A3</span></h3>
+      <div class="val" id="ch3">--</div>
+      <div class="unit">volts (V)</div>
+    </div>
+
+  </div>
+
+  <div class="graph">
+    <h3>All four channels over time</h3>
+    <p>Nothing wired to a channel still reads a small drifting voltage &mdash; that is normal.</p>
+    <canvas id="adsGraph"></canvas>
+  </div>
+
+</section>
+
+
+<!-- ================================================================
+     REFRESH
+     ================================================================ -->
+
+<div class="refresh">
+
+  <div class="ctl">
+
+    <label for="windowinput">Samples each graph keeps</label>
+
+    <input type="number"
+           id="windowinput"
+           min="0"
+           step="10"
+           value="0"
+           inputmode="numeric">
+
+    <span class="hint">Type <b>0</b> to keep every sample since the page was opened,
+    or a number &mdash; 30, 100 &mdash; to show only that many most recent ones.</span>
+
+  </div>
+
+  <button class="btn" onclick="loadData()">Refresh now</button>
+
+  <div class="timestamp" id="timestamp">Last update: --</div>
+
+</div>
+
+
+</div>
+
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p>LilEx5 sensor monitoring system</p>
+  </div>
+</footer>
+
+
+<script>
+
+
+
+
+// ================================================================
+// THEME
+// The graphs are drawn on a canvas, so they cannot inherit the
+// page's CSS. These read the same custom properties the stylesheet
+// defines, which is how the charts follow light and dark mode.
+// ================================================================
+
+let sampleCount = 0;
+
+
+let graphWindow = MAX_GRAPH_POINTS;
+
+
+const FONT =
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Verdana,Roboto,sans-serif';
+
+const MONO =
+    '"SFMono-Regular",Consolas,monospace';
+
+
+function themeColors() {
+
+    const style =
+        getComputedStyle(
+            document.documentElement
+        );
+
+
+    function token(name, fallback) {
+
+        const value =
+            style.getPropertyValue(name).trim();
+
+
+        return value || fallback;
+
+    }
+
+
+    return {
+
+        red:    token("--c-red",    "#C80000"),
+        blue:   token("--c-blue",   "#0D55A7"),
+        teal:   token("--c-teal",   "#02ADA5"),
+        orange: token("--c-orange", "#D2860B"),
+        green:  token("--c-green",  "#1F9D55"),
+
+        ink:    token("--ink",      "#1F2933"),
+        muted:  token("--muted",    "#5B7284"),
+        line:   token("--line",     "#DCE4E7")
+
+    };
+
+}
+
+
+
+
+// ================================================================
+// GRAPH DATA
+// ================================================================
+
+const graphData = {
+
+    temperature: [],
+    humidity: [],
+    pressure: [],
+
+    accelX: [],
+    accelY: [],
+    accelZ: [],
+
+    gyroX: [],
+    gyroY: [],
+    gyroZ: [],
+
+    magX: [],
+    magY: [],
+    magZ: [],
+
+    ch0: [],
+    ch1: [],
+    ch2: [],
+    ch3: []
+
+};
+
+
+// ================================================================
+// SAFE NUMBER
+// ================================================================
+
+function numberValue(value) {
+
+    const n =
+        Number(value);
+
+    if (
+        Number.isFinite(n)
+    ) {
+
+        return n;
+
+    }
+
+    return null;
+
+}
+
+
+// ================================================================
+// SAFE DISPLAY VALUE
+// ================================================================
+
+function valueOrDash(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+
+        return "--";
+
+    }
+
+    return value;
+
+}
+
+
+// ================================================================
+// ADD GRAPH POINT
+// ================================================================
+
+function addPoint(
+    array,
+    value
+) {
+
+    const number =
+        numberValue(value);
+
+
+    if (
+        number === null
+    ) {
+
+        return;
+
+    }
+
+
+    array.push(
+        number
+    );
+
+
+    // A limit of 0 means keep everything, so the graph keeps
+    // growing for as long as the page is left open. The box at the
+    // bottom of the page changes graphWindow while it runs.
+
+    if (
+        graphWindow > 0 &&
+        array.length >
+        graphWindow
+    ) {
+
+        array.shift();
+
+    }
+
+}
+
+
+// ================================================================
+// UPDATE GRAPH DATA
+// ================================================================
+
+function updateGraphData(data) {
+
+
+    addPoint(
+        graphData.temperature,
+        data.temperature
+    );
+
+
+    addPoint(
+        graphData.humidity,
+        data.humidity
+    );
+
+
+    addPoint(
+        graphData.pressure,
+        data.pressure
+    );
+
+
+    addPoint(
+        graphData.accelX,
+        data.accelX
+    );
+
+
+    addPoint(
+        graphData.accelY,
+        data.accelY
+    );
+
+
+    addPoint(
+        graphData.accelZ,
+        data.accelZ
+    );
+
+
+    addPoint(
+        graphData.gyroX,
+        data.gyroX
+    );
+
+
+    addPoint(
+        graphData.gyroY,
+        data.gyroY
+    );
+
+
+    addPoint(
+        graphData.gyroZ,
+        data.gyroZ
+    );
+
+
+    addPoint(
+        graphData.magX,
+        data.magX
+    );
+
+
+    addPoint(
+        graphData.magY,
+        data.magY
+    );
+
+
+    addPoint(
+        graphData.magZ,
+        data.magZ
+    );
+
+
+    addPoint(
+        graphData.ch0,
+        data.ch0
+    );
+
+
+    addPoint(
+        graphData.ch1,
+        data.ch1
+    );
+
+
+    addPoint(
+        graphData.ch2,
+        data.ch2
+    );
+
+
+    addPoint(
+        graphData.ch3,
+        data.ch3
+    );
+
+}
+
+
+// ================================================================
+// UPDATE DASHBOARD
+// ================================================================
+
+function updateDashboard(data) {
+
+
+    if (
+        !data ||
+        !data.success
+    ) {
+
+        throw new Error(
+
+            data && data.error
+                ? data.error
+                : "Invalid sensor data"
+
+        );
+
+    }
+
+
+    // ------------------------------------------------------------
+    // ENVIRONMENT
+    // ------------------------------------------------------------
+
+    document.getElementById(
+        "temperature"
+    ).textContent =
+        valueOrDash(
+            data.temperature
+        );
+
+
+    document.getElementById(
+        "humidity"
+    ).textContent =
+        valueOrDash(
+            data.humidity
+        );
+
+
+    document.getElementById(
+        "pressure"
+    ).textContent =
+        valueOrDash(
+            data.pressure
+        );
+
+
+    document.getElementById(
+        "tvoc"
+    ).textContent =
+        valueOrDash(
+            data.tvoc
+        );
+
+
+    document.getElementById(
+        "proximity"
+    ).textContent =
+        valueOrDash(
+            data.proximity
+        );
+
+
+    // ------------------------------------------------------------
+    // ACCELEROMETER
+    // ------------------------------------------------------------
+
+    document.getElementById(
+        "accelX"
+    ).textContent =
+        valueOrDash(
+            data.accelX
+        );
+
+
+    document.getElementById(
+        "accelY"
+    ).textContent =
+        valueOrDash(
+            data.accelY
+        );
+
+
+    document.getElementById(
+        "accelZ"
+    ).textContent =
+        valueOrDash(
+            data.accelZ
+        );
+
+
+    // ------------------------------------------------------------
+    // GYROSCOPE
+    // ------------------------------------------------------------
+
+    document.getElementById(
+        "gyroX"
+    ).textContent =
+        valueOrDash(
+            data.gyroX
+        );
+
+
+    document.getElementById(
+        "gyroY"
+    ).textContent =
+        valueOrDash(
+            data.gyroY
+        );
+
+
+    document.getElementById(
+        "gyroZ"
+    ).textContent =
+        valueOrDash(
+            data.gyroZ
+        );
+
+
+    // ------------------------------------------------------------
+    // MAGNETOMETER
+    // ------------------------------------------------------------
+
+    document.getElementById(
+        "magX"
+    ).textContent =
+        valueOrDash(
+            data.magX
+        );
+
+
+    document.getElementById(
+        "magY"
+    ).textContent =
+        valueOrDash(
+            data.magY
+        );
+
+
+    document.getElementById(
+        "magZ"
+    ).textContent =
+        valueOrDash(
+            data.magZ
+        );
+
+
+    document.getElementById(
+        "heading"
+    ).textContent =
+        valueOrDash(
+            data.heading
+        );
+
+
+    // ------------------------------------------------------------
+    // ADS1115
+    // ------------------------------------------------------------
+
+    document.getElementById(
+        "ch0"
+    ).textContent =
+        valueOrDash(
+            data.ch0
+        );
+
+
+    document.getElementById(
+        "ch1"
+    ).textContent =
+        valueOrDash(
+            data.ch1
+        );
+
+
+    document.getElementById(
+        "ch2"
+    ).textContent =
+        valueOrDash(
+            data.ch2
+        );
+
+
+    document.getElementById(
+        "ch3"
+    ).textContent =
+        valueOrDash(
+            data.ch3
+        );
+
+
+    // ------------------------------------------------------------
+    // GRAPH DATA
+    // ------------------------------------------------------------
+
+    updateGraphData(
+        data
+    );
+
+
+    // ------------------------------------------------------------
+    // SAMPLE COUNT
+    // ------------------------------------------------------------
+
+    sampleCount++;
+
+
+    updateCounter();
+
+
+    // ------------------------------------------------------------
+    // STATUS
+    // ------------------------------------------------------------
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent =
+        "Online";
+
+
+    status.className =
+        "ok";
+
+
+    // ------------------------------------------------------------
+    // SENSOR TIMESTAMP
+    // ------------------------------------------------------------
+
+    if (
+        data.timestamp
+    ) {
+
+        const sensorTime =
+            new Date(
+                Number(
+                    data.timestamp
+                )
+            );
+
+
+        if (
+            !isNaN(
+                sensorTime.getTime()
+            )
+        ) {
+
+            document.getElementById(
+                "timestamp"
+            ).textContent =
+                "Last sensor update: " +
+                sensorTime.toLocaleTimeString();
+
+        }
+
+    }
+
+
+    // ------------------------------------------------------------
+    // DRAW GRAPHS
+    // ------------------------------------------------------------
+
+    drawAllGraphs();
+
+}
+
+
+// ================================================================
+// JSONP LOAD
+// ================================================================
+
+let callbackCounter = 0;
+
+
+function loadData() {
+
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent =
+        "Updating...";
+
+
+    status.className =
+        "warning";
+
+
+    const callbackName =
+        "lilexCallback_" +
+        Date.now() +
+        "_" +
+        callbackCounter++;
+
+
+    // ------------------------------------------------------------
+    // GLOBAL CALLBACK
+    // ------------------------------------------------------------
+
+    window[callbackName] =
+        function(data) {
+
+            try {
+
+                updateDashboard(
+                    data
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Dashboard data error:",
+                    error
+                );
+
+
+                status.textContent =
+                    "Offline";
+
+
+                status.className =
+                    "error";
+
+            }
+
+
+            delete window[
+                callbackName
+            ];
+
+        };
+
+
+    // ------------------------------------------------------------
+    // SCRIPT REQUEST
+    // ------------------------------------------------------------
+
+    const script =
+        document.createElement(
+            "script"
+        );
+
+
+    script.src =
+        API_URL +
+        "?action=read" +
+        "&callback=" +
+        encodeURIComponent(
+            callbackName
+        ) +
+        "&t=" +
+        Date.now();
+
+
+    // ------------------------------------------------------------
+    // CONNECTION ERROR
+    // ------------------------------------------------------------
+
+    script.onerror =
+        function() {
+
+            console.error(
+                "Google Apps Script connection failed"
+            );
+
+
+            status.textContent =
+                "Offline";
+
+
+            status.className =
+                "error";
+
+
+            document.getElementById(
+                "timestamp"
+            ).textContent =
+                "Unable to retrieve sensor data";
+
+
+            delete window[
+                callbackName
+            ];
+
+
+            if (
+                script.parentNode
+            ) {
+
+                script.parentNode.removeChild(
+                    script
+                );
+
+            }
+
+        };
+
+
+    document.body.appendChild(
+        script
+    );
+
+
+    // ------------------------------------------------------------
+    // TIMEOUT
+    // ------------------------------------------------------------
+
+    setTimeout(
+        function() {
+
+            if (
+                window[
+                    callbackName
+                ]
+            ) {
+
+                status.textContent =
+                    "Offline";
+
+
+                status.className =
+                    "error";
+
+
+                delete window[
+                    callbackName
+                ];
+
+            }
+
+
+            if (
+                script.parentNode
+            ) {
+
+                script.parentNode.removeChild(
+                    script
+                );
+
+            }
+
+        },
+        10000
+    );
+
+}
+
+
+// ================================================================
+// FORMAT GRAPH VALUE
+// ================================================================
+
+function formatGraphValue(
+    value
+) {
+
+    const absolute =
+        Math.abs(value);
+
+
+    if (
+        absolute >= 1000
+    ) {
+
+        return value.toFixed(0);
+
+    }
+
+
+    if (
+        absolute >= 100
+    ) {
+
+        return value.toFixed(1);
+
+    }
+
+
+    if (
+        absolute >= 10
+    ) {
+
+        return value.toFixed(1);
+
+    }
+
+
+    return value.toFixed(2);
+
+}
+
+
+// ================================================================
+// FORMAT AXIS VALUE
+// A grid line label needs enough decimals to tell it apart from the
+// line above it, which depends on how much of a range the graph is
+// showing, not on how big the number is.
+// ================================================================
+
+function formatAxisValue(
+    value,
+    span
+) {
+
+    if (
+        !Number.isFinite(span) ||
+        span <= 0
+    ) {
+
+        return formatGraphValue(
+            value
+        );
+
+    }
+
+
+    const step =
+        span / 5;
+
+
+    let decimals =
+        0;
+
+
+    if (step < 0.01) {
+
+        decimals = 4;
+
+    }
+    else if (step < 0.1) {
+
+        decimals = 3;
+
+    }
+    else if (step < 1) {
+
+        decimals = 2;
+
+    }
+    else if (step < 10) {
+
+        decimals = 1;
+
+    }
+
+
+    return value.toFixed(
+        decimals
+    );
+
+}
+
+
+// ================================================================
+// DRAW SINGLE AXIS GRAPH
+// ================================================================
+
+function drawGraph(
+    canvasId,
+    datasets,
+    yAxisLabel
+) {
+
+    const C =
+        themeColors();
+
+
+
+    const canvas =
+        document.getElementById(
+            canvasId
+        );
+
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const width =
+        rect.width;
+
+
+    const height =
+        rect.height;
+
+
+    if (
+        width <= 0 ||
+        height <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        Math.round(
+            width * dpr
+        );
+
+
+    canvas.height =
+        Math.round(
+            height * dpr
+        );
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    // ============================================================
+    // GRAPH BOUNDARIES
+    // ============================================================
+
+    const left =
+        55;
+
+    const right =
+        20;
+
+    const top =
+        25;
+
+    const bottom =
+        45;
+
+
+    const graphWidth =
+        width -
+        left -
+        right;
+
+
+    const graphHeight =
+        height -
+        top -
+        bottom;
+
+
+    // ============================================================
+    // COLLECT VALUES
+    // ============================================================
+
+    let values = [];
+
+
+    datasets.forEach(
+        function(dataset) {
+
+            dataset.data.forEach(
+                function(value) {
+
+                    if (
+                        Number.isFinite(
+                            value
+                        )
+                    ) {
+
+                        values.push(
+                            value
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    // ============================================================
+    // NO DATA
+    // ============================================================
+
+    if (
+        values.length === 0
+    ) {
+
+        ctx.fillStyle =
+            C.muted;
+
+
+        ctx.font =
+            "14px " + FONT;
+
+
+        ctx.textAlign =
+            "center";
+
+
+        ctx.fillText(
+            "Waiting for sensor data...",
+            width / 2,
+            height / 2
+        );
+
+
+        return;
+
+    }
+
+
+    // ============================================================
+    // MIN / MAX
+    // ============================================================
+
+    let min =
+        Math.min(
+            ...values
+        );
+
+
+    let max =
+        Math.max(
+            ...values
+        );
+
+
+    if (
+        min === max
+    ) {
+
+        const adjustment =
+            Math.abs(min) * 0.05 || 1;
+
+
+        min -=
+            adjustment;
+
+
+        max +=
+            adjustment;
+
+    }
+
+
+    // ============================================================
+    // PADDING
+    // ============================================================
+
+    const range =
+        max - min;
+
+
+    min -=
+        range * 0.10;
+
+
+    max +=
+        range * 0.10;
+
+
+    // ============================================================
+    // GRID
+    // ============================================================
+
+    ctx.strokeStyle =
+        C.line;
+
+
+    ctx.lineWidth =
+        1;
+
+
+    ctx.font =
+        "11px " + MONO;
+
+
+    ctx.fillStyle =
+        C.muted;
+
+
+    ctx.textAlign =
+        "right";
+
+
+    const gridLines =
+        5;
+
+
+    for (
+        let i = 0;
+        i <= gridLines;
+        i++
+    ) {
+
+        const ratio =
+            i / gridLines;
+
+
+        const y =
+            top +
+            ratio *
+            graphHeight;
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            left,
+            y
+        );
+
+
+        ctx.lineTo(
+            width - right,
+            y
+        );
+
+
+        ctx.stroke();
+
+
+        const value =
+            max -
+            ratio *
+            (
+                max - min
+            );
+
+
+        ctx.fillText(
+            formatAxisValue(
+                value,
+                max - min
+            ),
+            left - 8,
+            y + 4
+        );
+
+    }
+
+
+    // ============================================================
+    // Y AXIS LABEL
+    // ============================================================
+
+    ctx.textAlign =
+        "left";
+
+
+    ctx.fillStyle =
+        C.muted;
+
+
+    ctx.font =
+        "12px " + FONT;
+
+
+    ctx.fillText(
+        yAxisLabel,
+        left,
+        15
+    );
+
+
+    // ============================================================
+    // X AXIS
+    // ============================================================
+
+    const longestData =
+        Math.max(
+            ...datasets.map(
+                function(dataset) {
+
+                    return dataset.data.length;
+
+                }
+            )
+        );
+
+
+    if (
+        longestData > 1
+    ) {
+
+        ctx.textAlign =
+            "center";
+
+
+        ctx.fillStyle =
+            C.muted;
+
+
+        ctx.font =
+            "10px " + MONO;
+
+
+        const xLabels =
+            Math.min(
+                6,
+                longestData
+            );
+
+
+        for (
+            let i = 0;
+            i < xLabels;
+            i++
+        ) {
+
+            const ratio =
+                i /
+                Math.max(
+                    xLabels - 1,
+                    1
+                );
+
+
+            const x =
+                left +
+                ratio *
+                graphWidth;
+
+
+            const sample =
+                Math.round(
+                    ratio *
+                    (
+                        longestData - 1
+                    )
+                );
+
+
+            ctx.textAlign =
+                i === 0
+                    ? "left"
+                    : (
+                        i === xLabels - 1
+                            ? "right"
+                            : "center"
+                    );
+
+
+            ctx.fillText(
+                "Sample " + sample,
+                x,
+                height - 12
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // DATASETS
+    // ============================================================
+
+    datasets.forEach(
+        function(dataset) {
+
+
+            const data =
+                dataset.data;
+
+
+            if (
+                data.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            ctx.beginPath();
+
+
+            data.forEach(
+                function(value, i) {
+
+
+                    if (
+                        !Number.isFinite(
+                            value
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const x =
+                        left +
+                        (
+                            i /
+                            Math.max(
+                                data.length - 1,
+                                1
+                            )
+                        ) *
+                        graphWidth;
+
+
+                    const normalized =
+                        (
+                            value - min
+                        ) /
+                        (
+                            max - min
+                        );
+
+
+                    const y =
+                        top +
+                        (
+                            1 -
+                            normalized
+                        ) *
+                        graphHeight;
+
+
+                    if (
+                        i === 0
+                    ) {
+
+                        ctx.moveTo(
+                            x,
+                            y
+                        );
+
+                    }
+                    else {
+
+                        ctx.lineTo(
+                            x,
+                            y
+                        );
+
+                    }
+
+                }
+            );
+
+
+            // ----------------------------------------------------
+            // LINE
+            // ----------------------------------------------------
+
+            ctx.strokeStyle =
+                dataset.color;
+
+
+            ctx.lineWidth =
+                2.5;
+
+
+            ctx.lineJoin =
+                "round";
+
+
+            ctx.lineCap =
+                "round";
+
+
+            ctx.stroke();
+
+
+            // ----------------------------------------------------
+            // LAST POINT
+            // ----------------------------------------------------
+
+            let lastIndex =
+                -1;
+
+
+            for (
+                let i =
+                    data.length - 1;
+
+                i >= 0;
+
+                i--
+            ) {
+
+                if (
+                    Number.isFinite(
+                        data[i]
+                    )
+                ) {
+
+                    lastIndex =
+                        i;
+
+                    break;
+
+                }
+
+            }
+
+
+            if (
+                lastIndex < 0
+            ) {
+
+                return;
+
+            }
+
+
+            const lastValue =
+                data[lastIndex];
+
+
+            const lastNormalized =
+                (
+                    lastValue - min
+                ) /
+                (
+                    max - min
+                );
+
+
+            const lastX =
+                left +
+                (
+                    lastIndex /
+                    Math.max(
+                        data.length - 1,
+                        1
+                    )
+                ) *
+                graphWidth;
+
+
+            const lastY =
+                top +
+                (
+                    1 -
+                    lastNormalized
+                ) *
+                graphHeight;
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                lastX,
+                lastY,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fillStyle =
+                dataset.color;
+
+
+            ctx.fill();
+
+        }
+    );
+
+
+    // ============================================================
+    // LEGEND
+    // ============================================================
+
+    let legendX =
+        left;
+
+
+    const legendY =
+        height - 27;
+
+
+    ctx.font =
+        "12px " + FONT;
+
+
+    datasets.forEach(
+        function(dataset) {
+
+
+            if (
+                dataset.data.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            ctx.fillStyle =
+                dataset.color;
+
+
+            ctx.fillRect(
+                legendX,
+                legendY - 9,
+                10,
+                10
+            );
+
+
+            ctx.fillStyle =
+                C.muted;
+
+
+            ctx.textAlign =
+                "left";
+
+
+            ctx.fillText(
+                dataset.label,
+                legendX + 16,
+                legendY
+            );
+
+
+            legendX +=
+                115;
+
+        }
+    );
+
+}
+
+
+// ================================================================
+// DRAW TEMPERATURE + HUMIDITY WITH TWO Y AXES
+// ================================================================
+
+function drawTemperatureHumidityGraph() {
+
+    const C =
+        themeColors();
+
+
+
+    const canvas =
+        document.getElementById(
+            "environmentGraph"
+        );
+
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const width =
+        rect.width;
+
+
+    const height =
+        rect.height;
+
+
+    if (
+        width <= 0 ||
+        height <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        Math.round(
+            width * dpr
+        );
+
+
+    canvas.height =
+        Math.round(
+            height * dpr
+        );
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    // ============================================================
+    // BOUNDARIES
+    // ============================================================
+
+    const left =
+        55;
+
+    const right =
+        55;
+
+    const top =
+        25;
+
+    const bottom =
+        45;
+
+
+    const graphWidth =
+        width -
+        left -
+        right;
+
+
+    const graphHeight =
+        height -
+        top -
+        bottom;
+
+
+    // ============================================================
+    // TEMPERATURE VALUES
+    // ============================================================
+
+    const temperatureValues =
+        graphData.temperature.filter(
+            function(value) {
+
+                return Number.isFinite(
+                    value
+                );
+
+            }
+        );
+
+
+    // ============================================================
+    // HUMIDITY VALUES
+    // ============================================================
+
+    const humidityValues =
+        graphData.humidity.filter(
+            function(value) {
+
+                return Number.isFinite(
+                    value
+                );
+
+            }
+        );
+
+
+    if (
+        temperatureValues.length === 0 &&
+        humidityValues.length === 0
+    ) {
+
+        ctx.fillStyle =
+            C.muted;
+
+
+        ctx.font =
+            "14px " + FONT;
+
+
+        ctx.textAlign =
+            "center";
+
+
+        ctx.fillText(
+            "Waiting for sensor data...",
+            width / 2,
+            height / 2
+        );
+
+
+        return;
+
+    }
+
+
+    // ============================================================
+    // TEMPERATURE RANGE
+    // ============================================================
+
+    let tempMin =
+        temperatureValues.length > 0
+            ? Math.min(
+                ...temperatureValues
+            )
+            : 0;
+
+
+    let tempMax =
+        temperatureValues.length > 0
+            ? Math.max(
+                ...temperatureValues
+            )
+            : 1;
+
+
+    if (
+        tempMin === tempMax
+    ) {
+
+        const adjustment =
+            Math.abs(
+                tempMin
+            ) * 0.05 || 1;
+
+
+        tempMin -=
+            adjustment;
+
+
+        tempMax +=
+            adjustment;
+
+    }
+
+
+    const tempRange =
+        tempMax -
+        tempMin;
+
+
+    tempMin -=
+        tempRange * 0.10;
+
+
+    tempMax +=
+        tempRange * 0.10;
+
+
+    // ============================================================
+    // HUMIDITY RANGE
+    // ============================================================
+
+    let humidityMin =
+        humidityValues.length > 0
+            ? Math.min(
+                ...humidityValues
+            )
+            : 0;
+
+
+    let humidityMax =
+        humidityValues.length > 0
+            ? Math.max(
+                ...humidityValues
+            )
+            : 100;
+
+
+    if (
+        humidityMin === humidityMax
+    ) {
+
+        const adjustment =
+            Math.abs(
+                humidityMin
+            ) * 0.05 || 1;
+
+
+        humidityMin -=
+            adjustment;
+
+
+        humidityMax +=
+            adjustment;
+
+    }
+
+
+    const humidityRange =
+        humidityMax -
+        humidityMin;
+
+
+    humidityMin -=
+        humidityRange * 0.10;
+
+
+    humidityMax +=
+        humidityRange * 0.10;
+
+
+    // ============================================================
+    // GRID
+    // ============================================================
+
+    ctx.strokeStyle =
+        C.line;
+
+
+    ctx.lineWidth =
+        1;
+
+
+    ctx.font =
+        "11px " + MONO;
+
+
+    for (
+        let i = 0;
+        i <= 5;
+        i++
+    ) {
+
+        const ratio =
+            i / 5;
+
+
+        const y =
+            top +
+            ratio *
+            graphHeight;
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            left,
+            y
+        );
+
+
+        ctx.lineTo(
+            width - right,
+            y
+        );
+
+
+        ctx.stroke();
+
+
+        // --------------------------------------------------------
+        // TEMPERATURE AXIS
+        // --------------------------------------------------------
+
+        if (
+            temperatureValues.length > 0
+        ) {
+
+            const tempValue =
+                tempMax -
+                ratio *
+                (
+                    tempMax -
+                    tempMin
+                );
+
+
+            ctx.fillStyle =
+                C.red;
+
+
+            ctx.textAlign =
+                "right";
+
+
+            ctx.fillText(
+                formatAxisValue(
+                    tempValue,
+                    tempMax - tempMin
+                ),
+                left - 8,
+                y + 4
+            );
+
+        }
+
+
+        // --------------------------------------------------------
+        // HUMIDITY AXIS
+        // --------------------------------------------------------
+
+        if (
+            humidityValues.length > 0
+        ) {
+
+            const humidityValue =
+                humidityMax -
+                ratio *
+                (
+                    humidityMax -
+                    humidityMin
+                );
+
+
+            ctx.fillStyle =
+                C.blue;
+
+
+            ctx.textAlign =
+                "left";
+
+
+            ctx.fillText(
+                formatAxisValue(
+                    humidityValue,
+                    humidityMax - humidityMin
+                ),
+                width - right + 8,
+                y + 4
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // AXIS LABELS
+    // ============================================================
+
+    ctx.font =
+        "12px " + FONT;
+
+
+    ctx.fillStyle =
+        C.red;
+
+
+    ctx.textAlign =
+        "left";
+
+
+    ctx.fillText(
+        "Temperature (°C)",
+        left,
+        15
+    );
+
+
+    ctx.fillStyle =
+        C.blue;
+
+
+    ctx.textAlign =
+        "right";
+
+
+    ctx.fillText(
+        "Humidity (%RH)",
+        width - right,
+        15
+    );
+
+
+    // ============================================================
+    // X AXIS
+    // ============================================================
+
+    const longestData =
+        Math.max(
+            graphData.temperature.length,
+            graphData.humidity.length
+        );
+
+
+    if (
+        longestData > 1
+    ) {
+
+        ctx.textAlign =
+            "center";
+
+
+        ctx.fillStyle =
+            C.muted;
+
+
+        ctx.font =
+            "10px " + MONO;
+
+
+        const xLabels =
+            Math.min(
+                6,
+                longestData
+            );
+
+
+        for (
+            let i = 0;
+            i < xLabels;
+            i++
+        ) {
+
+            const ratio =
+                i /
+                Math.max(
+                    xLabels - 1,
+                    1
+                );
+
+
+            const x =
+                left +
+                ratio *
+                graphWidth;
+
+
+            const sample =
+                Math.round(
+                    ratio *
+                    (
+                        longestData - 1
+                    )
+                );
+
+
+            ctx.textAlign =
+                i === 0
+                    ? "left"
+                    : (
+                        i === xLabels - 1
+                            ? "right"
+                            : "center"
+                    );
+
+
+            ctx.fillText(
+                "Sample " + sample,
+                x,
+                height - 12
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // DRAW TEMPERATURE
+    // ============================================================
+
+    if (
+        graphData.temperature.length > 0
+    ) {
+
+        ctx.beginPath();
+
+
+        graphData.temperature.forEach(
+            function(value, i) {
+
+
+                if (
+                    !Number.isFinite(
+                        value
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const x =
+                    left +
+                    (
+                        i /
+                        Math.max(
+                            graphData.temperature.length - 1,
+                            1
+                        )
+                    ) *
+                    graphWidth;
+
+
+                const normalized =
+                    (
+                        value - tempMin
+                    ) /
+                    (
+                        tempMax - tempMin
+                    );
+
+
+                const y =
+                    top +
+                    (
+                        1 -
+                        normalized
+                    ) *
+                    graphHeight;
+
+
+                if (
+                    i === 0
+                ) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                }
+                else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+        );
+
+
+        ctx.strokeStyle =
+            C.red;
+
+
+        ctx.lineWidth =
+            2.5;
+
+
+        ctx.lineJoin =
+            "round";
+
+
+        ctx.lineCap =
+            "round";
+
+
+        ctx.stroke();
+
+
+        // --------------------------------------------------------
+        // LAST TEMPERATURE POINT
+        // --------------------------------------------------------
+
+        let lastTempIndex =
+            -1;
+
+
+        for (
+            let i =
+                graphData.temperature.length - 1;
+
+            i >= 0;
+
+            i--
+        ) {
+
+            if (
+                Number.isFinite(
+                    graphData.temperature[i]
+                )
+            ) {
+
+                lastTempIndex =
+                    i;
+
+                break;
+
+            }
+
+        }
+
+
+        if (
+            lastTempIndex >= 0
+        ) {
+
+            const value =
+                graphData.temperature[
+                    lastTempIndex
+                ];
+
+
+            const normalized =
+                (
+                    value - tempMin
+                ) /
+                (
+                    tempMax - tempMin
+                );
+
+
+            const x =
+                left +
+                (
+                    lastTempIndex /
+                    Math.max(
+                        graphData.temperature.length - 1,
+                        1
+                    )
+                ) *
+                graphWidth;
+
+
+            const y =
+                top +
+                (
+                    1 -
+                    normalized
+                ) *
+                graphHeight;
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                x,
+                y,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fillStyle =
+                C.red;
+
+
+            ctx.fill();
+
+        }
+
+    }
+
+
+    // ============================================================
+    // DRAW HUMIDITY
+    // ============================================================
+
+    if (
+        graphData.humidity.length > 0
+    ) {
+
+        ctx.beginPath();
+
+
+        graphData.humidity.forEach(
+            function(value, i) {
+
+
+                if (
+                    !Number.isFinite(
+                        value
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const x =
+                    left +
+                    (
+                        i /
+                        Math.max(
+                            graphData.humidity.length - 1,
+                            1
+                        )
+                    ) *
+                    graphWidth;
+
+
+                const normalized =
+                    (
+                        value - humidityMin
+                    ) /
+                    (
+                        humidityMax -
+                        humidityMin
+                    );
+
+
+                const y =
+                    top +
+                    (
+                        1 -
+                        normalized
+                    ) *
+                    graphHeight;
+
+
+                if (
+                    i === 0
+                ) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                }
+                else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+        );
+
+
+        ctx.strokeStyle =
+            C.blue;
+
+
+        ctx.lineWidth =
+            2.5;
+
+
+        ctx.lineJoin =
+            "round";
+
+
+        ctx.lineCap =
+            "round";
+
+
+        ctx.stroke();
+
+
+        // --------------------------------------------------------
+        // LAST HUMIDITY POINT
+        // --------------------------------------------------------
+
+        let lastHumidityIndex =
+            -1;
+
+
+        for (
+            let i =
+                graphData.humidity.length - 1;
+
+            i >= 0;
+
+            i--
+        ) {
+
+            if (
+                Number.isFinite(
+                    graphData.humidity[i]
+                )
+            ) {
+
+                lastHumidityIndex =
+                    i;
+
+                break;
+
+            }
+
+        }
+
+
+        if (
+            lastHumidityIndex >= 0
+        ) {
+
+            const value =
+                graphData.humidity[
+                    lastHumidityIndex
+                ];
+
+
+            const normalized =
+                (
+                    value - humidityMin
+                ) /
+                (
+                    humidityMax -
+                    humidityMin
+                );
+
+
+            const x =
+                left +
+                (
+                    lastHumidityIndex /
+                    Math.max(
+                        graphData.humidity.length - 1,
+                        1
+                    )
+                ) *
+                graphWidth;
+
+
+            const y =
+                top +
+                (
+                    1 -
+                    normalized
+                ) *
+                graphHeight;
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                x,
+                y,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fillStyle =
+                C.blue;
+
+
+            ctx.fill();
+
+        }
+
+    }
+
+
+    // ============================================================
+    // LEGEND
+    // ============================================================
+
+    let legendX =
+        left;
+
+
+    const legendY =
+        height - 27;
+
+
+    ctx.font =
+        "12px " + FONT;
+
+
+    // Temperature legend
+
+    ctx.fillStyle =
+        C.red;
+
+
+    ctx.fillRect(
+        legendX,
+        legendY - 9,
+        10,
+        10
+    );
+
+
+    ctx.fillStyle =
+        C.muted;
+
+
+    ctx.textAlign =
+        "left";
+
+
+    ctx.fillText(
+        "Temperature",
+        legendX + 16,
+        legendY
+    );
+
+
+    legendX +=
+        120;
+
+
+    // Humidity legend
+
+    ctx.fillStyle =
+        C.blue;
+
+
+    ctx.fillRect(
+        legendX,
+        legendY - 9,
+        10,
+        10
+    );
+
+
+    ctx.fillStyle =
+        C.muted;
+
+
+    ctx.fillText(
+        "Humidity",
+        legendX + 16,
+        legendY
+    );
+
+}
+
+
+// ================================================================
+// DRAW ALL GRAPHS
+// ================================================================
+
+function drawAllGraphs() {
+
+    const C =
+        themeColors();
+
+
+
+    // ------------------------------------------------------------
+    // TEMPERATURE & HUMIDITY
+    // ------------------------------------------------------------
+
+    drawTemperatureHumidityGraph();
+
+
+    // ------------------------------------------------------------
+    // PRESSURE
+    // ------------------------------------------------------------
+
+    drawGraph(
+
+        "pressureGraph",
+
+        [
+
+            {
+                data:
+                    graphData.pressure,
+
+                label:
+                    "Pressure",
+
+                color:
+                    C.green
+
+            }
+
+        ],
+
+        "hPa"
+
+    );
+
+
+    // ------------------------------------------------------------
+    // MOTION
+    // ------------------------------------------------------------
+
+    drawGraph(
+
+        "motionGraph",
+
+        [
+
+            {
+                data:
+                    graphData.accelX,
+
+                label:
+                    "Accel X",
+
+                color:
+                    C.red
+
+            },
+
+            {
+                data:
+                    graphData.accelY,
+
+                label:
+                    "Accel Y",
+
+                color:
+                    C.blue
+
+            },
+
+            {
+                data:
+                    graphData.accelZ,
+
+                label:
+                    "Accel Z",
+
+                color:
+                    C.teal
+
+            }
+
+        ],
+
+        "g"
+
+    );
+
+
+    // ------------------------------------------------------------
+    // MAGNETOMETER
+    // ------------------------------------------------------------
+
+    drawGraph(
+
+        "magnetGraph",
+
+        [
+
+            {
+                data:
+                    graphData.magX,
+
+                label:
+                    "Mag X",
+
+                color:
+                    C.red
+
+            },
+
+            {
+                data:
+                    graphData.magY,
+
+                label:
+                    "Mag Y",
+
+                color:
+                    C.blue
+
+            },
+
+            {
+                data:
+                    graphData.magZ,
+
+                label:
+                    "Mag Z",
+
+                color:
+                    C.teal
+
+            }
+
+        ],
+
+        "Gauss"
+
+    );
+
+
+    // ------------------------------------------------------------
+    // ADS1115
+    // ------------------------------------------------------------
+
+    drawGraph(
+
+        "adsGraph",
+
+        [
+
+            {
+                data:
+                    graphData.ch0,
+
+                label:
+                    "CH0",
+
+                color:
+                    C.red
+
+            },
+
+            {
+                data:
+                    graphData.ch1,
+
+                label:
+                    "CH1",
+
+                color:
+                    C.blue
+
+            },
+
+            {
+                data:
+                    graphData.ch2,
+
+                label:
+                    "CH2",
+
+                color:
+                    C.teal
+
+            },
+
+            {
+                data:
+                    graphData.ch3,
+
+                label:
+                    "CH3",
+
+                color:
+                    C.orange
+
+            }
+
+        ],
+
+        "Volts"
+
+    );
+
+}
+
+
+// ================================================================
+// WINDOW RESIZE
+// ================================================================
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        drawAllGraphs();
+
+    }
+);
+
+
+// ================================================================
+// HOW MANY SAMPLES THE GRAPHS SHOW
+// The box at the bottom of the page sets this while the dashboard
+// is running. 0 means keep every sample; any other number keeps
+// only that many most recent ones.
+// ================================================================
+
+function graphedCount() {
+
+    let most = 0;
+
+
+    Object.keys(graphData).forEach(
+        function(key) {
+
+            if (
+                graphData[key].length > most
+            ) {
+
+                most =
+                    graphData[key].length;
+
+            }
+
+        }
+    );
+
+
+    return most;
+
+}
+
+
+function updateCounter() {
+
+    const pill =
+        document.getElementById(
+            "samplepill"
+        );
+
+
+    if (!pill) {
+
+        return;
+
+    }
+
+
+    const shown =
+        graphedCount();
+
+
+    if (
+        graphWindow > 0 &&
+        sampleCount > shown
+    ) {
+
+        pill.innerHTML =
+            "showing the last <b>" +
+            shown +
+            "</b> of <b>" +
+            sampleCount +
+            "</b> samples";
+
+    }
+    else {
+
+        pill.innerHTML =
+            "<b>" +
+            sampleCount +
+            "</b> samples graphed so far";
+
+    }
+
+}
+
+
+function applyWindow(value) {
+
+    // Anything that is not a positive number counts as "keep
+    // everything", which is what an empty box or a 0 means.
+
+    graphWindow =
+        Number.isFinite(value) && value > 0
+            ? Math.floor(value)
+            : 0;
+
+
+    if (
+        graphWindow > 0
+    ) {
+
+        Object.keys(graphData).forEach(
+            function(key) {
+
+                const array =
+                    graphData[key];
+
+
+                if (
+                    array.length > graphWindow
+                ) {
+
+                    array.splice(
+                        0,
+                        array.length - graphWindow
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    updateCounter();
+
+
+    drawAllGraphs();
+
+}
+
+
+const windowInput =
+    document.getElementById(
+        "windowinput"
+    );
+
+
+if (windowInput) {
+
+    windowInput.value =
+        MAX_GRAPH_POINTS;
+
+
+    windowInput.addEventListener(
+        "input",
+        function() {
+
+            applyWindow(
+                Number(windowInput.value)
+            );
+
+        }
+    );
+
+}
+
+
+// ================================================================
+// INITIAL LOAD
+// ================================================================
+
+loadData();
+
+
+// ================================================================
+// AUTOMATIC REFRESH
+// ================================================================
+
+setInterval(
+    loadData,
+    REFRESH_INTERVAL
+);
+
+</script>
+
+
+</body>
+
+</html>

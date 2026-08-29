@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 9 &mdash; Soil Moisture | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 9: analogue signals, the ADC, reading a soil moisture probe on GP26, and calibrating it yourself.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+  <linearGradient id="wkled" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ff9a9a"/><stop offset=".35" stop-color="#ef4040"/><stop offset="1" stop-color="#b81c1c"/>
+  </linearGradient>
+  <linearGradient id="wkledg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9df0a4"/><stop offset=".35" stop-color="#33bb45"/><stop offset="1" stop-color="#177a25"/>
+  </linearGradient>
+  <linearGradient id="wkres" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#eadfc6"/><stop offset=".5" stop-color="#d5c09c"/><stop offset="1" stop-color="#bda87f"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html" aria-current="page">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 9</p>
+    <h1>Soil Moisture</h1>
+    <p class="sub">Activity 8&rsquo;s sensor answered <em>how much</em> &mdash; but it came down a bus,
+    with a library in between doing the hard part. Today there is no bus and no library. There is a
+    <strong>voltage on a wire</strong>, and a pin that can read it.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 60 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 8</span>
+      <span class="pill">&#127807; Needs soil and water</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#analog">Digital and analogue</a>
+      <a href="#adc">How the ADC works</a>
+      <a href="#probe">Why wet means small</a>
+      <a href="#zones">Three zones, and elif</a>
+      <a href="#percent">Making a percentage</a>
+      <a href="#try">Try it</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the program</a>
+      <a href="#run">Run it</a>
+      <a href="#calibrate">Calibrate it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Find out <strong>whether a plant needs watering</strong> without putting a finger in
+  the soil &mdash; and have the board say so in a word a person can act on.</p>
+  <p>Two prongs go into the soil. A number comes back. That number means nothing on its own, so the
+  program turns it into a percentage, and then into one of three words: <strong>DRY</strong>,
+  <strong>JUST RIGHT</strong> or <strong>WET</strong>.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The shape of today's program. Two prongs sit in a cup of soil. The wire from them goes to GP26, a pin that can measure a voltage. That gives a whole number somewhere between nought and sixty-five thousand five hundred and thirty-five. The program turns that into a percentage from nought to a hundred, and then into one of three words: DRY, JUST RIGHT or WET.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">From two prongs in a cup of soil to one word you can act on</text>
+
+  <rect x="14" y="60" width="122" height="82" rx="10" class="pinbox"/>
+  <text x="75" y="92" class="dlbl" text-anchor="middle">the probe</text>
+  <text x="75" y="114" class="dsub" text-anchor="middle">two prongs</text>
+  <text x="75" y="132" class="dsub" text-anchor="middle">in the soil</text>
+
+  <path d="M136 101 L168 101" class="arrow2"/>
+
+  <rect x="174" y="60" width="122" height="82" rx="10" class="step"/>
+  <text x="235" y="92" class="dlbl" text-anchor="middle">GP26</text>
+  <text x="235" y="114" class="dsub" text-anchor="middle">a pin that can</text>
+  <text x="235" y="132" class="dsub" text-anchor="middle">measure</text>
+
+  <path d="M296 101 L328 101" class="arrow2"/>
+
+  <rect x="334" y="60" width="122" height="82" rx="10" class="namebox"/>
+  <text x="395" y="88" class="dlbl" text-anchor="middle">a whole number</text>
+  <text x="395" y="112" class="dmono" text-anchor="middle">0 &ndash; 65535</text>
+  <text x="395" y="132" class="dsub" text-anchor="middle">big means dry</text>
+
+  <path d="M456 101 L488 101" class="arrow2"/>
+
+  <rect x="494" y="60" width="122" height="82" rx="10" class="namebox"/>
+  <text x="555" y="88" class="dlbl" text-anchor="middle">a percentage</text>
+  <text x="555" y="112" class="dmono" text-anchor="middle">0 &ndash; 100</text>
+  <text x="555" y="132" class="dsub" text-anchor="middle">your two numbers</text>
+
+  <path d="M616 101 L648 101" class="arrow2"/>
+
+  <rect x="654" y="60" width="112" height="82" rx="10" class="step"/>
+  <text x="710" y="88" class="dlbl" text-anchor="middle">a word</text>
+  <text x="710" y="112" class="dsub" text-anchor="middle">one of three,</text>
+  <text x="710" y="132" class="dsub" text-anchor="middle">never two</text>
+
+  <path d="M710 142 L710 176 L390 176 L390 198" class="arrow"/>
+
+  <rect x="248" y="198" width="284" height="72" rx="8" class="pane"/>
+  <text x="390" y="230" class="dmono" text-anchor="middle">JUST RIGHT</text>
+  <text x="390" y="254" class="dsub" text-anchor="middle">once a second, for as long as it runs</text>
+
+  <text x="75" y="176" class="dsub" text-anchor="middle">the real world</text>
+  <text x="710" y="196" class="dsub" text-anchor="middle">something useful</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>Analogue, and the ADC</h4><p>A pin that answers with a position on a scale
+    rather than a yes or a no &mdash; and the part inside the Pico that makes that possible.</p></div>
+    <div class="mini"><h4>Three roads, not two</h4><p>Every decision so far had two ways out. Dry, just
+    right and wet is three, and there is a word for that.</p></div>
+    <div class="mini"><h4>Whole-number division</h4><p>A percentage does not want a tail of digits after
+    the point. Two slashes instead of one, and the tail never appears.</p></div>
+    <div class="mini"><h4>Calibrating &mdash; the real one</h4><p>No worksheet can tell you what your
+    probe reads in your soil. You have to go and find out, and then the numbers are yours.</p></div>
+  </div>
+  <div class="cal note"><b>What you are reusing today, and will not be taught again</b>
+  The forever-loop and <code>sleep</code> from <a href="activity-2.html">Activity 2</a>,
+  <code>print()</code> from <a href="activity-4.html">Activity 4</a>, <code>if</code> and
+  <code>else</code> from <a href="activity-5.html">Activity 5</a>, and <code>&gt;</code> together with
+  the whole idea of a <strong>threshold</strong> from
+  <a href="activity-8.html#numbers">Activity 8</a>. If any of those feels shaky, that page is the fix
+  &mdash; not this one.</div>
+</section>
+
+<section id="analog">
+  <h2>&#128200; Digital and analogue &mdash; the one new idea</h2>
+  <p class="lede">Every pin you have used so far has been <strong>digital</strong>. It had two states and
+  only two: on or off, 3.3&nbsp;volts or 0&nbsp;volts, 1 or 0. There was nothing in between because
+  there was <em>allowed</em> to be nothing in between.</p>
+  <p>A button is honestly like that. It really is either pressed or not pressed. Soil is not. Soil is
+  damp, or fairly damp, or nearly dry, or bone dry, and every shade between &mdash; and a pin that can
+  only say <em>yes</em> or <em>no</em> has nothing useful to say about it.</p>
+
+<svg class="dia wide" viewBox="0 0 780 350" role="img" aria-label="Two graphs of the voltage on a wire as time passes. On the left, a digital signal: it sits flat at nought volts, jumps straight up to three point three volts, stays flat, and drops straight back down. It is never anywhere in between. On the right, an analogue signal: a single smooth line that wanders up and down and sits at every height between nought and three point three volts.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same wire, two kinds of answer</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">Up the page is the voltage on the wire. Along the page is time passing.</text>
+
+  <text x="205" y="82" class="dlbl" text-anchor="middle">Digital &mdash; a button</text>
+  <path d="M60 96 L60 268" class="axis"/>
+  <path d="M56 268 L365 268" class="axis"/>
+  <path d="M60 106 L365 106" class="grid"/>
+  <text x="52" y="110" class="dsub" text-anchor="end">3.3 V</text>
+  <text x="52" y="272" class="dsub" text-anchor="end">0 V</text>
+  <path d="M60 268 L112 268 L112 106 L176 106 L176 268 L228 268 L228 106 L300 106 L300 268 L365 268" class="trace ink"/>
+  <text x="205" y="296" class="dsub" text-anchor="middle">Right at the top, or right at the bottom.</text>
+  <text x="205" y="318" class="dsub" text-anchor="middle">Never once in between &mdash; and that is the whole</text>
+  <text x="205" y="336" class="dsub" text-anchor="middle">point of a button.</text>
+
+  <text x="590" y="82" class="dlbl" text-anchor="middle">Analogue &mdash; soil</text>
+  <path d="M445 96 L445 268" class="axis"/>
+  <path d="M441 268 L750 268" class="axis"/>
+  <path d="M445 106 L750 106" class="grid"/>
+  <text x="437" y="110" class="dsub" text-anchor="end">3.3 V</text>
+  <text x="437" y="272" class="dsub" text-anchor="end">0 V</text>
+  <path d="M445 230 Q 478 142 511 172 Q 544 202 577 160 Q 610 120 643 166 Q 676 216 709 188 Q 730 170 750 180" class="trace"/>
+  <text x="590" y="296" class="dsub" text-anchor="middle">Anywhere at all between the two, and it</text>
+  <text x="590" y="318" class="dsub" text-anchor="middle">slides from one height to the next rather</text>
+  <text x="590" y="336" class="dsub" text-anchor="middle">than jumping.</text>
+</svg>
+
+  <p><strong>Analogue</strong> is the word for the right-hand picture: an answer that can be anywhere on
+  a scale. Sound is analogue. Temperature is analogue. How much water is in a cup of soil is analogue.
+  Almost everything real is, and the two-state world of a button is the unusual one.</p>
+
+  <div class="cal tip"><b>Neither one is better</b>
+  A button is digital because a button really only has two states, and pretending otherwise would be
+  silly. Soil is analogue because it really does have every shade in between, and flattening that to
+  yes-or-no throws the answer away. The kind of signal follows the thing being measured, not the
+  other way round.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a1"><span>I can say in one sentence what makes a signal analogue rather than digital</span></label>
+</section>
+
+<section id="adc">
+  <h2>&#128290; How the ADC works</h2>
+  <p class="lede">Here is the awkward part. A computer cannot hold a voltage. It holds
+  <strong>numbers</strong> &mdash; that is all it has ever been able to do. So somewhere between the
+  wire and your program, the voltage has to <em>become</em> a number.</p>
+  <p>The part that does it is called an <strong>ADC</strong>, which is short for <em>Analogue to Digital
+  Converter</em>. There are three of them inside the Pico, and they are wired to three particular pins.
+  It takes the voltage on the pin and gives back a whole number: <strong>0&nbsp;V becomes 0</strong>,
+  <strong>3.3&nbsp;V becomes 65535</strong>, and everything in between lands in between, in proportion.</p>
+
+<svg class="dia wide" viewBox="0 0 780 400" role="img" aria-label="A graph showing what the ADC does. Along the bottom is the voltage on the pin, from nought to three point three volts. Up the side is the number the program gets back, from nought to sixty-five thousand five hundred and thirty-five. A single straight line runs from the bottom-left corner to the top-right corner. Three points are marked on it: nought volts gives nought, one point six five volts gives thirty-two thousand seven hundred and sixty-eight, and three point three volts gives sixty-five thousand five hundred and thirty-five.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">A voltage goes in. A whole number comes out.</text>
+
+  <path d="M150 60 L150 320" class="axis"/>
+  <path d="M146 320 L700 320" class="axis"/>
+
+  <path d="M150 190 L700 190" class="grid"/>
+  <path d="M425 60 L425 320" class="grid"/>
+
+  <path d="M150 320 L700 60" class="trace"/>
+
+  <circle cx="150" cy="320" r="7" class="chip"/>
+  <circle cx="425" cy="190" r="7" class="chip"/>
+  <circle cx="700" cy="60" r="7" class="chip"/>
+
+  <text x="140" y="324" class="dmono" text-anchor="end">0</text>
+  <text x="140" y="194" class="dmono" text-anchor="end">32768</text>
+  <text x="140" y="64" class="dmono" text-anchor="end">65535</text>
+
+  <text x="150" y="346" class="dsub" text-anchor="middle">0 V</text>
+  <text x="425" y="346" class="dsub" text-anchor="middle">1.65 V</text>
+  <text x="700" y="346" class="dsub" text-anchor="middle">3.3 V</text>
+
+  <text x="66" y="180" class="dlbl" text-anchor="middle" transform="rotate(-90 66 180)">the number you get</text>
+  <text x="425" y="372" class="dsub" text-anchor="middle">the voltage on the pin</text>
+
+  <text x="592" y="262" class="dsub" text-anchor="middle">The line is straight all the way, so twice</text>
+  <text x="592" y="284" class="dsub" text-anchor="middle">the voltage really does mean twice the number.</text>
+</svg>
+
+  <p>65535 looks like an odd place to stop, and it is: it is the largest number that fits in sixteen
+  binary digits. You do not need to know why to use it. What matters is that
+  <strong>the scale never changes</strong>. The bottom is always 0 and the top is always 65535, whatever
+  is plugged in.</p>
+
+  <h3>One look, and then the pin carries on moving</h3>
+  <p>The voltage on the pin does not wait for you. It drifts about the whole time the program is
+  running. Asking the ADC for a number takes <em>one look</em>, right now, and hands you what it saw at
+  that instant. Take another look a second later and it will be a slightly different number, because
+  the world moved.</p>
+
+<svg class="dia wide" viewBox="0 0 780 360" role="img" aria-label="A smoothly falling curve showing the voltage on the pin dropping as soil is watered. Six dots are marked along the curve at equal intervals of time, and under each dot is the number the program got at that instant: fifty-five thousand six hundred and ninety-three, then forty-eight thousand two hundred and ten, then thirty-nine thousand and four, then thirty thousand one hundred and seventeen, then twenty-six thousand eight hundred and eighty-two, then twenty-four thousand four hundred and fifty-five.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What happens to the number while you pour the water in</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">One dot is one trip round the loop. The wait between them is why they are spaced out.</text>
+
+  <path d="M96 70 L96 250" class="axis"/>
+  <path d="M92 250 L740 250" class="axis"/>
+  <text x="88" y="92" class="dsub" text-anchor="end">3.3 V</text>
+  <text x="88" y="254" class="dsub" text-anchor="end">0 V</text>
+
+  <path d="M96 100 C 200 104, 250 128, 330 154 S 470 196, 560 208 S 680 222, 740 226" class="trace"/>
+
+  <circle cx="112" cy="101" r="6" class="chip"/>
+  <circle cx="236" cy="122" r="6" class="chip"/>
+  <circle cx="360" cy="163" r="6" class="chip"/>
+  <circle cx="484" cy="196" r="6" class="chip"/>
+  <circle cx="608" cy="213" r="6" class="chip"/>
+  <circle cx="732" cy="226" r="6" class="chip"/>
+
+  <text x="112" y="286" class="dmono" text-anchor="middle">55693</text>
+  <text x="236" y="286" class="dmono" text-anchor="middle">48210</text>
+  <text x="360" y="286" class="dmono" text-anchor="middle">39004</text>
+  <text x="484" y="286" class="dmono" text-anchor="middle">30117</text>
+  <text x="608" y="286" class="dmono" text-anchor="middle">26882</text>
+  <text x="732" y="286" class="dmono" text-anchor="middle">24455</text>
+
+  <text x="390" y="322" class="dsub" text-anchor="middle">Each of these is a true reading. None of them is <tspan class="dlbl">the</tspan> reading &mdash; there is no such thing.</text>
+  <text x="390" y="344" class="dsub" text-anchor="middle">The number is a snapshot, and the next one will be different.</text>
+</svg>
+
+  <div class="cal warn"><b>Only three pins can do this, and only up to 3.3&nbsp;volts</b>
+  On the Pico they are <span class="gp">GP26</span>, <span class="gp">GP27</span> and
+  <span class="gp">GP28</span>. Asking any other pin to measure gives you
+  <code>Pin(x) doesn't have ADC capabilities</code>. And the probe must be powered from
+  <strong>3V3</strong>, never from a 5&nbsp;V pin &mdash; 5&nbsp;V on a GP pin damages it. This is the
+  same rule Activity 1 started with, and it is the one that costs money when it is broken.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a2"><span>I know what an ADC is for, and what the two ends of its scale are</span></label>
+  <label class="chk"><input type="checkbox" data-p="a3"><span>I know which three pins can measure a voltage, and which one we are using</span></label>
+</section>
+
+<section id="probe">
+  <h2>&#128167; Why more water gives a <em>smaller</em> number</h2>
+  <p class="lede">This is the one thing about today that everybody gets backwards, so here it is before
+  you meet it: <strong>a big number means dry</strong>. Water the plant and the number goes
+  <em>down</em>.</p>
+  <p>The probe is two metal prongs and nothing clever at all. It puts a voltage on one prong and looks
+  at what arrives at the other. Dry soil is a poor conductor, so hardly any current flows and almost the
+  whole voltage is still there &mdash; a high voltage, and therefore a big number. Wet soil is full of
+  water carrying dissolved salts, which conducts rather well, so the voltage is pulled down. Low
+  voltage, small number.</p>
+
+<svg class="dia wide" viewBox="0 0 780 400" role="img" aria-label="Two cups of soil compared. On the left a dry cup: the two prongs of the probe are in it, very little water is drawn between them, electricity finds it hard to cross, the voltage on the wire stays high at about three point one volts and the number is about sixty-three thousand. On the right a freshly watered cup: plenty of water is drawn between the prongs, electricity crosses easily, the voltage falls to about one point two volts and the number is about twenty-four thousand.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same probe, the same program, two cups of soil</text>
+
+  <rect x="30" y="52" width="340" height="316" rx="12" class="warnbox"/>
+  <text x="200" y="82" class="dlbl" text-anchor="middle">Dry soil</text>
+
+  <path d="M96 140 L304 140 L282 268 L118 268 Z" class="part"/>
+  <rect x="150" y="112" width="9" height="132" rx="3" class="pad"/>
+  <rect x="241" y="112" width="9" height="132" rx="3" class="pad"/>
+  <circle cx="182" cy="212" r="5" class="chip"/>
+  <circle cx="216" cy="240" r="5" class="chip"/>
+  <path d="M159 180 L182 180 M218 180 L241 180" class="lead"/>
+  <text x="200" y="185" class="dlbl" text-anchor="middle">no path</text>
+  <text x="200" y="296" class="dsub" text-anchor="middle">hardly any water between the prongs,</text>
+  <text x="200" y="314" class="dsub" text-anchor="middle">so hardly anything gets across</text>
+  <text x="200" y="342" class="dmono" text-anchor="middle">about 3.1 V &rarr; 63000</text>
+
+  <rect x="410" y="52" width="340" height="316" rx="12" class="namebox"/>
+  <text x="580" y="82" class="dlbl" text-anchor="middle">Just watered</text>
+
+  <path d="M476 140 L684 140 L662 268 L498 268 Z" class="part"/>
+  <rect x="530" y="112" width="9" height="132" rx="3" class="pad"/>
+  <rect x="621" y="112" width="9" height="132" rx="3" class="pad"/>
+  <circle cx="558" cy="176" r="5" class="chip"/>
+  <circle cx="580" cy="200" r="5" class="chip"/>
+  <circle cx="602" cy="180" r="5" class="chip"/>
+  <circle cx="566" cy="228" r="5" class="chip"/>
+  <circle cx="596" cy="234" r="5" class="chip"/>
+  <path d="M539 172 L621 172 M539 200 L621 200 M539 228 L621 228" class="lead"/>
+  <text x="580" y="296" class="dsub" text-anchor="middle">water everywhere, and it carries</text>
+  <text x="580" y="314" class="dsub" text-anchor="middle">electricity easily</text>
+  <text x="580" y="342" class="dmono" text-anchor="middle">about 1.2 V &rarr; 24000</text>
+
+  <text x="390" y="392" class="dsub" text-anchor="middle">More water &rarr; easier crossing &rarr; less voltage left on the wire &rarr; a smaller number. Backwards, and true.</text>
+</svg>
+
+  <div class="cal tip"><b>Say it out loud once and it stops catching you</b>
+  <strong>Big number, dry soil. Small number, wet soil.</strong> Everything else today follows from
+  that one sentence &mdash; including why the dry threshold is the <em>bigger</em> of your two numbers.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a4"><span>I can explain to somebody else why watering the plant makes the number go down</span></label>
+</section>
+
+<section id="zones">
+  <h2>&#128681; Three zones, and the word for them &mdash; the second new idea</h2>
+  <p class="lede">Every decision you have written has had <strong>two</strong> ways out. Pressed or not
+  pressed. Above the line or below it. <code>if</code> and <code>else</code>, and that was the whole
+  story.</p>
+  <p>Soil has three answers worth giving. Too dry, and the plant needs water. Too wet, and it is
+  drowning. In between, leave it alone &mdash; and <em>leave it alone</em> is genuinely different from
+  the other two, not a shade of either. Two roads will not carry three destinations.</p>
+
+  <h3>Where the three zones come from</h3>
+  <p>You pick <strong>two numbers</strong>, and the two numbers cut the whole range into three pieces.
+  That is all a zone is. The names <code>dry</code> and <code>wet</code> are just variables, exactly
+  like every variable since Activity 1.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="A number line running from nought on the left to sixty-five thousand five hundred and thirty-five on the right. Two cuts divide it into three coloured zones. Below twenty-five thousand is the wet zone. Between twenty-five thousand and fifty thousand is the just right zone. Above fifty thousand is the dry zone. The cuts are labelled wet equals twenty-five thousand and dry equals fifty thousand.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two numbers, three zones</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">Remember which way round it runs: wet is at the small end.</text>
+
+  <rect x="60" y="92" width="259" height="58" rx="6" class="namebox"/>
+  <rect x="319" y="92" width="260" height="58" rx="6" class="pinbox"/>
+  <rect x="579" y="92" width="161" height="58" rx="6" class="warnbox"/>
+
+  <text x="190" y="128" class="dlbl" text-anchor="middle">WET</text>
+  <text x="449" y="128" class="dlbl" text-anchor="middle">JUST RIGHT</text>
+  <text x="660" y="128" class="dlbl" text-anchor="middle">DRY</text>
+
+  <path d="M60 158 L60 176 M319 158 L319 186 M579 158 L579 186 M740 158 L740 176" class="axis"/>
+  <path d="M60 168 L740 168" class="axis"/>
+
+  <text x="60" y="204" class="dmono" text-anchor="middle">0</text>
+  <text x="319" y="206" class="dmono" text-anchor="middle">25000</text>
+  <text x="579" y="206" class="dmono" text-anchor="middle">50000</text>
+  <text x="740" y="204" class="dmono" text-anchor="middle">65535</text>
+
+  <text x="319" y="228" class="dsub" text-anchor="middle">your wet number</text>
+  <text x="579" y="228" class="dsub" text-anchor="middle">your dry number</text>
+  <text x="60" y="226" class="dsub" text-anchor="middle">soaking</text>
+  <text x="740" y="226" class="dsub" text-anchor="middle">bone dry</text>
+
+  <text x="390" y="266" class="dsub" text-anchor="middle">These two cuts are guesses until you have measured your own probe in your own soil.</text>
+  <text x="390" y="288" class="dsub" text-anchor="middle">You will move them later on this page, and that is the point of the whole activity.</text>
+</svg>
+
+  <h3>Two roads became three</h3>
+  <p>The new word is <code>elif</code> &mdash; a squashed-up spelling of <em>else if</em>. It goes
+  between the <code>if</code> and the <code>else</code>, and it means <strong>&ldquo;that first question
+  was a no; here is a second question&rdquo;</strong>.</p>
+  <p>The important part is not the spelling. It is that the questions are asked <strong>in order</strong>
+  and stop at the first <em>yes</em>. As soon as one of them is true, its lines run and the rest are not
+  even looked at. Exactly one of the three things happens, every single time round the loop &mdash;
+  never two, and never none.</p>
+
+<svg class="dia wide" viewBox="0 0 780 410" role="img" aria-label="A cascade of decisions. The first question is: is the reading above the dry number? If yes, say DRY and stop. If no, ask a second question: is it above the wet number? If yes, say JUST RIGHT and stop. If no, there are no more questions, and the answer is WET. Exactly one of the three outcomes happens each time.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The questions are asked in order, and it stops at the first yes</text>
+
+  <rect x="40" y="66" width="248" height="62" rx="10" class="step"/>
+  <text x="164" y="92" class="dsub" text-anchor="middle">Is the reading above</text>
+  <text x="164" y="112" class="dsub" text-anchor="middle">your dry number?</text>
+
+  <path d="M288 97 L392 97" class="arrow2"/>
+  <text x="336" y="88" class="dlbl" text-anchor="middle">yes</text>
+  <rect x="400" y="66" width="300" height="62" rx="10" class="warnbox"/>
+  <text x="550" y="104" class="dlbl" text-anchor="middle">say DRY, and stop asking</text>
+
+  <path d="M164 128 L164 162" class="arrow2"/>
+  <text x="182" y="152" class="dlbl">no</text>
+
+  <rect x="40" y="170" width="248" height="62" rx="10" class="step"/>
+  <text x="164" y="196" class="dsub" text-anchor="middle">Is it above</text>
+  <text x="164" y="216" class="dsub" text-anchor="middle">your wet number?</text>
+
+  <path d="M288 201 L392 201" class="arrow2"/>
+  <text x="336" y="192" class="dlbl" text-anchor="middle">yes</text>
+  <rect x="400" y="170" width="300" height="62" rx="10" class="pinbox"/>
+  <text x="550" y="208" class="dlbl" text-anchor="middle">say JUST RIGHT, and stop</text>
+
+  <path d="M164 232 L164 266" class="arrow2"/>
+  <text x="182" y="256" class="dlbl">no</text>
+
+  <rect x="40" y="274" width="248" height="62" rx="10" class="pane"/>
+  <text x="164" y="300" class="dsub" text-anchor="middle">no questions left,</text>
+  <text x="164" y="320" class="dsub" text-anchor="middle">so it must be the last one</text>
+
+  <path d="M288 305 L392 305" class="arrow2"/>
+  <rect x="400" y="274" width="300" height="62" rx="10" class="namebox"/>
+  <text x="550" y="312" class="dlbl" text-anchor="middle">say WET</text>
+
+  <text x="390" y="372" class="dsub" text-anchor="middle">Exactly one of the three boxes on the right happens each time round &mdash; never two, never none.</text>
+  <text x="390" y="394" class="dsub" text-anchor="middle">That is what makes this one decision rather than three separate ones.</text>
+</svg>
+
+  <div class="cal warn"><b>The order matters, and getting it wrong is silent</b>
+  The second question is only ever asked when the first said no, so it does not have to rule out the
+  first case again. If the two questions are swapped round, the program still runs perfectly and every
+  dry reading is reported as <em>just right</em> &mdash; because <em>above the wet number</em> is true
+  for dry soil as well. No error, wrong answer. Keep the biggest number first.</div>
+
+  <div class="cal note"><b>Still one decision, still one indent</b>
+  <code>if</code>, <code>elif</code> and <code>else</code> all line up at the same left edge, because
+  they are three parts of one decision. What each of them does is indented under it, the way it has been
+  since Activity 5.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a5"><span>I can say what elif means, and why only one branch ever runs</span></label>
+</section>
+
+<section id="percent">
+  <h2>&#128203; Turning the raw number into a percentage</h2>
+  <p class="lede">55693 is a true answer. It is not a useful one. Nobody has ever watered a plant
+  because the number was 55693.</p>
+  <p>A percentage is useful because everybody already knows what it means. The sum that gets you there
+  has four parts, and none of them is difficult on its own.</p>
+
+<svg class="dia wide" viewBox="0 0 780 420" role="img" aria-label="The percentage sum drawn on a number line. The line runs from nought to sixty-five thousand five hundred and thirty-five, with the wet number at twenty-five thousand and the dry number at fifty thousand. A reading of thirty-four thousand one hundred and twenty-three is marked between them. One bracket measures from the reading up to the dry number, a distance of fifteen thousand eight hundred and seventy-seven. A second, longer bracket measures the whole distance between the wet and dry numbers, twenty-five thousand. The first as a share of the second, in hundredths, is sixty-three.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">How far along are you, between your own two numbers?</text>
+
+  <text x="414" y="60" class="dsub" text-anchor="middle">this reading</text>
+  <text x="414" y="84" class="dmono" text-anchor="middle">34123</text>
+  <path d="M414 92 L414 100" class="axis"/>
+
+  <rect x="60" y="100" width="259" height="42" rx="6" class="namebox"/>
+  <rect x="319" y="100" width="260" height="42" rx="6" class="pinbox"/>
+  <rect x="579" y="100" width="161" height="42" rx="6" class="warnbox"/>
+  <circle cx="414" cy="121" r="8" class="chip"/>
+
+  <path d="M60 158 L740 158" class="axis"/>
+  <path d="M319 148 L319 176 M579 148 L579 176" class="axis"/>
+  <text x="319" y="200" class="dmono" text-anchor="middle">25000</text>
+  <text x="579" y="200" class="dmono" text-anchor="middle">50000</text>
+  <text x="319" y="220" class="dsub" text-anchor="middle">wet</text>
+  <text x="579" y="220" class="dsub" text-anchor="middle">dry</text>
+
+  <path d="M414 240 L414 256 L579 256 L579 240" class="lead"/>
+  <text x="496" y="282" class="dlbl" text-anchor="middle">15877</text>
+  <text x="496" y="302" class="dsub" text-anchor="middle">how far below dry you are</text>
+
+  <path d="M319 324 L319 340 L579 340 L579 324" class="lead"/>
+  <text x="449" y="366" class="dlbl" text-anchor="middle">25000</text>
+  <text x="449" y="386" class="dsub" text-anchor="middle">the whole distance between your two numbers</text>
+
+  <rect x="596" y="238" width="168" height="132" rx="10" class="step"/>
+  <text x="680" y="292" class="dnumbig" text-anchor="middle">63</text>
+  <text x="680" y="320" class="dsub" text-anchor="middle">the first as a</text>
+  <text x="680" y="338" class="dsub" text-anchor="middle">share of the second,</text>
+  <text x="680" y="356" class="dsub" text-anchor="middle">in hundredths</text>
+
+  <text x="390" y="410" class="dsub" text-anchor="middle">Bone-dry soil shrinks the short bracket to nothing, so the answer is 0. Soaked soil fills the long one, so it is 100.</text>
+</svg>
+
+  <h3>Why two slashes and not one</h3>
+  <p>One slash is ordinary division and it hands back the whole truth, tail and all. Two slashes throw
+  the tail away and give a <strong>whole number</strong>. A percentage has no use for the tail, so two
+  slashes it is.</p>
+
+<svg class="dia" viewBox="0 0 720 280" role="img" aria-label="One slash compared with two. One slash gives sixty-three point five nought eight, a number with a tail after the point. Two slashes give sixty-three, a whole number, which is all a percentage needs.">
+  <text x="360" y="28" class="dttl" text-anchor="middle">The same sum, divided two ways</text>
+
+  <rect x="24" y="52" width="316" height="196" rx="12" class="pane"/>
+  <text x="182" y="112" class="dnumbig" text-anchor="middle">/</text>
+  <text x="182" y="166" class="dnum" text-anchor="middle">63.508</text>
+  <text x="182" y="200" class="dsub" text-anchor="middle">a tail of digits nobody</text>
+  <text x="182" y="220" class="dsub" text-anchor="middle">asked for</text>
+
+  <rect x="380" y="52" width="316" height="196" rx="12" class="step"/>
+  <text x="538" y="112" class="dnumbig" text-anchor="middle">//</text>
+  <text x="538" y="166" class="dnum keep" text-anchor="middle">63</text>
+  <text x="538" y="200" class="dsub" text-anchor="middle">a whole number, which is</text>
+  <text x="538" y="220" class="dsub" text-anchor="middle">all a percentage needs</text>
+</svg>
+
+  <p>Type both into the Shell and watch, if you like &mdash; it is the fastest way to believe it:</p>
+
+  <span class="codeimg" data-code="Pj4+IDE1ODc3ICogMTAwIC8gMjUwMDAKNjMuNTA4Cj4+PiAxNTg3NyAqIDEwMCAvLyAyNTAwMAo2Mw==" role="img" aria-label="Two lines typed into the Shell and their answers, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal tip"><b>And what about readings outside your two numbers?</b>
+  Soil drier than your dry number gives a negative percentage. Soil wetter than your wet number goes
+  past 100. Both are honest answers to the sum and both look broken on a screen, so the program has two
+  short lines that pull them back to 0 and 100. Let somebody in the class hit 138&nbsp;% before you fix
+  it &mdash; it is much more memorable that way round.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a6"><span>I know what the two slashes do that one slash does not</span></label>
+</section>
+
+<section id="try">
+  <h2>&#128300; Try it before you write it</h2>
+  <p>Everything above, in one place. Move the water and watch the raw number, the percentage and the
+  word all change together. Then move the two thresholds and watch the <em>same</em> reading get
+  called something different &mdash; which is exactly what calibrating is.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div style="text-align:center">
+        <div class="readout num" id="soilraw">55693</div>
+        <span class="readlbl">what the pin hands back</span>
+      </div>
+      <div style="text-align:center">
+        <div class="readout num short" id="soilpc">0</div>
+        <span class="readlbl">as a percentage</span>
+      </div>
+      <div style="text-align:center">
+        <div class="readout num short" id="soilsay">DRY</div>
+        <span class="readlbl">what the program says</span>
+      </div>
+    </div>
+    <div class="sim-ctl">
+      <label>Water in the soil<input type="range" id="soilwater" min="0" max="100" step="1" value="15" aria-label="Water in the soil"></label>
+      <label>dry<input type="number" id="soildry" min="0" max="65535" step="500" value="50000" aria-label="the dry number"></label>
+      <label>wet<input type="number" id="soilwet" min="0" max="65535" step="500" value="25000" aria-label="the wet number"></label>
+      <button class="btn" id="soilrun" type="button">&#128204; Call this DRY</button>
+      <button class="btn" id="soilwetbtn" type="button">&#128204; Call this WET</button>
+      <button class="btn ghost" id="soilback" type="button">&#8634; Back to 50000 and 25000</button>
+    </div>
+    <div class="sim-out tall" id="soilout">Drag the water first. Watch which way the raw number moves &mdash; it is not the way you expect.</div>
+  </div>
+
+  <div class="cal tip"><b>Four things worth doing on purpose</b>
+  Drag the water to <strong>0</strong> and read the raw number: that is what your probe would say held
+  in the air. Drag it to <strong>100</strong>: that is soaked. Now leave the water alone and drag the
+  two thresholds instead &mdash; the soil has not changed at all and the verdict has. Finally, set
+  <strong>dry</strong> below <strong>wet</strong> and see what a program does when its two numbers are
+  the wrong way round.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I found the raw number for bone-dry and for soaked</span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I changed the verdict without changing the soil, just by moving a threshold</span></label>
+  <label class="chk"><input type="checkbox" data-p="t3"><span>I put the two numbers the wrong way round on purpose and saw what happened</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; Build the circuit</h2>
+  <p class="lede">Three wires, and for once the real board has as many as the simulator &mdash; this is
+  the first part in the module that is <em>not</em> already soldered onto the LilEx5.</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <p>Wokwi has no soil sensor of its own, so the STEM Lab wrote one. It lives in a starter project
+    with the three wires already drawn, and it comes with a slider that makes the soil wetter or drier
+    while the program is running.</p>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Open the starter project</h4>
+      <p><a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a>
+      &mdash; a Pico, the soil sensor, and three wires. The program file is empty on purpose: that part
+      is yours.</p>
+      <label class="chk"><input type="checkbox" data-p="c1"><span>The project is open and I can see the Pico and the green sensor block</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Check the three wires against this picture</h4>
+      <p>Nothing to draw &mdash; just make sure what is on your screen matches what is here, because if
+      a wire has been dragged loose the program will look broken for no reason you can see.</p>
+
+<svg class="dia wide" viewBox="0 0 780 690" role="img" aria-label="The Wokwi circuit, drawn the way Wokwi draws it. The green soil-moisture block sits on the left with three pads: VCC at its top-left, GND at its bottom-left and AOUT at its bottom-right. A gold wire runs from AOUT round underneath everything to physical pin 31 on the Pico, which is GP26. A red wire runs from VCC the long way round to physical pin 36, the three point three volt supply. A black wire runs from GND to physical pin 33, a ground. Nothing crosses anything.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three wires, and all three go to the right-hand side of the Pico</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+
+<g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="400" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 400)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+  <circle cx="735" cy="214" r="10.5" class="wk-ring"/>
+  <circle cx="735" cy="274" r="10.5" class="wk-ring"/>
+  <circle cx="735" cy="314" r="10.5" class="wk-ring"/>
+
+  <g class="wk-bme">
+    <rect x="60" y="180" width="232" height="112" rx="7" class="wk-bme-pcb"/>
+    <text x="176" y="222" class="wk-bme-ttl" text-anchor="middle">soil-moisture</text>
+    <text x="176" y="248" class="wk-bme-sub" text-anchor="middle">Breakout</text>
+    <circle cx="60" cy="200" r="6" class="wk-bme-pad"/>
+    <circle cx="60" cy="272" r="6" class="wk-bme-pad"/>
+    <circle cx="292" cy="272" r="6" class="wk-bme-pad"/>
+    <text x="74" y="204" class="wk-oled-lbl">VCC</text>
+    <text x="74" y="276" class="wk-oled-lbl">GND</text>
+    <text x="278" y="276" class="wk-oled-lbl" text-anchor="end">AOUT</text>
+  </g>
+  <text x="176" y="320" class="dlbl" text-anchor="middle">the soil sensor</text>
+  <text x="176" y="342" class="dsub" text-anchor="middle">three pads, and you use all three</text>
+
+  <path d="M54 200 L14 200 L14 62 L776 62 L776 214 L755 214" class="wkwire red"/>
+  <path d="M54 272 L26 272 L26 634 L768 634 L768 274 L755 274" class="wkwire black"/>
+  <path d="M298 272 L330 272 L330 586 L760 586 L760 314 L755 314" class="wkwire gold"/>
+
+  <rect x="60" y="378" width="240" height="152" rx="10" class="pane"/>
+  <path d="M76 408 L102 408" class="wkwire gold"/>
+  <text x="112" y="413" class="dsub">AOUT &rarr; GP26 &middot; pin 31</text>
+  <path d="M76 448 L102 448" class="wkwire red"/>
+  <text x="112" y="453" class="dsub">VCC &rarr; 3V3 &middot; pin 36</text>
+  <path d="M76 488 L102 488" class="wkwire black"/>
+  <text x="112" y="493" class="dsub">GND &rarr; pin 33</text>
+
+  <text x="180" y="566" class="dsub" text-anchor="middle">The gold one is the reading.</text>
+  <text x="180" y="588" class="dsub" text-anchor="middle">The other two are only power.</text>
+  <text x="390" y="662" class="dsub" text-anchor="middle">All three wrap round, because GP26, 3V3 and a ground are all on the far side of the Pico.</text>
+  <text x="390" y="684" class="dsub" text-anchor="middle">The red one goes over the top and the other two underneath, so that nothing crosses anything.</text>
+</svg>
+
+      <div class="tablescroll"><table>
+        <thead><tr><th>Physical pin</th><th>Name on the board</th><th>Sensor pad</th></tr></thead>
+        <tbody>
+          <tr><td><strong>31</strong></td><td><span class="gp">GP26</span></td><td><strong>AOUT</strong> &mdash; the reading comes down this one</td></tr>
+          <tr><td><strong>36</strong></td><td>3V3</td><td><strong>VCC</strong> &mdash; power in</td></tr>
+          <tr><td><strong>33</strong></td><td>GND</td><td><strong>GND</strong> &mdash; the return path</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="cal warn"><b>VCC goes to 3V3, not to VBUS</b>
+      Physical pins <strong>39</strong> and <strong>40</strong> look like power and are 5&nbsp;V. Putting
+      the sensor on either of them pushes more than 3.3&nbsp;V into GP26, which damages the pin. Physical
+      pin <strong>36</strong> is the one.</div>
+
+      <label class="chk"><input type="checkbox" data-p="c2"><span>AOUT is on GP26, VCC is on 3V3, and GND is on a ground</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Find the slider, because you will not find it by accident</h4>
+      <p><strong>Press play first</strong>, then <strong>click the green sensor block</strong> while the
+      simulation is running. A panel opens with one slider on it,
+      <em>Water in the soil&nbsp;(%)</em>. Drag it and your program sees the number change, exactly as if
+      somebody had watered the plant.</p>
+      <div class="cal tip"><b>Without the slider the number never moves</b>
+      Which looks precisely like a broken program and is not one. It starts at 15&nbsp;%, which is dryish.</div>
+      <label class="chk"><input type="checkbox" data-p="c3"><span>I pressed play, clicked the sensor, and found the water slider</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <p><strong>Something to wire, at last.</strong> The soil probe is not on the LilEx5 &mdash; it is a
+    separate part on the end of a lead, and it plugs into the 40-pin black header along the top edge of
+    the board.</p>
+
+    <h4>What you need on the desk</h4>
+    <ul>
+      <li>The LilEx5, a USB cable, and Thonny</li>
+      <li>One soil moisture probe with its little board on the lead</li>
+      <li>Three female-to-female jumper wires</li>
+      <li>A cup of soil, and some water in something you can pour a little at a time</li>
+      <li>Paper and a pen &mdash; you are going to write two numbers down later and they matter</li>
+    </ul>
+
+    <h3>One pad, three names</h3>
+    <p>Here is the thing that catches everybody, every single time. The pad you are wiring to has
+    <strong>three different numbers attached to it</strong>, and all three are correct. They belong to
+    three different things, so never say two of them in the same breath.</p>
+
+<svg class="dia wide" viewBox="0 0 780 400" role="img" aria-label="One pad on the header, with three labels pointing at it. The first label is GPIO24, which is what is printed on the LilEx5 beside the pad. The second is pin 18, which is where the pad sits when you count along the header. The third is GP26, which is what the Raspberry Pi Pico chip inside calls it, and the only one of the three that goes in your program.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same hole. Three numbers. All three correct.</text>
+
+  <rect x="330" y="130" width="120" height="80" rx="10" class="step"/>
+  <circle cx="390" cy="170" r="20" class="wk-bme-pad"/>
+  <circle cx="390" cy="170" r="9" class="chip"/>
+  <text x="390" y="236" class="dlbl" text-anchor="middle">one hole on the header</text>
+
+  <rect x="30" y="56" width="230" height="86" rx="10" class="warnbox"/>
+  <text x="145" y="86" class="dmono" text-anchor="middle">GPIO24</text>
+  <text x="145" y="110" class="dsub" text-anchor="middle">printed on the LilEx5,</text>
+  <text x="145" y="128" class="dsub" text-anchor="middle">right beside the hole</text>
+  <path d="M260 112 L326 150" class="arrow2"/>
+
+  <rect x="30" y="200" width="230" height="86" rx="10" class="namebox"/>
+  <text x="145" y="230" class="dmono" text-anchor="middle">pin 18</text>
+  <text x="145" y="254" class="dsub" text-anchor="middle">where it sits when you</text>
+  <text x="145" y="272" class="dsub" text-anchor="middle">count along the header</text>
+  <path d="M260 240 L326 196" class="arrow2"/>
+
+  <rect x="520" y="130" width="230" height="80" rx="10" class="pinbox"/>
+  <text x="635" y="160" class="dmono" text-anchor="middle">GP26</text>
+  <text x="635" y="184" class="dsub" text-anchor="middle">what the Pico chip inside</text>
+  <text x="635" y="202" class="dsub" text-anchor="middle">calls it</text>
+  <path d="M450 170 L514 170" class="arrow2"/>
+  <text x="635" y="236" class="dlbl" text-anchor="middle">&#9989; this is the one you type</text>
+
+  <text x="390" y="316" class="dsub" text-anchor="middle">GPIO24 is the LilEx5&rsquo;s own label, printed on the board itself.</text>
+  <text x="390" y="342" class="dsub" text-anchor="middle">Pin 18 is a position, not a name &mdash; it is only true for this board&rsquo;s header.</text>
+  <text x="390" y="368" class="dsub" text-anchor="middle">GP26 belongs to the Raspberry&nbsp;Pi Pico, and it is the only one your program has ever heard of.</text>
+</svg>
+
+    <div class="tablescroll"><table>
+      <thead><tr><th>The wire</th><th>Printed on the LilEx5</th><th>Where the hole is</th><th>What goes in your code</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AOUT</strong> &mdash; the reading</td><td><strong>GPIO24</strong></td><td>pin <strong>18</strong>, top row</td><td><span class="gp">GP26</span></td></tr>
+        <tr><td><strong>VCC</strong> &mdash; power</td><td><strong>3V3</strong></td><td>pin <strong>1</strong>, bottom row, far left</td><td>&mdash;</td></tr>
+        <tr><td><strong>GND</strong> &mdash; ground</td><td><strong>GND</strong></td><td>pin <strong>20</strong>, top row, next door to 18</td><td>&mdash;</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="cal tip"><b>Finding the holes without counting to eighteen twice</b>
+    Odd pins run along the <strong>bottom</strong> row, nearest the LEDs and the screen; even pins along
+    the <strong>top</strong> row, nearest the edge of the board. Pin&nbsp;1 is the left-hand end of the
+    bottom row, and it is 3V3. Pins&nbsp;18 and&nbsp;20 are next to each other on the top row. The
+    <a href="pinout.html">pin reference</a> will light up any pin you tap, which is faster and safer than
+    counting.</div>
+
+    <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above" loading="lazy"><figcaption>The 40-pin header is the long black strip along the top edge. All three wires go into it &mdash; two on the top row, one at the far left of the bottom row.</figcaption></figure>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Power off first</h4>
+      <p><strong>SW5</strong> off, and the USB cable out, before a single wire goes in. Wires get moved
+      with the power off. This has been the rule since Activity 1 and it is the one that matters most
+      today, because today is the first time you are actually moving any.</p>
+      <label class="chk"><input type="checkbox" data-p="d1"><span>The board is switched off and unplugged</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Three wires, and check the middle one twice</h4>
+      <p>AOUT to pin&nbsp;18, GND to pin&nbsp;20, VCC to pin&nbsp;1. The one worth checking twice is
+      VCC: pins&nbsp;<strong>2</strong> and&nbsp;<strong>4</strong> are 5&nbsp;V and sit right next to
+      pin&nbsp;1 in the same corner.</p>
+      <div class="cal warn"><b>+5V into this probe puts more than 3.3&nbsp;V onto GP26</b>
+      Which damages the pin, permanently, and quietly. There is no error message and no smoke &mdash;
+      that pin just stops reading properly for ever. Look twice.</div>
+      <label class="chk"><input type="checkbox" data-p="d2"><span>All three wires are in, and VCC is on pin 1 and not on pin 2 or 4</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">3</div><div class="body">
+      <h4>Prongs into the soil, most of the way</h4>
+      <p>Push both prongs into the cup until the soil is roughly level with the top of the metal. Not
+      deeper &mdash; the little board on the lead is electronics and does not want to be buried. Keep
+      the same depth every time you read it, or your numbers will move for a reason that has nothing to
+      do with water.</p>
+      <label class="chk"><input type="checkbox" data-p="d3"><span>Both prongs are in the soil to the same depth, and the board on the lead is dry</span></label>
+    </div></div>
+
+    <div class="step"><div class="idx">4</div><div class="body">
+      <h4>Power on</h4>
+      <p>USB in, <strong>SW5</strong> on, and Thonny showing <code>&gt;&gt;&gt;</code> in the Shell.</p>
+      <label class="chk"><input type="checkbox" data-p="d4"><span>The Shell shows &gt;&gt;&gt;</span></label>
+    </div></div>
+
+    <div class="cal note"><b>The little connector marked with analogue inputs is a different thing</b>
+    There is a small separate connector on the LilEx5 with four analogue inputs on it. Those do not
+    reach the Pico directly &mdash; they go through a converter chip of their own and come back on the
+    sensor bus, so nothing in today&rsquo;s program will read them. Use the 40-pin header, as above.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>Start a new file. Most of this you have written before &mdash; the loop, the wait, the printing and
+  the decision. Three lines are genuinely new, and one of them is the only real arithmetic in the whole
+  module so far.</p>
+
+  <span class="codeimg" data-code="IyBUd28gdG9vbHMgdG9kYXk6IFBpbiBwaWNrcyBhIHBpbiwgQURDIG1lYXN1cmVzIHRoZSB2b2x0YWdlIG9uIGl0CmZyb20gbWFjaGluZSBpbXBvcnQgQURDLCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBHUDI2IGlzIG9uZSBvZiB0aGUgdGhyZWUgcGlucyB0aGF0IGNhbiBtZWFzdXJlIGEgdm9sdGFnZQpzb2lsID0gQURDKFBpbigyNikpCgojIFlvdXIgdHdvIG51bWJlcnMuIENoYW5nZSB0aGVtIG9uY2UgeW91IGhhdmUgY2FsaWJyYXRlZC4KZHJ5ID0gNTAwMDAgICAgICAgICMgYW55dGhpbmcgYWJvdmUgdGhpcyBjb3VudHMgYXMgZHJ5CndldCA9IDI1MDAwICAgICAgICAjIGFueXRoaW5nIGJlbG93IHRoaXMgY291bnRzIGFzIHdldAoKd2hpbGUgVHJ1ZToKICAgIHJlYWRpbmcgPSBzb2lsLnJlYWRfdTE2KCkgICAgICAjIG1lYXN1cmUgbm93OiBhbiBhbnN3ZXIgZnJvbSAwIHRvIDY1NTM1CiAgICBwcmludChyZWFkaW5nKSAgICAgICAgICAgICAgICAgIyB0aGUgcmF3IG51bWJlciwgZm9yIGNhbGlicmF0aW5nIHdpdGgKCiAgICAjIHR1cm4gdGhlIHJhdyBudW1iZXIgaW50byBzb21ldGhpbmcgYSBwZXJzb24gY2FuIHJlYWQKICAgIHBlcmNlbnQgPSAoZHJ5IC0gcmVhZGluZykgKiAxMDAgLy8gKGRyeSAtIHdldCkKICAgIGlmIHBlcmNlbnQgPCAwOgogICAgICAgIHBlcmNlbnQgPSAwICAgICAgICAgICAgICAgICMgZHJpZXIgdGhhbiB5b3VyIGRyeSBudW1iZXIKICAgIGlmIHBlcmNlbnQgPiAxMDA6CiAgICAgICAgcGVyY2VudCA9IDEwMCAgICAgICAgICAgICAgIyB3ZXR0ZXIgdGhhbiB5b3VyIHdldCBudW1iZXIKICAgIHByaW50KHBlcmNlbnQpCgogICAgaWYgcmVhZGluZyA+IGRyeToKICAgICAgICBwcmludCgiRFJZIikKICAgIGVsaWYgcmVhZGluZyA+IHdldDoKICAgICAgICBwcmludCgiSlVTVCBSSUdIVCIpCiAgICBlbHNlOgogICAgICAgIHByaW50KCJXRVQiKQoKICAgIHNsZWVwKDEp" role="img" aria-label="Python code, 30 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
+  Capital letters matter, and today they matter more than usual: <code>ADC</code> is not the same as
+  <code>adc</code>, and the tool is imported by its capitals. Watch the percentage line too &mdash; it
+  has two pairs of brackets, two slashes together, and a multiply, and every one of them is load-bearing.</div>
+
+  <h3>Type it here first</h3>
+  <p>The five lines that are new or nearly new. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import ADC, Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="soil = ADC(Pin(26))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="reading = soil.read_u16()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="percent = (dry - reading) * 100 // (dry - wet)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="elif reading > wet:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 4 is the one worth slowing down for &mdash; and line 5 ends in a colon, like every question that has lines underneath it.</p>
+  </div>
+
+  <div class="cal note"><b>Where the indents go</b>
+  Everything inside the loop is four spaces in. <code>if</code>, <code>elif</code> and <code>else</code>
+  all sit at that same four, because they are three parts of <em>one</em> decision &mdash; and what each
+  of them does sits at eight. If <code>elif</code> ends up at eight it will not run at all and Python
+  will say so.</div>
+
+  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the program myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each new line is doing</h3>
+  <div class="tablescroll"><table class="codetable">
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBBREMsIFBpbg==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Two tools, not one.</strong> <code>Pin</code> picks out a pin, exactly as it has
+          since Activity 1. <code>ADC</code> is new: it is the measuring part, and it has to be borrowed
+          by name like everything else.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="c29pbCA9IEFEQyhQaW4oMjYpKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Getting the pin ready to measure.</strong> Read it from the inside out: pick
+          <span class="gp">GP26</span>, then hand that pin to the measuring part. From here on
+          <code>soil</code> is the name of the thing you ask for readings.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZHJ5ID0gNTAwMDA=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>An ordinary variable, and it is yours.</strong> Nothing clever here at all &mdash;
+          it is a box with a number in it, like <code>led</code> was a box with a pin in it. This is the
+          number you will change once you have calibrated, and there is a matching one for
+          <code>wet</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cmVhZGluZyA9IHNvaWwucmVhZF91MTYoKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Take one look, now.</strong> The answer is a whole number from 0 to 65535. The
+          <code>u16</code> in the name is where the 65535 comes from &mdash; sixteen binary digits, and
+          no minus sign. It is inside the loop, so it happens again every second.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cGVyY2VudCA9IChkcnkgLSByZWFkaW5nKSAqIDEwMCAvLyAoZHJ5IC0gd2V0KQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>The whole sum, in one line.</strong> The brackets are done first: how far below dry
+          you are, and the whole distance between your two numbers. Then times 100 to get hundredths,
+          then two slashes to drop the tail. Take the brackets away and the answer is nonsense.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="aWYgcGVyY2VudCA+IDEwMDoKICAgIHBlcmNlbnQgPSAxMDA=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>A guard rail.</strong> Wetter than your wet number and the sum runs past 100, so
+          this pulls it back. Its twin does the same at the bottom with <code>&lt;</code> &mdash; the
+          mirror image of Activity 8&rsquo;s <code>&gt;</code>, and it means <em>less than</em>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZWxpZiByZWFkaW5nID4gd2V0Og==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>The second question.</strong> Only ever asked if the one above it said no. Same
+          shape as an <code>if</code>, same colon, same indent underneath &mdash; and it lines up with
+          the <code>if</code> above and the <code>else</code> below.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it and run it</h2>
+  <div class="tablescroll"><table>
+    <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button, then click the sensor for its slider</td><td>The black console under the diagram</td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>soil.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>Thonny&rsquo;s Shell</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal tip"><b>This one loops, so you have to stop it</b>
+  Wokwi&rsquo;s <strong>&#9632; Stop</strong>, Thonny&rsquo;s Stop, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in
+  the Shell. Activity 2 taught this and it has not changed.</div>
+
+  <h3>&#9989; What you should see</h3>
+  <p>Three lines every second: the raw number, the percentage, and the word. Then it all happens again.</p>
+
+<svg class="dia wide" viewBox="0 0 780 360" role="img" aria-label="The Shell filling up. Each trip round the loop prints three lines: the raw number, then the percentage, then the word. First round: fifty-five thousand six hundred and ninety-three, then nought, then DRY. After some water: thirty-nine thousand and four, then forty-three, then JUST RIGHT. After more water: eighteen thousand, then one hundred, then WET.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One cup of soil, watered a little at a time</text>
+
+  <rect x="30" y="52" width="330" height="272" rx="8" class="pane"/>
+  <text x="195" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="70" y="112" class="dmono">55693</text>
+  <text x="70" y="136" class="dmono">0</text>
+  <text x="70" y="160" class="dmono">DRY</text>
+  <text x="70" y="196" class="dmono">39004</text>
+  <text x="70" y="220" class="dmono">43</text>
+  <text x="70" y="244" class="dmono">JUST RIGHT</text>
+  <text x="70" y="280" class="dmono">18000</text>
+  <text x="70" y="304" class="dmono">100</text>
+  <text x="220" y="112" class="dsub">the raw reading</text>
+  <text x="220" y="136" class="dsub">the percentage</text>
+  <text x="220" y="160" class="dsub">the verdict</text>
+
+  <rect x="400" y="72" width="350" height="66" rx="10" class="warnbox"/>
+  <text x="575" y="102" class="dlbl" text-anchor="middle">DRY</text>
+  <text x="575" y="124" class="dsub" text-anchor="middle">55693 is above the dry number &mdash; it needs water</text>
+
+  <rect x="400" y="156" width="350" height="66" rx="10" class="pinbox"/>
+  <text x="575" y="186" class="dlbl" text-anchor="middle">JUST RIGHT</text>
+  <text x="575" y="208" class="dsub" text-anchor="middle">39004 is between the two &mdash; leave it alone</text>
+
+  <rect x="400" y="240" width="350" height="66" rx="10" class="namebox"/>
+  <text x="575" y="270" class="dlbl" text-anchor="middle">WET</text>
+  <text x="575" y="292" class="dsub" text-anchor="middle">18000 is below the wet number &mdash; that is plenty</text>
+
+  <text x="390" y="348" class="dsub" text-anchor="middle">The percentage was pulled back to 0 in the first round and to 100 in the last. Both sums had gone outside.</text>
+</svg>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are scrolling up the Shell, three lines every second</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>Wetting the soil (or dragging the slider up) makes the raw number go down</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>I found the exact moment DRY turns into JUST RIGHT, and read the number it happened at</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>I got the percentage to sit at 0, and to sit at 100</span></label>
+  <label class="chk"><input type="checkbox" data-p="r5"><span>I took one clamp line out on purpose and saw a percentage past 100 or below 0</span></label>
+</section>
+
+<section id="calibrate">
+  <h2>&#127777;&#65039; Now calibrate it &mdash; this is the real lesson</h2>
+  <p class="lede">If your soil says DRY when it is plainly soaking, or JUST RIGHT the moment you plug it
+  in, <strong>nothing is broken</strong>. The two numbers in your program are somebody else&rsquo;s
+  guess, and now you are going to replace them with measurements.</p>
+  <p>50000 and 25000 were written by a person who has never met your probe, your soil or your cup. A
+  different probe, older or newer, reads differently. Sandy soil reads differently from compost. A
+  prong pushed in deeper reads differently from the same prong pushed in half way. No worksheet
+  anywhere can know your numbers, which is why <strong>you have to go and find them</strong>.</p>
+  <p>That is what <strong>calibrating</strong> means, and it is not special to soil. Every instrument
+  that has ever measured anything was calibrated by somebody first, against something known. Today the
+  two known things are <em>as dry as it will ever be</em> and <em>as wet as it will ever be</em>.</p>
+
+<svg class="dia wide" viewBox="0 0 780 390" role="img" aria-label="A number line from nought to sixty-five thousand five hundred and thirty-five. Two measurements are marked on it: the reading with the probe held in the air, near the top of the scale, and the reading with the probe in freshly watered soil, well below the middle. Between those two is the only part of the scale this probe will ever use. The chosen dry number sits just inside the air reading, and the chosen wet number just inside the soaked reading.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Find both ends first. Then put your two numbers just inside them.</text>
+
+  <text x="256" y="66" class="dlbl" text-anchor="middle">STEP 2 &mdash; soaked soil</text>
+  <text x="256" y="92" class="dmono" text-anchor="middle">21400</text>
+  <text x="256" y="114" class="dsub" text-anchor="middle">as wet as it will ever read</text>
+
+  <text x="635" y="66" class="dlbl" text-anchor="middle">STEP 1 &mdash; held in the air</text>
+  <text x="635" y="92" class="dmono" text-anchor="middle">62800</text>
+  <text x="635" y="114" class="dsub" text-anchor="middle">as dry as it will ever read</text>
+
+  <rect x="256" y="132" width="379" height="38" rx="8" class="pane"/>
+  <text x="446" y="156" class="dsub" text-anchor="middle">the only part of the scale your probe ever uses</text>
+
+  <path d="M256 170 L256 218 M635 170 L635 218" class="axis"/>
+  <path d="M60 194 L660 194" class="axis"/>
+  <circle cx="256" cy="194" r="8" class="chip"/>
+  <circle cx="635" cy="194" r="8" class="chip"/>
+  <text x="48" y="199" class="dmono" text-anchor="end">0</text>
+  <text x="672" y="199" class="dmono">65535</text>
+
+  <path d="M289 194 L289 250 M591 194 L591 250" class="lead"/>
+  <text x="289" y="276" class="dmono" text-anchor="middle">wet = 25000</text>
+  <text x="591" y="276" class="dmono" text-anchor="middle">dry = 58000</text>
+  <text x="289" y="298" class="dsub" text-anchor="middle">a little above the soaked reading</text>
+  <text x="591" y="298" class="dsub" text-anchor="middle">a little below the air reading</text>
+
+  <text x="440" y="344" class="dlbl" text-anchor="middle">STEP 3 &mdash; choose these two, just inside the ends you measured</text>
+  <text x="440" y="370" class="dsub" text-anchor="middle">Not on the ends themselves: readings wobble, and a line right on the edge flickers.</text>
+</svg>
+
+  <h3>Do it now, with the probe you have</h3>
+  <p>Stop the program. You want the raw number and nothing else while you do this, so run this instead
+  &mdash; it is your own program with everything but the reading taken out:</p>
+
+  <span class="codeimg" data-code="IyBDYWxpYnJhdGlvbiBydW46IG5vdGhpbmcgYnV0IHRoZSByYXcgbnVtYmVyLCBvbmNlIGEgc2Vjb25kCmZyb20gbWFjaGluZSBpbXBvcnQgQURDLCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKc29pbCA9IEFEQyhQaW4oMjYpKQoKd2hpbGUgVHJ1ZToKICAgIHByaW50KHNvaWwucmVhZF91MTYoKSkKICAgIHNsZWVwKDEp" role="img" aria-label="Python code, 8 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="step"><div class="idx">1</div><div class="body">
+    <h4>Read the air</h4>
+    <p>Hold the probe in the air, touching nothing, and let the number settle for a few seconds. Write
+    it down. Nothing you measure today will ever be drier than the air in this room.</p>
+    <p><em>On the Wokwi route:</em> drag the water slider to <strong>0</strong>. That is your air
+    reading.</p>
+    <label class="chk"><input type="checkbox" data-p="k1"><span>My air reading, written down on paper</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">2</div><div class="body">
+    <h4>Read soaked soil</h4>
+    <p>Water the cup properly &mdash; more than you think &mdash; push the probe in to the same depth as
+    before, and let it settle again. Write that number down too. Nothing will be wetter than this either.</p>
+    <p><em>On the Wokwi route:</em> drag the slider to <strong>100</strong>.</p>
+    <label class="chk"><input type="checkbox" data-p="k2"><span>My soaked reading, written down next to it</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">3</div><div class="body">
+    <h4>Choose your two numbers, just inside the ends</h4>
+    <p>Put <code>dry</code> a little <strong>below</strong> the air reading, and <code>wet</code> a
+    little <strong>above</strong> the soaked one. Roughly a twentieth of the way in at each end is
+    plenty. Sitting exactly on the ends is a bad idea &mdash; readings wobble, and a threshold right on
+    the edge flickers.</p>
+    <p>Then go back to your program, change the two lines, and run it again.</p>
+    <label class="chk"><input type="checkbox" data-p="k3"><span>My own two numbers are in my program, and the worksheet&rsquo;s two are gone</span></label>
+    <label class="chk"><input type="checkbox" data-p="k4"><span>Wet soil now says WET, dry soil says DRY, and the percentage moves sensibly in between</span></label>
+  </div></div>
+
+  <div class="cal tip"><b>The Wokwi route gives you a free check</b>
+  In the simulator the air reading is exactly <strong>65535</strong> and soaked is exactly
+  <strong>0</strong>, because the simulated sensor uses the whole scale. Put those two in as your
+  numbers and something rather satisfying happens: the percentage your program prints becomes the
+  <em>same number</em> as the water slider. Set the slider to 40 and the program says 40. If it does,
+  every part of your sum is right.</div>
+
+  <div class="cal warn"><b>The awkward question, and it is worth asking out loud</b>
+  What happens if <code>dry</code> and <code>wet</code> end up the wrong way round &mdash; the dry
+  number smaller than the wet one? Try it before you decide. There is no error, the program runs
+  perfectly, and everything it tells you is wrong. Working out <em>why</em> from the number line above is
+  worth more than being told.</div>
+
+  <div class="cal note"><b>Different soil, different numbers &mdash; and that is fine</b>
+  Two groups sitting next to each other will not have the same two numbers, and neither of them is
+  mistaken. The numbers belong to the probe and the cup, not to the activity. Write them on a sticky
+  note and keep them with the probe.</div>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <div class="tablescroll"><table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><strong>It always says DRY, even in soaking soil</strong></td><td>Almost certainly not a fault. Your two numbers do not match your probe &mdash; go and do <a href="#calibrate">the calibration</a>. This is the commonest thing that happens today and it is the lesson, not a bug.</td></tr>
+      <tr><td><code>Pin(26) doesn't have ADC capabilities</code></td><td>Only <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span> can measure a voltage. Check the number inside the brackets is 26 and not something that looks like it.</td></tr>
+      <tr><td><strong>The number never changes at all</strong></td><td>On Wokwi: you have not clicked the sensor to get its slider, so nothing is moving. On the board: the signal wire is not on pin 18, or the probe is not plugged into its lead.</td></tr>
+      <tr><td><strong>The number jumps about wildly on its own</strong></td><td>The ground wire is missing or loose. A pin with nothing holding it picks up whatever is floating about in the room. Check pin 20.</td></tr>
+      <tr><td><strong>The number is stuck at 0</strong></td><td>The signal wire is on a ground pin by mistake, or the probe has no power. Check the red wire is really on pin 1 and not somewhere near it.</td></tr>
+      <tr><td><strong>The number is stuck at 65535</strong></td><td>Nothing is arriving at all. On the board the signal wire has come out; in Wokwi it has been dragged off AOUT.</td></tr>
+      <tr><td><code>NameError: name 'ADC' isn't defined</code></td><td><code>ADC</code> is missing from the import line at the top. It has to be borrowed by name, alongside <code>Pin</code>.</td></tr>
+      <tr><td><code>SyntaxError</code> on the elif line</td><td>Three things to check: the colon on the end, that it lines up with the <code>if</code> above it rather than being indented further, and that there is an <code>if</code> above it in the first place. An <code>elif</code> on its own means nothing.</td></tr>
+      <tr><td><strong>The percentage has a long tail after a point</strong></td><td>One slash instead of two. <code>//</code> is two slashes with nothing between them.</td></tr>
+      <tr><td><strong>The percentage is wildly wrong &mdash; hundreds, or negative</strong></td><td>Either the clamp lines are missing, or a bracket in the sum is. Read the line against <a href="#percent">the picture</a> one piece at a time.</td></tr>
+      <tr><td><strong>Dry soil is reported as JUST RIGHT</strong></td><td>The two questions are the wrong way round. The one with the <em>bigger</em> number has to come first, or the second one catches everything.</td></tr>
+      <tr><td><strong>It says WET the moment I plug the probe in, before it touches anything</strong></td><td>Your wet number is far too high for this probe. Calibrate.</td></tr>
+      <tr><td><strong>Everything worked and now the readings are odd and drifting</strong></td><td>Corrosion, or a soaked lead. Take the probe out, dry it and look at the prongs &mdash; a probe left in wet soil all week eats itself. Tell your teacher; it looks exactly like a wiring fault.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; warn me without words</h2>
+  <p class="lede">Nobody watches a screen all day, and nobody reads a Shell at all once they have left
+  the room. A light you notice from the doorway.</p>
+  <p><strong>Task:</strong> keep the program exactly as it is, printing and all, and add two LEDs.
+  The <strong>red</strong> one comes on when the soil is dry. The <strong>green</strong> one comes on
+  when it is wet. When it is just right, <strong>neither</strong> is lit &mdash; which is the answer
+  you want to see from across the room.</p>
+  <ul>
+    <li>Red is <span class="gp">GP11</span> and green is <span class="gp">GP13</span> &mdash; the same
+    two pins, and the same two lines, as <a href="activity-1.html">Activity 1</a>. The same numbers on
+    both routes, so the program does not change between them</li>
+    <li>The three branches already exist. You are adding lines <em>inside</em> them, not writing a new
+    decision</li>
+    <li>Each branch has to deal with <strong>both</strong> lights, not just its own</li>
+    <li>Wokwi route: you will need two LEDs and two 330&nbsp;&Omega; resistors &mdash; the wiring is below</li>
+  </ul>
+
+  <h3>What success looks like</h3>
+
+<svg class="dia wide" viewBox="0 0 780 330" role="img" aria-label="The three states the finished board must show. When the soil is dry the red light is on and the green is off. When it is just right neither light is on. When it is wet the green light is on and the red is off. In all three the Shell keeps printing as it did before.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three states, and exactly one of them at a time</text>
+
+  <rect x="20" y="52" width="232" height="212" rx="12" class="warnbox"/>
+  <text x="136" y="82" class="dlbl" text-anchor="middle">DRY</text>
+  <circle cx="100" cy="140" r="26" fill="url(#wkled)"/>
+  <circle cx="172" cy="140" r="26" class="part"/>
+  <text x="100" y="184" class="dsub" text-anchor="middle">red on</text>
+  <text x="172" y="184" class="dsub" text-anchor="middle">green off</text>
+  <text x="136" y="222" class="dsub" text-anchor="middle">it needs water, and you</text>
+  <text x="136" y="242" class="dsub" text-anchor="middle">can see that from the door</text>
+
+  <rect x="274" y="52" width="232" height="212" rx="12" class="pinbox"/>
+  <text x="390" y="82" class="dlbl" text-anchor="middle">JUST RIGHT</text>
+  <circle cx="354" cy="140" r="26" class="part"/>
+  <circle cx="426" cy="140" r="26" class="part"/>
+  <text x="354" y="184" class="dsub" text-anchor="middle">red off</text>
+  <text x="426" y="184" class="dsub" text-anchor="middle">green off</text>
+  <text x="390" y="222" class="dsub" text-anchor="middle">nothing lit is an answer</text>
+  <text x="390" y="242" class="dsub" text-anchor="middle">too &mdash; leave it alone</text>
+
+  <rect x="528" y="52" width="232" height="212" rx="12" class="namebox"/>
+  <text x="644" y="82" class="dlbl" text-anchor="middle">WET</text>
+  <circle cx="608" cy="140" r="26" class="part"/>
+  <circle cx="680" cy="140" r="26" fill="url(#wkledg)"/>
+  <text x="608" y="184" class="dsub" text-anchor="middle">red off</text>
+  <text x="680" y="184" class="dsub" text-anchor="middle">green on</text>
+  <text x="644" y="222" class="dsub" text-anchor="middle">plenty of water &mdash; stop</text>
+  <text x="644" y="242" class="dsub" text-anchor="middle">pouring</text>
+
+  <text x="390" y="300" class="dsub" text-anchor="middle">Both lights on at once means a branch forgot to switch the other one off.</text>
+  <text x="390" y="322" class="dsub" text-anchor="middle">A light that comes on and never goes out again means the same thing.</text>
+</svg>
+
+  <h3>The extra wiring, on the Wokwi route</h3>
+  <p>The soil sensor&rsquo;s three wires stay exactly where they are &mdash; they are not drawn here so
+  that the new ones are easy to see. Two LEDs, two resistors, four more wires.</p>
+
+<svg class="dia wide" viewBox="0 0 780 720" role="img" aria-label="The extra Wokwi wiring for the exercise, drawn the way Wokwi draws it. A Raspberry Pi Pico is on the right with its physical pin numbers in white beside each pad. On the left are two LEDs, red above and green below, each with a long leg A and a short leg C. The red LED's long leg goes through a 330 ohm resistor to physical pin 15, which is GP11, and its short leg goes over the top of the board to physical pin 13, a ground. The green LED's long leg goes through its own 330 ohm resistor to physical pin 17, which is GP13, and its short leg goes underneath to physical pin 18, another ground. No wire crosses another. The soil sensor's own wiring is not shown and does not change.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two LEDs, two resistors, four wires &mdash; and the sensor&rsquo;s three left alone</text>
+
+<g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="400" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 400)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+  <circle cx="555" cy="374" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="414" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="454" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="474" r="10.5" class="wk-ring"/>
+
+  <path d="M166 176 L166 151 A19 19 0 0 1 204 151 L204 176 Z" fill="url(#wkled)"/>
+  <rect x="162" y="173" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 154 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="181" width="7" height="79" rx="2" class="wk-leg"/>
+  <rect x="193" y="181" width="7" height="79" rx="2" class="wk-leg"/>
+  <text x="200" y="136" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
+  <text x="158" y="232" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="232" class="dsub">A &mdash; long leg</text>
+
+  <rect x="242" y="256.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbodyA">
+    <path d="M284 248 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbodyA)">
+    <rect x="269" y="244" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="244" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="244" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="244" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="244" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 248 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="232" class="dlbl" text-anchor="middle">330 &#8486;</text>
+
+  <path d="M166 476 L166 451 A19 19 0 0 1 204 451 L204 476 Z" fill="url(#wkledg)"/>
+  <rect x="162" y="473" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 454 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="481" width="7" height="79" rx="2" class="wk-leg"/>
+  <rect x="193" y="481" width="7" height="79" rx="2" class="wk-leg"/>
+  <text x="185" y="428" class="dlbl" text-anchor="middle">green LED &mdash; LED3</text>
+  <text x="158" y="532" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="532" class="dsub">A &mdash; long leg</text>
+
+  <rect x="242" y="556.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbodyB">
+    <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbodyB)">
+    <rect x="269" y="544" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="544" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="544" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="544" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="544" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="532" class="dlbl" text-anchor="middle">330 &#8486;</text>
+
+
+  <path d="M196.5 260 L242 260" class="wkwire red"/>
+  <path d="M428 260 L470 260 L470 414 L537 414" class="wkwire red"/>
+  <path d="M173.5 260 L56 260 L56 70 L505 70 L505 374 L537 374" class="wkwire black"/>
+  <path d="M196.5 560 L242 560" class="wkwire green"/>
+  <path d="M428 560 L490 560 L490 454 L537 454" class="wkwire green"/>
+  <path d="M173.5 560 L173.5 650 L515 650 L515 474 L537 474" class="wkwire black"/>
+
+  <text x="40" y="682" class="dsub">Both black wires are grounds. Any GND pad would have done;</text>
+  <text x="40" y="704" class="dsub">these two are simply the nearest ones to the wires that need them.</text>
+</svg>
+
+  <div class="tablescroll"><table>
+    <thead><tr><th>Physical pin</th><th>Name on the board</th><th>What goes there</th></tr></thead>
+    <tbody>
+      <tr><td><strong>15</strong></td><td><span class="gp">GP11</span></td><td>Red LED1 &mdash; long leg (A), through the 330 &Omega; resistor</td></tr>
+      <tr><td><strong>13</strong></td><td>GND</td><td>Red LED1 &mdash; short leg (C)</td></tr>
+      <tr><td><strong>17</strong></td><td><span class="gp">GP13</span></td><td>Green LED3 &mdash; long leg (A), through its own 330 &Omega; resistor</td></tr>
+      <tr><td><strong>18</strong></td><td>GND</td><td>Green LED3 &mdash; short leg (C)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal note"><b>On the real board there is nothing to wire</b>
+  LED1 and LED3 are soldered onto the LilEx5 already, on those same two GP numbers. The soil probe stays
+  where it is. Route B adds no wires at all for this exercise.</div>
+
+  <details><summary>&#128161; Clue 1 &mdash; where the new lines go</summary>
+    <p>Two lines go at the <strong>top</strong> of the program, above the loop, next to where
+    <code>soil</code> is set up: one to name the red light and one to name the green, each told it is an
+    <strong>output</strong>. That is Activity 1, unchanged.</p>
+    <p>Everything else goes <strong>inside the three branches you already have</strong>. You are not
+    writing a fourth question, and you are not writing a second decision underneath the first. The
+    decision that already sorts the soil into three zones is the same decision that decides which light
+    is on.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; each branch has two jobs</summary>
+    <p>A light does not switch itself off. If the dry branch only ever turns the red one <em>on</em>,
+    then the first time the soil goes dry the red light comes on and stays on for the rest of the
+    afternoon, whatever happens to the soil afterwards.</p>
+    <p>So every branch has to say what <strong>both</strong> lights are doing &mdash; including the
+    middle one, where the answer is that neither of them is doing anything.</p>
+    <p>The <code>print()</code> lines stay exactly where they are. You are adding to each branch, not
+    replacing what is in it.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Five things to check before you decide it is broken:</p>
+    <ul>
+      <li>Are both lights <strong>named at the top</strong>, and both told they are outputs? Without the
+      second part the lines run and nothing lights.</li>
+      <li>Are the new lines at <strong>eight spaces</strong>, under their branch &mdash; not at four,
+      alongside <code>elif</code>?</li>
+      <li>Does the middle branch turn <em>both</em> off? It is the one people leave empty, and it is the
+      reason a light gets stuck on.</li>
+      <li>Are the numbers 11 and 13, not 1 and 3, and not the physical pin numbers off the diagram?</li>
+      <li>Is the whole thing still inside the loop, so it is decided again every second?</li>
+    </ul>
+    <p>Test it by watering slowly and watching for the moment the red goes out. If a light comes on and
+    stays on whatever you do, a branch is missing an instruction. If both are on together, one branch is
+    turning something on and no branch is turning it off.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by watering
+  the soil rather than by reading. Your teacher has the worked answer if the class needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li><strong>Add the buzzer</strong> on <span class="gp">GP14</span> to the dry branch as well as the
+    light. It is set up exactly like an LED. Warn the person next to you first.</li>
+    <li><strong>Make the red light blink</strong> instead of sitting on, so it is harder to ignore.
+    Activity 2 has everything you need and nothing new is required.</li>
+    <li><strong>Put the percentage on the screen</strong> from <a href="activity-7.html">Activity 7</a>,
+    so the board says how thirsty rather than just that it is thirsty. Remember what Activity 8 said
+    about numbers and words.</li>
+    <li><strong>Ask about the percentage instead of the raw reading.</strong> The decision can be written
+    either way. Which one is easier to read six months later, and which one is easier to get backwards?</li>
+    <li><strong>Send it to the internet</strong> with <a href="activity-10.html">Activity 10</a>, and
+    watch a graph of your cup of soil drying out over a whole weekend.</li>
+    <li><strong>Add a second probe</strong> on <span class="gp">GP27</span> and compare two cups &mdash;
+    one watered, one not. Two probes need two sets of calibration numbers, which is the whole lesson
+    again from the other side.</li>
+    <li><strong>Take three readings and average them</strong> before deciding anything, so a single odd
+    reading cannot flip the light. Whole-number division is already in your program.</li>
+    <li><strong>Move your two numbers closer together</strong> until JUST RIGHT is a very narrow band,
+    and watch the verdict flicker. Then work out what that tells you about choosing a threshold.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> Your board can now
+  measure something that has no yes-or-no answer at all, and &mdash; more importantly &mdash; you know
+  that its numbers mean nothing until somebody has gone and found out what they mean. Next up &mdash;
+  Activity 10, where a reading like this one leaves the room altogether.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <div class="tablescroll"><table>
+    <tbody>
+      <tr><td><strong>Digital</strong></td><td>An answer with only two possibilities: 0 or 1, on or off. Every pin you used before today.</td></tr>
+      <tr><td><strong>Analogue</strong></td><td>An answer that can be anywhere on a scale, and that slides smoothly from one value to the next.</td></tr>
+      <tr><td><strong>ADC</strong></td><td><em>Analogue to Digital Converter.</em> The part inside the Pico that turns a voltage into a whole number. There are three, on <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span>.</td></tr>
+      <tr><td><strong><code>read_u16()</code></strong></td><td>Ask the ADC for its answer <em>now</em>. You get a whole number from 0 to 65535, and never anything outside that.</td></tr>
+      <tr><td><strong>Reading</strong></td><td>One answer, taken at one instant. Take it again and it will be slightly different, because the world moved.</td></tr>
+      <tr><td><strong>Threshold</strong></td><td>A number you choose as the dividing line between two decisions. Activity 8&rsquo;s word, and today you need two of them.</td></tr>
+      <tr><td><strong>Calibrate</strong></td><td>Measuring what your own sensor really reads at both ends, and choosing your numbers from that rather than from a worksheet.</td></tr>
+      <tr><td><strong><code>elif</code></strong></td><td>A second question, asked only when the one above it answered no. It lets one decision have three or more ways out instead of two.</td></tr>
+      <tr><td><strong><code>//</code></strong></td><td>Divide and throw the remainder away, so the answer is a whole number. One slash keeps the tail; two do not.</td></tr>
+      <tr><td><strong><code>&lt;</code></strong></td><td><em>Less than.</em> The mirror image of Activity 8&rsquo;s <code>&gt;</code>, and it asks about the other side of the line.</td></tr>
+      <tr><td><strong>Conductor</strong></td><td>Something electricity travels through easily. Wet soil is a fair one; dry soil is a poor one. That single fact is why a big number means dry.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from machine import ADC, Pin",
+    "soil = ADC(Pin(26))",
+    "reading = soil.read_u16()",
+    "percent = (dry - reading) * 100 // (dry - wet)",
+    "elif reading > wet:"
+  ],
+  quiz: [
+    { q: 'A button is a digital input. Why can a soil probe not be one?',
+      opts: ['Because it needs more power', 'Because soil is damp by degrees, and a digital pin has only two answers', 'Because it is not on the LilEx5', 'Because it uses three wires'],
+      right: 1,
+      why: 'A button really is either pressed or not. Soil is every shade between soaked and bone dry, and squashing that into yes-or-no throws away the very thing you wanted to know.' },
+    { q: 'What does the ADC actually do?',
+      opts: ['It makes the voltage bigger', 'It turns the voltage on a pin into a whole number', 'It stores the reading for later', 'It protects the pin from 5 volts'],
+      right: 1,
+      why: 'Analogue to Digital Converter. 0 V becomes 0, 3.3 V becomes 65535, and everything in between lands in between, in proportion.' },
+    { q: 'You water the soil. What happens to the raw number?',
+      opts: ['It goes up, because there is more water', 'It goes down, because wet soil conducts and the voltage drops', 'It stays the same until you restart', 'It jumps to 65535'],
+      right: 1,
+      why: 'Water carries electricity across between the prongs, so less voltage is left on the wire. Big number means dry — it is backwards from what everybody expects, and it is the fact the whole activity rests on.' },
+    { q: 'Why does the percentage line use <code>//</code> rather than <code>/</code>?',
+      opts: ['Because two slashes are faster', 'Because it is a comment', 'Because a percentage wants a whole number, not a tail of digits', 'Because one slash would be a division by zero'],
+      right: 2,
+      why: 'One slash gives something like 63.508. Two slashes throw the tail away and give 63, which is all a percentage has ever needed.' },
+    { q: 'When is the question in an <code>elif</code> line looked at?',
+      opts: ['Every time round the loop, always', 'Only when the question above it answered no', 'Only when the question above it answered yes', 'Only once, at the start'],
+      right: 1,
+      why: 'The questions are asked in order and it stops at the first yes. That is why exactly one branch runs each time — never two, never none.' },
+    { q: 'Held in the air your probe reads 61000, and in soaked soil it reads 20000. Which pair of numbers should you put in your program?',
+      opts: ['dry = 50000 and wet = 25000, as printed', 'dry = 58000 and wet = 23000', 'dry = 20000 and wet = 61000', 'dry = 65535 and wet = 0'],
+      right: 1,
+      why: 'Just inside the two ends you actually measured — dry a little below the air reading, wet a little above the soaked one. The printed pair belongs to somebody else’s probe, and sitting exactly on the ends makes the verdict flicker.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

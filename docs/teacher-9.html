@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 9 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 9.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 9 &mdash; Soil Moisture</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-9.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 9 &mdash; teacher notes</h1>
+    <p class="sub">Soil Moisture. The first analogue pin in the module &mdash; and the first time a
+    sensor&rsquo;s numbers mean nothing until the class has gone and found out what they mean.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-9.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-8.html">&#8592; Activity 8 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>The one idea is the analogue pin.</strong> Everything before today was on or off. A pin
+    that answers with a position on a scale is the new thing, and the ADC is how it does it.</li>
+    <li><strong>Calibration is the lesson they will remember</strong>, and it is on the student page on
+    purpose, not just here. A raw reading means nothing until somebody has measured both ends. Do not
+    let it get cut for time.</li>
+    <li><strong>Calibration comes <em>after</em> the program runs</strong>, deliberately. They run with
+    50000 and 25000, find them wrong for their own cup, and fix them. Slower than handing out the
+    numbers, and far more memorable. This was Kamil&rsquo;s call.</li>
+    <li><strong>Big number means dry.</strong> Backwards from everyone&rsquo;s expectation. Wet soil
+    conducts, so the voltage falls. Say it before the first reading appears, not after.</li>
+    <li><strong><code>elif</code> arrives here, and only here.</strong> Kept out of the whole module up
+    to now on purpose; three zones is the first honest reason for it. Teach it as the second new idea and
+    do not apologise for it. The module-wide &ldquo;no <code>elif</code>&rdquo; rule ends today.</li>
+    <li><strong><code>//</code> is new too</strong>, and small: whole-number division, because a
+    percentage has no use for a tail of digits.</li>
+    <li><strong>First activity that wires anything to the real board.</strong> Everything before this was
+    already soldered on. Budget time for three jumper wires and for the power-off rule.</li>
+    <li><strong>Reused, not re-taught:</strong> the loop, <code>sleep</code>, <code>print()</code>,
+    <code>if</code>/<code>else</code>, variables, comments, indentation, and <code>&gt;</code> plus the
+    idea of a threshold, which are <a href="activity-8.html#numbers">Activity 8&rsquo;s</a>.
+    <code>&lt;</code> appears for the first time in the clamp lines and is one sentence of work.</li>
+    <li><strong>No <code>for</code> loops</strong>, still.</li>
+  </ul>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
+    <tbody>
+      <tr><td>Power wire on a 5&nbsp;V pin (header pin 2 or 4)</td><td>Works, or seems to</td><td><strong>Dangerous &mdash; the only one that costs money.</strong> Puts over 3.3&nbsp;V on GP26 and kills the pin silently. Check every group before power on.</td></tr>
+      <tr><td>Two questions the wrong way round</td><td>Runs perfectly; dry soil reported as JUST RIGHT</td><td><strong>Dangerous.</strong> No error at all. The bigger number has to be asked first.</td></tr>
+      <tr><td><code>dry</code> and <code>wet</code> swapped</td><td>Runs perfectly; every answer wrong</td><td><strong>Dangerous</strong>, and it is on the page as a deliberate question. Let them find it.</td></tr>
+      <tr><td>Never calibrated</td><td>Always DRY, or always WET</td><td>Kind &mdash; and it is the lesson, not a fault. Send them to the calibration section, do not fix it for them.</td></tr>
+      <tr><td>Ground wire missing</td><td>The number jumps about wildly</td><td>Kind, once they know what it looks like. A floating ADC pin reads noise.</td></tr>
+      <tr><td>One slash instead of two</td><td>Percentage has a long tail</td><td>Kind. Visible immediately.</td></tr>
+      <tr><td>Clamp lines left out</td><td>Percentages past 100, or negative</td><td>Kind, and worth letting happen once before you explain it.</td></tr>
+      <tr><td>Wokwi: never clicked the sensor</td><td>The number never moves</td><td><strong>Dangerous.</strong> Looks exactly like a broken program. First thing to check on Route A.</td></tr>
+      <tr><td>Probe pushed in to a different depth each time</td><td>Readings drift for no visible reason</td><td>Kind, but it wrecks a calibration. Same depth, every time.</td></tr>
+      <tr><td>Corroded probe</td><td>Odd, drifting or dead readings</td><td><strong>Dangerous</strong> for the lesson: it is indistinguishable from a wiring fault. Test every probe beforehand.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>The pin, and the three numbers &mdash; check this before you teach it</h2>
+  <ul>
+    <li><strong>The probe goes on the 40-pin header H1, not on the H3 analogue connector.</strong> H3&rsquo;s
+    four analogue inputs go through a separate converter chip and come back over I&sup2;C; nothing in this
+    program can read them. A group sent to H3 will look like they have a dead sensor.</li>
+    <li><strong>Signal &rarr; header pin 18</strong>, top row, printed <strong>GPIO24</strong>, which is the
+    Pico&rsquo;s <span class="gp">GP26</span>. Three numbers, one hole. The student page gives them one
+    column each and never mixes two in a sentence.</li>
+    <li><strong>Power &rarr; header pin 1</strong>, bottom row, far left. It is the <em>only</em> 3V3 on the
+    whole header. Pin 17 is <strong>not connected</strong>; pins 2 and 4 are 5&nbsp;V and sit in the same
+    corner as pin 1.</li>
+    <li><strong>Ground &rarr; header pin 20</strong>, top row, immediately beside pin 18. Any GND would do;
+    this one keeps the wiring tidy.</li>
+    <li><span class="gp">GP27</span> (printed <em>GPIO23</em>, header pin 16) is the free second analogue
+    pin, for the two-probe going-further task. <span class="gp">GP28</span> (printed <em>GPIO18</em>,
+    header pin 12) is spoken for by the servo activity.</li>
+  </ul>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Wire</th><th>Printed on the board</th><th>Header pin</th><th>In code</th></tr></thead>
+    <tbody>
+      <tr><td>AOUT &mdash; signal</td><td><strong>GPIO24</strong></td><td><strong>18</strong>, top row</td><td><span class="gp">GP26</span></td></tr>
+      <tr><td>VCC &mdash; power</td><td><strong>3V3</strong></td><td><strong>1</strong>, bottom row</td><td>&mdash;</td></tr>
+      <tr><td>GND &mdash; ground</td><td><strong>GND</strong></td><td><strong>20</strong>, top row</td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cal warn"><b>The one check that matters before power on</b>
+  Walk the room and look at the red wire on every board. Pin 1 is 3V3; pins 2 and 4 are 5&nbsp;V and are
+  right next to it. Everything else on this page can be fixed in the lesson; that one cannot.</div>
+</section>
+
+<section>
+  <h2>The Wokwi route &mdash; what was actually verified</h2>
+  <ul>
+    <li><strong>Starter project:</strong>
+    <a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a>
+    &mdash; a plain <em>wokwi-pi-pico</em> (not a Pico W) plus the STEM Lab&rsquo;s custom
+    <code>chip-soil-moisture</code>, wired gold to GP26, red to 3V3, black to a ground.</li>
+    <li><strong><code>main.py</code> is empty on purpose.</strong> If a group opens it and finds code, they
+    are in somebody&rsquo;s fork.</li>
+    <li><strong>The slider is not discoverable.</strong> Press play, <em>then</em> click the green block.
+    One control, <em>Water in the soil&nbsp;(%)</em>, starting at 15. Demonstrate it on the projector.</li>
+    <li><strong>Measured in the running simulator during this build:</strong> water 0&nbsp;% &rarr;
+    <strong>65535</strong>, water 15&nbsp;% &rarr; <strong>55693</strong>, water 61&nbsp;% &rarr;
+    <strong>25558</strong>, water 100&nbsp;% &rarr; <strong>0</strong>. Dead linear across the full range.</li>
+    <li><strong>The printed 50000 / 25000 work in Wokwi</strong> and sit at about 24&nbsp;% and 62&nbsp;%
+    water, so the three zones are all reachable with the slider.</li>
+    <li><strong>Calibrating in Wokwi gives 65535 and 0</strong>, because the simulated sensor uses the whole
+    scale. Put those in and the printed percentage becomes the slider position exactly &mdash; checked for
+    all 101 positions. That is a free correctness check for the whole sum and it is on the student page.</li>
+    <li><strong>The custom chip cannot corrode, drift or be pushed in too deep</strong>, which is worth
+    saying out loud: Route A teaches the arithmetic honestly and the physical care not at all.</li>
+    <li>If a later builder changes the program, run it again. The cloud container cannot reach wokwi.com;
+    this needs a browser.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Exercise answer &mdash; red when dry, green when wet</h2>
+  <span class="codeimg" data-code="IyBBY3Rpdml0eSA5IGV4ZXJjaXNlIC0gYSBsaWdodCBpbnN0ZWFkIG9mIGEgd29yZApmcm9tIG1hY2hpbmUgaW1wb3J0IEFEQywgUGluCmZyb20gdGltZSBpbXBvcnQgc2xlZXAKCnNvaWwgPSBBREMoUGluKDI2KSkKcmVkID0gUGluKDExLCBQaW4uT1VUKSAgICAgICAgICMgTEVEMQpncmVlbiA9IFBpbigxMywgUGluLk9VVCkgICAgICAgIyBMRUQzCgpkcnkgPSA1MDAwMAp3ZXQgPSAyNTAwMAoKd2hpbGUgVHJ1ZToKICAgIHJlYWRpbmcgPSBzb2lsLnJlYWRfdTE2KCkKICAgIHByaW50KHJlYWRpbmcpCgogICAgcGVyY2VudCA9IChkcnkgLSByZWFkaW5nKSAqIDEwMCAvLyAoZHJ5IC0gd2V0KQogICAgaWYgcGVyY2VudCA8IDA6CiAgICAgICAgcGVyY2VudCA9IDAKICAgIGlmIHBlcmNlbnQgPiAxMDA6CiAgICAgICAgcGVyY2VudCA9IDEwMAogICAgcHJpbnQocGVyY2VudCkKCiAgICBpZiByZWFkaW5nID4gZHJ5OgogICAgICAgIHByaW50KCJEUlkiKQogICAgICAgIHJlZC52YWx1ZSgxKSAgICAgICAgICAgICAgICMgdGhpcnN0eQogICAgICAgIGdyZWVuLnZhbHVlKDApCiAgICBlbGlmIHJlYWRpbmcgPiB3ZXQ6CiAgICAgICAgcHJpbnQoIkpVU1QgUklHSFQiKQogICAgICAgIHJlZC52YWx1ZSgwKSAgICAgICAgICAgICAgICMgbmVpdGhlciBsaWdodAogICAgICAgIGdyZWVuLnZhbHVlKDApCiAgICBlbHNlOgogICAgICAgIHByaW50KCJXRVQiKQogICAgICAgIHJlZC52YWx1ZSgwKQogICAgICAgIGdyZWVuLnZhbHVlKDEpICAgICAgICAgICAgICMgcGxlbnR5CgogICAgc2xlZXAoMSk=" role="img" aria-label="Python code, 38 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li><strong>Every branch deals with both lights.</strong> That is the whole exercise. A branch that
+    only turns its own light on leaves the other one stuck from the previous round.</li>
+    <li><strong>The middle branch is the one they leave empty.</strong> It is also the one that makes the
+    thing work. Expect to point at it.</li>
+    <li><strong>Same pins on both routes</strong> &mdash; <span class="gp">GP11</span> and
+    <span class="gp">GP13</span>. Deliberate: the deck used different pins in the simulator, which breaks
+    the page&rsquo;s promise that the program is identical. On the real LilEx5 there is nothing to wire.</li>
+    <li><strong>Accept the decision written against <code>percent</code> instead of <code>reading</code></strong>
+    &mdash; it is the same decision, and it is going-further task 4. It does need the comparisons turning
+    round, which is a good thing to make them explain.</li>
+    <li>Accept the lights set before the printing, or after. Do not make a thing of the order.</li>
+    <li><strong>The most instructive wrong answer</strong> is two separate <code>if</code> blocks instead
+    of the existing three-way decision. It works, it is longer, and asking why the first version is better
+    is the whole point of <code>elif</code>.</li>
+  </ul>
+  <div class="cal note"><b>If a group has already calibrated</b>
+  Their <code>dry</code> and <code>wet</code> will not be 50000 and 25000, and that is correct. The answer
+  above keeps the printed pair only so it reads against the student page.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Add the buzzer</td>
+      <td><span class="codeimg inline" data-code="YnV6emVyID0gUGluKDE0LCBQaW4uT1VUKQpidXp6ZXIudmFsdWUoMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      Set up like an LED, switched off in the other two branches. It is loud; agree a rule first.</td></tr>
+      <tr><td>Blink the red light</td>
+      <td><span class="codeimg inline" data-code="cmVkLnZhbHVlKDEpCnNsZWVwKDAuMikKcmVkLnZhbHVlKDApCnNsZWVwKDAuMik=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      Inside the dry branch. Note the side effect: the loop now takes longer, so readings slow down. Good thing to notice.</td></tr>
+      <tr><td>Show the percentage on the screen</td>
+      <td><span class="codeimg inline" data-code="b2xlZC5maWxsKDApCm9sZWQudGV4dCgiU29pbCIsIDAsIDApCm9sZWQudGV4dChzdHIocGVyY2VudCkgKyAiJSIsIDAsIDE2KQpvbGVkLnNob3coKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      Needs the bus and <code>ssd1306.py</code> from Activity 7. Joining words with a plus is new; accept it, or accept two separate lines.</td></tr>
+      <tr><td>Ask about the percentage instead</td>
+      <td><span class="codeimg inline" data-code="aWYgcGVyY2VudCA8IDIwOgogICAgcHJpbnQoIkRSWSIpCmVsaWYgcGVyY2VudCA8IDgwOgogICAgcHJpbnQoIkpVU1QgUklHSFQiKQplbHNlOgogICAgcHJpbnQoIldFVCIp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      The comparisons turn round, because percent runs the opposite way to the raw reading. That reversal is the answer to &ldquo;which is easier to get backwards&rdquo;.</td></tr>
+      <tr><td>Send it to the internet</td>
+      <td>Activity 10, unchanged &mdash; publish <code>percent</code> rather than the raw number. Needs a Pico W and an Adafruit IO account.</td></tr>
+      <tr><td>A second probe</td>
+      <td><span class="codeimg inline" data-code="c29pbDIgPSBBREMoUGluKDI3KSkKcHJpbnQoc29pbDIucmVhZF91MTYoKSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      <span class="gp">GP27</span> is header pin 16, printed <em>GPIO23</em>. Two probes need two sets of calibration numbers &mdash; that is the point of the task.</td></tr>
+      <tr><td>Average three readings</td>
+      <td><span class="codeimg inline" data-code="dG90YWwgPSBzb2lsLnJlYWRfdTE2KCkgKyBzb2lsLnJlYWRfdTE2KCkgKyBzb2lsLnJlYWRfdTE2KCkKcmVhZGluZyA9IHRvdGFsIC8vIDM=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      Whole-number division again, and no <code>for</code> loop needed. Ask what it costs: the reading is now slightly out of date.</td></tr>
+      <tr><td>Narrow the middle band</td>
+      <td>No code &mdash; move the two numbers together and watch the verdict flicker between rounds. The lesson is that a threshold wants to be far from where the reading normally sits, which is Activity 8&rsquo;s point arriving again.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li><strong>Test every probe.</strong> Plug each one in and run the calibration program on it. A
+    corroded probe looks exactly like a wiring mistake and will eat a whole group&rsquo;s lesson.</li>
+    <li><strong>Prepare cups of soil at three wetnesses</strong> &mdash; bone dry, damp, and freshly
+    watered &mdash; so a group that gets a working reading has somewhere to go next.</li>
+    <li><strong>One probe, three female-to-female jumpers and a cup per pair.</strong> Paper and a pen too:
+    they write two numbers down and the numbers matter for the rest of the lesson.</li>
+    <li><strong>Do the calibration yourself first</strong>, on one of these probes in this soil, and keep
+    the two numbers. You want to know roughly what the class should be getting.</li>
+    <li>Water in something with a small spout. &ldquo;A little at a time&rdquo; is the whole experiment,
+    and a full jug ends it in one go.</li>
+    <li>Paper towel on the desks, and somewhere to put a wet probe down.</li>
+    <li>Wokwi reachable from the classroom, and the starter project link on the board.</li>
+    <li>Check the <a href="pinout.html">pin reference</a> is bookmarked &mdash; tapping a pin on it is
+    faster and safer than counting to eighteen along a black header.</li>
+  </ul>
+
+  <div class="cal tip"><b>Looking after the probes afterwards</b>
+  Rinse, dry, and do not leave them standing in wet soil between lessons. A resistive probe corrodes
+  while it is powered and wet, and a set left in cups over a weekend will be visibly worse on Monday.
+  Store them dry, with their calibration numbers on a sticky note.</div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Open on the contrast with Activity 8.</strong> That sensor also answered <em>how much</em>,
+    but over a bus, with a library doing the work. This one is a voltage on a wire and nothing in between.
+    That is what makes it worth its own lesson.</li>
+    <li><strong>Draw the two signal graphs on the board before they open the page.</strong> Square wave,
+    then a wandering line. Ask which one soil looks like. It takes ninety seconds and it does most of the
+    teaching.</li>
+    <li><strong>Answer &ldquo;why does more water give a smaller number?&rdquo; before it is asked.</strong>
+    Wet soil conducts, so the voltage drops. If you wait, half the class will have decided their probe is
+    broken.</li>
+    <li><strong>Walk the percentage line through with real numbers on the board</strong> before anybody
+    types it. It is the only arithmetic in the module and it is one line with two brackets in it.</li>
+    <li><strong>Let somebody hit 138&nbsp;%</strong> before you explain the two clamp lines. It is a much
+    better hook than a rule.</li>
+    <li><strong>Do not hand out calibration numbers.</strong> The whole point is that they cannot be handed
+    out. If a group is stuck, ask them what the probe reads in the air, not what number to type.</li>
+    <li><strong>Expect the groups to disagree with each other</strong>, and say in advance that they will.
+    Two probes in two cups genuinely have different numbers; neither group is wrong.</li>
+    <li><strong>The awkward question is on the page on purpose.</strong> What if the two numbers are the
+    wrong way round? Let them try it rather than telling them. Nothing breaks, and every answer is wrong,
+    which is the most useful ten seconds of the lesson.</li>
+    <li><strong>On <code>elif</code>:</strong> teach it as three parts of one decision, at one indent, asked
+    in order and stopping at the first yes. Do not introduce chains longer than three; three zones is the
+    reason it is here.</li>
+    <li><strong>If you are short of time</strong>, cut the exercise, not the calibration. The exercise is
+    Activity 1 and Activity 5 combined and they can do it next lesson; the calibration is the only place in
+    the module where this idea appears.</li>
+    <li><strong>Timing</strong>, roughly: 10 minutes on analogue and the ADC, 10 on wiring, 15 on the
+    program, 10 on calibrating, 15 on the exercise.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Link</th><th>What it is for</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a></td>
+        <td>Route A &mdash; Pico, custom soil sensor and three wires, ready to run. The program file is empty on purpose.</td></tr>
+      <tr><td><a href="https://thonny.org/" target="_blank" rel="noopener">thonny.org</a></td>
+        <td>Route B &mdash; writes MicroPython to the real Pico.</td></tr>
+      <tr><td><a href="https://docs.micropython.org/en/latest/library/machine.ADC.html" target="_blank" rel="noopener">docs.micropython.org &mdash; machine.ADC</a></td>
+        <td>Where <code>read_u16()</code> and the 0&ndash;65535 range are defined.</td></tr>
+      <tr><td><a href="https://docs.wokwi.com/chips-api/getting-started" target="_blank" rel="noopener">docs.wokwi.com &mdash; custom chips</a></td>
+        <td>How the soil sensor part was built, if you ever need to change or rebuild it.</td></tr>
+      <tr><td><a href="pinout.html">The pin reference</a></td>
+        <td>Tap a pin and it lights up on the photo and on the header strip. Faster than counting.</td></tr>
+      <tr><td><a href="activity-8.html#numbers">Activity 8 &mdash; measurements and thresholds</a></td>
+        <td>Where <code>&gt;</code> and the idea of a threshold were taught. Activity 9 points back here rather than repeating it.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>Activity 9</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td><strong>exercise</strong> &mdash; the dry warning</td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td><strong>exercise</strong> &mdash; the wet indicator</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>going further only</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP26</span></td><td><strong>NEW &mdash; the soil probe&rsquo;s signal.</strong> Printed <em>GPIO24</em>, header pin 18.</td><td><strong>required</strong></td></tr>
+      <tr><td><span class="gp">GP27</span></td><td>free analogue pin. Printed <em>GPIO23</em>, header pin 16.</td><td>going further only &mdash; a second probe</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted"><strong>Activity 9 adds <span class="gp">GP26</span></strong> &mdash; the first new pin
+  since Activity 7, and the first analogue one in the module. It is one of only three pins on the Pico that
+  can measure a voltage; the others are <span class="gp">GP27</span> and <span class="gp">GP28</span>. The
+  four analogue inputs on the LilEx5&rsquo;s H3 connector are <em>not</em> these &mdash; they go through a
+  converter chip and come back over I&sup2;C. Full map: <a href="pinout.html">pin reference</a>.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

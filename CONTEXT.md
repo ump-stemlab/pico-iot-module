@@ -45,7 +45,7 @@ during Activity 10's build, and the whole site was renumbered to it at the end o
 | 6 | Advanced Logic (And, Or, Not) | live |
 | 7 | Words on a Screen | live |
 | 8 | Motion Sensing (Sensors and Numbers) | live |
-| 9 | Soil Moisture | **next** |
+| 9 | Soil Moisture | live |
 | 10 | Wi-Fi Connectivity (Internet and Data) | live |
 | 11 | Control From Anywhere | live |
 | 12 | Radio Communication | not built |
@@ -120,8 +120,25 @@ in `ump-stemlab/stemcube` during Activity 8's build, where `bme280.py` sets
 a new part is added, read its driver or scan the bus.
 
 The four analogue inputs on connector **H3** do **not** reach the Pico directly — they
-go through a converter chip and come back over I²C. Reading a voltage on this board is
-an I²C job, not an `ADC()` job.
+go through a converter chip (the ADS1115 at `0x48`) and come back over I²C. Reading *those
+four* is an I²C job, not an `ADC()` job.
+
+**That is about H3 only, and it is not the whole story — read this before writing another
+analogue activity.** The Pico's own three ADC pins, **GP26, GP27 and GP28**, are brought
+out on the 40-pin header H1 and are read with `ADC()` in the ordinary way. This is what
+Activity 9 uses. Confirmed against §2.1's header map and against
+`lilEx5 GPIO pins Layout.docx` during Activity 9's build:
+
+| GP | printed on the LilEx5 | header pin | state |
+|---|---|---|---|
+| GP26 | `GPIO24` | 18, top row | Activity 9 — the soil probe |
+| GP27 | `GPIO23` | 16, top row | free |
+| GP28 | `GPIO18` | 12, top row | reserved for the servo activity |
+
+**3V3 is header pin 1 and nothing else.** Pin 17 is *not connected*; pins 2 and 4 are 5 V
+and sit in the same corner as pin 1. The Activity 12 deck in `Module Revamp/PPTX` says
+"+3V3 (pin 17)" and is **wrong** — that was caught during Activity 9's build and the page
+says pin 1.
 
 Buttons idle high and read **0** when pressed.
 
@@ -138,7 +155,8 @@ docs/code.js           renders code as pictures, guards the clipboard, and carri
                        staff door (see §9). Every page loads it, index.html included.
 docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
                        decision simulator, logic simulator, screen widget, reading widget,
-                       publishing widget, dashboard switch widget, typing box, quiz
+                       publishing widget, dashboard switch widget, soil widget, typing
+                       box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
                        (now lists teacher-1 … teacher-12)
@@ -153,14 +171,14 @@ brief for the *next* activity, written at the end of the previous build. Normall
 only one of these: whoever builds activity N deletes it and leaves `PROMPT-activity-N+1.md`
 behind.
 
-**Right now there are two, on purpose.** `PROMPT-activity-8.md` is the brief for
-*Internet and Data*, which is still unbuilt, and `PROMPT-activity-12.md` is the brief for
-the next one to build. Delete the Activity 10 brief only when Activity 10 exists.
+**There can be more than one at a time, on purpose.** A brief is only deleted when the
+activity it describes has been built. `PROMPT-activity-12.md` is the brief for *Radio
+Communication*, which is still unbuilt, so it stays where it is whoever is working.
 
-**The numbering is not contiguous, also on purpose.** Activities 1–8 and 11 exist; 8, 9 and
-10 do not. Kamil's decision during Activity 11's build: from here on the website's activity
-number matches the number on his PowerPoint deck for the same lesson, which is what he
-teaches from. Do not renumber the existing pages — the URLs are published.
+**The numbering is not contiguous, also on purpose.** Activities 1, 2, 4–11 exist; 0, 3 and
+12 do not. The numbers are the Google Classroom's — see §1.1 — and the gaps are activities
+that have not been written yet. Do not renumber the existing pages; the URLs are published,
+and do not "tidy" the jump from 2 to 4 or from 11 to nothing.
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -409,12 +427,13 @@ them in the markup if they are there.
   exercise is deliberately *two separate `if`/`else` pairs* rather than one combined condition, so
   that Activity 6 has the contrast to build on. Also ruled out: `elif` — see the note below.
 
-  **`elif` is kept out of Activities 1–10 and 11, and arrives in Activity 9.** Kamil's call,
-  made during Activity 10's build. Up to here nothing needs it and the two-road picture of a
-  decision is worth more than the shortcut. Activity 9 (soil moisture) has three genuine
-  zones — dry, just right, wet — which is the first honest reason for it in the whole module,
-  so that is where it is taught, as that activity's second new idea. Do not smuggle it in
-  earlier, and do not apologise for it when it arrives.
+  **`elif` is kept out of Activities 1–8, and arrived in Activity 9.** Kamil's call, made
+  during Activity 10's build and carried out in Activity 9's. Up to Activity 8 nothing needs
+  it and the two-road picture of a decision is worth more than the shortcut. Activity 9 (soil
+  moisture) has three genuine zones — dry, just right, wet — which is the first honest reason
+  for it in the whole module, so that is where it is taught, as that activity's second new
+  idea. Do not smuggle it into 1–8. It is fair game from 9 on, but Activities 10 and 11 still
+  do not use it, and their teacher pages say so.
 - **`print()` stays in the main program**, unlike the LED-only alternative. Its job here is
   debugging: words right + light wrong means the wiring is at fault; words wrong too means the
   decision is. That split is stated on the page and is the reason the lines are not optional.
@@ -647,6 +666,96 @@ them in the markup if they are there.
   the Claude desktop app.
 
 
+### Activity 9 — Soil Moisture
+
+- **The one idea is the analogue pin**, and the second is `elif`. Do not let the second one take over:
+  every decision the module has made so far had two ways out, and three zones is the reason this one
+  needs three. `//` is a third new thing but it is one sentence of work.
+- **This is the first analogue pin in the module, and the first wire to the 40-pin header.** Everything
+  before it was either soldered onto the LilEx5 already or drawn in Wokwi. Activity 8's sensor also
+  answered *how much*, but over the bus with a library in between; that contrast is the opening of the
+  lesson and it is what earns Activity 9 its own page.
+- **GP26, not H3.** `CONTEXT.md` §2's H3 warning is about the ADS1115 inputs and is correct, and it is
+  *not* about this. GP26 is a real Pico ADC pin and comes out at **header pin 18**, where the LilEx5
+  prints **GPIO24**. See the table added to §2. A page that sends a student to H3 will look like a broken
+  sensor.
+- **The deck is wrong about 3V3 and the page is right.** `Module Revamp/PPTX/Activity 12 - Soil
+  Moisture.pptx` (slides 5 and 7) sends the power wire to "+3V3 (pin 17)". **Pin 17 is not connected.**
+  The only 3V3 on the header is **pin 1**, bottom row, far left — and pins 2 and 4 are 5 V and sit in the
+  same corner. Ground is **pin 20**, next door to 18, chosen over the deck's pin 6 because it draws
+  better. Checked against §2.1 and `lilEx5 GPIO pins Layout.docx`.
+- **Three numbers for one hole, and Kamil chose how to say it**: a three-column table (printed on the
+  board / where the hole is / what you type) plus a diagram of one pad with all three labels pointing at
+  it. Activities 1 and 2's rule holds — never two of the three in one sentence.
+- **Calibration is on the *student* page, as its own top-level section (`#calibrate`), and it comes
+  AFTER the program runs.** Kamil's call. They type the deck's 50000 / 25000, run it, find it wrong for
+  their own cup, and only then measure the air and soaked soil and replace both numbers. Slower than
+  handing the numbers out and much more memorable — the deck had this on the teacher page only, which is
+  what this build set out to change. Do not move it before the program.
+- **The Wokwi starter was opened, run and measured during this build** —
+  `wokwi.com/projects/472418654786566145`, a plain `wokwi-pi-pico` (not a W) plus the STEM Lab's custom
+  `chip-soil-moisture`, gold to GP26, red to 3V3, black to GND, and `main.py` empty on purpose. Measured:
+  water **0 % → 65535**, **15 % (the default) → 55693**, **61 % → 25558**, **100 % → 0**. The chip puts
+  out `5 V × (100 − water) / 100` against Wokwi's 5 V reference; the RP2040's ADC is 12 bits and
+  `read_u16()` spreads them by shifting, so the exact model is
+  `raw12 = floor((100−water)/100 × 4095)`, `u16 = (raw12 << 4) | (raw12 >> 8)`. The deck's 50000 / 25000
+  land at about 24 % and 62 % water and work. **The cloud container cannot reach wokwi.com** — this needs
+  the browser in the Claude desktop app.
+- **Calibrating in Wokwi gives 65535 and 0**, because the simulated sensor uses the whole scale, and then
+  the printed percentage equals the slider position *exactly* — verified for all 101 positions. That is a
+  free end-to-end check of the arithmetic and it is a callout on the student page. Keep it.
+- **Mission**: read the probe → percentage → print `DRY` / `JUST RIGHT` / `WET`, three lines a second at
+  `sleep(1)`. The raw `print()` is load-bearing: it is the number they calibrate with, and without it the
+  calibration section has nothing to read.
+- **Exercise**: red LED when dry, green when wet, **neither** when just right. Kamil's call.
+  **GP11 and GP13 on both routes** — the deck used GP14/GP12 in Wokwi, which breaks the page's promise
+  that the program is identical, and GP14 is the buzzer on the real board. The real LilEx5 needs no wiring
+  for it. **No answer on the student page** (rule 5.4); clue 3 stops at a five-point checklist.
+- **`<` arrives quietly**, in the two clamp lines, as the mirror of Activity 8's `>`. One sentence in the
+  line-by-line table and one row in *Words to remember*; it is not given a section.
+- **Reuse, do not re-teach**: the loop, `sleep`, `print()`, `if`/`else`, variables, comments, indentation,
+  and `>` plus thresholds, which point back at `activity-8.html#numbers`. No `for` loops.
+- **Fifteen diagrams**, and two of them exist because Kamil asked for signal graphs: digital versus
+  analogue drawn as voltage against time, and the ADC's conversion line (volts in, number out) with a
+  second graph showing one reading being taken per trip round the loop. Then the mission flow, the two
+  cups, the three zones, the `elif` cascade, the percentage sum, one slash versus two, the Wokwi wiring,
+  one pad three names, the Shell, the calibration number line, the exercise's three states and the
+  exercise wiring. Every one rendered and looked at in both themes; six needed moving or resizing after
+  seeing them.
+- `style.css` gained a short **Activity 9** block at the foot: `.dia .trace` (+`.ink`), `.dia .axis` and
+  `.dia .grid` for the graphs; **`.dia .warnbox`**, the red sibling of `.pinbox` and `.namebox`, for the
+  third of three zones; and **`.dia .wkwire.gold`** (`#B8860B`, lightened to `#E8B92E` in dark mode) for
+  the signal wire, which is the colour Wokwi draws it.
+- `activity.js` gained a **soil widget** guarded by `#soilrun`, inert on every other page. Markup:
+  `#soilwater` range 0–100, `#soildry` / `#soilwet` number inputs, `#soilraw` / `#soilpc` / `#soilsay`
+  readouts, `#soilrun` ("Call this DRY"), `#soilwetbtn` ("Call this WET") and `#soilback`. The two
+  Call-this buttons *are* the calibration procedure, which is why the guard is on one of them. It
+  reproduces the Wokwi chip's numbers exactly, says in words what happens when the two numbers are equal
+  (a division by nothing) or the wrong way round, and leaks no code.
+- **The line-by-line table uses `.codetable`** (Activity 11's class). Without it the percentage line's
+  chip is drawn too small to read.
+- **The Wokwi wiring diagram uses the plain-Pico `wk` group from `activity-8.html`**, not the Pico W —
+  Activity 9 does not touch the network, and the starter project is a `wokwi-pi-pico`. Rings on physical
+  pins **31 (GP26), 33 (GND) and 36 (3V3)**, all on the right-hand side, so all three wires wrap round:
+  the red one over the top at `y=62`, the black underneath at `y=634`, the gold underneath at `y=586`, in
+  three separate lanes at `x=776 / 768 / 760` on the right and `x=14 / 26` on the left. viewBox
+  `780 × 690`. The sensor is drawn with Activity 10's **`wk-bme-`** family, which is exactly the generic
+  green block Wokwi draws a custom chip as (`#087f45`) — no new part family was needed. Its pads are
+  where Wokwi puts them: **VCC top-left, GND bottom-left, AOUT bottom-right**, read out of the running
+  simulator (the part's own SVG is 30 × 7.08 mm, holes at 1.27/2.27, 1.27/4.81 and 28.73/4.81 mm).
+- **The exercise wiring diagram is Activity 11's, verbatim**, with the plain `wk` group swapped in for
+  the Pico W: two LEDs and two resistors on physical pins 15 (GP11) and 17 (GP13), grounds on 13 and 18,
+  viewBox `780 × 720`. It needs the `wkled`, `wkledg` and `wkres` gradients in `<defs>`.
+- **`teacher.html` changed as well as gaining a row**: the "No `elif`, ever" card is now "No `elif`
+  before Activity 9", and the `for`-loop card no longer hangs off it. `teacher-5`, `-6`, `-7`, `-8`,
+  `-10` and `-11` had their "not needed anywhere in this module" wording corrected to point at Activity 9.
+  `activity-8.html`'s closing "Next up" now points at Activity 9 rather than Activity 10.
+- **`pinout.html`'s GP26 row** no longer says "free for your own parts"; it names the soil probe, the
+  `GPIO24` silkscreen and Activity 9. `robots.txt` needed no change — it already listed `teacher-9.html`.
+- **Probe care is a real teaching-time risk and is on the teacher page**: resistive probes corrode while
+  powered and wet, a corroded one is indistinguishable from a wiring fault, and a set left standing in
+  cups over a weekend will be visibly worse. Test every probe before the lesson.
+
 ### Activity 10 — Internet and Data
 
 - **The one idea is two halves again**: the board **joins a network**, and it hands its message to a
@@ -843,7 +952,7 @@ walked past, handing the name over, the `check_msg` timeline, the Wokwi wiring, 
 result, and the exercise's three states. Every one was rendered and looked at in both
 themes; four needed moving or resizing after seeing them.
 
-### The Wokwi-look board diagrams (Activities 1, 4, 5, 6, 7, 8, 10 and 11)
+### The Wokwi-look board diagrams (Activities 1, 4, 5, 6, 7, 8, 9, 10 and 11)
 
 Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
 physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
@@ -874,9 +983,11 @@ module does not look like two different books.
   `780 × 600` (Activity 5, which carries both circuits), `780 × 690` (Activity 6, which adds a
   second button below the first), `780 × 660` (Activity 7, whose power wires wrap round the board) and
   `780 × 690` (Activity 8, whose sensor module sits high on the left), `780 × 600` (Activity 8's
-  exercise, one LED and one resistor), `780 × 690` (Activity 10, whose custom chip sits high on the left
-  with its legend beneath it) and `780 × 720` (Activity 11, which carries two LED-and-resistor chains, one
-  routed over the top of the board and one under it).
+  exercise, one LED and one resistor), `780 × 690` (Activity 9, whose three wires all wrap round to the
+  right-hand pads, one over the top and two underneath), `780 × 720` (Activity 9's exercise, which is
+  Activity 11's diagram with the plain Pico swapped in), `780 × 690` (Activity 10, whose custom chip sits
+  high on the left with its legend beneath it) and `780 × 720` (Activity 11, which carries two
+  LED-and-resistor chains, one routed over the top of the board and one under it).
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
   long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at

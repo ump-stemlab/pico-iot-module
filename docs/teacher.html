@@ -22,6 +22,7 @@
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
   <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
   <a class="nl" href="activity-10.html">Activity 10</a>
   <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
@@ -89,13 +90,16 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><strong>8</strong></td><td><a href="activity-8.html">Sensors and Numbers</a></td>
         <td>A sensor measures rather than answers yes or no, so the number has a decimal point &mdash; and <code>round()</code> plus <code>str()</code> are what make it fit on a screen. No new pins: it joins the Activity 7 bus.</td>
         <td><a href="teacher-8.html">teacher-8</a></td></tr>
+      <tr><td><strong>9</strong></td><td><a href="activity-9.html">Soil Moisture</a></td>
+        <td>The first <strong>analogue</strong> pin: a voltage on a wire, read straight off <span class="gp">GP26</span> with no bus and no library. Two more things arrive with it &mdash; <code>elif</code>, because three zones is the first honest reason for it, and <code>//</code> for the percentage. The real lesson is <strong>calibration</strong>: the numbers mean nothing until the class has measured both ends themselves.</td>
+        <td><a href="teacher-9.html">teacher-9</a></td></tr>
       <tr><td><strong>10</strong></td><td><a href="activity-10.html">Internet and Data</a></td>
         <td>The reading leaves the room. Two halves: joining a WiFi network, and handing the message to a broker over MQTT. Still no new pins &mdash; the weather sensor is the third part on the Activity 7 bus. First activity that needs the <strong>Pico W</strong>, and the first that can fail for reasons outside the program.</td>
         <td><a href="teacher-10.html">teacher-10</a></td></tr>
       <tr><td><strong>11</strong></td><td><a href="activity-11.html">Control from Anywhere</a></td>
         <td>The arrow turns round: the board <strong>subscribes</strong> instead of publishing. Three parts that only work together &mdash; subscribing, the first <code>def</code>, and <code>check_msg()</code> in the loop. Written self-contained, so it teaches WiFi, MQTT and the Adafruit&nbsp;IO account from scratch while 8, 9 and 10 are unbuilt. Needs the <strong>Pico W</strong>.</td>
         <td><a href="teacher-11.html">teacher-11</a></td></tr>
-      <tr><td>0, 3, 9, 12</td><td class="muted">Getting Started, Digital Output &amp; Servo, Soil Moisture (next), and Radio</td>
+      <tr><td>0, 3, 12</td><td class="muted">Getting Started, Digital Output &amp; Servo, and Radio</td>
         <td class="muted">In preparation.</td><td class="muted">&mdash;</td></tr>
     </tbody>
   </table>
@@ -113,15 +117,15 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
     <div class="mini"><h4>Code cannot be copied</h4>
       <p>Every program is drawn as a picture and the clipboard is guarded. Students type, or they learn
       nothing. This is deliberate &mdash; do not paste code into a chat for them.</p></div>
-    <div class="mini"><h4>No <code>elif</code>, ever</h4>
-      <p>Kept out of the whole module so the two-road picture of a decision survives. Nothing here
-      needs it.</p></div>
+    <div class="mini"><h4>No <code>elif</code> before Activity 9</h4>
+      <p>Kept out of Activities 1&ndash;8 so the two-road picture of a decision survives. It arrives in
+      Activity 9, where three zones is the first honest reason for it, and is fair game after that.</p></div>
     <div class="mini"><h4>Libraries may be pasted</h4>
       <p>The no-copying rule is about students&rsquo; own programs. From Activity 7 a library file is
       pasted or copied onto the Pico &mdash; nobody retypes one. Say so, or the rule looks arbitrary.</p></div>
-    <div class="mini"><h4>No <code>for</code> loops either</h4>
-      <p>Kept out alongside <code>elif</code>. Every repeat in this module is a forever-loop, and nothing
-      up to Activity 10 has needed anything else.</p></div>
+    <div class="mini"><h4>No <code>for</code> loops, still</h4>
+      <p>Every repeat in this module is a forever-loop, and nothing up to Activity 11 has needed
+      anything else.</p></div>
     <div class="mini"><h4>Answers live here, not there</h4>
       <p>Student pages carry the task, the expected result and progressive clues. The worked answer is
       on these pages only.</p></div>
@@ -141,14 +145,16 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>Activities 4, 5, 6 main programs; Activity 7 exercise</td></tr>
       <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>Activity 6 main program; Activities 4, 5 and 7 exercises</td></tr>
       <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>Activity 6 exercise</td></tr>
-      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activities 1, 2, 5, 6 and 11 &mdash; main programs</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activities 1, 2, 5, 6 and 11 main programs; Activities 8 and 9 exercises</td></tr>
       <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>Activity 1 and 2 exercises</td></tr>
-      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 5, 6 and 11 exercises</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activities 5, 6, 9 and 11 exercises</td></tr>
       <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Going-further only, so far</td></tr>
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only, so far</td></tr>
+      <tr><td><span class="gp">GP26</span></td><td>Analogue in &mdash; soil probe. Printed <em>GPIO24</em> on the LilEx5, header pin 18.</td><td>Activity 9 main program</td></tr>
+      <tr><td><span class="gp">GP27</span></td><td>Analogue in &mdash; free. Printed <em>GPIO23</em>, header pin 16.</td><td>Activity 9 going-further only &mdash; a second probe</td></tr>
     </tbody>
   </table>
-  <p class="muted"><strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
+  <p class="muted"><strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. <strong>Activity 9 adds <span class="gp">GP26</span></strong>, the module&rsquo;s first analogue pin and its first wire to the 40-pin header; only <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span> can measure a voltage, and the H3 connector&rsquo;s analogue inputs are <em>not</em> these &mdash; they come back over I&sup2;C. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
   bus</strong> &mdash; shared by the screen and all eight I&sup2;C sensors, so nothing else may ever be
   wired to them. Full map: <a href="pinout.html">pin reference</a>.</p>
 </section>
@@ -165,6 +171,10 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
     notes</a>.</li>
     <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
     <li>One USB cable per board that carries <em>data</em>, not only power.</li>
+    <li><strong>Soil probes:</strong> test every one on a known cup before the lesson &mdash; a corroded
+    probe reads exactly like a wiring fault. Store them rinsed and dry, never standing in wet soil, with
+    their calibration numbers on a sticky note. Three female-to-female jumpers per probe, and a cup of
+    soil per pair. See <a href="teacher-9.html">the Activity 9 notes</a>.</li>
     <li>Wokwi reachable from the school network, and the <a href="pinout.html">pin reference</a>
     bookmarked on every machine.</li>
   </ul>
@@ -193,6 +203,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
        <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
        <a href="activity-10.html">Activity 10</a> &middot;
        <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
