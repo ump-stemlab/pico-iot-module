@@ -54,8 +54,8 @@ LED. Assume the same until you have checked.
 - Update `docs/index.html` and `README.md`: move Activity 12 from "coming soon" to live,
   badge "New"; Activity 11's badge becomes "Ready".
 - Add the Activity 12 nav + footer link to **every** existing page — `index.html`,
-  `activity-1.html` … `activity-7.html`, `activity-11.html`, `teacher.html`,
-  `teacher-1.html` … `teacher-7.html`, `teacher-11.html`, `pinout.html`. Two lines each.
+  `activity-1.html` … `activity-8.html`, `activity-11.html`, `teacher.html`,
+  `teacher-1.html` … `teacher-8.html`, `teacher-11.html`, `pinout.html`. Two lines each.
   It is easy to forget and it strands the student. `robots.txt` already covers
   `teacher-12.html`.
 - Update `CONTEXT.md`: add an "Activity 12" block to §7, and replace this file with the
@@ -94,7 +94,7 @@ LED. Assume the same until you have checked.
 - **No `elif`, still**, and no `for` loops. Both have been kept out on purpose.
 - **`def` and callbacks are now taught** (Activity 11) and can be used freely. So can
   `while` with a real question, and `not` written rather than only read.
-- **`>` still has not been taught in a main program.** It appears in Activity 7's
+- **`>` still has not been taught in a main program.** It appears in Activity 8's
   going-further only.
 - **UART is new, and it is the honest new idea**: two wires, one talking and one listening,
   and no address and no server anywhere. Say what it costs as well as what it saves — no
@@ -108,9 +108,9 @@ LED. Assume the same until you have checked.
    on the page, including inside explanation tables, `<summary>` lines, quiz options and
    troubleshooting tables. Prove it: select the whole rendered page, copy, and confirm
    nothing runnable comes out. The one deliberate exception is a **library file**, which
-   students paste — Activity 6 established that and says why.
+   students paste — Activity 7 established that and says why.
 2. **No code inside diagrams either.** SVG `<text>` is selectable. Draw program structure as
-   bars and labels, the way Activities 2, 4, 5 and 11 do. Single operators (`=`, `==`, `>`)
+   bars and labels, the way Activities 2, 5, 6 and 11 do. Single operators (`=`, `==`, `>`)
    as big glyphs are fine — whole lines are not.
 3. **No exercise answer on the student page** (rule 5.4). Task, expected-result diagram,
    progressive clues that stop short of the solution, and a line saying the teacher has the
@@ -162,7 +162,7 @@ endings: `git config core.autocrlf true` fixes it.
 
 **Two loose ends you have inherited, neither of them yours to fix silently:**
 
-- **Activity 8 does not exist**, but every page links to `activity-8.html` and the home page
+- **Activity 10 does not exist**, but every page links to `activity-10.html` and the home page
   has a live row for it. That was a half-finished build, and I decided to leave the links in
   place. `PROMPT-activity-8.md` in the repo root is still its brief. Do not delete it.
 - **Nobody has yet run Activity 11's program end to end in Wokwi** — the simulator freezes

@@ -10,30 +10,12 @@
 (function(){
   "use strict";
   var CFG = window.ACTIVITY || {};
-  var KEY = 'lilex5:' + location.pathname.split('/').pop();
-
-  /* ---------- one-off: numbering brought into line with the Classroom, Aug 2026 ----------
-     Progress is keyed by filename, so when a page's file was renamed its saved ticks
-     would have been left behind on the old key -- and, because two pages can use the
-     same data-p names, the page arriving at a filename would have picked up the
-     previous occupant's ticks. This walks the renames highest-first, so every
-     destination key is vacated before it is written, and runs once per browser. */
-  (function(){
-    var FLAG = 'lilex5:renumbered-2026-08';
-    try {
-      if (localStorage.getItem(FLAG)) return;
-      var moves = [[8,10],[7,8],[6,7],[5,6],[4,5],[3,4]];
-      for (var i = 0; i < moves.length; i++){
-        var from = 'lilex5:activity-' + moves[i][0] + '.html';
-        var to   = 'lilex5:activity-' + moves[i][1] + '.html';
-        var v = localStorage.getItem(from);
-        if (v === null) { localStorage.removeItem(to); continue; }
-        localStorage.setItem(to, v);
-        localStorage.removeItem(from);
-      }
-      localStorage.setItem(FLAG, '1');
-    } catch(e){}
-  })();
+  /* The prefix was bumped from 'lilex5:' when the site was renumbered to the
+   Google Classroom's numbers. Saved ticks are keyed by filename, and the
+   renumber moved every page's filename, so old ticks would have surfaced on
+   the wrong activity. Bumping it once gives everybody a clean slate. Kamil's
+   call — the site is in alpha and nobody had any progress to lose. */
+  var KEY = 'lilex5v2:' + location.pathname.split('/').pop();
 
   function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
   function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }

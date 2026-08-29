@@ -23,7 +23,7 @@ Desktop afterwards. Don't use the GitHub website uploader — it is slow and cor
 characters. Don't ask me for an access token; you shouldn't be handling one.
 
 **Check first whether another chat is working in the same clone.** Run `git status`
-before you touch anything. Activity 8's build found Activity 11 half-built underneath it
+before you touch anything. Activity 10's build found Activity 11 half-built underneath it
 by a parallel session, and had to merge rather than overwrite `activity.js`, `style.css`
 and `CONTEXT.md`. If you find work you did not do, say so and merge — never commit your
 own copy of a shared file over someone else's.
@@ -32,16 +32,16 @@ own copy of a shared file over someone else's.
 
 1. `CONTEXT.md` in the repo root — how the site is built, the board's pin map, the design
    system, the rules that must not be broken, and the checklist in section 10. Read
-   **§1.1** before anything else: the site's numbering does not match the Google Classroom
-   and there is a renumbering job pending. Read **§2** for the pin map and the I²C address
-   trap, and **§5.4** for the no-answers rule.
-2. `docs/activity-8.html` — the freshest full build, and the one to copy the page skeleton
+   **§1.1** before anything else: the site's numbering now matches the Google Classroom
+   exactly, which is why the numbers jump from 8 to 10 — that gap is correct. Read **§2** for
+   the pin map and the I²C address trap, and **§5.4** for the no-answers rule.
+2. `docs/activity-10.html` — the freshest full build, and the one to copy the page skeleton
    from. Read `docs/activity-11.html` too: it is the newest page of all, it has the Pico W
    board group, and it is where `def` and callbacks were introduced.
-3. `docs/activity-7.html` — because Activity 9 is the *other* half of what Activity 7
-   started. Activity 7 is where a sensor first answered *how much*, where `round()` arrived,
+3. `docs/activity-8.html` — because Activity 9 is the *other* half of what Activity 8
+   started. Activity 8 is where a sensor first answered *how much*, where `round()` arrived,
    and where `>` and a threshold arrived. Activity 9 leans on all three and re-teaches none.
-4. `docs/teacher-8.html` for the teacher-page pattern, and `docs/teacher.html` — the teacher
+4. `docs/teacher-10.html` for the teacher-page pattern, and `docs/teacher.html` — the teacher
    landing page, which needs an Activity 9 row adding to it.
 5. `docs/style.css`, `docs/code.js`, `docs/activity.js` — shared, already written. Reuse
    them. Only add to `style.css` if Activity 9 genuinely needs a new component.
@@ -61,15 +61,14 @@ not refer to it on the page** — rule 4, the site is self-contained.
 - `docs/teacher-9.html` — the teacher page (`noindex`, gated, not linked from anywhere).
 - Update `docs/teacher.html` — add the Activity 9 row and refresh its pins table.
 - Update `docs/index.html` and `README.md`: move Activity 9 from "coming soon" to live.
-  Activity 8's badge becomes "Ready" and Activity 9's becomes "New". Leave the note about
-  the numbering being brought into line where it is.
+  Activity 10's badge becomes "Ready" and Activity 9's becomes "New".
 - Add the Activity 9 nav + footer link to every existing page — `index.html`,
-  `activity-1.html` … `activity-8.html`, `activity-11.html`, `teacher.html`,
-  `teacher-1.html` … `teacher-8.html`, `teacher-11.html`, `pinout.html`. Two lines each.
+  `activity-1.html` … `activity-10.html`, `activity-11.html`, `teacher.html`,
+  `teacher-1.html` … `teacher-10.html`, `teacher-11.html`, `pinout.html`. Two lines each.
   It is easy to forget and it strands the student.
 - Update `CONTEXT.md`: add an "Activity 9" block to section 7, and replace this file with
-  `PROMPT-activity-10.md`. (`PROMPT-renumber.md` and `PROMPT-activity-12.md` stay where
-  they are — they are separate jobs.)
+  `PROMPT-activity-11.md`. (`PROMPT-activity-12.md` stays where it is — it is a separate
+  job, written by another session.)
 
 **Things to settle with me before you build anything:**
 
@@ -107,7 +106,7 @@ choose your two numbers from that. **That is the real lesson of this activity an
 belongs on the student page.** A sensor's raw number means nothing until you have found out
 what it reads at both ends, and no worksheet can tell you, because it depends on your probe,
 your soil and your cup. Give it its own top-level section, the way adding a library was
-Activity 6's and decimals were Activity 7's — a diagram of a number line with the air
+Activity 7's and decimals were Activity 8's — a diagram of a number line with the air
 reading at one end and the wet reading at the other, and the two chosen numbers marked
 inside them. Then have the students actually do it and write their own two numbers down.
 
@@ -128,10 +127,10 @@ wrong, and fix them). The second is more honest and more memorable; it is also s
   variables, comments, `if`/`else`, `==`, `>`, `and`/`or`/`not`, indentation, `round()`,
   `str()`, thresholds, and the whole business of getting a library file onto the Pico. A
   one-line reminder and a link is enough for every one of them. **`>` and the idea of a
-  threshold are Activity 7's** — point back at `activity-7.html#numbers` rather than
+  threshold are Activity 8's** — point back at `activity-8.html#numbers` rather than
   re-explaining.
 - **No `for` loops**, still.
-- **This is the first analogue pin in the module.** Activity 7's sensor answered *how much*
+- **This is the first analogue pin in the module.** Activity 8's sensor answered *how much*
   but came over the I²C bus with a library in between. This one is a voltage on a wire,
   read directly. That contrast is the opening of the lesson.
 - **Big number means dry**, which is backwards from what everybody expects, and the page has
@@ -146,20 +145,20 @@ wrong, and fix them). The second is more honest and more memorable; it is also s
    on the page, including inside explanation tables, `<summary>` lines, quiz options and
    troubleshooting tables. Prove it: select the whole rendered page, copy, and confirm
    nothing runnable comes out. The one deliberate exception is a **library file**, which
-   students paste — Activity 6 established that and says why.
+   students paste — Activity 7 established that and says why.
 2. **No code inside diagrams either.** SVG `<text>` is selectable. Draw program structure as
-   bars and labels, the way Activities 2, 4 and 5 do. Single operators (`=`, `==`, `>`,
+   bars and labels, the way Activities 2, 5 and 6 do. Single operators (`=`, `==`, `>`,
    `//`) as big glyphs are fine — whole lines are not.
 3. **No exercise answer on the student page** (rule 5.4). Task, expected-result diagram,
    progressive clues that stop short of the solution, and a line saying the teacher has the
    answer. The worked answer goes on `teacher-9.html` only. **Every page in the module now
-   follows this** — Activities 1–4 were cleaned up during Activity 8's build.
+   follows this** — Activities 1, 2, 4 and 5 were cleaned up during Activity 10's build.
 4. **No references to any older version of this module.** This site is self-contained. The
    deck you are working from calls itself Activity 12; the page must never mention it.
 5. **Wokwi first**, then the real board, as two tabs. If Activity 9 wires anything, **copy
-   the Wokwi-look Pico group out of `activity-8.html` or `activity-11.html`** rather than
+   the Wokwi-look Pico group out of `activity-10.html` or `activity-11.html`** rather than
    drawing a new one — `CONTEXT.md` §7 has the geometry and the pin-centre formula. Activity
-   9 does *not* need the network, so use the plain-Pico group from `activity-7.html`, not
+   9 does *not* need the network, so use the plain-Pico group from `activity-8.html`, not
    the Pico W one. **Make the diagrams look the way the circuit looks in Wokwi, and keep the
    pin numbers visible on the Pico** — students get the physical-pin versus GP-number
    confusion every single time, and this activity adds a third number (the LilEx5's own
@@ -173,9 +172,9 @@ wrong, and fix them). The second is more honest and more memorable; it is also s
    they are the colours of a physical object). No crossings, no overlapping labels; render
    the page and **look at every diagram, in both themes**, before you commit.
 7. **Teacher notes stay concise** — bullets and tables, one sentence per point, no long
-   prose. `teacher-8.html` is the model. *(Carry this into the next prompt too.)*
+   prose. `teacher-10.html` is the model. *(Carry this into the next prompt too.)*
 8. **Render and check both pages before publishing** — see the recipe in `CONTEXT.md` §8.1.
-   There is a working Playwright script from Activity 8's build you can rewrite from that
+   There is a working Playwright script from Activity 10's build you can rewrite from that
    section; it also wraps every `<table>` in `.tablescroll`, without which a three-column
    table overflows at 390 px. Verify: every `.codeimg` becomes a canvas, the progress bar
    counts, the quiz renders, no console errors, no horizontal overflow at 390 px, and both

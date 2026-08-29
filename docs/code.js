@@ -1,7 +1,8 @@
 /* code.js - renders code blocks as pictures so students cannot copy-paste them.
    Usage: <span class="codeimg" data-code="BASE64 OF THE CODE"></span>
    Add class "inline" for a small chip inside a table cell or a sentence.
-   Also sanitises the clipboard, so inline <code> cannot be copied either. */
+   Also sanitises the clipboard, so inline <code> cannot be copied either.
+   At the bottom of this file: the staff door, three clicks on "See". */
 /* Renders code as a picture on a <canvas>. There is no text node to select,
    so students cannot copy-paste it - they have to type it. */
 (function(){
@@ -163,5 +164,46 @@
   document.addEventListener('cut', sanitise);
   document.addEventListener('dragstart', function(e){
     if(insideCode(e.target)) e.preventDefault();
+  });
+})();
+
+
+/* ---------- the staff door ----------
+   Three clicks on the word "See" in the coloured strip at the very top of the
+   page opens that page's teacher notes. Kamil's call, so staff can reach the
+   answers from the page they are teaching without carrying a second set of
+   links around.
+
+   Deliberately quiet: nothing in the markup, no cursor change, no hover state,
+   and no feedback on the first two clicks. The three have to land within two
+   seconds of each other or the count starts again.
+
+   It is a shortcut, not a lock, and nothing about it makes the teacher pages
+   safer or less safe than they already were. They are unlisted and noindexed,
+   never protected; the repository is public; and a student who finds the
+   gesture still lands on the "please go back and try the exercise first" gate.
+   See CONTEXT.md section 9. */
+(function(){
+  "use strict";
+  var see = document.querySelector('.chev span');
+  if(!see) return;
+
+  function target(){
+    var here = location.pathname.split('/').pop() || 'index.html';
+    var m = here.match(/^activity-(\d+)\.html$/);
+    if(m) return 'teacher-' + m[1] + '.html';   /* this activity's own notes */
+    if(here === 'teacher.html') return null;    /* already there */
+    return 'teacher.html';                      /* home, pin reference, a teacher page */
+  }
+
+  var hits = 0, last = 0;
+  see.addEventListener('click', function(){
+    var now = Date.now();
+    hits = (now - last > 2000) ? 1 : hits + 1;
+    last = now;
+    if(hits < 3) return;
+    hits = 0;
+    var to = target();
+    if(to) location.href = to;
   });
 })();

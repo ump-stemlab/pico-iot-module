@@ -73,18 +73,6 @@
 
 <div class="wrap">
 
-<div class="cal note" id="rnnote"><b>The activity numbers have changed</b>
-  This page was <strong>Activity 8</strong> until August 2026, and is now
-  <strong>Activity 10</strong>, matching your Google Classroom. Nothing about the
-  activity itself has changed.
-  <button type="button" class="rnx">Got it</button></div>
-<script>
-(function(){var n=document.getElementById('rnnote');if(!n)return;
-try{if(localStorage.getItem('lilex5:renumber-note')==='1'){n.hidden=true;return;}}catch(e){}
-var b=n.querySelector('.rnx');if(b)b.addEventListener('click',function(){n.hidden=true;
-try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
-</script>
-
 <section>
   <h2>&#127919; Your mission</h2>
   <p class="lede">Make the board <strong>measure the weather in this room</strong> and send that
@@ -490,6 +478,8 @@ try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
     <h4>Find your username and your key</h4>
     <p>Click <strong>My Key</strong> in the top bar. Two things are shown: your <strong>username</strong>
     and your <strong>active key</strong>. Write both down somewhere only you can see.</p>
+  <figure class="shot"><img src="img/aio-key.png" alt="The Adafruit IO key panel. It gives a username and an active key, with a Regenerate Key button beside the key. The key itself has been blacked out in this picture." loading="lazy">
+    <figcaption>The <strong>yellow key button</strong> in the top bar opens this. Your username is the short name; the active key is the long secret. It is blacked out here on purpose &mdash; do the same if you ever show your screen.</figcaption></figure>
     <div class="cal warn"><b>Your key is a password</b>
     It lets anybody who has it write to your account as if they were you. Never put it in a screenshot,
     never paste it into a group chat, and never type it into somebody else&rsquo;s program. If it does get
@@ -502,21 +492,44 @@ try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
     <p><strong>Feeds</strong> in the top bar, then <strong>+ New Feed</strong>. Name it
     <strong>temperature</strong>, all in lower case &mdash; the name becomes part of the address, and the
     address is fussy about capitals.</p>
+  <figure class="shot"><img src="img/aio-feeds.png" alt="The Adafruit IO Feeds page. A blue New Feed button sits above a table of feeds with columns for feed name, key, last value and when it was recorded." loading="lazy">
+    <figcaption>The <strong>Feeds</strong> page. A new account already has a <em>Welcome Feed</em> &mdash; leave it alone, you are making your own.</figcaption></figure>
+  <figure class="shot"><img src="img/aio-new-feed.png" alt="The Create a new Feed dialog, with the name temperature typed into the Name box and a short description underneath." loading="lazy">
+    <figcaption>Name it <strong>temperature</strong>, in lower case. The description is only for you.</figcaption></figure>
     <p>Open the feed and click <strong>Feed Info</strong>. The <em>MQTT address</em> shown there is the
     line you will put in your program. Copy it exactly.</p>
+  <figure class="shot"><img src="img/aio-feed-address.png" alt="The Edit Feed panel, showing a list headed Current Endpoints with three addresses: a Web one, an API one, and an MQTT one which reads kamilkhal96 slash feeds slash temperature." loading="lazy">
+    <figcaption>Three addresses are shown. <strong>The one you want is the MQTT one</strong> &mdash; the short one, with no <code>https://</code> in front of it. Copy that, and do not retype it.</figcaption></figure>
+
     <label class="chk"><input type="checkbox" data-p="a3"><span>I have a feed called temperature, and I have copied its address</span></label>
   </div></div>
 
   <div class="step"><div class="idx">4</div><div class="body">
     <h4>Make a dashboard with a graph on it</h4>
-    <p><strong>Dashboards</strong> &rarr; <strong>+ New Dashboard</strong>, name it anything. Open it,
-    click the gear icon, then <strong>Create New Block</strong>, and choose the <strong>line
-    chart</strong>. Tick your <em>temperature</em> feed to connect it, set <em>Show History</em> to
-    <strong>Live</strong>, and create the block.</p>
+    <p><strong>Dashboards</strong> &rarr; <strong>+ New Dashboard</strong>, and name it anything.</p>
+  <figure class="shot"><img src="img/aio-new-dashboard.png" alt="The Create a new Dashboard dialog, with the name Weather Station typed in and a description beneath it." loading="lazy">
+    <figcaption>The name is only a label. It does not have to match anything in your program.</figcaption></figure>
+    <p>Open it, click <strong>+ New Block</strong>, and pick the <strong>line chart</strong> out of the
+    gallery.</p>
+  <figure class="shot"><img src="img/aio-block-gallery.png" alt="The Create a new block dialog showing a gallery of block types as small pictures: a toggle switch, a reset button, a slider, a gauge, a text block, a stream, a camera and a line chart." loading="lazy">
+    <figcaption>Sixteen kinds of block. The <strong>line chart</strong> is the one with the mountain-shaped graph on it.</figcaption></figure>
+    <p>Tick your <strong>temperature</strong> feed to connect it &mdash; a block with no feed attached
+    will sit there for ever showing nothing.</p>
+  <figure class="shot"><img src="img/aio-connect-feed.png" alt="The Connect Feeds step, listing the feeds on the account with tick boxes. The temperature feed is ticked and shows a last value of 30.1 recorded two minutes ago." loading="lazy">
+    <figcaption>One tick. If your feed already shows a last value here, something has published to it &mdash; which is a good sign, not a mistake.</figcaption></figure>
+    <p>Give the block a title, decide how much history it should show, and create it.</p>
+  <figure class="shot"><img src="img/aio-block-settings.png" alt="The Block settings step. There is a title box reading Temperature, a Show History drop-down set to 24 hours, axis labels, and a preview of the finished chart on the right." loading="lazy">
+    <figcaption><strong>Show History</strong> is how far back the graph looks. <em>Live</em> shows only what is arriving now; <em>24 hours</em> keeps the whole lesson on screen, which is usually nicer. Either is fine.</figcaption></figure>
+
     <p>You now have an empty graph waiting for its first point. Leave the tab open &mdash; watching it
     fill up is the best moment in this activity.</p>
     <label class="chk"><input type="checkbox" data-p="a4"><span>I have an empty line chart on a dashboard, waiting</span></label>
   </div></div>
+
+  <div class="cal note"><b>The pictures are real, and websites move</b>
+  Every screenshot on this page was taken from Adafruit IO itself. Sites get redesigned, so a button may
+  have shifted since &mdash; the <em>words</em> on it will still be the ones written here, so go by those
+  rather than by where it sits.</div>
 
   <div class="cal info"><b>Who can see your numbers?</b>
   A feed is <strong>private to your account</strong> unless you deliberately make it public, so this is
@@ -602,6 +615,8 @@ try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
       <code>micropython-umqtt.simple</code>, press search, then <strong>Install</strong>.</p>
       <p>Thonny puts it on the Pico inside a folder called <code>lib</code>. You will never open it, and
       that is rather the point &mdash; this is what installing a library normally looks like.</p>
+  <figure class="shot"><img src="img/thonny-packages.png" alt="Three Thonny windows. In the first, umqtt simple has been typed into the search box and searched for on PyPI. In the second, the result micropython-umqtt.simple has been opened and there is an Install button. In the third, the file browser shows the Raspberry Pi Pico with a lib folder, a umqtt folder inside it and simple.py inside that." loading="lazy">
+    <figcaption>Search, install, and then check: the file has to end up on the <strong>Pico</strong>, inside <code>lib/umqtt/</code>. If the file browser does not show it there, the install did not finish.</figcaption></figure>
     </div></div>
     <div class="cal warn"><b>Manage packages talks to the Pico, not to your laptop</b>
     Thonny has to be connected to the board, with nothing running, before the install will work. If the
@@ -1088,6 +1103,9 @@ try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
   <text x="390" y="312" class="dsub" text-anchor="middle">The graph rising like that is somebody holding the sensor &mdash; or, in Wokwi, dragging the temperature slider.</text>
   <text x="390" y="334" class="dsub" text-anchor="middle">A perfectly flat line usually means nothing is changing the room, not that anything is broken.</text>
 </svg>
+
+  <figure class="shot"><img src="img/aio-live-chart.png" alt="A dashboard called Weather Station with a single line chart on it, titled Temperature, showing a line that rises from about 28 to just over 30 degrees across a few minutes." loading="lazy">
+    <figcaption>This is the moment. Somebody put their hands round the sensor about two thirds of the way along.</figcaption></figure>
 
   <h3>Check yourself</h3>
   <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell says it joined the network, and shows an address</span></label>

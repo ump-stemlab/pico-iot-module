@@ -31,44 +31,46 @@ language, one at a time.
 ### 1.1 The activity list
 
 The **Google Classroom** (`2026 Agrovator Raspberry Pi IOT`) is the authority on numbering,
-and **the site now matches it**. Every page's filename is its Classroom number:
-`activity-4.html` is Activity 4, and so on.
+and **the site now matches it exactly**. Kamil confirmed the Classroom is authoritative
+during Activity 10's build, and the whole site was renumbered to it at the end of that build.
 
-- **0** — Getting Started — *not built*
-- **1** — Light Up an LED
-- **2** — Make an LED Blink
-- **3** — Digital Output / Servo — *not built*
-- **4** — Digital Input
-- **5** — Making Decisions
-- **6** — Advanced Logic (And, Or, Not)
-- **7** — Words on a Screen
-- **8** — Motion Sensing (Sensors and Numbers)
-- **9** — Soil Moisture — *not built, and next*
-- **10** — Wi-Fi Connectivity (Internet and Data)
-- **11** — Control From Anywhere
-- **12** — Radio Communication — *not built*
+| # | Activity | State |
+|---|---|---|
+| 0 | Getting Started | not built |
+| 1 | Light Up an LED | live |
+| 2 | Make an LED Blink | live |
+| 3 | Digital Output / Servo | not built |
+| 4 | Digital Input | live |
+| 5 | Making Decisions | live |
+| 6 | Advanced Logic (And, Or, Not) | live |
+| 7 | Words on a Screen | live |
+| 8 | Motion Sensing (Sensors and Numbers) | live |
+| 9 | Soil Moisture | **next** |
+| 10 | Wi-Fi Connectivity (Internet and Data) | live |
+| 11 | Control From Anywhere | live |
+| 12 | Radio Communication | not built |
 
-Slots 0, 3, 9 and 12 are "coming soon" tiles on `index.html` and rows in `README.md` until
-those pages exist. Decks for 0 and 3 are in `Module Revamp/PPTX`.
+There is no Activity 0 or 3 on the site because it never had them; both have decks in
+`Module Revamp/PPTX`. The numbers **jump from 8 to 10** and that is correct, not a mistake —
+do not "tidy" it.
 
-**How it got here.** The site was built before the Classroom was read, and never had
-*Getting Started* or the *Servo*, so everything from Digital Input onwards sat one or two
-numbers early. It was renumbered on **29 August 2026**: Digital Input 3→4, Making Decisions
-4→5, And/Or/Not 5→6, Words on a Screen 6→7, Sensors and Numbers 7→8, Internet and Data 8→10.
-Activities 1, 2 and 11 did not move.
+**What the renumber moved**, for anyone reading an old link or an old chat: 3→4, 4→5, 5→6,
+6→7, 7→8, 8→10. Activities 1, 2 and 11 did not move.
 
-Two things from that job are still in the pages and should be removed once the numbers have
-bedded in:
+**Redirects were not possible and this is worth knowing.** After the move `activity-4.html`
+*exists* — it is Digital Input — so an old bookmark to `activity-4.html` (which used to be
+Making Decisions) now lands on a real page showing a different activity, and there is nowhere
+to put a redirect. The only filenames that freed up were `activity-3.html` and
+`activity-9.html`. The mitigation is that every page's `<h1>` names the activity, so a
+student who lands wrong can see it immediately.
 
-- `docs/activity-3.html` and `docs/teacher-3.html` are **redirect stubs** pointing at
-  Activity 4, because that is the one filename the renumber freed. Delete them when
-  Activity 3 (Servo) is built, and put the real page there.
-- Every page that moved carries a dismissible **"the activity numbers have changed"**
-  callout (`id="rnnote"`, the `.rnx` button style at the foot of `style.css`, and the
-  `lilex5:renumber-note` flag). Old links to Activities 4–8 land on the next activity along
-  rather than a 404, so the callout is what tells a student they are one page off.
-  The `lilex5:renumbered-2026-08` block at the top of `activity.js` moved every student's
-  saved progress onto the new filenames; leave it in place as long as the callouts are there.
+**Progress ticks are keyed by filename** — `activity.js` uses
+`'lilex5v2:' + location.pathname.split('/').pop()`. The renumber moved every filename, so old
+ticks would have surfaced on the wrong activity (most `data-p` keys differ between activities,
+but `w1` and `r1`–`r6` overlap). **The prefix was bumped from `lilex5:` to `lilex5v2:` at the
+same time**, which wipes every saved tick and gives everybody a clean slate — Kamil's call,
+the site being in alpha with no real progress to lose. If a future change ever moves filenames
+again, bump it again.
 
 ## 2. Board pin map (authoritative)
 
@@ -132,14 +134,18 @@ docs/teacher-N.html    one page per activity (instructors, unlisted)
 docs/teacher.html      index of every teacher page (instructors, unlisted)
 docs/pinout.html       searchable pin reference
 docs/style.css         the whole design system — every page links it
-docs/code.js           renders code as pictures + guards the clipboard
+docs/code.js           renders code as pictures, guards the clipboard, and carries the
+                       staff door (see §9). Every page loads it, index.html included.
 docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
-                       decision simulator, logic simulator, screen widget, typing box, quiz
+                       decision simulator, logic simulator, screen widget, reading widget,
+                       publishing widget, dashboard switch widget, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
                        (now lists teacher-1 … teacher-12)
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
 docs/img/lilex5-board-red-on.png  the same board with LED1 **lit**
+docs/img/aio-*.png                real Adafruit IO screenshots (Activity 10)
+docs/img/thonny-packages.png      Thonny's package manager (Activity 10)
 ```
 
 In the repo root: `CONTEXT.md` (this file) and **`PROMPT-activity-N.md`** — the
@@ -147,15 +153,14 @@ brief for the *next* activity, written at the end of the previous build. Normall
 only one of these: whoever builds activity N deletes it and leaves `PROMPT-activity-N+1.md`
 behind.
 
-**Right now there are two, on purpose.** `PROMPT-activity-9.md` is the brief for
-*Soil Moisture*, the next one to build, and `PROMPT-activity-12.md` is the brief for
-*Radio Communication* after it. `PROMPT-renumber.md` is the brief for the renumbering job
-itself and can go once that job is committed.
+**Right now there are two, on purpose.** `PROMPT-activity-8.md` is the brief for
+*Internet and Data*, which is still unbuilt, and `PROMPT-activity-12.md` is the brief for
+the next one to build. Delete the Activity 10 brief only when Activity 10 exists.
 
-**The numbering is not contiguous, and that is expected.** Activities 1, 2, 4–8, 10 and 11
-exist; 0, 3, 9 and 12 do not, and their numbers are held open for them. The number on a page
-is its Google Classroom number and its filename — see §1.1. Do not renumber pages to close
-a gap.
+**The numbering is not contiguous, also on purpose.** Activities 1–8 and 11 exist; 8, 9 and
+10 do not. Kamil's decision during Activity 11's build: from here on the website's activity
+number matches the number on his PowerPoint deck for the same lesson, which is what he
+teaches from. Do not renumber the existing pages — the URLs are published.
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -261,10 +266,10 @@ on. The student page carries the task, the expected-result diagram and progressi
 that stop short of the solution, plus a short callout saying the answer is with the
 teacher. The worked answer lives on `teacher-N.html` only.
 
-**This now applies to every activity.** Activities 1, 2, 4 and 5 used to carry an `<details>`
-answer block from before the rule. They were removed during Activity 10's build (Kamil asked)
-and replaced with the same *No answer on this page* callout the later pages use. The answers
-were already on their `teacher-N.html` pages, so nothing was lost. Where a removed block carried
+**This now applies to every activity.** Activities 1, 2, 4 and 5 used to carry an `<details>` answer
+block from before the rule. They were removed during Activity 10's build (Kamil asked) and
+replaced with the same *No answer on this page* callout the later pages use. The answers
+were already on `teacher-1..4.html`, so nothing was lost. Where a removed block carried
 information that was **setting up rather than solving** — Activity 4's second pushbutton,
 Activity 5's second button and LED, Activity 2's indentation warning — that paragraph was
 moved into the last clue rather than deleted.
@@ -404,7 +409,7 @@ them in the markup if they are there.
   exercise is deliberately *two separate `if`/`else` pairs* rather than one combined condition, so
   that Activity 6 has the contrast to build on. Also ruled out: `elif` — see the note below.
 
-  **`elif` is kept out of Activities 1–8, 10 and 11, and arrives in Activity 9.** Kamil's call,
+  **`elif` is kept out of Activities 1–10 and 11, and arrives in Activity 9.** Kamil's call,
   made during Activity 10's build. Up to here nothing needs it and the two-road picture of a
   decision is worth more than the shortcut. Activity 9 (soil moisture) has three genuine
   zones — dry, just right, wet — which is the first honest reason for it in the whole module,
@@ -700,12 +705,30 @@ them in the markup if they are there.
   forever-loop versus a loop that lets go, the broker fanning out to three listeners, how the address is
   built, two kinds of library, the Wokwi wiring, what you should see, the screen's wiring for the exercise,
   the same reading in two places, and one round of the loop.
+- **Ten real screenshots**, and this is the first page in the module to carry any. Kamil asked for them.
+  They came out of `Module Revamp/PPTX/Activity 9 - Internet and Data.pptx` (which the deck itself now
+  numbers 10) — nine of Adafruit IO, one of Thonny's package manager. Rules that were applied and should
+  be applied again:
+  - **Crop the browser's top strip off.** It carries the account holder's real name, and it is clutter.
+    It is 51 px tall on a 1530-wide capture, 60 px on a 1449-wide one.
+  - **Quantise to 256 colours.** Flat UI screenshots lose nothing visible and shrink by about 60% —
+    1.5 MB became 660 KB for the ten.
+  - **Never a screenshot of code.** The deck has several; they were all left out. Code on this site is a
+    `.codeimg`, and a second rendering of the same program would drift out of step with the first.
+  - **The key stays blacked out.** Adafruit's own panel redacts it in the source image; the caption points
+    at that redaction and uses it to make the security point, which lands better than the sentence did.
+  - The page carries a callout saying the pictures are real and that websites get redesigned, so go by the
+    words on a button rather than by where it sits.
+  - They live in `docs/img/` as `aio-*.png` and `thonny-packages.png`, and `style.css` gained a
+    `figure.shot` rule — a bordered picture with a centred caption, so a white screenshot does not bleed
+    into a light card or glare out of a dark one.
 
 ### Activity 11 — Control from Anywhere
 
 Built from `Activity 11 - Control from Anywhere.pptx` in the STEM LAB PPTX folder.
-**Numbered 11 to match the Google Classroom**, which it already did before the rest of the
-site was brought into line. Activity 9 (*Soil Moisture*) is the gap below it. See §1.1.
+**Note the gap** — Activities 0, 3 and 9 do not exist yet; 9 (*Soil Moisture*) is next.
+This page was the first to use the Google Classroom's numbering, and during Activity 10's
+build the whole site was renumbered to match it. See §1.1.
 
 - **The one idea is that the arrow turns round.** Every activity before this one had the
   board doing the talking. Today it *listens* — it subscribes, and something else decides.
@@ -715,12 +738,16 @@ site was brought into line. Activity 9 (*Soil Moisture*) is the gap below it. Se
   a job down), and `check_msg()` (give it a chance to run). Remove any one and the program
   runs perfectly and does nothing. All three failures are silent, which is why the page
   spends so long on them and why the try-it widget lets each one fail on its own.
-- **Written self-contained, deliberately.** Activity 10 (*Internet and Data*) had not been
-  built when this page was written, so Activity 11 teaches WiFi joining, MQTT, the Adafruit IO
+- **Written self-contained, deliberately.** Activity 10 (*Internet and Data*) did not exist
+  when this page was written, so Activity 11 teaches WiFi joining, MQTT, the Adafruit IO
   account/feed/key/dashboard and the `umqtt.simple` library from scratch. It is the longest
-  page in the module. **Now that Activity 10 exists, roughly the first third of this page
-  could collapse into links** — `#wifi`, `#account` and `#library` are the sections to gut,
-  and nothing else changes. Not yet done.
+  page in the module.
+
+  **Activity 10 exists now**, built in parallel by another session, so that first third is a
+  known duplication — including a second set of Adafruit IO screenshots if both pages carry
+  them. `#wifi`, `#account` and `#library` are the sections to collapse into links to
+  `activity-10.html`, and nothing else on the page changes. Worth half an hour before the
+  module is taught, so a class is not walked through the same account setup twice.
 - **First `def` in the module, and first callback.** Two new things at once and they need
   each other: code that does not run when you write it, and a name handed to somebody else
   so that *they* run it. The phone-number picture (`#callback`, second diagram) is the one
@@ -944,6 +971,30 @@ the previous activity's notes and to the hub from the hero.
 rewritten to match: bullets and tables rather than paragraphs, one sentence per point, and
 the tables (mistakes, going-further, pins) carrying most of the content. Nothing was
 dropped — the prose around it was. Write new ones the same way.
+
+### 9.1 The staff door — three clicks on "See"
+
+Added in Activity 10's build, at Kamil's request. **Clicking the word "See" in the coloured
+strip at the top of any page three times, within about two seconds, opens the teacher
+notes.** From `activity-N.html` it opens that activity's own `teacher-N.html`; from
+anywhere else it opens `teacher.html`. On `teacher.html` it does nothing.
+
+- It lives at the bottom of `docs/code.js`, which is the one script every page loads —
+  `index.html` had to have `<script src="code.js">` added for this, and now has it.
+- **Deliberately quiet.** Nothing in the markup, no cursor change, no hover state, and no
+  feedback on the first two clicks. `.chev` also gained `user-select:none` so a triple-click
+  does not highlight the strip and give the gesture away.
+- The gesture is written down on `teacher.html` itself and nowhere else, since that is the
+  one page students are not pointed at.
+- **It is a shortcut, not a lock, and it does not change the paragraph above.** The teacher
+  pages were never protected; a student who finds the gesture still lands on the
+  click-through gate, and the repository is public regardless. If genuine privacy is ever
+  needed, the answer is still that the notes have to leave this repo — not that the door
+  should be made harder.
+- Verified across every page type during that build: activity pages land on their own notes,
+  `index.html` and `pinout.html` land on the hub, a teacher page lands on the hub,
+  `teacher.html` stays put, two clicks with a pause do nothing, and clicking any of the other
+  three words does nothing.
 
 **`docs/teacher.html` is the hub**, added in Activity 6's build: the same gate and
 `noindex`, a row per activity with its one idea and its notes link, the module-wide rules
