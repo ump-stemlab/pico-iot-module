@@ -17,17 +17,19 @@
   <a class="nl" href="index.html">Home</a>
   <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
-  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
 <div class="gate" id="gate">
   <h2>&#128274; Teacher notes</h2>
-  <p>This page holds the exercise answer for <strong>Activity 6 &mdash; Words on a Screen</strong>.
+  <p>This page holds the exercise answer for <strong>Activity 6 &mdash; And, Or, Not</strong>.
   It is not linked from the student pages.</p>
   <p><strong>Students: please go back and try the exercise first.</strong></p>
   <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
@@ -39,8 +41,7 @@
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
     <h1>Activity 6 &mdash; teacher notes</h1>
-    <p class="sub">Words on a Screen. One idea in two halves: the OLED, and the first library that is not
-    built in.</p>
+    <p class="sub">And, Or, Not. One idea: two questions joined into one.</p>
     <div class="hero-cta">
       <a class="cta alt" href="activity-6.html">&#9654; Student page</a>
       <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
@@ -52,95 +53,84 @@
 
 <div class="wrap">
 
+<div class="cal note" id="rnnote"><b>The activity numbers have changed</b>
+  These teacher notes were <strong>Activity 5</strong> until August 2026, and are now
+  <strong>Activity 6</strong>, matching the Google Classroom. Followed an old link expecting the <strong>Words on a Screen</strong> notes? That is now <a href="teacher-7.html">Activity 7</a>.
+  <button type="button" class="rnx">Got it</button></div>
+<script>
+(function(){var n=document.getElementById('rnnote');if(!n)return;
+try{if(localStorage.getItem('lilex5:renumber-note')==='1'){n.hidden=true;return;}}catch(e){}
+var b=n.querySelector('.rnx');if(b)b.addEventListener('click',function(){n.hidden=true;
+try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
+</script>
+
 <div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
 repository is public &mdash; anyone with the URL can read it.</div>
 
 <section>
   <h2>What is being taught</h2>
   <ul>
-    <li><strong>One idea, two halves.</strong> The screen and the library need each other: the screen is
-    the reason to add a library, the library is the only way to use the screen. Same shape as Activity
-    3&rsquo;s read-and-print. Do not split them.</li>
-    <li><strong>First new hardware since Activity 3</strong>, and the first part ever that sits on a
-    <strong>bus</strong> rather than on a pin of its own. SDA is <span class="gp">GP0</span>, SCL is
-    <span class="gp">GP1</span>.</li>
-    <li><strong>Write, then show.</strong> Words go onto a page in memory; <code>show()</code> puts the
-    page on the glass. This is the single biggest source of &ldquo;mine isn&rsquo;t working&rdquo; today,
-    because a missing <code>show()</code> produces no error at all.</li>
-    <li><strong>Where a file lives is now a thing students have to think about.</strong> Up to today the
-    only file that mattered was their own. The library has to be on the Pico&rsquo;s disk, not the
-    computer&rsquo;s.</li>
-    <li><strong>The two routes genuinely differ here</strong>, for the first time in the module. Wokwi:
-    add a second project file. Thonny: save a real file onto the board. Say so out loud &mdash; students
-    comparing notes across routes will otherwise think one of them is wrong.</li>
-    <li><strong>No <code>elif</code> and no <code>for</code> loops</strong>, still. The exercise needs
-    neither.</li>
+    <li><strong>One idea:</strong> <code>and</code>, <code>or</code> and <code>not</code> &mdash; joining
+    questions so that one decision can depend on two things. The shape of an <code>if</code> does not
+    change; only the question gets longer.</li>
+    <li><strong>Open with the contrast.</strong> Activity 5&rsquo;s exercise was deliberately
+    <em>two</em> decisions. Today is <em>one</em> decision with two halves. Say that sentence out loud
+    before anything else.</li>
+    <li><strong>The trap:</strong> each half must be a whole question. This is Activity 5&rsquo;s
+    double-equals lesson one level up, and it carries the page (section
+    <a href="activity-6.html#whole">#whole</a>).</li>
+    <li><strong>No <code>elif</code>.</strong> Kept out of the module on purpose so the two-road picture
+    survives. It will come up from someone who has looked things up; nothing here needs it.</li>
   </ul>
 
   <table>
     <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
     <tbody>
-      <tr><td>No <code>show()</code></td><td>Runs perfectly. Screen stays black.</td><td><strong>Dangerous.</strong> No error, no clue. Expect this from a third of the room.</td></tr>
-      <tr><td>Library on the computer, not the Pico</td><td><code>ImportError</code> on line 2</td><td>Kind &mdash; it announces itself, but the message points at the program rather than the file.</td></tr>
-      <tr><td>No <code>fill(0)</code> inside the loop (exercise)</td><td>Words pile up on top of each other</td><td>Visible immediately. Good teaching moment.</td></tr>
-      <tr><td>Rows too close together</td><td>Two lines overlap into a smear</td><td>Obvious on the screen. 0 and 16.</td></tr>
-      <tr><td>Wrote the address by hand</td><td>Usually still works, sometimes <code>OSError</code></td><td>Nobody needs to type it. See the address note below.</td></tr>
+      <tr><td>Half a question &mdash; the second comparison left unfinished</td><td><code>SyntaxError</code>, nothing runs</td><td>Kind. It announces itself.</td></tr>
+      <tr><td>Two bare pin names joined by <code>and</code></td><td>Runs. The light never goes out.</td><td><strong>Dangerous.</strong> No error at all; reads perfectly in English.</td></tr>
+      <tr><td><code>not</code> used to &ldquo;correct&rdquo; the button inversion</td><td>Runs backwards</td><td><strong>Dangerous.</strong> Send them to <a href="activity-4.html#trap">Activity 4</a>, do not re-explain.</td></tr>
+      <tr><td><code>or</code> where <code>and</code> was meant</td><td>One key lights it</td><td>Obvious on the board within seconds.</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
-  <h2>The address &mdash; what to say when a student finds <code>0x78</code></h2>
+  <h2>The main program &mdash; two-key safety switch</h2>
+  <span class="codeimg" data-code="IyBUd28gdG9vbHM6IFBpbiBmb3IgdGhlIGJ1dHRvbnMgYW5kIHRoZSBsaWdodCwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBhbmQgU1cyIGFyZSBidXR0b25zLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyB0aGVtCnN3MSA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzIgPSBQaW4oMywgUGluLklOLCBQaW4uUFVMTF9VUCkKCiMgTEVEMSBpcyBhIGxpZ2h0IG9uIEdQMTEKbGVkID0gUGluKDExLCBQaW4uT1VUKQoKIyBPbmUgZGVjaXNpb24sIGFza2luZyBhYm91dCB0d28gdGhpbmdzIGF0IG9uY2UKd2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDA6ICAgIyBib3RoIGhlbGQgZG93bj8KICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBvbmx5IHRoZW4gZG9lcyBpdCBsaWdodAogICAgICAgIHByaW50KCJib3RoIGtleXMgaGVsZCIpCiAgICBlbHNlOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgb25lIGtleSwgb3Igbm9uZSwgaXMgbm90IGVub3VnaAogICAgICAgIGxlZC5vZmYoKQogICAgICAgIHByaW50KCJsb2NrZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   <ul>
-    <li>The driver&rsquo;s default is <code>0x3C</code> and <strong>the student page never asks anyone
-    to type an address</strong>. Keep it that way unless a board misbehaves.</li>
-    <li>Datasheets and this board&rsquo;s own documentation print <strong><code>0x78</code></strong>.
-    That is the same address with the read/write bit already tacked on the end: <code>0x3C</code>
-    shifted left by one. Both are &ldquo;right&rdquo;; MicroPython wants the 7-bit form.</li>
-    <li>Wokwi agrees: its <em>SSD1306 OLED display</em> part carries
-    <code>i2cAddress: 0x3c</code> as its own default attribute.</li>
-    <li>If a board ever needs the other one, the alternative is <code>0x3D</code> (<code>0x7A</code> in
-    the shifted form), set by a solder link on the module. Run the scan below before believing it.</li>
-  </ul>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICAgICAgICAjIGEgd29ya2luZyBzY3JlZW4gYW5zd2VycyBbNjBd" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p class="muted">Prints a list. <strong>60</strong> is <code>0x3C</code>. An empty list means nothing
-  answered at all &mdash; that is wiring or power, never the program.</p>
-</section>
-
-<section>
-  <h2>The main program &mdash; hello on the glass</h2>
-  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgd2lyZXMsIEkyQyBmb3IgdGhlIGJ1cywgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKCiMgVGhlIGJ1czogU0RBIGlzIEdQMCBhbmQgU0NMIGlzIEdQMQppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKCiMgVGhlIHNjcmVlbjogMTI4IHBpeGVscyBhY3Jvc3MsIDY0IGRvd24sIHNpdHRpbmcgb24gdGhhdCBidXMKb2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYykKCm9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZSBjbGVhbgpvbGVkLnRleHQoIkhlbGxvIiwgMCwgMCkgICAgICAjIGZpcnN0IGxpbmUsIHJpZ2h0IGF0IHRoZSB0b3AKb2xlZC50ZXh0KCJTVEVNIExBQiIsIDAsIDE2KSAgIyBzZWNvbmQgbGluZSwgMTYgcGl4ZWxzIGxvd2VyIGRvd24Kb2xlZC5zaG93KCkgICAgICAgICAgICAgICAgICAgIyBub3RoaW5nIGFwcGVhcnMgdW50aWwgeW91IHNheSB0aGlz" role="img" aria-label="Python code, 14 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <ul>
-    <li>Eight working lines, and <strong>no loop</strong> &mdash; the first program since Activity 1 that
-    ends by itself. Worth naming: the words stay because the screen holds what it was last given.</li>
-    <li><code>fill(0)</code> is not strictly needed on a freshly made screen (the driver clears it), but
-    it is in the program on purpose, because the exercise cannot work without it.</li>
-    <li>Delete the <code>show()</code> on the projector and run it. Thirty seconds, and it inoculates
-    the class against the day&rsquo;s worst bug.</li>
-    <li>Have them change <code>"Hello"</code> to their own name before moving on. It is the moment the
-    board stops being a demo.</li>
+    <li>Ten working lines. Exactly one of them is new.</li>
+    <li>The safety-switch story is worth thirty seconds: two buttons far apart means two hands nowhere
+    near the blade. It is why <code>and</code>, not <code>or</code>, is the right word here.</li>
+    <li>Change the one word to <code>or</code> on the projector and run it again. That single edit is
+    the clearest lesson on the page.</li>
   </ul>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; SW1 and SW2 as words</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA2IGV4ZXJjaXNlIC0gU1cxIGFuZCBTVzIgc2hvd24gYXMgd29yZHMgb24gdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgYnVzIGFuZCB0aGUgc2NyZWVuCmkyYyA9IEkyQygwLCBzZGE9UGluKDApLCBzY2w9UGluKDEpKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKIyBUaGUgdHdvIGJ1dHRvbnMsIGV4YWN0bHkgYXMgaW4gQWN0aXZpdHkgMwpzdzEgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCkKc3cyID0gUGluKDMsIFBpbi5JTiwgUGluLlBVTExfVVApCgp3aGlsZSBUcnVlOgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAgICAjIHdpcGUgdGhlIHdob2xlIHBhZ2UgZXZlcnkgcm91bmQKICAgIG9sZWQudGV4dCgiU1cxIiwgMCwgMCkgICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBmaXJzdCBidXR0b24KICAgIGlmIHN3MS52YWx1ZSgpID09IDA6CiAgICAgICAgb2xlZC50ZXh0KCJIRUxEIiwgNDgsIDApCiAgICBlbHNlOgogICAgICAgIG9sZWQudGV4dCgiVVAiLCA0OCwgMCkKICAgIG9sZWQudGV4dCgiU1cyIiwgMCwgMTYpICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBzZWNvbmQgYnV0dG9uCiAgICBpZiBzdzIudmFsdWUoKSA9PSAwOgogICAgICAgIG9sZWQudGV4dCgiSEVMRCIsIDQ4LCAxNikKICAgIGVsc2U6CiAgICAgICAgb2xlZC50ZXh0KCJVUCIsIDQ4LCAxNikKICAgIG9sZWQuc2hvdygpICAgICAgICAgICAgICAgICAgICAgIyBub3cgcHV0IHRoZSBwYWdlIG9uIHRoZSBnbGFzcwogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 27 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer &mdash; two-of-three keypad</h2>
+  <p>Green LED3 (GP13) lights when at least two of SW1, SW2, SW3 are held. Three pairs, joined with
+  <code>or</code>:</p>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaHJlZSBrZXlzIGFuZCBvbmUgbGlnaHQKc3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzMgPSBQaW4oNCwgUGluLklOLCBQaW4uUFVMTF9VUCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIFRocmVlIHBhaXJzLCBqb2luZWQgd2l0aCBvciAtIGFueSBvbmUgcGFpciBpcyBlbm91Z2gKd2hpbGUgVHJ1ZToKICAgIGlmIChzdzEudmFsdWUoKSA9PSAwIGFuZCBzdzIudmFsdWUoKSA9PSAwKSBvciAoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3czLnZhbHVlKCkgPT0gMCkgb3IgKHN3Mi52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApOgogICAgICAgIGdyZWVuLm9uKCkKICAgIGVsc2U6CiAgICAgICAgZ3JlZW4ub2ZmKCkKICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Python code, 17 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   <ul>
-    <li><strong>The order inside the loop is the lesson:</strong> wipe, write, show, wait. Any other
-    order fails in a way that is worth looking at.</li>
-    <li><code>48</code> is six letters&rsquo; clearance (6 &times; 8). Accept anything from 32 upwards
-    that does not collide with the label.</li>
-    <li>Two independent <code>if</code>/<code>else</code> pairs, both at four spaces &mdash; Activity
-    4&rsquo;s exercise shape, reused deliberately. A second <code>if</code> at eight spaces is still the
-    most instructive wrong answer.</li>
-    <li>Accept any sensible words for the two states, and any sensible names.</li>
-    <li><code>sleep(0.1)</code> is not compulsory. Without it the screen is redrawn hundreds of times a
-    second and looks identical; with it the class can see the loop is a loop.</li>
+    <li><strong>The thinking happens on paper.</strong> Listing the three pairs is the exercise; typing
+    them is not. A class that starts typing immediately will produce two pairs and wonder why SW1+SW3
+    does nothing.</li>
+    <li><strong>The question line is very long and that is fine.</strong> Say so, or half the room will
+    assume they have gone wrong. Brackets round each pair are not compulsory but insist on them.</li>
+    <li><strong>All three keys must also open it.</strong> If a pair &ldquo;fixes&rdquo; that with
+    <code>not</code>, they have done the first going-further task &mdash; praise it, then ask for the
+    plain version too.</li>
+    <li>Accept any sensible names. Nothing else in the program changes from the main one.</li>
   </ul>
-  <div class="cal warn"><b>Wokwi pairs need two pushbuttons added</b>
-  Diagonally opposite legs, no resistor, GP2 and GP3 &mdash; Activity 3&rsquo;s rule, unchanged. That is
-  four more wires on top of the screen&rsquo;s four. Real-board pairs have nothing to wire and will
-  finish first; have the going-further list ready.</div>
+  <details>
+    <summary>The same answer split over three lines, if a student asks</summary>
+    <p>Legal, and easier to read, but it needs an extra outer bracket and lines that continue inside it.
+    Show it only if asked &mdash; it is not required and it is not examined:</p>
+    <span class="codeimg" data-code="ICAgIGlmICgoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3cyLnZhbHVlKCkgPT0gMCkKICAgICAgICAgICAgb3IgKHN3MS52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApCiAgICAgICAgICAgIG9yIChzdzIudmFsdWUoKSA9PSAwIGFuZCBzdzMudmFsdWUoKSA9PSAwKSk6" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  </details>
+  <div class="cal warn"><b>Wokwi pairs need a third button</b>
+  Three pushbuttons, a green LED and its own 330&nbsp;&Omega; resistor &mdash; eight wires. Real-board
+  pairs have nothing to wire and will finish much sooner; have the going-further list ready.</div>
 </section>
 
 <section>
@@ -148,34 +138,26 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
     <tbody>
-      <tr><td>Centre a word</td>
-      <td>Count the letters, multiply by 8, subtract from 128, halve it. &ldquo;Hi&rdquo; is 2 letters =
-      16 pixels wide, so it starts at 56 &mdash;
-      <span class="codeimg inline" data-code="b2xlZC50ZXh0KCJIaSIsIDQwLCAyNCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      is close enough for the middle of the screen. The arithmetic is the exercise, not the answer.</td></tr>
-      <tr><td>BOTH on a third row</td>
-      <td>One more decision, using Activity 5&rsquo;s <code>and</code>, writing at down-number 32 &mdash;
-      <span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQppZiBzdzEudmFsdWUoKSA9PSAwIGFuZCBzdzIudmFsdWUoKSA9PSAwOgogICAgb2xlZC50ZXh0KCJCT1RIIiwgNDgsIDMyKQogICAgbGVkLm9uKCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td></tr>
-      <tr><td>LED agreeing with the screen</td>
-      <td>Same condition drives both. If they ever disagree, the two <code>if</code> lines are not asking
-      the same question &mdash; a genuinely good debugging lesson.</td></tr>
-      <tr><td>Fill with 1 instead of 0</td>
-      <td>The whole screen lights and the letters vanish, because the letters are drawn <em>on</em> in
-      the same colour as the background now is. Ask them to predict it first.</td></tr>
-      <tr><td>SW4 on a fourth row</td>
-      <td>Down-number 48. Which slide position reads 0 is worth discovering rather than telling &mdash;
-      have them print it and slide it.</td></tr>
-      <tr><td>How many rows fit?</td>
-      <td>Eight rows of 8 pixels: 0, 8, 16&hellip; 56. Writing at 64 or beyond puts the words off the
-      bottom and nothing appears, with no error.</td></tr>
-      <tr><td>If anyone asks for a counter</td>
-      <td>It needs one thing this module has not taught &mdash; turning a number into words before it can
-      be written. Show it only if asked:
-      <span class="codeimg" data-code="Y291bnQgPSAwCndoaWxlIFRydWU6CiAgICBpZiBzdzEudmFsdWUoKSA9PSAwOgogICAgICAgIGNvdW50ID0gY291bnQgKyAxICAgICAgICAgICAjIG9uZSBtb3JlLCBldmVyeSB0ZW50aCBvZiBhIHNlY29uZAogICAgb2xlZC5maWxsKDApCiAgICBvbGVkLnRleHQoImNvdW50IiwgMCwgMCkKICAgIG9sZWQudGV4dChzdHIoY291bnQpLCAwLCAxNikgICAgIyBhIG51bWJlciBoYXMgdG8gYmVjb21lIHdvcmRzIGZpcnN0CiAgICBvbGVkLnNob3coKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 9 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
-      Do not set it as the exercise; it lands better in Activity 7 with a real reading in it.</td></tr>
-      <tr><td>Inverting the display</td>
-      <td><span class="codeimg inline" data-code="b2xlZC5pbnZlcnQoMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      flips black and white on the whole panel. Harmless, and popular.</td></tr>
+      <tr><td>Exactly two, refuse all three</td>
+      <td>Each pair gains a third half: the pair, <code>and</code> <code>not</code> the third key. One
+      pair looks like this &mdash;
+      <span class="codeimg inline" data-code="aWYgKHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDApIGFuZCBub3QgKHN3My52YWx1ZSgpID09IDApOg==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      &mdash; and there are three of them. This is the one place <code>not</code> genuinely earns its
+      keep.</td></tr>
+      <tr><td>Door alarm: SW4 arms it, buzzer sounds when SW1 is pressed</td>
+      <td><span class="codeimg" data-code="IyBTVzQgaXMgdGhlIHNsaWRlIHN3aXRjaCAtIGl0IHN0YXlzIHdoZXJlIHlvdSBwdXQgaXQKc3c0ID0gUGluKDE1LCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpidXp6ID0gUGluKDE0LCBQaW4uT1VUKQoKd2hpbGUgVHJ1ZToKICAgIGlmIHN3NC52YWx1ZSgpID09IDAgYW5kIHN3MS52YWx1ZSgpID09IDA6ICAgIyBhcm1lZCBBTkQgdGhlIGRvb3IgdG91Y2hlZAogICAgICAgIGJ1enoub24oKQogICAgZWxzZToKICAgICAgICBidXp6Lm9mZigpCiAgICBzbGVlcCgwLjEp" role="img" aria-label="Python code, 10 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
+      Which slide position gives 0 is worth finding out rather than telling: have them print the value
+      and slide it. If it is the other way round, the comparison becomes 1 &mdash; not a
+      <code>not</code>.</td></tr>
+      <tr><td>Green &ldquo;safe&rdquo; light on the two-key switch</td>
+      <td>Two lines in each road: red on and green off in one, red off and green on in the other. First
+      time a block holds two lines that do opposite things.</td></tr>
+      <tr><td>Doorbell with <code>or</code></td><td>Same program, <code>or</code> instead of
+      <code>and</code>, buzzer instead of the LED. Loud. Ten seconds is plenty.</td></tr>
+      <tr><td>All three keys needed</td><td>Two joining words in one question, all <code>and</code>.
+      Worth pointing out that they chain without brackets and without limit.</td></tr>
+      <tr><td>SW1 held <em>and</em> SW2 not held</td><td>The pair with one half flipped. Good prediction
+      question: most of the class expects it to do nothing rather than to work.</td></tr>
     </tbody>
   </table>
 </section>
@@ -183,22 +165,15 @@ repository is public &mdash; anyone with the URL can read it.</div>
 <section>
   <h2>Before the lesson</h2>
   <ul>
-    <li><strong>Get the library onto every real board yourself, beforehand, if you can.</strong> Thirty
-    students each copying a file is thirty chances to put it in the wrong place, and it is not what the
-    lesson is about. Ten minutes with a USB hub saves the first half of the period.</li>
-    <li>If they must do it themselves, do it <em>together</em>, on the projector, before anyone writes a
-    line of the program.</li>
-    <li><code>ssd1306.py</code> from <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">ump-stemlab/stemcube</a>
-    on a shared drive or a USB stick &mdash; assume the lab has no internet.</li>
-    <li><strong>Check every screen lights.</strong> A dead screen and a missing <code>show()</code> look
-    exactly the same. Run the hello program on each board once.</li>
-    <li>Wokwi route: nothing to install, but they need to be able to reach
-    <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the library file</a>
-    to paste it. Have it open in a tab, or on the shared drive.</li>
-    <li>Activities 1&ndash;5 done. <code>if</code>/<code>else</code> and the button inversion are both
-    needed for the exercise.</li>
-    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>;
-    <a href="pinout.html">pin reference</a> open on every machine.</li>
+    <li>Activities 1&ndash;5 done. Pin naming, the loop, <code>print()</code>, <code>if</code>/
+    <code>else</code>, <code>==</code> and both indent levels are all assumed and none is re-taught.</li>
+    <li><strong>Check SW1 <em>and</em> SW2 on every board.</strong> A dead second button looks exactly
+    like a wrong condition.</li>
+    <li>Two-finger test: students must be able to hold SW1 and SW2 down together. Some will need two
+    hands.</li>
+    <li>Wokwi route: one extra pushbutton over Activity 5, three extra over that for the exercise.</li>
+    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>; <a href="pinout.html">pin
+    reference</a> open on every machine.</li>
   </ul>
 </section>
 
@@ -208,19 +183,25 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
     <tbody>
-      <tr><td>Left out <code>show()</code></td><td>Black screen, no error</td><td>The big one. Ask what the last line of their program does. Do not tell them.</td></tr>
-      <tr><td>Library saved to the computer, not the Pico</td><td><code>ImportError: no module named 'ssd1306'</code></td><td>Read the message with them. Python looked on the <em>Pico&rsquo;s</em> disk. Open Thonny&rsquo;s Files panel.</td></tr>
-      <tr><td>File named <code>SSD1306.py</code> or <code>ssd1306.py.txt</code></td><td>Same <code>ImportError</code></td><td>Windows hides extensions. Turn them on once, at the start of the year.</td></tr>
-      <tr><td>Typed <code>ssd1306</code> capitalised in the import</td><td><code>ImportError</code> again</td><td>File name lower case; the tool inside it upper case. Two different things on one line.</td></tr>
-      <tr><td>Missing <code>I2C</code> from the machine import</td><td><code>NameError: name 'I2C' is not defined</code></td><td>Two tools, one comma. Compare with their Activity 5 top line.</td></tr>
-      <tr><td>Bus pins wrong way round</td><td><code>OSError: [Errno 5] EIO</code></td><td>SDA is GP0, SCL is GP1. Alphabetical order matches numerical order &mdash; a rare kindness.</td></tr>
-      <tr><td>Wokwi: VCC left unwired</td><td><code>OSError</code>, blank part</td><td>A screen with no power cannot answer. Four wires, not two.</td></tr>
-      <tr><td>Wokwi: VCC to VBUS (pin 40)</td><td>Usually works, sometimes odd</td><td>3V3 is pin 36. Same rule as always &mdash; 5&nbsp;V is not for this.</td></tr>
-      <tr><td>Both lines at the same down-number</td><td>An unreadable smear</td><td>Ask how tall a letter is. Then ask what 0 and 8 would look like.</td></tr>
-      <tr><td>Exercise: <code>fill(0)</code> above the loop</td><td>HELD and UP printed on top of each other</td><td>Where does the wipe have to happen? Every round, or once?</td></tr>
-      <tr><td>Exercise: <code>show()</code> inside the <code>if</code></td><td>Screen freezes on one state</td><td>Show once per round, at the end, whatever was decided.</td></tr>
-      <tr><td>Compared with 1</td><td>Words are backwards</td><td>Activity 3&rsquo;s inversion, fourth appearance. Send them to <a href="activity-3.html#trap">that page</a>.</td></tr>
-      <tr><td>Unplugged the board and the screen went blank</td><td>Blank screen</td><td>Correct behaviour, not a fault. The screen only holds what it was last given while powered.</td></tr>
+      <tr><td>Bare pin names joined with <code>and</code></td><td>Light on permanently, no error</td>
+      <td>The most important moment of the lesson. Ask what the name on its own <em>is</em>. Cover one
+      half with a hand: what is left is not a question.</td></tr>
+      <tr><td>Second half unfinished</td><td><code>SyntaxError</code></td><td>Count the pieces: value,
+      two equals, number. Six of them in the exercise.</td></tr>
+      <tr><td><code>or</code> instead of <code>and</code></td><td>One key lights it</td><td>Let the board
+      tell them. Ask which word a safety switch needs.</td></tr>
+      <tr><td><code>not</code> in front of a comparison</td><td>Backwards, or unreadable</td><td>Two
+      negatives. Compare with 0 and delete the <code>not</code>.</td></tr>
+      <tr><td>Compared with 1</td><td>On except when both held</td><td>Activity 4&rsquo;s inversion,
+      third appearance. Send them to that page.</td></tr>
+      <tr><td>Both setup lines on the same pin</td><td>One key seems to do both</td><td>Read the two
+      lines side by side. GP2 and GP3.</td></tr>
+      <tr><td>Only two pairs in the exercise</td><td>One combination silently fails</td><td>Ask them to
+      test SW1+SW3 specifically. It is the pair everybody forgets.</td></tr>
+      <tr><td>Wrote <code>elif</code></td><td>Works, but off-map</td><td>Not needed anywhere in this
+      module. Do not spend the lesson on it.</td></tr>
+      <tr><td>Second button wired to two legs on the same side (Wokwi)</td><td>Nothing at all</td>
+      <td>Diagonally opposite legs. Activity 4&rsquo;s rule, unchanged.</td></tr>
       <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
     </tbody>
   </table>
@@ -230,18 +211,18 @@ repository is public &mdash; anyone with the URL can read it.</div>
 <section>
   <h2>Teaching notes</h2>
   <ul>
-    <li><strong>Open with the screen, not the library.</strong> Show a board with words on it first. The
-    library is a chore; it needs a reason to exist before anyone will care about it.</li>
-    <li><strong>The page-and-glass widget on the student page is worth five minutes on the
-    projector.</strong> Write both lines, then wipe, then show. Nothing to type, and it makes
-    <code>show()</code> unforgettable.</li>
-    <li><strong>Do the bus with people.</strong> Call a name across the room, then a message. Everyone
-    hears both; one person answers. That is I&sup2;C, and it takes ninety seconds.</li>
-    <li>Hexadecimal needs one sentence and no more: it is a way of writing numbers,
-    <code>0x3C</code> is 60, nobody converts them by hand.</li>
-    <li><strong>Let them paste the library.</strong> The no-copying rule is about their own programs.
-    Say that out loud, or the rule looks arbitrary.</li>
-    <li>The library file is on the Pico for good. Activity 7 will use it again without any of this.</li>
+    <li><strong>Do the joining words with people first.</strong> &ldquo;Stand up if you have a phone
+    <em>and</em> a pen.&rdquo; Then <em>or</em>. The <code>or</code> round is the one that teaches
+    &mdash; half the room sits down again because they think they must pick one.</li>
+    <li><strong>The logic widget on the student page is worth five minutes on the projector.</strong>
+    Hold one pad, then both, then swap the word. Nothing to type, and it shows the two halves being
+    answered separately.</li>
+    <li><strong>The dangerous mistake is worth staging.</strong> Type the bare-names version yourself,
+    run it, and let the class work out why the light will not go out.</li>
+    <li>Keep <code>not</code> short. It is the third word, it is the fiddliest, and this activity only
+    needs students to <em>read</em> it. The going-further tasks are where it gets written.</li>
+    <li>Nothing about indentation changed today. If someone is struggling there, the problem is
+    Activity 5, not this page.</li>
     <li>Safety rules unchanged: never 5V to a GP pin, never a power pin to GND, power off at SW5 before
     changing wires.</li>
   </ul>
@@ -254,9 +235,8 @@ repository is public &mdash; anyone with the URL can read it.</div>
       <tr><td>Student page</td><td><a href="activity-6.html">activity-6.html</a></td></tr>
       <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
       <tr><td>Previous activity</td><td><a href="activity-5.html">activity-5.html</a> &middot; <a href="teacher-5.html">teacher-5.html</a></td></tr>
-      <tr><td>The library file</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a></td></tr>
-      <tr><td>The button inversion</td><td><a href="activity-3.html#trap">activity-3.html#trap</a></td></tr>
-      <tr><td>Adding the library</td><td><a href="activity-6.html#library">activity-6.html#library</a></td></tr>
+      <tr><td>The inversion</td><td><a href="activity-4.html#trap">activity-4.html#trap</a></td></tr>
+      <tr><td>The double equals</td><td><a href="activity-5.html#zero">activity-5.html#zero</a></td></tr>
       <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
       <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
       <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
@@ -269,21 +249,19 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>Pin</th><th>Used for</th><th>Activity 6</th></tr></thead>
     <tbody>
-      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td><strong>new &mdash; required</strong></td></tr>
-      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td><strong>new &mdash; required</strong></td></tr>
-      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>exercise</strong></td></tr>
-      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td><strong>exercise</strong></td></tr>
-      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>going-further only</td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>required</strong></td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td><strong>required</strong> &mdash; first time it is needed in a main program</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td><strong>exercise</strong></td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td><strong>required</strong></td></tr>
       <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td><strong>exercise</strong></td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>going-further only</td></tr>
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>going-further only</td></tr>
     </tbody>
   </table>
-  <p class="muted">Activity 6 adds <strong>GP0 and GP1</strong>, the first new pins since Activity 1, and
-  the first that are a <em>bus</em> rather than a part. Every I&sup2;C sensor from Activity 7 onwards
-  uses the same two, so they never need adding again &mdash; and nothing else may be wired to them.</p>
+  <p class="muted">Activity 6 adds no new pins. It is the first activity that needs
+  <strong>two inputs and one output at the same time</strong> &mdash; check both buttons on every board
+  before the lesson.</p>
 </section>
 
 </div>
@@ -304,11 +282,13 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
-       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

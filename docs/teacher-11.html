@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 11 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 11.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 11 &mdash; Control from Anywhere</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-11.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 11 &mdash; teacher notes</h1>
+    <p class="sub">Control from Anywhere. The arrow turns round: the board subscribes instead of
+    publishing, and the class writes its first function and hands it over.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-11.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-8.html">&#8592; Activity 8 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<div class="tbanner"><b>This activity is self-contained on purpose.</b> It teaches WiFi, MQTT, the
+Adafruit&nbsp;IO account and the library from scratch, because Activity 10 had not been built when this
+page was written. Now that it has, roughly the first third of this page could become a set of links
+instead.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea, three moving parts, and they only work together.</strong> Subscribe (ask to
+    be told), <code>def</code> (write a job down), and <code>check_msg()</code> (give it a chance to
+    run). Take any one away and nothing happens &mdash; silently.</li>
+    <li><strong>The headline is that the arrow turns round.</strong> Everything before today was the
+    board talking. A thing that publishes can be watched; a thing that subscribes can be controlled.</li>
+    <li><strong>The two ends never meet.</strong> The dashboard writes into a feed; the board reads out
+    of it. That is why it works across a continent, and it is the sentence students remember.</li>
+    <li><strong>First function in the module.</strong> Two things are new at once: writing code that
+    does not run when you write it, and handing a name to somebody else so they can run it.</li>
+    <li><strong>First <code>while</code> with a real question.</strong> Every earlier loop was
+    <code>while True</code>. The WiFi wait is the first loop in the module that ends by itself, and the
+    first place <code>not</code> is <em>written</em> rather than just read (Activity 6&rsquo;s rule
+    finally relaxing).</li>
+    <li><strong>Three levels of indentation for the first time</strong> &mdash; inside the function,
+    then inside the <code>if</code> inside the function.</li>
+    <li><strong>No <code>elif</code>, no <code>for</code> loops</strong>, still. Neither is needed.</li>
+  </ul>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
+    <tbody>
+      <tr><td>Brackets after the handed-over name</td><td>Program runs perfectly and never responds</td><td><strong>The dangerous one.</strong> No error, no clue, and it looks like a network problem. Check it first, always.</td></tr>
+      <tr><td>No <code>check_msg()</code> in the loop</td><td>Connects, subscribes, and nothing ever arrives</td><td><strong>Dangerous.</strong> Identical symptom to a wrong feed address.</td></tr>
+      <tr><td>Feed address wrong by one letter</td><td>Connects, and stays silent for ever</td><td><strong>Dangerous.</strong> MQTT gives no error for subscribing to a topic that does not exist.</td></tr>
+      <tr><td>Two boards sharing <code>MY_NAME</code></td><td>Both work, then both die, about every minute</td><td><strong>Dangerous</strong> and confusing &mdash; it looks intermittent, and it affects two students who are not sitting together.</td></tr>
+      <tr><td>Compared the message without decoding it</td><td>The <code>if</code> is never true; the light never moves</td><td>Medium. The printed line looks right on screen, which makes it worse.</td></tr>
+      <tr><td><code>subscribe</code> before <code>set_callback</code></td><td><code>AssertionError: Subscribe callback is not set</code></td><td>Kind. It says exactly what is wrong.</td></tr>
+      <tr><td>Wrong key, or a trailing space in it</td><td><code>MQTTException: 5</code></td><td>Kind, once they know 5 means &ldquo;refused&rdquo;.</td></tr>
+      <tr><td>5&nbsp;GHz network, or a captive portal</td><td><em>Joining the network&hellip;</em> for ever</td><td>Medium &mdash; and it is not their program. Have a hotspot ready.</td></tr>
+      <tr><td>Wokwi import spelt with a dot</td><td><code>ImportError: no module named 'umqtt'</code></td><td>Kind. One character.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>The pins, and the one thing the slide deck gets wrong</h2>
+  <ul>
+    <li><strong>Red LED1 is <span class="gp">GP11</span>. Green LED3 is <span class="gp">GP13</span>.</strong>
+    Same as Activity 1 and Activity 5, and confirmed against the board&rsquo;s own GPIO layout sheet.</li>
+    <li><strong>The <em>Control from Anywhere</em> PowerPoint says <code>Pin(14)</code> for the red LED,
+    and 13 and 12 for yellow and green.</strong> Those numbers are shifted by one and do not match this
+    board: on the LilEx5, <span class="gp">GP14</span> is the <strong>buzzer</strong>. A student who types
+    14 gets a noise, not a light. If you teach from the deck, correct that slide first.</li>
+    <li>No new pins at all, on either route. Nothing to wire on the real board.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The exercise answer &mdash; never leave it in the dark</h2>
+  <p class="muted">Green LED3 comes on whenever the order is <code>OFF</code>, so exactly one of the two
+  is lit at any time. Two dark lights then means the board is not running.</p>
+  <span class="codeimg" data-code="IyBPbmx5IHRocmVlIGxpbmVzIGFyZSBhZGRlZC4gRXZlcnl0aGluZyBlbHNlIGlzIHVuY2hhbmdlZC4KZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpICAgICAgICAgICAgIyBMRUQzLCB0aGUgZ3JlZW4gb25lIC0gR1AxMwoKZGVmIHdoZW5fYV9tZXNzYWdlX2Fycml2ZXModG9waWMsIG1lc3NhZ2UpOgogICAgb3JkZXIgPSBtZXNzYWdlLmRlY29kZSgpCiAgICBwcmludCgiVGhlIG9yZGVyIGlzIiwgb3JkZXIpCiAgICBpZiBvcmRlciA9PSAiT04iOgogICAgICAgIHJlZC5vbigpCiAgICAgICAgZ3JlZW4ub2ZmKCkKICAgIGVsc2U6CiAgICAgICAgcmVkLm9mZigpCiAgICAgICAgZ3JlZW4ub24oKQ==" role="img" aria-label="Python code, 12 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <table>
+    <thead><tr><th>Accepting it</th><th>What to look for</th></tr></thead>
+    <tbody>
+      <tr><td>The naming line</td><td>Outside the function, at no indentation, beside the red one. Inside the function it would be remade on every message &mdash; harmless here, wrong in principle, worth one sentence.</td></tr>
+      <tr><td>Four lines inside, not two</td><td>Each road turns one light on <em>and</em> the other off. Two lines only is the commonest wrong answer and gives both lights on.</td></tr>
+      <tr><td>Eight spaces</td><td>The new lines sit level with the ones they join, not level with the <code>if</code>.</td></tr>
+      <tr><td>The acceptance test</td><td>Flip the switch both ways, then stop the program on purpose. Both dark only in the third case.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cal note"><b>Why this exercise and not a second toggle</b>
+  It needs no new syntax at all &mdash; it is Activity 5&rsquo;s two-branch <code>if</code> with one more
+  line per branch &mdash; and it teaches something real: a device that can only say one word cannot tell
+  you it is still alive. That is worth more than a second feed.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Task</th><th>Answer, in short</th></tr></thead>
+    <tbody>
+      <tr><td>Print the time as well</td><td><code>time.ticks_ms()</code>, or import <code>localtime</code> from <code>time</code>. The Pico has no real clock until something tells it the date, so a count of milliseconds since it started is the honest answer.</td></tr>
+      <tr><td>A second Toggle on a second feed</td><td>A second <code>subscribe</code> with a second address, and <em>one</em> callback that decodes <code>topic</code> as well as <code>message</code> and compares it against each feed name.</td></tr>
+      <tr><td>Buzzer on each order</td><td><span class="gp">GP14</span>, on then <code>sleep(0.05)</code> then off, at the top of the callback. Loud in a class of thirty.</td></tr>
+      <tr><td>Show the order on the OLED</td><td>Activity 7, unchanged: wipe, write, show, inside the callback. Needs <code>ssd1306.py</code> as well as the MQTT library.</td></tr>
+      <tr><td>Publish as well as subscribe</td><td><code>mqtt.publish(topic, value)</code> in the loop, throttled &mdash; every tenth of a second is far too fast for a free account. Once every few seconds. Send the unrounded number; round only what is displayed.</td></tr>
+      <tr><td>Only act on a change</td><td>A variable holding the last order, compared before acting. Introduces the idea of remembering the previous value, which nothing in the module has needed yet.</td></tr>
+      <tr><td>Unplug the router</td><td>An <code>OSError</code> out of <code>check_msg</code>, usually. A well-behaved device reconnects; doing that properly needs <code>try</code>/<code>except</code>, which this module has not taught &mdash; say so and leave it there.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">A last will and testament &mdash; <code>set_last_will</code> before <code>connect</code>
+  &mdash; is the professional answer to &ldquo;how do I know it is still alive&rdquo;, and it is a nice
+  thing to mention in one sentence after the exercise. Do not teach it.</p>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li><strong>Make your own Adafruit&nbsp;IO account and feed the night before, and run the whole thing
+    once.</strong> Not optional. Everything after the account step depends on it working.</li>
+    <li><strong>Decide the account question and say it out loud in the first minute.</strong> Own accounts
+    (about ten minutes of the lesson, and needs email addresses), one per pair, or one class account. A
+    shared account means one student&rsquo;s switch controls everybody&rsquo;s board &mdash; which is
+    either a disaster or the best demonstration of the day, depending on when you do it.</li>
+    <li><strong>Test the network on the day, with a board, in the room.</strong> A captive portal or a
+    5&nbsp;GHz-only network kills the real-board route completely. Have a phone hotspot set to
+    2.4&nbsp;GHz as the fallback and know its name and password.</li>
+    <li><strong>Install <code>umqtt.simple</code> on every real board yourself</strong>, the way you did
+    the screen and sensor libraries. It is not what the lesson is about.</li>
+    <li>Wokwi route: check <strong>Wokwi-GUEST</strong> reaches the internet from the school&rsquo;s
+    connection. It goes out over the same network the browser uses, so a school firewall that blocks
+    outbound MQTT will block it too.</li>
+    <li><strong>Give out board names.</strong> Seat numbers on the board before the lesson starts saves
+    the confusing mid-lesson collision.</li>
+    <li>Have the key-safety line ready: it is a password, it is not to be shared, and
+    <em>Regenerate&nbsp;key</em> fixes it if it escapes.</li>
+    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>; <a href="pinout.html">pin reference</a>
+    open on every machine.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Brackets after the handed-over name</td><td>Everything runs; nothing responds</td><td>The first thing to check on any silent board. Ask what the brackets mean, then ask what they handed over.</td></tr>
+      <tr><td>Left <code>check_msg()</code> out</td><td>Same silence</td><td>Ask who is doing the looking. Nobody is.</td></tr>
+      <tr><td>Feed name with a capital letter</td><td>Silence, no error</td><td>Send them to the feed&rsquo;s <em>key</em> on the site, not its display name.</td></tr>
+      <tr><td>Typed the dashboard&rsquo;s name into the address</td><td>Silence</td><td>Feed versus dashboard. The diagram on the student page is quicker than an explanation.</td></tr>
+      <tr><td>Key copied short, or with a space</td><td><code>MQTTException: 5</code></td><td>Re-copy it. Do not read it out loud in the room.</td></tr>
+      <tr><td>Everybody left <code>MY_NAME</code> as pico26</td><td>Boards dying in rotation, apparently at random</td><td>The one to catch early, because it looks like the network. Ask the room how many pico26s there are.</td></tr>
+      <tr><td>Compared the message without decoding</td><td>Shell prints the right word, light never moves</td><td>Ask what is actually being compared. Bytes and letters are not the same thing.</td></tr>
+      <tr><td>Function indented under something</td><td><code>IndentationError</code>, or it never runs</td><td>The <code>def</code> line is at no indentation, like the imports.</td></tr>
+      <tr><td>Called their own function in the loop</td><td>Runs, then fails on a missing message</td><td>You never call it. Point at the phone-number picture.</td></tr>
+      <tr><td>Wokwi import with a dot</td><td><code>ImportError</code></td><td>One character, and the student page says which.</td></tr>
+      <tr><td>Typed <code>Pin(14)</code> from the slides</td><td>The buzzer sounds; no light</td><td>The deck is wrong for this board. GP11 is the red LED; GP14 is the buzzer.</td></tr>
+      <tr><td>Filled in the empty Wokwi password</td><td><em>Joining&hellip;</em> for ever</td><td>Empty quotes mean no password. Nothing goes between them.</td></tr>
+      <tr><td>Shared their key with a neighbour</td><td>Two boards, one account, odd behaviour</td><td>Teachable moment. Regenerate the key together.</td></tr>
+      <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Open with the switch and no board.</strong> Put your dashboard on the projector, click it,
+    and let the class watch nothing happen. Then run one board. The gap between those two moments is the
+    lesson.</li>
+    <li><strong>Do the phone-on-mobile-data demonstration.</strong> Thirty seconds, and it is the only
+    proof that will actually convince them the two ends are not on the same network.</li>
+    <li><strong>The try-it widget on the student page is worth five minutes.</strong> Flip it before
+    subscribing, then subscribe and press <em>Ask once</em>, then turn the loop on. Three failures and one
+    success, with nothing to type.</li>
+    <li><strong>Budget the account step properly.</strong> Sign-up, feed, key, dashboard and block is
+    fifteen minutes with a class of beginners, and it is all clicking. Consider doing it as a whole-class
+    walkthrough on the projector rather than letting thirty people wander.</li>
+    <li><strong>Teach <code>def</code> away from the keyboard first.</strong> Write a recipe on the board,
+    give it a name, and ask whether anything has been cooked. Then ask who is going to cook it.</li>
+    <li><strong>Say &ldquo;you never call this one&rdquo; three times.</strong> It contradicts everything
+    they know about writing a thing in order to use it.</li>
+    <li>The security line is part of the lesson, not an aside: your key is a password, and the feed is
+    readable by anyone you give it to. It is the first time this module has produced something that other
+    people can reach.</li>
+    <li>Safety rules unchanged: never 5V to a GP pin, never a power pin to GND, power off at SW5 before
+    changing wires.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Verified during this build</h2>
+  <ul>
+    <li>Wokwi&rsquo;s Pico W is the part <code>board-pi-pico-w</code>, running MicroPython v1.28. It is a
+    <em>different part</em> from the plain Pico and is the only one with a network &mdash; picking the
+    wrong one is a silent failure at the very first line.</li>
+    <li>Wokwi has no MicroPython package manager, so the library is a flat
+    <code>umqtt_simple.py</code> project file, exactly as Activity 7 established for the screen driver.
+    That is the only reason the import line differs.</li>
+    <li>The <code>umqtt.simple</code> in circulation raises <code>MQTTException(5)</code> for a refused
+    login and asserts if <code>subscribe</code> is called before <code>set_callback</code> &mdash; both
+    are in the troubleshooting table on the student page.</li>
+    <li><strong>Write the client with keyword arguments</strong>, as the student page does. The deck
+    describes it as <em>MQTTClient(name, server, user, password)</em>; typed positionally, the username
+    lands in the port slot and the connection fails in a way nobody can read.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-11.html">activity-11.html</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-8.html">activity-8.html</a> &middot; <a href="teacher-8.html">teacher-8.html</a></td></tr>
+      <tr><td>The MQTT library</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a> &mdash; <code>umqtt_simple.py</code> for Wokwi</td></tr>
+      <tr><td>Adafruit IO</td><td><a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a></td></tr>
+      <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>Activity 11</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td><strong>required &mdash; the light being controlled</strong></td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used &mdash; going further only</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td><strong>required for the exercise</strong></td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>not used &mdash; and <strong>not</strong> the red LED, whatever the deck says</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>not used</td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><strong>Activity 11 adds no pins.</strong> It reuses Activity 1&rsquo;s red LED and
+  Activity 5&rsquo;s green one. The new hardware is the WiFi radio inside the Pico W, which is not on the
+  header at all. Full map: <a href="pinout.html">pin reference</a>.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

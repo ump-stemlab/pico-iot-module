@@ -11,9 +11,14 @@ after every activity you add.
 
 ## 1. What this is
 
-A nine-activity MicroPython teaching module for the **LilEx5** board — a Raspberry Pi
-Pico with three LEDs, a buzzer, three buttons, a slide switch, an OLED screen, a set of
-I²C sensors and a long-range radio, all on one PCB.
+A MicroPython teaching module for the **LilEx5** board — a Raspberry Pi
+Pico **W** with three LEDs, a buzzer, three buttons, a slide switch, an OLED screen, a set
+of I²C sensors and a long-range radio, all on one PCB.
+
+**It is a Pico W.** Confirmed by Kamil during Activity 11's build, and it matters: the W is
+the version with a WiFi radio, and every internet activity is impossible without it. This
+file used to say only "a Raspberry Pi Pico", which cost a round of questions. It does not
+say that any more.
 
 This website is a **new, self-contained version of the module**. It is not a port of
 any earlier Word/PowerPoint material and must not refer to one. Do not write
@@ -22,6 +27,48 @@ similar. A student arriving here has no history to unlearn.
 
 Audience: secondary-school beginners. Every idea is introduced from scratch, in plain
 language, one at a time.
+
+### 1.1 The activity list
+
+The **Google Classroom** (`2026 Agrovator Raspberry Pi IOT`) is the authority on numbering,
+and **the site now matches it**. Every page's filename is its Classroom number:
+`activity-4.html` is Activity 4, and so on.
+
+- **0** — Getting Started — *not built*
+- **1** — Light Up an LED
+- **2** — Make an LED Blink
+- **3** — Digital Output / Servo — *not built*
+- **4** — Digital Input
+- **5** — Making Decisions
+- **6** — Advanced Logic (And, Or, Not)
+- **7** — Words on a Screen
+- **8** — Motion Sensing (Sensors and Numbers)
+- **9** — Soil Moisture — *not built, and next*
+- **10** — Wi-Fi Connectivity (Internet and Data)
+- **11** — Control From Anywhere
+- **12** — Radio Communication — *not built*
+
+Slots 0, 3, 9 and 12 are "coming soon" tiles on `index.html` and rows in `README.md` until
+those pages exist. Decks for 0 and 3 are in `Module Revamp/PPTX`.
+
+**How it got here.** The site was built before the Classroom was read, and never had
+*Getting Started* or the *Servo*, so everything from Digital Input onwards sat one or two
+numbers early. It was renumbered on **29 August 2026**: Digital Input 3→4, Making Decisions
+4→5, And/Or/Not 5→6, Words on a Screen 6→7, Sensors and Numbers 7→8, Internet and Data 8→10.
+Activities 1, 2 and 11 did not move.
+
+Two things from that job are still in the pages and should be removed once the numbers have
+bedded in:
+
+- `docs/activity-3.html` and `docs/teacher-3.html` are **redirect stubs** pointing at
+  Activity 4, because that is the one filename the renumber freed. Delete them when
+  Activity 3 (Servo) is built, and put the real page there.
+- Every page that moved carries a dismissible **"the activity numbers have changed"**
+  callout (`id="rnnote"`, the `.rnx` button style at the foot of `style.css`, and the
+  `lilex5:renumber-note` flag). Old links to Activities 4–8 land on the next activity along
+  rather than a 404, so the callout is what tells a student they are one page off.
+  The `lilex5:renumbered-2026-08` block at the top of `activity.js` moved every student's
+  saved progress onto the new filenames; leave it in place as long as the callouts are there.
 
 ## 2. Board pin map (authoritative)
 
@@ -63,9 +110,9 @@ accelerometer+gyro `0x68`; compass `0x7C`; proximity+light `0x60`; air quality `
 clock must stay below 15 kHz); ADC `0x48`.
 
 **Only the OLED's is the 8-bit (shifted) form.** `0x78` is `0x3C` shifted left by one, and
-MicroPython wants `0x3C` — see the Activity 6 block in §7. The sensor entries are already
+MicroPython wants `0x3C` — see the Activity 7 block in §7. The sensor entries are already
 in the 7-bit form MicroPython wants and **must not be halved**: checked against the drivers
-in `ump-stemlab/stemcube` during Activity 7's build, where `bme280.py` sets
+in `ump-stemlab/stemcube` during Activity 8's build, where `bme280.py` sets
 `BME280_I2CADDR = 0x76` and `imu.py` looks for `0x68`/`0x69`, both used directly. Halving
 `0x68` gives `0x34`, which is nothing. Do not apply the OLED's rule to the whole list; when
 a new part is added, read its driver or scan the bus.
@@ -90,14 +137,25 @@ docs/activity.js       progress, tabs, board simulator, blink simulator, button 
                        decision simulator, logic simulator, screen widget, typing box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
+                       (now lists teacher-1 … teacher-12)
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
 docs/img/lilex5-board-red-on.png  the same board with LED1 **lit**
 ```
 
 In the repo root: `CONTEXT.md` (this file) and **`PROMPT-activity-N.md`** — the
-brief for the *next* activity, written at the end of the previous build. There is only
-ever one of these. Whoever builds activity N deletes it and leaves `PROMPT-activity-N+1.md`
+brief for the *next* activity, written at the end of the previous build. Normally there is
+only one of these: whoever builds activity N deletes it and leaves `PROMPT-activity-N+1.md`
 behind.
+
+**Right now there are two, on purpose.** `PROMPT-activity-9.md` is the brief for
+*Soil Moisture*, the next one to build, and `PROMPT-activity-12.md` is the brief for
+*Radio Communication* after it. `PROMPT-renumber.md` is the brief for the renumbering job
+itself and can go once that job is committed.
+
+**The numbering is not contiguous, and that is expected.** Activities 1, 2, 4–8, 10 and 11
+exist; 0, 3, 9 and 12 do not, and their numbers are held open for them. The number on a page
+is its Google Classroom number and its filename — see §1.1. Do not renumber pages to close
+a gap.
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -179,8 +237,13 @@ saying it is code shown as a picture.
 
 **5.2 Wokwi first.** Every activity that can be simulated teaches the wiring in Wokwi
 before the real board, because on the LilEx5 the wiring is inside the PCB and students
-would otherwise never see a circuit. Activities 1–7 simulate; WiFi/MQTT and the radio
-do not — flag those as real-board-only.
+would otherwise never see a circuit.
+
+~~WiFi/MQTT and the radio do not simulate~~ — **wrong, corrected during Activity 11's
+build.** Wokwi has a real `board-pi-pico-w` part and a simulated network called
+**Wokwi-GUEST** (no password) that reaches the actual internet, so a simulated Pico W can
+talk to a real MQTT broker. Activity 11 teaches both routes. Only the long-range radio is
+genuinely real-board-only. See the Activity 11 block in §7 for exactly what was checked.
 
 **5.3 Diagrams must be clean.** No wire drawn through a part, no crossings, no label
 overlapping a wire. Reroute rather than let a wire double back. Always render and look
@@ -193,12 +256,23 @@ different left edges, a teal bar for the loop line, a bracket for the block, and
 words in labels beside it. Single identifiers in prose are fine in `<code>`; whole lines
 are not, anywhere.
 
-**5.4 The exercise answer never appears on a student page.** Kamil's call, from Activity 5
+**5.4 The exercise answer never appears on a student page.** Kamil's call, from Activity 6
 on. The student page carries the task, the expected-result diagram and progressive clues
 that stop short of the solution, plus a short callout saying the answer is with the
-teacher. The worked answer lives on `teacher-N.html` only. Activities 1–4 still carry an
-`<details>` answer block from before this rule; leave them unless asked, and do not add
-another one.
+teacher. The worked answer lives on `teacher-N.html` only.
+
+**This now applies to every activity.** Activities 1, 2, 4 and 5 used to carry an `<details>`
+answer block from before the rule. They were removed during Activity 10's build (Kamil asked)
+and replaced with the same *No answer on this page* callout the later pages use. The answers
+were already on their `teacher-N.html` pages, so nothing was lost. Where a removed block carried
+information that was **setting up rather than solving** — Activity 4's second pushbutton,
+Activity 5's second button and LED, Activity 2's indentation warning — that paragraph was
+moved into the last clue rather than deleted.
+
+A consequence worth remembering: **nothing new may be introduced only in an exercise.** If
+an activity's exercise needs a piece of syntax, the body has to teach it first. That is why
+`>` had to move into Activity 8's body before its exercise could use it — see the Activity 8
+block in §7.
 
 ## 6. Anatomy of an activity page
 
@@ -230,7 +304,7 @@ them in the markup if they are there.
 ## 7. Teaching decisions already made
 
 - **Activity 1 has no `print()`.** The mission is "a pin makes a light come on"; a
-  console message competes with that. `print()` arrives in Activity 3 where reading a
+  console message competes with that. `print()` arrives in Activity 4 where reading a
   button gives it a real job. Do not add it back to Activity 1.
 - **Comments (`#`) are taught in Activity 1** and used in every code sample after.
 - Activity 1's exercise is *light all three LEDs*. The whole point is that one variable
@@ -251,7 +325,7 @@ them in the markup if they are there.
   a toolbox" model, so every activity's import lines look alike. The `time.sleep()` style is shown
   once, in a `<details>`, so nobody is thrown by code they find online. Keep the single-tool form
   in later activities.
-- **Still no `print()`.** Same reason as Activity 1; it arrives in Activity 3.
+- **Still no `print()`.** Same reason as Activity 1; it arrives in Activity 4.
 - **Stopping a forever-loop is taught here** (Wokwi's Stop button, Thonny's Stop or Ctrl+C) and is
   assumed from now on. Every activity after this one runs in a loop, so this never needs teaching
   again — but it does need to be in the troubleshooting table.
@@ -262,17 +336,17 @@ them in the markup if they are there.
   every other page. Markup: `#bblink` bulb, `#onsec` / `#offsec` number inputs, `[data-preset]`
   buttons, `#blinkout`. Its output text deliberately *describes* the loop rather than printing
   code. Every simulator since follows that rule.
-- Two long-standing rule 5.1 leaks in `activity-1.html` were closed in Activity 4's build: its
+- Two long-standing rule 5.1 leaks in `activity-1.html` were closed in Activity 5's build: its
   first flow diagram carried `import Pin` and `led.on()` as SVG `<text>`, and the board simulator's
   labels spelled a whole runnable line around the number input. Both now say the same thing in
   words. **Every page's rendered text now survives a select-all-and-copy with nothing runnable in
   it** — keep it that way, and re-run the check in §8.1 step 5 on every page you touch.
-- ~~Known TODO: `activity-1.html`'s unfilled `%WOKWI%` placeholder~~ — **resolved in Activity 4's
+- ~~Known TODO: `activity-1.html`'s unfilled `%WOKWI%` placeholder~~ — **resolved in Activity 5's
   build.** There is no ready-made Wokwi project for Activity 1 and there never was one on this
   site, so the callout was rewritten to point back at the wiring diagram instead. `teacher-1.html`
   still carries a project id; it is not linked from the student page.
 
-### Activity 3 — Digital Input
+### Activity 4 — Digital Input
 
 - **The one idea is two halves**: a pin can be *read*, and a program can *print*. Neither is worth
   teaching alone — a value you cannot see is not worth reading. Do not split them into two activities.
@@ -285,7 +359,7 @@ them in the markup if they are there.
   that works on both routes is worth more to a beginner than the distinction. The teacher page
   explains the nuance; the student page does not.
 - **No `if`, and none smuggled in.** The mission is deliberately *watch the number change*, not
-  *press the button to light the LED* — that needs `if`, which is the whole of Activity 4. Also ruled
+  *press the button to light the LED* — that needs `if`, which is the whole of Activity 5. Also ruled
   out: `not`, `1 - sw.value()`, `led.value(sw.value())`. Both the student page and the teacher page
   say so out loud, because a keen student will try. The activity has to end with the class *wanting*
   `if`.
@@ -309,14 +383,14 @@ them in the markup if they are there.
   Markup: `#bsw` press-and-hold pad, `#bval` readout, `#btnout` console, `[data-bspeed]` presets
   (`0.2` and `0`). Its console prints only `1` and `0`, so unlike the Activity 1 board simulator it
   leaks no code. `style.css` gained `.pushbtn`, `.readout`, `.readlbl` and `.sim-out.tall`.
-- `teacher-3.html` wraps its three-column *mistakes* table in `.tablescroll` so it does not overflow
-  at 390 px. `teacher-2.html` and `teacher-1.html` were given the same wrapper in Activity 4's build,
+- `teacher-4.html` wraps its three-column *mistakes* table in `.tablescroll` so it does not overflow
+  at 390 px. `teacher-2.html` and `teacher-1.html` were given the same wrapper in Activity 5's build,
   and `.act` in `style.css` gained `min-width:0` to stop the home page's activity rows overflowing by
   2 px at 390. **Every page now passes the `scrollWidth == clientWidth` check at 390, 768 and 1400.**
-- Activity 3 has **no ready-made Wokwi project link**, by decision. There is nothing to fill in later.
+- Activity 4 has **no ready-made Wokwi project link**, by decision. There is nothing to fill in later.
   `activity-1.html`'s unfilled `%WOKWI%` placeholder is still outstanding.
 
-### Activity 4 — Making Decisions
+### Activity 5 — Making Decisions
 
 - **The one idea arrives in two steps, and the order is load-bearing.** `if` first, demonstrated
   until the class sees a light that will not go out; *then* `else` as the fix. The page is written
@@ -324,15 +398,22 @@ them in the markup if they are there.
 - **Two traps, and they are not equal.** The double equals gets the most page space because it is the
   headline confusion, but it is the *safe* one — a single `=` in a condition is a `SyntaxError`, so
   nothing runs. The dangerous trap is `== 1` instead of `== 0`: it runs perfectly and inverts the
-  whole thing. That is Activity 3's inversion finally collecting its debt, and section `#zero`
-  **points back to `activity-3.html#trap` rather than re-teaching it**. Keep it that way.
+  whole thing. That is Activity 4's inversion finally collecting its debt, and section `#zero`
+  **points back to `activity-4.html#trap` rather than re-teaching it**. Keep it that way.
 - **No `and` / `or` / `not`, and none smuggled in.** One button, one condition, everywhere — the
   exercise is deliberately *two separate `if`/`else` pairs* rather than one combined condition, so
-  that Activity 5 has the contrast to build on. Also ruled out: `elif`, which this module never needs.
+  that Activity 6 has the contrast to build on. Also ruled out: `elif` — see the note below.
+
+  **`elif` is kept out of Activities 1–8, 10 and 11, and arrives in Activity 9.** Kamil's call,
+  made during Activity 10's build. Up to here nothing needs it and the two-road picture of a
+  decision is worth more than the shortcut. Activity 9 (soil moisture) has three genuine
+  zones — dry, just right, wet — which is the first honest reason for it in the whole module,
+  so that is where it is taught, as that activity's second new idea. Do not smuggle it in
+  earlier, and do not apologise for it when it arrives.
 - **`print()` stays in the main program**, unlike the LED-only alternative. Its job here is
   debugging: words right + light wrong means the wiring is at fault; words wrong too means the
   decision is. That split is stated on the page and is the reason the lines are not optional.
-- The loop waits `0.1`, not Activity 3's `0.2` — the number is chosen for driving a light rather than
+- The loop waits `0.1`, not Activity 4's `0.2` — the number is chosen for driving a light rather than
   for throttling a console, and the page says so.
 - Exercise: **SW1 → red LED1 (GP11), SW2 → green LED3 (GP13)**, as two independent blocks in one
   loop. Kamil's call. The four-state diagram (nothing / SW1 / SW2 / both) is the acceptance test, and
@@ -345,24 +426,24 @@ them in the markup if they are there.
   `[data-ifcmp]` (`0` / `1`) and `[data-ifelse]`. It reproduces both traps live, with nothing to
   type — the `== 1` preset and the *take the else away* toggle are worth four minutes of class time.
   Its output is written in **words, never code**, so it leaks nothing.
-- Activity 4 adds **no new pins** and no new hardware. It is the first activity to use an input and
+- Activity 5 adds **no new pins** and no new hardware. It is the first activity to use an input and
   an output at the same time, which is the thing to check on each board before the lesson.
 
-### Activity 5 — And, Or, Not
+### Activity 6 — And, Or, Not
 
 - **The one idea is joining questions**, not a new kind of decision. There is still one `if`, one
   `else` and two roads; only the question got longer. The page says so out loud, because students
   expect a longer question to produce more roads.
-- **Open with the contrast.** Activity 4's exercise was deliberately two separate decisions; this
+- **Open with the contrast.** Activity 5's exercise was deliberately two separate decisions; this
   activity is one decision that asks about two things. That sentence is in the hero, the first
   section and the teacher page.
 - **The trap is that each half must be a whole question**, and it has two faces. `and == 0` is a
   `SyntaxError` — the kind one. `if sw1 and sw2:` **runs**, always answers yes, and leaves a light
   that never goes out — the dangerous one, and the one the section `#whole` is built around. It is
-  the `==` lesson of Activity 4 arriving one level up.
+  the `==` lesson of Activity 5 arriving one level up.
 - **`not` is taught to be read, not written.** It gets its own short section, a truth-table picture
   and one warning: do not reach for it to "fix" the button inversion. That section points back to
-  `activity-3.html#trap` and `activity-4.html#zero` rather than re-teaching either. The only places
+  `activity-4.html#trap` and `activity-5.html#zero` rather than re-teaching either. The only places
   `not` is *written* are going-further tasks.
 - **Python's `or` is not the café's "or".** Both-is-still-yes has its own callout and is the bottom
   row of the `or` truth-table picture; it is the row the class gets wrong.
@@ -381,22 +462,22 @@ them in the markup if they are there.
   `#logout` console, `[data-logop]` (`and` / `or` / `not`). It answers each half separately and then
   joins them, and its output is words only — it leaks no code. The `not` preset ignores the second
   pad on purpose and says so.
-- The Wokwi diagram is Activity 4's, **with a second pushbutton on GP3**. The `<g class="wk">` group
-  was copied out of `activity-4.html` unchanged; only the rings and the wires differ. Pads used:
+- The Wokwi diagram is Activity 5's, **with a second pushbutton on GP3**. The `<g class="wk">` group
+  was copied out of `activity-5.html` unchanged; only the rings and the wires differ. Pads used:
   4 (GP2), 8 (GND), 5 (GP3), 13 (GND), 15 (GP11), 18 (GND); viewBox `780 × 690`. The pad-fact box
-  that Activities 1, 3 and 4 draw inside the SVG is a **table underneath the diagram** here — with
+  that Activities 1, 4 and 5 draw inside the SVG is a **table underneath the diagram** here — with
   six wires there is no clear space left inside the picture for it.
 - Ten diagrams: the loop, two questions joined into one, a truth-table picture for each of the three
   words, `and` versus `or` on the same wiring, the whole-question anatomy (bars and single glyphs,
   no code), name-versus-value, the double-negative result, the four expected states, and the
   exercise's four states.
 
-### Activity 6 — Words on a Screen
+### Activity 7 — Words on a Screen
 
-- **The one idea is two halves again**, the way Activity 3's was: the OLED screen, and the first
+- **The one idea is two halves again**, the way Activity 4's was: the OLED screen, and the first
   **library that is not built in**. They need each other — the screen is the reason to add a library,
   the library is the only way to use the screen. Do not split them.
-- **First new hardware since Activity 3**, and the first part ever that sits on a **bus**. SDA is
+- **First new hardware since Activity 4**, and the first part ever that sits on a **bus**. SDA is
   **GP0**, SCL is **GP1**, and both are new pins — the first added since Activity 1.
 - **The address is `0x3C`, and no code sample on either page types it.** The driver's default is
   `0x3C`, so `SSD1306_I2C(128, 64, i2c)` is all a student writes. §2 of this file lists the OLED as
@@ -427,14 +508,14 @@ them in the markup if they are there.
 - Mission: **plain hello** — two fixed lines. Kamil's call: the smallest thing that proves the bus and
   the library work, with the changing value saved for the exercise.
 - Exercise: **SW1 and SW2 shown as words** — two labelled rows reading `HELD` / `UP`, updating live.
-  Kamil's call. It reuses Activity 3's buttons and Activity 4's two independent `if`/`else` pairs, and
+  Kamil's call. It reuses Activity 4's buttons and Activity 5's two independent `if`/`else` pairs, and
   the real new work is the wipe–write–show order. **No answer on the student page** (rule 5.4); clue 3
   stops at a five-point checklist. A counter was considered and rejected for the exercise because it
-  needs turning a number into words, which this module has not taught — it is on `teacher-6.html` as a
+  needs turning a number into words, which this module has not taught — it is on `teacher-7.html` as a
   going-further answer only.
 - **No `elif`, still, and no `for` loops.** Neither is needed.
 - `activity.js` gained two things. First, the **route-tab block was generalised** into a `wire()` helper
-  called for `tab-a`/`tab-b` and again for `tab-c`/`tab-d`, because Activity 6 is the first page with
+  called for `tab-a`/`tab-b` and again for `tab-c`/`tab-d`, because Activity 7 is the first page with
   *two* route-tab groups (getting the library on, and building the circuit). All groups share one stored
   `state.route`, so picking Wokwi once picks it everywhere; pages with only one group behave exactly as
   before. Second, a **screen widget** guarded by `#oledrun`, inert elsewhere. Markup: `#oledmem` and
@@ -464,23 +545,23 @@ them in the markup if they are there.
   the two routes to get it there, wipe–write–show, the expected result beside a wrong-row version, the
   exercise's four states and the exercise loop. Every one was rendered and looked at in both themes.
 
-### Activity 7 — Sensors and Numbers
+### Activity 8 — Sensors and Numbers
 
 - **The one idea is two halves again**: a sensor *measures*, so what comes back is a decimal; and
   `round()` plus `str()` are the only way to make a decimal fit on a screen. The sensor is the reason
   decimals appear. Do not split them.
 - **The sensor is the MPU6050 accelerometer at `0x68`.** Kamil's call, over the BME280. The deciding
   facts, all checked in the Wokwi editor during this build: Wokwi **has** `wokwi-mpu6050` as a built-in
-  part at the same address, so both routes are the same circuit for the first time since Activity 5 —
+  part at the same address, so both routes are the same circuit for the first time since Activity 6 —
   whereas Wokwi has **no BME280** at all (its nearest cousin is `board-bmp180` at `0x77`, which would
   have meant a different library on the Wokwi route).
 - **Wokwi's docs are wrong about the sliders.** They say the MPU6050 is driven only from Automation
   Scenarios. It is not: **clicking the part while the simulation is running** opens a panel with live
   sliders for acceleration x/y/z, rotation x/y/z and temperature. That panel is what makes the whole
-  activity work without a board, and it is not discoverable — both the student page and `teacher-7.html`
+  activity work without a board, and it is not discoverable — both the student page and `teacher-8.html`
   say so explicitly.
 - **New hardware, and no new pins at all.** That is the headline, not a footnote: the sensor joins the
-  bus Activity 6 built. The page points back to `activity-6.html#bus` rather than re-teaching it.
+  bus Activity 7 built. The page points back to `activity-7.html#bus` rather than re-teaching it.
 - **The library is `imu.py` *and* `vector3d.py`.** Kamil's call over the one-file `mpu6050.py`, whose
   reader returns a nested dict (`data['accel']['x']`) — two levels of bracket lookup, versus
   `imu.accel.x`, which reads like `oled.fill()` and `sw.value()` and needs no new syntax. The cost is a
@@ -489,29 +570,46 @@ them in the markup if they are there.
 - **`str()` is the only genuinely new syntax**, and it is taught in the main program, not the exercise —
   rule 5.4 means the exercise carries no answer, so nothing new may be introduced only there. `round()`
   is new too but self-explanatory; the surprise is that a screen refuses a number.
-- **Decimals get their own top-level section** (`#numbers`), the way adding a library was Activity 6's.
+- **Decimals get their own top-level section** (`#numbers`), the way adding a library was Activity 7's.
   Three beats: where the fractional part comes from (the sensor reports whole steps of 1/16384 g, so the
   answer is an untidy fraction), what `round(x, 1)` keeps and discards, and number-versus-words.
 - **Say "seven digits", not "fourteen".** MicroPython prints about seven significant figures for a float
   this size — `1.149963`, not CPython's longer tail. Verified in the simulator.
-- **Round last, never at the moment of reading.** Stated on both pages; it is the habit that Activity 8
+- **Round last, never at the moment of reading.** Stated on both pages; it is the habit that Activity 10
   will need.
 - Mission: **one tilt number, printed raw in the Shell and shown rounded on the screen.** Kamil's call.
   The `print()` is load-bearing — it is the only place the class ever sees the untouched reading, and
   without it the decimals lesson is theory. `sleep(0.5)`, not 0.1: a number changing ten times a second
   cannot be read.
-- Exercise: **X and Y on two labelled rows**, rounded, live. Kamil's call. Reuses Activity 6's
+- Exercise: **X and Y on two labelled rows**, rounded, live. Kamil's call. Reuses Activity 7's
   label-at-0, number-further-across layout; the real new work is remembering to round *both*. **No answer
   on the student page** (rule 5.4); clue 3 stops at a five-point checklist. Negative readings are called
   out on the page because the minus sign costs a whole letter of width.
-- **`>` is deliberately kept out of the exercise** and lives in going-further only (a FLAT/TILTED word).
-  The point when it arrives: a measurement is almost never exactly anything, so `== 1.0` is the wrong
-  question. That is the seed of Activity 8's thresholds.
+- **`>` was originally kept out of Activity 8 and has since been brought in.** Kamil's call during
+  Activity 10's build. It is now taught in the body — a `#numbers` sub-beat, *Asking whether a measurement
+  is big enough*, with a two-part number-line diagram (a single point the reading never lands on, versus a
+  whole side of a line) and a three-line Shell sample comparing `== 1.0` with `> 0.5`. `<` is named in a
+  callout but not exercised.
+- **The exercise changed at the same time and for the same reason.** It was *X and Y on two labelled
+  rows*; it is now **an LED that lights when the board is tilted past 0.5**. Kamil's call. The old exercise
+  survives as going-further task 2 and `teacher-8.html` still carries its answer, so nothing was lost.
+  Rule 5.4 is why `>` had to move into the body first: nothing new may be introduced only in an exercise
+  that carries no answer.
+- **The exercise is the first thing since Activity 6 to use an LED**, on `GP11` — an *old* pin, not a new
+  one. On the real LilEx5 there is nothing to wire; on the Wokwi route it needs an LED and a 330 Ω
+  resistor, and the student page carries the wiring diagram, built by copying Activity 1's LED, resistor
+  and note-box group and shifting every y by **+30** (Activity 1's board sits at `by = 70`, Activity 8's at
+  `by = 100`). The `wkled` and `wkres` gradients had to be added to Activity 8's `<defs>`; they live in
+  Activity 1's.
+- **The best trap in the module, and it is free:** tilt the board the *other* way and the light stays dark,
+  because −0.9 is not more than 0.5. It looks like a bug, it is not, and fixing it is going-further task 1
+  — which is where `or` from Activity 6 finally earns its keep.
+- The quiz gained a sixth question, on which comparison to ask of a measurement.
 - **No `elif`, still, and no `for` loops.**
 - `activity.js` gained a **reading widget** guarded by `#numrun`, inert on every other page. Markup:
   `#numtilt` range slider, `#numraw` / `#numrnd` readouts, `#numscr` `.oledbox`, `[data-numdp]` buttons
   (`0`/`1`/`2`), `#numstr` toggle and `#numout`. It shows the long number, the rounded number and the
-  glass at once, only updates the glass when Send is pressed (Activity 6's write-then-show survives), and
+  glass at once, only updates the glass when Send is pressed (Activity 7's write-then-show survives), and
   reproduces the `TypeError` **in words** when the words step is switched off. It leaks no code.
 - `style.css` gained a **`wk-imu-` family** (PCB `#16619d`, chip, smd, cap, silk, hole, pad and the
   silkscreen label, with `.dim` for the four unused pads), three `.dnum` helpers for drawing numbers
@@ -523,14 +621,14 @@ them in the markup if they are there.
   `<g transform="translate(48,183.2) scale(2.9)">`, so the `wk-imu-` stroke widths in `style.css` are
   authored for a scale of 2.9 (the `wk-oled-` ones are authored for 9 — check the scale before reusing
   either family).
-- **The wiring diagram has no crossings at all**, unlike Activity 6's, and the reason is worth keeping:
+- **The wiring diagram has no crossings at all**, unlike Activity 7's, and the reason is worth keeping:
   the module's SDA · SCL · GND run left to right in the *same* order as the Pico's pins 1 · 2 · 3 run top
   to bottom, so the three signal wires nest instead of swapping. VCC is the far-right pad and wraps under
   the board (out at y 194, down at x 505, along y 600, up at x 772) to pin **36**, 3V3. viewBox
   `780 × 690`. Pads ringed: 1, 2, 3 and 36 — the *same four* the screen already uses, and the page says
   two wires on one pad is what a bus looks like.
 - **Only the sensor is drawn in the Wokwi diagram**, not the screen as well. Eight wires in one picture
-  could not be routed cleanly, and it matches what students actually do: keep the Activity 6 project and
+  could not be routed cleanly, and it matches what students actually do: keep the Activity 7 project and
   add one part. The sharing is shown separately, as a schematic, in `#join`.
 - Eleven diagrams: the mission flow, button-versus-sensor, gravity flat versus on edge, the two parts on
   one bus, the magnified number line where the reading lands on a step, what rounding keeps and discards
@@ -543,7 +641,182 @@ them in the markup if they are there.
   program, run it again — the cloud container **cannot reach wokwi.com**, so this needs the browser in
   the Claude desktop app.
 
-### The Wokwi-look board diagrams (Activities 1, 3, 4, 5, 6 and 7)
+
+### Activity 10 — Internet and Data
+
+- **The one idea is two halves again**: the board **joins a network**, and it hands its message to a
+  **broker** that passes messages on. Neither is any use alone. Do not split them.
+- **First activity that needs the Pico W**, and the first that can fail for reasons entirely outside the
+  program — wrong band, captive portal, blocked domain, rate limit. Budget lesson time for the network,
+  not for the code.
+- **The sensor is the BME280 weather sensor at `0x76`** — Kamil's call, and what the original material
+  used. It is the *third* part on the Activity 7 bus, so still no new pins. Note this is the part Activity
+  8 rejected, for a reason that no longer applies: Wokwi has no built-in BME280, but the STEM Lab has a
+  **custom Wokwi chip** for it, and it is in the starter project.
+- **The destination is Adafruit IO**, one free account each, made in the lesson — Kamil's call. Feeds are
+  private to an account by default, so the page does not need the "this is a public noticeboard" warning a
+  `test.mosquitto.org` version would have needed. It carries a "the key is a password" warning instead.
+- **The rate limit is a teaching point.** 30 messages a minute on a free account, hence `sleep(5)`. Going
+  over it looks exactly like a broken board — no error, just silence.
+- **The reading arrives as words with its unit stuck on**: `bme.values` hands back
+  `('23.45C', '1010.39hPa', '55.04%')`. `reading[:-1]` — *all of it except the last character* — is the
+  only genuinely new syntax, and it is the sibling of Activity 8's `str()`/`round()`: that one reshaped a
+  reading for a person, this one reshapes it for a machine. **The pressure's unit is three characters**,
+  which is what makes going-further task 2 worth setting.
+- **`while not wlan.isconnected():` is the quiet win.** First loop in the module that stops by itself, and
+  it gives Activity 6's `not` a job that finally matters. The page draws it beside Activity 2's forever-loop.
+- **Setting up goes outside the loop**, and the page says why: rejoining the WiFi every five seconds
+  half-works, which is worse than failing.
+- **`float()` is deliberately avoided.** MQTT carries text anyway and Adafruit IO parses `23.45` from a
+  string, so nothing has to be converted. It appears only in a going-further answer on `teacher-10.html`.
+- Mission: **the temperature to a live graph.** Exercise: **the same reading on the OLED as well** —
+  Kamil's call. The exercise introduces **no new syntax at all**; every line is Activity 7 or 7. The page
+  shows the screen's wiring anyway (Kamil asked), lifted verbatim from Activity 7's verified diagram and
+  retitled. **No answer on the student page** (rule 5.4); clue 3 stops at a six-point checklist.
+- **No `elif`, still, and no `for` loops.**
+- **The Wokwi starter project is given ready-made** and linked from the page, because Kamil asked for it.
+  It began as `wokwi.com/projects/472388087907794945` ("Pico-Activity 10", from the original material) and
+  was rewired during this build: the custom BME280 moved from **GP2/GP3 to GP0/GP1** to match Activities 7
+  and 8, SCL's wire changed from yellow to **blue** to match the module's diagrams, an **SSD1306 was added**
+  pre-wired on the same bus so the exercise runs in the simulator, and **`ssd1306.py` was added** as a
+  project file. `main.py` is deliberately empty apart from a comment block pointing at the website.
+- **The custom chip has sliders** for temperature, pressure and humidity — click the green block *while the
+  simulation is running*. As undiscoverable as the MPU6050's, and called out on both pages.
+- **Verified end to end in the browser before the page was written.** On the rewired project
+  `i2c.scan()` answered `[60, 118]`, `bme.values` answered `('21.64C', '1010.39hPa', '55.04%')`, the board
+  joined `Wokwi-GUEST` and got `10.10.0.1`, and a connection to the real `io.adafruit.com` came back
+  `MQTTException(5,)` with a deliberately fake key. No credentials were used; the rejection was the proof.
+- `activity.js` gained a **publishing widget** guarded by `#pubrun`, inert on every other page. Markup:
+  `#pubtemp` range, `#pubuser` text input, `#pubraw` / `#pubsend` readouts, `#pubdash` bar chart,
+  `#pubstrip` toggle, `#pubclear` and `#pubout`. It builds the topic address live from the username,
+  refuses a 31st message in a minute, and draws a red flat bar when the unit was left on. Words only.
+- `style.css` gained a **`wk-bme-` family** (PCB `#087f45`, sampled from the running simulator; gold title,
+  white subtitle, pads) and the `.dashbox` widget plus `input[type=text]` in `.sim-ctl`. Wokwi draws a
+  custom chip as a plain green block with its own name on it, so that is what the diagram shows — there is
+  no module artwork to copy, unlike the OLED and the MPU6050.
+- **The board drawn is the Pico W**, copied from `activity-11.html`, because this is a network activity.
+- **Fourteen diagrams**, all rendered and looked at in both themes: the mission flow, three parts on one
+  bus, the three answers with their units, taking the last character off, the four states of joining,
+  forever-loop versus a loop that lets go, the broker fanning out to three listeners, how the address is
+  built, two kinds of library, the Wokwi wiring, what you should see, the screen's wiring for the exercise,
+  the same reading in two places, and one round of the loop.
+
+### Activity 11 — Control from Anywhere
+
+Built from `Activity 11 - Control from Anywhere.pptx` in the STEM LAB PPTX folder.
+**Numbered 11 to match the Google Classroom**, which it already did before the rest of the
+site was brought into line. Activity 9 (*Soil Moisture*) is the gap below it. See §1.1.
+
+- **The one idea is that the arrow turns round.** Every activity before this one had the
+  board doing the talking. Today it *listens* — it subscribes, and something else decides.
+  A thing that publishes can be watched; a thing that subscribes can be **controlled**.
+  That sentence is in the hero, the first section and the teacher page.
+- **Three parts, and they only work together**: `subscribe` (ask to be told), `def` (write
+  a job down), and `check_msg()` (give it a chance to run). Remove any one and the program
+  runs perfectly and does nothing. All three failures are silent, which is why the page
+  spends so long on them and why the try-it widget lets each one fail on its own.
+- **Written self-contained, deliberately.** Activity 10 (*Internet and Data*) had not been
+  built when this page was written, so Activity 11 teaches WiFi joining, MQTT, the Adafruit IO
+  account/feed/key/dashboard and the `umqtt.simple` library from scratch. It is the longest
+  page in the module. **Now that Activity 10 exists, roughly the first third of this page
+  could collapse into links** — `#wifi`, `#account` and `#library` are the sections to gut,
+  and nothing else changes. Not yet done.
+- **First `def` in the module, and first callback.** Two new things at once and they need
+  each other: code that does not run when you write it, and a name handed to somebody else
+  so that *they* run it. The phone-number picture (`#callback`, second diagram) is the one
+  students quote back.
+- **`mqtt.set_callback(name)` with brackets is the most dangerous mistake on the page**, and
+  the page, the troubleshooting table and the teacher page all say so. It runs the function
+  once, hands the server the return value (nothing), and the program then behaves perfectly
+  and never responds to a message. No error, no clue. Check it before anything else.
+- **First `while` with a real question.** Every loop until now was `while True`. The WiFi
+  wait, `while not wlan.isconnected():`, is the first loop in this module that ends by
+  itself, and the first place `not` is *written* rather than only read — Activity 6's "learn
+  to read it, don't reach for it" rule finally relaxing, and the page says so.
+- **Three levels of indentation, for the first time** (function, then the `if` inside it).
+- **`from network import WLAN, STA_IF`, not `import network`.** Same "borrow one tool from a
+  toolbox" shape as every other import in the module. The `import network` form is shown
+  once, in a `<details>`, so nobody is thrown by code they find online — exactly what
+  Activity 2 did for `import time`.
+- **Write the client with keyword arguments**: `MQTTClient(MY_NAME, SERVER, user=…,
+  password=…)`. The deck describes it as *MQTTClient(name, server, user, password)*; typed
+  positionally the username lands in umqtt's `port` argument and the failure is unreadable.
+- **The deck's pin numbers are wrong for this board and were corrected.** Slides 25 and 31
+  say red LED1 = `Pin(14)`, yellow 13, green 12. On the LilEx5 (§2, and `lilEx5 GPIO pins
+  Layout.pdf`) red LED1 is **GP11**, yellow **GP12**, green **GP13**, and **GP14 is the
+  buzzer** — `Pin(14)` makes a noise, not a light. Both the student and teacher pages use
+  GP11/GP13. The teacher page names the discrepancy so nobody teaching from the slides
+  reintroduces it.
+- Mission: **an Adafruit IO Toggle block turns the red LED1 on and off.** Kamil's call, and
+  the deck's.
+- Exercise: **green LED3 lights whenever the order is OFF**, so exactly one of the two is
+  always lit — dark then means crashed rather than off. Kamil's call, and the deck's. It
+  needs no new syntax (it is Activity 5's two-branch `if` with one more line per branch) and
+  it teaches something real: a device that can only say one word cannot tell you it is
+  alive. **No answer on the student page** (rule 5.4); clue 3 stops at a five-point
+  checklist. The commonest wrong answer is adding the two switch-*on* lines and forgetting
+  the switch-*off* ones, which lights both.
+- **The account question is a teaching decision, not an implementation detail.** Kamil's
+  call: **each student makes their own free Adafruit IO account**. The key is a password
+  that controls every feed on the account, and the page says so plainly rather than quietly.
+  A shared class account would mean one student's switch controlling thirty boards.
+- **The network question is unsettled and the page is written for that.** School WiFi with a
+  captive portal defeats the real-board route entirely, and a Pico W cannot join 5 GHz at
+  all. Both are callouts on the student page, a phone hotspot on 2.4 GHz is presented as a
+  first-class route rather than a workaround, and `teacher-11.html` makes testing the
+  network in the room a before-the-lesson item.
+- **No `elif`, still, and no `for` loops.**
+- `activity.js` gained a **dashboard switch widget** guarded by `#mqrun`, inert on every
+  other page. Markup: `#mqtog` toggle, `#mqfeed` (a `.feedbox` of four `<b>` rows), `#mqled`
+  bulb, `#mqsub`, `#mqrun`, `#mqauto` and `#mqout`. Flipping the switch while not subscribed
+  is the whole point of it — the switch works perfectly and nothing happens, which is the
+  Activity 11 moment. Output is words only; it leaks no code.
+- `style.css` gained the `wk-pcb.w` / `wk-wifi` / `wk-wifi-lbl` / `wk-brand.w` family for
+  the Pico W, `.mqsw` and `.feedbox` for the widget, and `.codetable` (see below).
+- **`.codetable`** — the line-by-line table's code chips are long here (the longest is 67
+  characters) and `max-width:100%` was shrinking the pictures to an unreadable size in a
+  narrow cell. The table is wrapped in `.tablescroll` and given `min-width:830px` with a
+  `min-width:486px` first column, so the chips draw at full size and the table scrolls on a
+  phone instead. `.wrap` is 880px, so it does not overflow on desktop. **Reuse this on any
+  future line-by-line table with long lines.**
+
+#### The Wokwi route, and what was and was not verified
+
+**Verified, by reading Wokwi's own data in the browser:**
+
+- Wokwi's Pico W is the part **`board-pi-pico-w`**, distinct from the plain Pico, running
+  MicroPython `micropython-20260406-v1.28.0`. Picking the plain Pico fails at the first
+  import, silently as far as a student is concerned.
+- Wokwi has **no MicroPython package manager**, so `umqtt.simple` arrives as a flat project
+  file called `umqtt_simple.py` — hence the import line differing by one character between
+  routes. Same shape as Activity 7's `ssd1306.py`.
+- Wokwi's simulated network is **`Wokwi-GUEST`** with an empty password, and Kamil's own
+  Activity 9 Wokwi project is built on it talking to Adafruit IO.
+- The `umqtt.simple` in circulation raises `MQTTException(5)` on a refused login and asserts
+  `"Subscribe callback is not set"` if `subscribe` runs before `set_callback`. Both are in
+  the student page's troubleshooting table, worded from the real messages.
+- Wokwi's Pico W board art, read from `wokwi.github.io/wokwi-boards/pi-pico-w/board.svg`
+  (viewBox `826.78 × 2086.6`): PCB **`#005a00`** — a darker green than the plain Pico's
+  `#006837`, and visibly different — with a silver WiFi can `#b3b3b3` and a **`Wi-Fi`**
+  label in `#4d4d4d` printed on it. In the module's own geometry the can is scaled to
+  `x=614 y=386 w=62 h=80`; the true proportion is wider, but the module draws pin names
+  inside the board (Wokwi does not) and a full-width can sits on top of them.
+
+**Not verified: the program has not been run end to end.** Wokwi's simulator stops the
+moment its tab is not the visible one, so neither the browser pane in the desktop app nor a
+background Chrome tab will run it — the clock freezes at `00:00.033`. To finish this check,
+open the project in a Chrome window and **leave it in front**, then load the code and read
+the serial output. Until somebody does that, the page's claim that Wokwi-GUEST reaches a
+real broker rests on Wokwi's design and on Kamil's Activity 9 project, not on an observed
+run. **Do this before the first class that uses the Wokwi route.**
+
+Twelve diagrams: the mission flow, publish versus subscribe, everything going through the
+middle, the two loop shapes, feed versus dashboard, the three-part address, `def` being
+walked past, handing the name over, the `check_msg` timeline, the Wokwi wiring, the expected
+result, and the exercise's three states. Every one was rendered and looked at in both
+themes; four needed moving or resizing after seeing them.
+
+### The Wokwi-look board diagrams (Activities 1, 4, 5, 6, 7, 8, 10 and 11)
 
 Kamil asked for the wiring diagrams to look the way the circuit actually looks in Wokwi, **with the
 physical pin numbers visible on the Pico**. All three wiring diagrams were redrawn together so the
@@ -562,21 +835,26 @@ module does not look like two different books.
   beside the pad, the name inside it. Telling the two apart is the thing students get wrong every
   time, and it is why the diagrams carry the line *"the big white numbers are the physical pins."*
 - The board is a self-contained `<g class="wk">` and is **identical in every file that uses it**. To
-  wire a new activity, copy that group out of `activity-6.html` or `activity-7.html`, change the ring circles and the wire paths,
-  and leave everything else alone. The geometry you need:
+  wire a new activity, copy that group out of `activity-7.html`, `activity-8.html` or `activity-11.html`, change the ring
+  circles and the wire paths, and leave everything else alone. **Activity 11's copy is the Pico W** —
+  same geometry, but `class="wk-pcb w"` for the darker green, plus the WiFi can and its label; use that
+  one for any future activity that needs the network. The geometry you need:
   board at `x=545`, width `200`, height `440`; **pin *n*'s centre line is
   `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
   meets a left-hand pad at `x=537` and a right-hand pad at `x=755`; the ring on a used pad is
   `<circle r="10.5" class="wk-ring">` centred on the hole.
-- The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 3),
-  `780 × 600` (Activity 4, which carries both circuits), `780 × 690` (Activity 5, which adds a
-  second button below the first), `780 × 660` (Activity 6, whose power wires wrap round the board) and
-  `780 × 690` (Activity 7, whose sensor module sits high on the left).
+- The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 4),
+  `780 × 600` (Activity 5, which carries both circuits), `780 × 690` (Activity 6, which adds a
+  second button below the first), `780 × 660` (Activity 7, whose power wires wrap round the board) and
+  `780 × 690` (Activity 8, whose sensor module sits high on the left), `780 × 600` (Activity 8's
+  exercise, one LED and one resistor), `780 × 690` (Activity 10, whose custom chip sits high on the left
+  with its legend beneath it) and `780 × 720` (Activity 11, which carries two LED-and-resistor chains, one
+  routed over the top of the board and one under it).
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
   long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at
   both ends and orange-orange-brown-gold bands for 330 Ω. Rule 5.3 still applies — **render every
-  diagram and look at it**, in both themes. Four of Activity 4's ten needed moving after seeing them.
+  diagram and look at it**, in both themes. Four of Activity 5's ten needed moving after seeing them.
 
 ## 8. Publishing
 
@@ -662,24 +940,26 @@ cumulative "pins used so far" table. Every one of them opens with a short
 **"what is actually being taught"** section — the one idea, as bullets — and links back to
 the previous activity's notes and to the hub from the hero.
 
-**Keep them terse.** Kamil asked for this in Activity 5's build and all five pages were
+**Keep them terse.** Kamil asked for this in Activity 6's build and all five pages were
 rewritten to match: bullets and tables rather than paragraphs, one sentence per point, and
 the tables (mistakes, going-further, pins) carrying most of the content. Nothing was
 dropped — the prose around it was. Write new ones the same way.
 
-**`docs/teacher.html` is the hub**, added in Activity 5's build: the same gate and
+**`docs/teacher.html` is the hub**, added in Activity 6's build: the same gate and
 `noindex`, a row per activity with its one idea and its notes link, the module-wide rules
 (Wokwi first, code is never copy-pasteable, no `elif`, answers live only here), a
 cumulative pins table and a once-a-term kit check. It is listed in `robots.txt` and, like
 the per-activity pages, **is not linked from any student page** — `index.html` mentions
 that an index exists and says to ask the STEM Lab for the link.
 
-`robots.txt` already lists `teacher-1.html` through `teacher-9.html`, so a new teacher
-page needs no change there.
+`robots.txt` lists `teacher.html` and `teacher-1.html` through `teacher-12.html`, so a new
+teacher page below 13 needs no change there. Activity 11's build extended it from 9.
 
 ## 10. Adding the next activity — the checklist
 
 1. Read `PROMPT-activity-N.md`, this file, and the two most recent activity pages.
+   Note that the numbering skips: see §3. Build the number the prompt asks for, and do not
+   assume it is one more than the highest page on disk.
 2. **Ask before you build.** Kamil answers, and the answers change the page — the
    Activity 2 exercise went from a level crossing to a traffic light on one question.
    Worth asking about: the exercise, anything that needs a Wokwi project link, and
@@ -696,8 +976,13 @@ page needs no change there.
 8. `CONTEXT.md`: an "Activity N" block in §7 for anything a later builder would
    otherwise have to guess or would get wrong.
 9. Verify (§8.1). Look at every diagram, in both themes. If the activity wires anything,
-   copy the Wokwi-look Pico out of `activity-4.html` rather than drawing a new one — see the
-   *Wokwi-look board diagrams* note at the end of §7.
-10. Write `PROMPT-activity-N+1.md` and delete `PROMPT-activity-N.md`. Deleting needs
-   permission on the mount — ask for it, it also unblocks git's `index.lock`.
+   copy the Wokwi-look Pico out of an existing page rather than drawing a new one — from
+   `activity-10.html` or `activity-11.html` if it needs the network, since those copies are the
+   Pico **W**. See the *Wokwi-look board diagrams* note at the end of §7. Activity 10's build
+   used a Playwright script that also **wraps every `<table>` in `.tablescroll`** — without
+   that a three-column table overflows the page at 390 px, and every page is supposed to pass
+   the overflow check.
+10. Write the brief for the next activity and delete the one you worked from. Deleting needs
+   permission on the mount — ask for it, it also unblocks git's `index.lock`. Do **not**
+   delete a brief for an activity that is still unbuilt (see §3).
 11. Report what changed and stop. Kamil pushes.

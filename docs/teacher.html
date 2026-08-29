@@ -17,11 +17,13 @@
   <a class="nl" href="index.html">Home</a>
   <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
-  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
@@ -65,22 +67,28 @@ the student handout.</div>
       <tr><td><strong>2</strong></td><td><a href="activity-2.html">Make an LED Blink</a></td>
         <td>Loops, <code>sleep</code>, and indentation. Stopping a forever-loop is taught here and assumed after.</td>
         <td><a href="teacher-2.html">teacher-2</a></td></tr>
-      <tr><td><strong>3</strong></td><td><a href="activity-3.html">Digital Input</a></td>
+      <tr><td><strong>4</strong></td><td><a href="activity-4.html">Digital Input</a></td>
         <td>A pin can be read, and a program can print. The button reads <strong>0 when pressed</strong> &mdash; the inversion everything later depends on.</td>
-        <td><a href="teacher-3.html">teacher-3</a></td></tr>
-      <tr><td><strong>4</strong></td><td><a href="activity-4.html">Making Decisions</a></td>
-        <td><code>if</code>, then <code>else</code>. One equals puts, two equals asks. Two independent decisions in the exercise.</td>
         <td><a href="teacher-4.html">teacher-4</a></td></tr>
-      <tr><td><strong>5</strong></td><td><a href="activity-5.html">And, Or, Not</a></td>
-        <td>Joining two whole questions into one. Each half must stand on its own.</td>
+      <tr><td><strong>5</strong></td><td><a href="activity-5.html">Making Decisions</a></td>
+        <td><code>if</code>, then <code>else</code>. One equals puts, two equals asks. Two independent decisions in the exercise.</td>
         <td><a href="teacher-5.html">teacher-5</a></td></tr>
-      <tr><td><strong>6</strong></td><td><a href="activity-6.html">Words on a Screen</a></td>
-        <td>The OLED screen and the first library that is not built in &mdash; they need each other. Also the I&sup2;C bus: two wires, eight parts, one address each.</td>
+      <tr><td><strong>6</strong></td><td><a href="activity-6.html">And, Or, Not</a></td>
+        <td>Joining two whole questions into one. Each half must stand on its own.</td>
         <td><a href="teacher-6.html">teacher-6</a></td></tr>
-      <tr><td><strong>7</strong></td><td><a href="activity-7.html">Sensors and Numbers</a></td>
-        <td>A sensor measures rather than answers yes or no, so the number has a decimal point &mdash; and <code>round()</code> plus <code>str()</code> are what make it fit on a screen. No new pins: it joins the Activity 6 bus.</td>
+      <tr><td><strong>7</strong></td><td><a href="activity-7.html">Words on a Screen</a></td>
+        <td>The OLED screen and the first library that is not built in &mdash; they need each other. Also the I&sup2;C bus: two wires, eight parts, one address each.</td>
         <td><a href="teacher-7.html">teacher-7</a></td></tr>
-      <tr><td>8&ndash;9</td><td class="muted">Internet, radio</td>
+      <tr><td><strong>8</strong></td><td><a href="activity-8.html">Sensors and Numbers</a></td>
+        <td>A sensor measures rather than answers yes or no, so the number has a decimal point &mdash; and <code>round()</code> plus <code>str()</code> are what make it fit on a screen. No new pins: it joins the Activity 7 bus.</td>
+        <td><a href="teacher-8.html">teacher-8</a></td></tr>
+      <tr><td><strong>10</strong></td><td><a href="activity-10.html">Internet and Data</a></td>
+        <td>The reading leaves the room. Two halves: joining a WiFi network, and handing the message to a broker over MQTT. Still no new pins &mdash; the weather sensor is the third part on the Activity 7 bus. First activity that needs the <strong>Pico W</strong>, and the first that can fail for reasons outside the program.</td>
+        <td><a href="teacher-10.html">teacher-10</a></td></tr>
+      <tr><td><strong>11</strong></td><td><a href="activity-11.html">Control from Anywhere</a></td>
+        <td>The arrow turns round: the board <strong>subscribes</strong> instead of publishing. Three parts that only work together &mdash; subscribing, the first <code>def</code>, and <code>check_msg()</code> in the loop. Written self-contained, so it teaches WiFi, MQTT and the Adafruit&nbsp;IO account from scratch, because Activity 10 had not been built when it was written. Needs the <strong>Pico W</strong>.</td>
+        <td><a href="teacher-11.html">teacher-11</a></td></tr>
+      <tr><td>9, 10, 12</td><td class="muted">Soil Moisture (next), the slot Internet and Data moves into, and Radio</td>
         <td class="muted">In preparation.</td><td class="muted">&mdash;</td></tr>
     </tbody>
   </table>
@@ -101,11 +109,11 @@ the student handout.</div>
       <p>Kept out of the whole module so the two-road picture of a decision survives. Nothing here
       needs it.</p></div>
     <div class="mini"><h4>Libraries may be pasted</h4>
-      <p>The no-copying rule is about students&rsquo; own programs. From Activity 6 a library file is
+      <p>The no-copying rule is about students&rsquo; own programs. From Activity 7 a library file is
       pasted or copied onto the Pico &mdash; nobody retypes one. Say so, or the rule looks arbitrary.</p></div>
     <div class="mini"><h4>No <code>for</code> loops either</h4>
       <p>Kept out alongside <code>elif</code>. Every repeat in this module is a forever-loop, and nothing
-      up to Activity 7 has needed anything else.</p></div>
+      up to Activity 10 has needed anything else.</p></div>
     <div class="mini"><h4>Answers live here, not there</h4>
       <p>Student pages carry the task, the expected result and progressive clues. The worked answer is
       on these pages only.</p></div>
@@ -120,19 +128,19 @@ the student handout.</div>
   <table>
     <thead><tr><th>Pin</th><th>Part</th><th>Where it is needed</th></tr></thead>
     <tbody>
-      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td>Activities 6 and 7 main programs, and every sensor from here on</td></tr>
-      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td>Activities 6 and 7 main programs, and every sensor from here on</td></tr>
-      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>Activities 3, 4, 5 main programs; Activity 6 exercise</td></tr>
-      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>Activity 5 main program; Activities 3, 4 and 6 exercises</td></tr>
-      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>Activity 5 exercise</td></tr>
-      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activities 1, 2, 4, 5 &mdash; main programs</td></tr>
+      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td>Activities 7, 8 and 10 main programs, and every sensor from here on</td></tr>
+      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td>Activities 7, 8 and 10 main programs, and every sensor from here on</td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>Activities 4, 5, 6 main programs; Activity 7 exercise</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>Activity 6 main program; Activities 4, 5 and 7 exercises</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>Activity 6 exercise</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>Activities 1, 2, 5, 6 and 11 &mdash; main programs</td></tr>
       <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>Activity 1 and 2 exercises</td></tr>
-      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 4 and 5 exercises</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activity 5, 6 and 11 exercises</td></tr>
       <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Going-further only, so far</td></tr>
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only, so far</td></tr>
     </tbody>
   </table>
-  <p class="muted">SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
+  <p class="muted"><strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
   bus</strong> &mdash; shared by the screen and all eight I&sup2;C sensors, so nothing else may ever be
   wired to them. Full map: <a href="pinout.html">pin reference</a>.</p>
 </section>
@@ -141,11 +149,11 @@ the student handout.</div>
   <h2>Kit check, once a term</h2>
   <ul>
     <li>Every board: SW1, SW2 and SW3 click; LED1, LED2 and LED3 light; the buzzer sounds; the OLED
-    screen shows something when the Activity 6 hello program is run on it; the accelerometer answers when
-    the Activity 7 tilt program is run on it.</li>
+    screen shows something when the Activity 7 hello program is run on it; the accelerometer answers when
+    the Activity 8 tilt program is run on it.</li>
     <li><code>ssd1306.py</code>, <code>imu.py</code> and <code>vector3d.py</code> already on every real
     Pico, and on a shared drive or USB stick for the Wokwi route &mdash; see
-    <a href="teacher-6.html">the Activity 6 notes</a> and <a href="teacher-7.html">the Activity 7
+    <a href="teacher-7.html">the Activity 7 notes</a> and <a href="teacher-8.html">the Activity 8
     notes</a>.</li>
     <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
     <li>One USB cable per board that carries <em>data</em>, not only power.</li>
@@ -172,11 +180,13 @@ the student handout.</div>
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
-       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

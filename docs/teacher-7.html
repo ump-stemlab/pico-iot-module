@@ -17,17 +17,19 @@
   <a class="nl" href="index.html">Home</a>
   <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
-  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
 <div class="gate" id="gate">
   <h2>&#128274; Teacher notes</h2>
-  <p>This page holds the exercise answer for <strong>Activity 7 &mdash; Sensors and Numbers</strong>.
+  <p>This page holds the exercise answer for <strong>Activity 7 &mdash; Words on a Screen</strong>.
   It is not linked from the student pages.</p>
   <p><strong>Students: please go back and try the exercise first.</strong></p>
   <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
@@ -39,8 +41,8 @@
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
     <h1>Activity 7 &mdash; teacher notes</h1>
-    <p class="sub">Sensors and Numbers. One idea in two halves: a sensor measures, and a measurement is a
-    decimal that has to be shortened and re-typed before a screen will take it.</p>
+    <p class="sub">Words on a Screen. One idea in two halves: the OLED, and the first library that is not
+    built in.</p>
     <div class="hero-cta">
       <a class="cta alt" href="activity-7.html">&#9654; Student page</a>
       <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
@@ -52,109 +54,106 @@
 
 <div class="wrap">
 
+<div class="cal note" id="rnnote"><b>The activity numbers have changed</b>
+  These teacher notes were <strong>Activity 6</strong> until August 2026, and are now
+  <strong>Activity 7</strong>, matching the Google Classroom. Followed an old link expecting the <strong>Sensors and Numbers</strong> notes? That is now <a href="teacher-8.html">Activity 8</a>.
+  <button type="button" class="rnx">Got it</button></div>
+<script>
+(function(){var n=document.getElementById('rnnote');if(!n)return;
+try{if(localStorage.getItem('lilex5:renumber-note')==='1'){n.hidden=true;return;}}catch(e){}
+var b=n.querySelector('.rnx');if(b)b.addEventListener('click',function(){n.hidden=true;
+try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
+</script>
+
 <div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
 repository is public &mdash; anyone with the URL can read it.</div>
 
 <section>
   <h2>What is being taught</h2>
   <ul>
-    <li><strong>One idea, two halves.</strong> The sensor is the reason decimals appear;
-    <code>round()</code> is the only thing that makes them fit. Same shape as Activity 6&rsquo;s
-    screen-and-library. Do not split them.</li>
-    <li><strong>New hardware, no new pins.</strong> The accelerometer sits on the I&sup2;C bus built in
-    Activity 6 &mdash; <span class="gp">GP0</span> and <span class="gp">GP1</span>, address
-    <code>0x68</code>. Say this out loud: it is the payoff for the whole of last lesson.</li>
-    <li><strong>The genuinely new syntax is one thing: <code>str()</code>.</strong> Everything else on the
-    page is Activity 6 or earlier. <code>round()</code> is new but obvious; <code>str()</code> is new and
-    surprising, and it is where the period will be lost.</li>
-    <li><strong>The tail of digits is not an error.</strong> The sensor reports whole steps of
-    1/16384&nbsp;g, so almost every reading is an untidy fraction and MicroPython shows about seven
-    significant digits of it. Students will assume something is broken.</li>
-    <li><strong>Round last, not first.</strong> Rounding discards. It belongs at the moment of display,
-    never at the moment of reading.</li>
-    <li><strong>A library may depend on another library.</strong> <code>imu.py</code> needs
-    <code>vector3d.py</code>. That is the only new thing in today&rsquo;s library step.</li>
-    <li><strong>No <code>elif</code> and no <code>for</code> loops</strong>, still. Nothing here needs
-    either.</li>
+    <li><strong>One idea, two halves.</strong> The screen and the library need each other: the screen is
+    the reason to add a library, the library is the only way to use the screen. Same shape as Activity
+    4&rsquo;s read-and-print. Do not split them.</li>
+    <li><strong>First new hardware since Activity 4</strong>, and the first part ever that sits on a
+    <strong>bus</strong> rather than on a pin of its own. SDA is <span class="gp">GP0</span>, SCL is
+    <span class="gp">GP1</span>.</li>
+    <li><strong>Write, then show.</strong> Words go onto a page in memory; <code>show()</code> puts the
+    page on the glass. This is the single biggest source of &ldquo;mine isn&rsquo;t working&rdquo; today,
+    because a missing <code>show()</code> produces no error at all.</li>
+    <li><strong>Where a file lives is now a thing students have to think about.</strong> Up to today the
+    only file that mattered was their own. The library has to be on the Pico&rsquo;s disk, not the
+    computer&rsquo;s.</li>
+    <li><strong>The two routes genuinely differ here</strong>, for the first time in the module. Wokwi:
+    add a second project file. Thonny: save a real file onto the board. Say so out loud &mdash; students
+    comparing notes across routes will otherwise think one of them is wrong.</li>
+    <li><strong>No <code>elif</code> and no <code>for</code> loops</strong>, still. The exercise needs
+    neither.</li>
   </ul>
 
-  <div class="tablescroll">
   <table>
     <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
     <tbody>
-      <tr><td>No <code>str()</code> around the number</td><td><code>TypeError</code>, program stops</td><td>Kind &mdash; it announces itself loudly. Expect it from most of the room, once each.</td></tr>
-      <tr><td>Copied <code>imu.py</code> but not <code>vector3d.py</code></td><td><code>ImportError: no module named 'vector3d'</code></td><td>Kind, but the name in the message is one nobody typed, so it reads as nonsense until explained.</td></tr>
-      <tr><td>Rounded to 0 places</td><td>Number only ever 0 or 1; looks like a broken sensor</td><td><strong>Dangerous.</strong> No error at all, and it mimics a hardware fault.</td></tr>
-      <tr><td>Rounded at the moment of reading</td><td>Works today, ruins Activity 8</td><td>Invisible now. Worth naming anyway.</td></tr>
-      <tr><td>Reading an axis the tilting does not affect</td><td>Number barely moves</td><td>Reads as a dead sensor. Have them print all three.</td></tr>
-      <tr><td>Wokwi: never clicked the sensor part</td><td>Number is a constant 0.0 or 1.0 for ever</td><td><strong>Dangerous.</strong> Perfectly working program, nothing to see. First thing to check on the Wokwi route.</td></tr>
+      <tr><td>No <code>show()</code></td><td>Runs perfectly. Screen stays black.</td><td><strong>Dangerous.</strong> No error, no clue. Expect this from a third of the room.</td></tr>
+      <tr><td>Library on the computer, not the Pico</td><td><code>ImportError</code> on line 2</td><td>Kind &mdash; it announces itself, but the message points at the program rather than the file.</td></tr>
+      <tr><td>No <code>fill(0)</code> inside the loop (exercise)</td><td>Words pile up on top of each other</td><td>Visible immediately. Good teaching moment.</td></tr>
+      <tr><td>Rows too close together</td><td>Two lines overlap into a smear</td><td>Obvious on the screen. 0 and 16.</td></tr>
+      <tr><td>Wrote the address by hand</td><td>Usually still works, sometimes <code>OSError</code></td><td>Nobody needs to type it. See the address note below.</td></tr>
     </tbody>
   </table>
-  </div>
 </section>
 
 <section>
-  <h2>The address, and the one thing to correct if a student reads ahead</h2>
+  <h2>The address &mdash; what to say when a student finds <code>0x78</code></h2>
   <ul>
-    <li>The sensor is at <strong><code>0x68</code></strong>, and <strong>no code sample on either page
-    types an address</strong> &mdash; the library scans the bus and finds it. Keep it that way.</li>
-    <li>Activity 6 taught that a datasheet&rsquo;s <code>0x78</code> is MicroPython&rsquo;s
-    <code>0x3C</code> &mdash; the same address with the read/write bit tacked on. <strong>That is a real
-    trap but it is not a universal rule.</strong> <code>0x68</code> here is already the 7-bit form and must
-    <em>not</em> be halved; halving it gives <code>0x34</code>, which is nothing. The student page says so
-    explicitly.</li>
-    <li>Verified against the driver: <code>imu.py</code> looks for addresses 104 and 105 (<code>0x68</code>
-    and <code>0x69</code>) and takes whichever answers. <code>AD0</code> tied high would make it
-    <code>0x69</code>; on the LilEx5 it is not.</li>
-    <li>If a board misbehaves, scan the bus before believing anything else:</li>
+    <li>The driver&rsquo;s default is <code>0x3C</code> and <strong>the student page never asks anyone
+    to type an address</strong>. Keep it that way unless a board misbehaves.</li>
+    <li>Datasheets and this board&rsquo;s own documentation print <strong><code>0x78</code></strong>.
+    That is the same address with the read/write bit already tacked on the end: <code>0x3C</code>
+    shifted left by one. Both are &ldquo;right&rdquo;; MicroPython wants the 7-bit form.</li>
+    <li>Wokwi agrees: its <em>SSD1306 OLED display</em> part carries
+    <code>i2cAddress: 0x3c</code> as its own default attribute.</li>
+    <li>If a board ever needs the other one, the alternative is <code>0x3D</code> (<code>0x7A</code> in
+    the shifted form), set by a solder link on the module. Run the scan below before believing it.</li>
   </ul>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICMgYSB3b3JraW5nIGJvYXJkIGFuc3dlcnMgWzYwLCAxMDRd" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p class="muted"><strong>60</strong> is the screen, <strong>104</strong> is the sensor. 104 missing means
-  power or wiring, never the program. On a real LilEx5 the list will be longer &mdash; every I&sup2;C part
-  on the board answers.</p>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICAgICAgICAjIGEgd29ya2luZyBzY3JlZW4gYW5zd2VycyBbNjBd" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p class="muted">Prints a list. <strong>60</strong> is <code>0x3C</code>. An empty list means nothing
+  answered at all &mdash; that is wiring or power, never the program.</p>
 </section>
 
 <section>
-  <h2>The main program &mdash; one tilt number, two ways</h2>
-  <span class="codeimg" data-code="IyBGb3VyIHRvb2xzIG5vdzogUGluIGFuZCBJMkMgZm9yIHRoZSBidXMsIE1QVTYwNTAgZm9yIHRoZSBzZW5zb3IsCiMgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gaW11IGltcG9ydCBNUFU2MDUwCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgc2FtZSBidXMgYXMgQWN0aXZpdHkgNiAtIFNEQSBpcyBHUDAgYW5kIFNDTCBpcyBHUDEKaTJjID0gSTJDKDAsIHNkYT1QaW4oMCksIHNjbD1QaW4oMSkpCgojIFR3byBwYXJ0cyBvbiB0aGF0IG9uZSBidXMgbm93OiB0aGUgc2Vuc29yIGFuZCB0aGUgc2NyZWVuCmltdSA9IE1QVTYwNTAoaTJjKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKd2hpbGUgVHJ1ZToKICAgIHRpbHQgPSBpbXUuYWNjZWwueCAgICAgICAgICAgICMgYSBtZWFzdXJlbWVudCwgbm90IGEgMCBvciBhIDEKICAgIHByaW50KHRpbHQpICAgICAgICAgICAgICAgICAgICMgZXZlcnkgZGlnaXQgb2YgaXQsIGluIHRoZSBTaGVsbAoKICAgIG9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZQogICAgb2xlZC50ZXh0KCJUaWx0IiwgMCwgMCkgICAgICAgIyB0aGUgbGFiZWwsIHdoaWNoIG5ldmVyIGNoYW5nZXMKICAgIG9sZWQudGV4dChzdHIocm91bmQodGlsdCwgMSkpLCAwLCAxNikgICAjIHJvdW5kZWQsIHRoZW4gbWFkZSBpbnRvIHdvcmRzCiAgICBvbGVkLnNob3coKSAgICAgICAgICAgICAgICAgICAjIHB1dCB0aGUgcGFnZSBvbiB0aGUgZ2xhc3MKICAgIHNsZWVwKDAuNSk=" role="img" aria-label="Python code, 23 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>The main program &mdash; hello on the glass</h2>
+  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgd2lyZXMsIEkyQyBmb3IgdGhlIGJ1cywgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKCiMgVGhlIGJ1czogU0RBIGlzIEdQMCBhbmQgU0NMIGlzIEdQMQppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKCiMgVGhlIHNjcmVlbjogMTI4IHBpeGVscyBhY3Jvc3MsIDY0IGRvd24sIHNpdHRpbmcgb24gdGhhdCBidXMKb2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYykKCm9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZSBjbGVhbgpvbGVkLnRleHQoIkhlbGxvIiwgMCwgMCkgICAgICAjIGZpcnN0IGxpbmUsIHJpZ2h0IGF0IHRoZSB0b3AKb2xlZC50ZXh0KCJTVEVNIExBQiIsIDAsIDE2KSAgIyBzZWNvbmQgbGluZSwgMTYgcGl4ZWxzIGxvd2VyIGRvd24Kb2xlZC5zaG93KCkgICAgICAgICAgICAgICAgICAgIyBub3RoaW5nIGFwcGVhcnMgdW50aWwgeW91IHNheSB0aGlz" role="img" aria-label="Python code, 14 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   <ul>
-    <li><strong>The <code>print</code> is not decoration.</strong> It is the only place the class ever sees
-    the untouched reading. Without it the whole decimals lesson is theory. Do not let anyone delete it as
-    &ldquo;tidying up&rdquo;.</li>
-    <li>The long line is the lesson. Build it on the board from the inside out &mdash; reading, then
-    rounded, then words &mdash; and count the three closing brackets together.</li>
-    <li><code>sleep(0.5)</code> not 0.1: a number that changes five times a second is unreadable. Half a
-    second is slow enough to read and fast enough to feel live.</li>
-    <li>The loop is back after Activity 6&rsquo;s loop-free program. Nobody has ever noticed this, but if
-    someone asks: a fixed message does not need repeating, a measurement does.</li>
-    <li><strong>Verified in Wokwi during this build.</strong> This exact program runs on
-    <em>wokwi-mpu6050</em> and <em>board-ssd1306</em> on one bus, with <code>imu.py</code>,
-    <code>vector3d.py</code> and <code>ssd1306.py</code> pasted in as project files. Dragging the X slider
-    to 1.15&nbsp;g printed <code>1.149963</code> in the console and put <code>1.1</code> on the glass.</li>
+    <li>Eight working lines, and <strong>no loop</strong> &mdash; the first program since Activity 1 that
+    ends by itself. Worth naming: the words stay because the screen holds what it was last given.</li>
+    <li><code>fill(0)</code> is not strictly needed on a freshly made screen (the driver clears it), but
+    it is in the program on purpose, because the exercise cannot work without it.</li>
+    <li>Delete the <code>show()</code> on the projector and run it. Thirty seconds, and it inoculates
+    the class against the day&rsquo;s worst bug.</li>
+    <li>Have them change <code>"Hello"</code> to their own name before moving on. It is the moment the
+    board stops being a demo.</li>
   </ul>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; X and Y, live, on two rows</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA3IGV4ZXJjaXNlIC0gdHdvIHRpbHQgbnVtYmVycywgbGl2ZSwgb24gdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gaW11IGltcG9ydCBNUFU2MDUwCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgYnVzLCB0aGUgc2Vuc29yIGFuZCB0aGUgc2NyZWVuCmkyYyA9IEkyQygwLCBzZGE9UGluKDApLCBzY2w9UGluKDEpKQppbXUgPSBNUFU2MDUwKGkyYykKb2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYykKCndoaWxlIFRydWU6CiAgICB4ID0gaW11LmFjY2VsLnggICAgICAgICAgICAgICAgICAgICAgICMgYm90aCByZWFkaW5ncyB0YWtlbiB0b2dldGhlcgogICAgeSA9IGltdS5hY2NlbC55CgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAgICAgICAgICAjIHdpcGUgdGhlIHBhZ2UgZXZlcnkgcm91bmQKICAgIG9sZWQudGV4dCgiWCIsIDAsIDApICAgICAgICAgICAgICAgICAgIyB0aGUgbGFiZWwgc3RheXMgcHV0CiAgICBvbGVkLnRleHQoc3RyKHJvdW5kKHgsIDEpKSwgMjQsIDApICAgICMgdGhlIG51bWJlciBkb2VzIG5vdAogICAgb2xlZC50ZXh0KCJZIiwgMCwgMTYpCiAgICBvbGVkLnRleHQoc3RyKHJvdW5kKHksIDEpKSwgMjQsIDE2KQogICAgb2xlZC5zaG93KCkgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG5vdyBwdXQgdGhlIHBhZ2Ugb24gdGhlIGdsYXNzCiAgICBzbGVlcCgwLjIp" role="img" aria-label="Python code, 22 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer &mdash; SW1 and SW2 as words</h2>
+  <span class="codeimg" data-code="IyBBY3Rpdml0eSA2IGV4ZXJjaXNlIC0gU1cxIGFuZCBTVzIgc2hvd24gYXMgd29yZHMgb24gdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgYnVzIGFuZCB0aGUgc2NyZWVuCmkyYyA9IEkyQygwLCBzZGE9UGluKDApLCBzY2w9UGluKDEpKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKIyBUaGUgdHdvIGJ1dHRvbnMsIGV4YWN0bHkgYXMgaW4gQWN0aXZpdHkgMwpzdzEgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCkKc3cyID0gUGluKDMsIFBpbi5JTiwgUGluLlBVTExfVVApCgp3aGlsZSBUcnVlOgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAgICAjIHdpcGUgdGhlIHdob2xlIHBhZ2UgZXZlcnkgcm91bmQKICAgIG9sZWQudGV4dCgiU1cxIiwgMCwgMCkgICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBmaXJzdCBidXR0b24KICAgIGlmIHN3MS52YWx1ZSgpID09IDA6CiAgICAgICAgb2xlZC50ZXh0KCJIRUxEIiwgNDgsIDApCiAgICBlbHNlOgogICAgICAgIG9sZWQudGV4dCgiVVAiLCA0OCwgMCkKICAgIG9sZWQudGV4dCgiU1cyIiwgMCwgMTYpICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBzZWNvbmQgYnV0dG9uCiAgICBpZiBzdzIudmFsdWUoKSA9PSAwOgogICAgICAgIG9sZWQudGV4dCgiSEVMRCIsIDQ4LCAxNikKICAgIGVsc2U6CiAgICAgICAgb2xlZC50ZXh0KCJVUCIsIDQ4LCAxNikKICAgIG9sZWQuc2hvdygpICAgICAgICAgICAgICAgICAgICAgIyBub3cgcHV0IHRoZSBwYWdlIG9uIHRoZSBnbGFzcwogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 27 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   <ul>
-    <li><strong>Both readings at the top of the round.</strong> Taking <code>y</code> after the screen work
-    is not wrong enough to fail, but the two numbers then describe two different moments. Worth one
-    sentence, not an argument.</li>
-    <li><code>24</code> is three letters&rsquo; clearance. Accept anything from 16 to 96 &mdash; below 16
-    it collides with the label, above 96 a negative number falls off the edge.</li>
-    <li>Accept any names. <code>x</code> and <code>y</code> are fine here even though single letters are
-    usually discouraged, because they are the names of the things.</li>
-    <li><code>sleep(0.2)</code> rather than 0.5: two numbers moving together are more interesting when they
-    keep up. Anything from 0.1 to 0.5 is fine.</li>
-    <li><strong>The most instructive wrong answer</strong> is rounding one number and not the other. One
-    row is short and steady, the other is long and jittering, and the difference is visible from across
-    the room.</li>
+    <li><strong>The order inside the loop is the lesson:</strong> wipe, write, show, wait. Any other
+    order fails in a way that is worth looking at.</li>
+    <li><code>48</code> is six letters&rsquo; clearance (6 &times; 8). Accept anything from 32 upwards
+    that does not collide with the label.</li>
+    <li>Two independent <code>if</code>/<code>else</code> pairs, both at four spaces &mdash; Activity
+    5&rsquo;s exercise shape, reused deliberately. A second <code>if</code> at eight spaces is still the
+    most instructive wrong answer.</li>
+    <li>Accept any sensible words for the two states, and any sensible names.</li>
+    <li><code>sleep(0.1)</code> is not compulsory. Without it the screen is redrawn hundreds of times a
+    second and looks identical; with it the class can see the loop is a loop.</li>
   </ul>
-  <div class="cal warn"><b>Wokwi pairs need the sliders</b>
-  Click the sensor part <em>while the simulation is running</em> to get the acceleration sliders. Without
-  that step both numbers sit at 0.0 for ever and the exercise looks broken. Demonstrate it on the
-  projector before they start.</div>
+  <div class="cal warn"><b>Wokwi pairs need two pushbuttons added</b>
+  Diagonally opposite legs, no resistor, GP2 and GP3 &mdash; Activity 4&rsquo;s rule, unchanged. That is
+  four more wires on top of the screen&rsquo;s four. Real-board pairs have nothing to wire and will
+  finish first; have the going-further list ready.</div>
 </section>
 
 <section>
@@ -162,40 +161,34 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
     <tbody>
-      <tr><td>Z on a third row</td>
-      <td>Down-number 32 &mdash;
-      <span class="codeimg inline" data-code="b2xlZC50ZXh0KCJaIiwgMCwgMzIpCm9sZWQudGV4dChzdHIocm91bmQoaW11LmFjY2VsLnosIDEpKSwgMjQsIDMyKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      Flat on the desk it reads about <strong>1.0</strong>. Make them predict first; most say 0.</td></tr>
-      <tr><td>Change the decimal places</td>
-      <td><span class="codeimg inline" data-code="cHJpbnQocm91bmQodGlsdCwgMCkpCnByaW50KHJvdW5kKHRpbHQsIDIpKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      Nought places makes it look like a broken sensor; two makes the number wide and twitchy. One place
-      is the right answer for a person and it is worth them discovering that.</td></tr>
-      <tr><td>Which axis is which</td>
-      <td>No answer to give &mdash; it depends on how the chip is mounted, and finding out is the task.
-      In Wokwi the sliders are labelled, so that route is told the answer; on the board it is a real
-      experiment.</td></tr>
-      <tr><td>The sensor&rsquo;s thermometer</td>
-      <td><span class="codeimg inline" data-code="IyBUaGUgc2Vuc29yIGNhcnJpZXMgaXRzIG93biB0aGVybW9tZXRlciBhcyB3ZWxsCnByaW50KGltdS50ZW1wZXJhdHVyZSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      It reads the temperature of the silicon, which runs warm, so it is a few degrees above the room. A
-      good conversation about what a measurement is actually <em>of</em>.</td></tr>
-      <tr><td>FLAT or TILTED</td>
-      <td>The first use of <code>&gt;</code> in the module &mdash;
-      <span class="codeimg inline" data-code="aWYgaW11LmFjY2VsLnogPiAwLjk6CiAgICBvbGVkLnRleHQoIkZMQVQiLCAwLCA0OCkKZWxzZToKICAgIG9sZWQudGV4dCgiVElMVEVEIiwgMCwgNDgp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      The point to make: <code>== 1.0</code> would almost never be true, because a measurement is almost
-      never exactly anything. This is the seed of Activity 8&rsquo;s thresholds.</td></tr>
-      <tr><td>Centre the number</td>
-      <td>Hard on purpose. The width of the text changes with the number (a minus sign, or 1.0 versus
-      -0.9), so a fixed across-number cannot be right for all of them. Accept &ldquo;it is not possible
-      with what we know&rdquo; as a correct answer.</td></tr>
-      <tr><td>The gyroscope</td>
-      <td><span class="codeimg inline" data-code="cHJpbnQoaW11Lmd5cm8ueCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
-      Degrees per second, and it falls back to about zero the instant the board stops moving &mdash; unlike
-      the accelerometer, which still feels gravity. That contrast is the best thirty seconds available if
-      a group finishes very early.</td></tr>
-      <tr><td>All three at once</td>
-      <td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwpmcm9tIGltdSBpbXBvcnQgTVBVNjA1MAppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKaW11ID0gTVBVNjA1MChpMmMpCnByaW50KGltdS5hY2NlbC54eXopICAgICAgICAjIGFsbCB0aHJlZSBhdCBvbmNlLCBhcyBhIHR1cGxl" role="img" aria-label="Python code, 5 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
-      Handy for the projector. Do not put it on the student page &mdash; a tuple is a whole idea this
-      module has not taught.</td></tr>
+      <tr><td>Centre a word</td>
+      <td>Count the letters, multiply by 8, subtract from 128, halve it. &ldquo;Hi&rdquo; is 2 letters =
+      16 pixels wide, so it starts at 56 &mdash;
+      <span class="codeimg inline" data-code="b2xlZC50ZXh0KCJIaSIsIDQwLCAyNCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      is close enough for the middle of the screen. The arithmetic is the exercise, not the answer.</td></tr>
+      <tr><td>BOTH on a third row</td>
+      <td>One more decision, using Activity 6&rsquo;s <code>and</code>, writing at down-number 32 &mdash;
+      <span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQppZiBzdzEudmFsdWUoKSA9PSAwIGFuZCBzdzIudmFsdWUoKSA9PSAwOgogICAgb2xlZC50ZXh0KCJCT1RIIiwgNDgsIDMyKQogICAgbGVkLm9uKCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td></tr>
+      <tr><td>LED agreeing with the screen</td>
+      <td>Same condition drives both. If they ever disagree, the two <code>if</code> lines are not asking
+      the same question &mdash; a genuinely good debugging lesson.</td></tr>
+      <tr><td>Fill with 1 instead of 0</td>
+      <td>The whole screen lights and the letters vanish, because the letters are drawn <em>on</em> in
+      the same colour as the background now is. Ask them to predict it first.</td></tr>
+      <tr><td>SW4 on a fourth row</td>
+      <td>Down-number 48. Which slide position reads 0 is worth discovering rather than telling &mdash;
+      have them print it and slide it.</td></tr>
+      <tr><td>How many rows fit?</td>
+      <td>Eight rows of 8 pixels: 0, 8, 16&hellip; 56. Writing at 64 or beyond puts the words off the
+      bottom and nothing appears, with no error.</td></tr>
+      <tr><td>If anyone asks for a counter</td>
+      <td>It needs one thing this module has not taught &mdash; turning a number into words before it can
+      be written. Show it only if asked:
+      <span class="codeimg" data-code="Y291bnQgPSAwCndoaWxlIFRydWU6CiAgICBpZiBzdzEudmFsdWUoKSA9PSAwOgogICAgICAgIGNvdW50ID0gY291bnQgKyAxICAgICAgICAgICAjIG9uZSBtb3JlLCBldmVyeSB0ZW50aCBvZiBhIHNlY29uZAogICAgb2xlZC5maWxsKDApCiAgICBvbGVkLnRleHQoImNvdW50IiwgMCwgMCkKICAgIG9sZWQudGV4dChzdHIoY291bnQpLCAwLCAxNikgICAgIyBhIG51bWJlciBoYXMgdG8gYmVjb21lIHdvcmRzIGZpcnN0CiAgICBvbGVkLnNob3coKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 9 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
+      Do not set it as the exercise; it lands better in Activity 8 with a real reading in it.</td></tr>
+      <tr><td>Inverting the display</td>
+      <td><span class="codeimg inline" data-code="b2xlZC5pbnZlcnQoMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      flips black and white on the whole panel. Harmless, and popular.</td></tr>
     </tbody>
   </table>
 </section>
@@ -203,20 +196,22 @@ repository is public &mdash; anyone with the URL can read it.</div>
 <section>
   <h2>Before the lesson</h2>
   <ul>
-    <li><strong>Put <code>imu.py</code> and <code>vector3d.py</code> on every real board yourself.</strong>
-    Same argument as Activity 6, doubled &mdash; it is two files now, and it is not what the lesson is
-    about.</li>
-    <li>Both files from <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">ump-stemlab/stemcube</a>
-    on a shared drive or a USB stick. Assume the lab has no internet.</li>
-    <li><strong>Run the tilt program on each board once.</strong> A dead accelerometer and a missing
-    <code>str()</code> do not look alike, but a board whose sensor never answers wastes ten minutes.</li>
-    <li>Wokwi route: rehearse clicking the sensor to get its sliders. It is the single step that makes the
-    simulator route work today, and it is not obvious.</li>
-    <li>Activity 6 done, and <code>ssd1306.py</code> still on every Pico. Today needs the screen working
-    before anything else can be seen.</li>
+    <li><strong>Get the library onto every real board yourself, beforehand, if you can.</strong> Thirty
+    students each copying a file is thirty chances to put it in the wrong place, and it is not what the
+    lesson is about. Ten minutes with a USB hub saves the first half of the period.</li>
+    <li>If they must do it themselves, do it <em>together</em>, on the projector, before anyone writes a
+    line of the program.</li>
+    <li><code>ssd1306.py</code> from <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">ump-stemlab/stemcube</a>
+    on a shared drive or a USB stick &mdash; assume the lab has no internet.</li>
+    <li><strong>Check every screen lights.</strong> A dead screen and a missing <code>show()</code> look
+    exactly the same. Run the hello program on each board once.</li>
+    <li>Wokwi route: nothing to install, but they need to be able to reach
+    <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the library file</a>
+    to paste it. Have it open in a tab, or on the shared drive.</li>
+    <li>Activities 1&ndash;6 done. <code>if</code>/<code>else</code> and the button inversion are both
+    needed for the exercise.</li>
     <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>;
     <a href="pinout.html">pin reference</a> open on every machine.</li>
-    <li>Desk space. Students will be picking boards up and turning them over with cables attached.</li>
   </ul>
 </section>
 
@@ -226,19 +221,19 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
     <tbody>
-      <tr><td>Wrote the reading straight to the screen</td><td><code>TypeError</code>, program stops</td><td>The big one. Ask what the screen actually draws. Do not say the answer.</td></tr>
-      <tr><td>Copied only <code>imu.py</code></td><td><code>ImportError: no module named 'vector3d'</code></td><td>Read the message together. Whose request is it? Nobody typed that name &mdash; so the library did.</td></tr>
-      <tr><td>Rounded to 0 places</td><td>Number only ever 0 or 1</td><td>Ask what the second number in the rounding does. Then ask what 0 would mean.</td></tr>
-      <tr><td>Wokwi: never clicked the sensor</td><td>Constant 0.0, no error</td><td>Check this first on the Wokwi route, before reading a line of anybody&rsquo;s program.</td></tr>
-      <tr><td>Reading an axis their tilting does not move</td><td>Number barely changes</td><td>Print all three. Two minutes, and it is the going-further task anyway.</td></tr>
-      <tr><td>Two closing brackets instead of three</td><td><code>SyntaxError</code></td><td>Count them out loud: one for round, one for str, one for text.</td></tr>
-      <tr><td>Deleted the <code>print</code> as untidy</td><td>Works, but the lesson vanishes</td><td>The Shell is the only place the real number is visible. Put it back.</td></tr>
-      <tr><td><code>fill(0)</code> above the loop</td><td>Numbers smear on top of each other</td><td>Activity 6&rsquo;s rule, unchanged. Where does the wipe belong?</td></tr>
-      <tr><td>Rounded on the reading line</td><td>Works today</td><td>Not an error. Say why it is a habit worth avoiding, and move on.</td></tr>
-      <tr><td>Assumed the long number is a fault</td><td>Nothing &mdash; they just stop and ask</td><td>The commonest question of the lesson. It is 16&nbsp;384 steps per g; there is no tidier answer available.</td></tr>
-      <tr><td>Halved <code>0x68</code> because Activity 6 said to</td><td><code>MPUException</code>, or nothing</td><td>A student paying close attention. Praise it, then explain that the shifted form is a datasheet convention, not a rule.</td></tr>
-      <tr><td>Wired the sensor to a spare pair of pins</td><td><code>MPUException: No MPU's detected</code></td><td>There is no spare pair. Everything I&sup2;C lives on GP0 and GP1. Send them to <a href="activity-6.html#bus">the bus section</a>.</td></tr>
-      <tr><td>Knocked the screen&rsquo;s wires while adding the sensor</td><td>Both parts stop working</td><td>Scan the bus. An empty list means the whole bus is down, not just the new part.</td></tr>
+      <tr><td>Left out <code>show()</code></td><td>Black screen, no error</td><td>The big one. Ask what the last line of their program does. Do not tell them.</td></tr>
+      <tr><td>Library saved to the computer, not the Pico</td><td><code>ImportError: no module named 'ssd1306'</code></td><td>Read the message with them. Python looked on the <em>Pico&rsquo;s</em> disk. Open Thonny&rsquo;s Files panel.</td></tr>
+      <tr><td>File named <code>SSD1306.py</code> or <code>ssd1306.py.txt</code></td><td>Same <code>ImportError</code></td><td>Windows hides extensions. Turn them on once, at the start of the year.</td></tr>
+      <tr><td>Typed <code>ssd1306</code> capitalised in the import</td><td><code>ImportError</code> again</td><td>File name lower case; the tool inside it upper case. Two different things on one line.</td></tr>
+      <tr><td>Missing <code>I2C</code> from the machine import</td><td><code>NameError: name 'I2C' is not defined</code></td><td>Two tools, one comma. Compare with their Activity 6 top line.</td></tr>
+      <tr><td>Bus pins wrong way round</td><td><code>OSError: [Errno 5] EIO</code></td><td>SDA is GP0, SCL is GP1. Alphabetical order matches numerical order &mdash; a rare kindness.</td></tr>
+      <tr><td>Wokwi: VCC left unwired</td><td><code>OSError</code>, blank part</td><td>A screen with no power cannot answer. Four wires, not two.</td></tr>
+      <tr><td>Wokwi: VCC to VBUS (pin 40)</td><td>Usually works, sometimes odd</td><td>3V3 is pin 36. Same rule as always &mdash; 5&nbsp;V is not for this.</td></tr>
+      <tr><td>Both lines at the same down-number</td><td>An unreadable smear</td><td>Ask how tall a letter is. Then ask what 0 and 8 would look like.</td></tr>
+      <tr><td>Exercise: <code>fill(0)</code> above the loop</td><td>HELD and UP printed on top of each other</td><td>Where does the wipe have to happen? Every round, or once?</td></tr>
+      <tr><td>Exercise: <code>show()</code> inside the <code>if</code></td><td>Screen freezes on one state</td><td>Show once per round, at the end, whatever was decided.</td></tr>
+      <tr><td>Compared with 1</td><td>Words are backwards</td><td>Activity 4&rsquo;s inversion, fourth appearance. Send them to <a href="activity-4.html#trap">that page</a>.</td></tr>
+      <tr><td>Unplugged the board and the screen went blank</td><td>Blank screen</td><td>Correct behaviour, not a fault. The screen only holds what it was last given while powered.</td></tr>
       <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
     </tbody>
   </table>
@@ -248,19 +243,18 @@ repository is public &mdash; anyone with the URL can read it.</div>
 <section>
   <h2>Teaching notes</h2>
   <ul>
-    <li><strong>Open by tilting a board that already works.</strong> Numbers moving on a screen because
-    somebody moved their hand is the hook, and it takes ten seconds.</li>
-    <li><strong>Put the raw number on the projector and let them react to it.</strong> Somebody will say it
-    is broken. That question is the whole first half of the lesson and it is better asked by them than
-    announced by you.</li>
-    <li><strong>The reading widget on the student page is worth five minutes.</strong> Drag, switch to
-    0 places, drag again, then turn the words step off and press send. Three lessons, nothing to type.</li>
-    <li><strong>Do the number-versus-words distinction with paper.</strong> Write <em>0.9</em> on one card
-    and the three characters <em>0</em>, <em>.</em>, <em>9</em> on three cards. Ask which one you could cut
-    in half. It lands in fifteen seconds and it sticks.</li>
-    <li>Say <strong>&ldquo;no new pins&rdquo;</strong> out loud and point at the pin table. Activity 6 was
-    expensive; this is where it pays.</li>
-    <li>The two library files are on the Pico for good. Activity 8 uses them again without any of this.</li>
+    <li><strong>Open with the screen, not the library.</strong> Show a board with words on it first. The
+    library is a chore; it needs a reason to exist before anyone will care about it.</li>
+    <li><strong>The page-and-glass widget on the student page is worth five minutes on the
+    projector.</strong> Write both lines, then wipe, then show. Nothing to type, and it makes
+    <code>show()</code> unforgettable.</li>
+    <li><strong>Do the bus with people.</strong> Call a name across the room, then a message. Everyone
+    hears both; one person answers. That is I&sup2;C, and it takes ninety seconds.</li>
+    <li>Hexadecimal needs one sentence and no more: it is a way of writing numbers,
+    <code>0x3C</code> is 60, nobody converts them by hand.</li>
+    <li><strong>Let them paste the library.</strong> The no-copying rule is about their own programs.
+    Say that out loud, or the rule looks arbitrary.</li>
+    <li>The library file is on the Pico for good. Activity 8 will use it again without any of this.</li>
     <li>Safety rules unchanged: never 5V to a GP pin, never a power pin to GND, power off at SW5 before
     changing wires.</li>
   </ul>
@@ -273,9 +267,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
       <tr><td>Student page</td><td><a href="activity-7.html">activity-7.html</a></td></tr>
       <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
       <tr><td>Previous activity</td><td><a href="activity-6.html">activity-6.html</a> &middot; <a href="teacher-6.html">teacher-6.html</a></td></tr>
-      <tr><td>The library files</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a> &mdash; <code>imu.py</code> and <code>vector3d.py</code></td></tr>
-      <tr><td>The bus</td><td><a href="activity-6.html#bus">activity-6.html#bus</a></td></tr>
-      <tr><td>Adding a library</td><td><a href="activity-6.html#library">activity-6.html#library</a></td></tr>
+      <tr><td>The library file</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a></td></tr>
+      <tr><td>The button inversion</td><td><a href="activity-4.html#trap">activity-4.html#trap</a></td></tr>
+      <tr><td>Adding the library</td><td><a href="activity-7.html#library">activity-7.html#library</a></td></tr>
       <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
       <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
       <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
@@ -288,22 +282,21 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>Pin</th><th>Used for</th><th>Activity 7</th></tr></thead>
     <tbody>
-      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td><strong>required &mdash; shared with the screen</strong></td></tr>
-      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td><strong>required &mdash; shared with the screen</strong></td></tr>
-      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td><strong>new &mdash; required</strong></td></tr>
+      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td><strong>new &mdash; required</strong></td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>exercise</strong></td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td><strong>exercise</strong></td></tr>
       <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>going-further only</td></tr>
       <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used</td></tr>
       <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>not used</td></tr>
       <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>not used</td></tr>
-      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>going-further only</td></tr>
     </tbody>
   </table>
-  <p class="muted"><strong>Activity 7 adds no pins at all.</strong> That is the headline, not a footnote:
-  the sensor joined <span class="gp">GP0</span> and <span class="gp">GP1</span> alongside the screen, and
-  the remaining six I&sup2;C parts on the board would cost nothing either. Full map:
-  <a href="pinout.html">pin reference</a>.</p>
+  <p class="muted">Activity 7 adds <strong>GP0 and GP1</strong>, the first new pins since Activity 1, and
+  the first that are a <em>bus</em> rather than a part. Every I&sup2;C sensor from Activity 8 onwards
+  uses the same two, so they never need adding again &mdash; and nothing else may be wired to them.</p>
 </section>
 
 </div>
@@ -324,11 +317,13 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
-       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

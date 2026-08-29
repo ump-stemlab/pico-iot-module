@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 10 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 10.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 10 &mdash; Internet and Data</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-10.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 10 &mdash; teacher notes</h1>
+    <p class="sub">Internet and Data. One idea in two halves: the board joins a network, and it hands a
+    message to a server whose job is passing messages on.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-10.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-8.html">&#8592; Activity 8 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="cal note" id="rnnote"><b>The activity numbers have changed</b>
+  These teacher notes were <strong>Activity 8</strong> until August 2026, and are now
+  <strong>Activity 10</strong>, matching the Google Classroom.
+  <button type="button" class="rnx">Got it</button></div>
+<script>
+(function(){var n=document.getElementById('rnnote');if(!n)return;
+try{if(localStorage.getItem('lilex5:renumber-note')==='1'){n.hidden=true;return;}}catch(e){}
+var b=n.querySelector('.rnx');if(b)b.addEventListener('click',function(){n.hidden=true;
+try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
+</script>
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea, two halves.</strong> Joining a network, and publishing to a broker. Neither is
+    any use alone, and the second is the one they will remember. Do not split them.</li>
+    <li><strong>This is the first activity that needs the Pico W</strong> and the first that can fail for
+    reasons outside the program. Budget time for the network, not for the code.</li>
+    <li><strong>New hardware, still no new pins.</strong> The weather sensor is the <em>third</em> part on
+    <span class="gp">GP0</span> and <span class="gp">GP1</span>, at <code>0x76</code>. Say it out loud
+    again; it is the second lesson in a row where the bus pays for itself.</li>
+    <li><strong>The reading arrives as words with a unit on the end.</strong> Taking the unit off is the
+    only genuinely new syntax, and it is the sibling of Activity 8&rsquo;s reshaping step &mdash; that one
+    was for a person, this one is for a machine.</li>
+    <li><strong><code>while not</code> is the quiet win.</strong> First loop in the module that stops by
+    itself, and it reuses <code>not</code> from Activity 6 for something that finally matters.</li>
+    <li><strong>Setting up goes outside the loop.</strong> Joining the WiFi every five seconds is the
+    architectural mistake of the lesson and it half-works, which makes it worse.</li>
+    <li><strong>The rate limit is a teaching point, not a footnote.</strong> Thirty a minute; going over
+    looks exactly like a broken board.</li>
+    <li><strong>No <code>elif</code>, no <code>for</code> loops</strong>, still. Nothing here needs
+    either.</li>
+  </ul>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Mistake</th><th>Behaviour</th><th>How dangerous</th></tr></thead>
+    <tbody>
+      <tr><td>Wrong Adafruit IO username or key</td><td><code>MQTTException: 5</code>, program stops</td><td>Kind &mdash; loud, and always the same two things to check.</td></tr>
+      <tr><td>Unit left on the reading</td><td>Publishes fine; graph stays flat at nothing</td><td><strong>Dangerous.</strong> No error at all, and the Shell looks perfect.</td></tr>
+      <tr><td>Feed address typed rather than copied</td><td>Publishes fine; graph never moves</td><td><strong>Dangerous.</strong> Same silence. Capitals and the username are the usual culprits.</td></tr>
+      <tr><td>Joining put inside the loop</td><td>Works, slowly, then stops</td><td><strong>Dangerous.</strong> Half-works for a minute, which teaches the wrong lesson.</td></tr>
+      <tr><td>Wait shortened, or removed</td><td>Works, then silently stops publishing</td><td><strong>Dangerous.</strong> Reads as a crash. It is the rate limit.</td></tr>
+      <tr><td>5&nbsp;GHz network, or a captive portal</td><td>Never joins; sits there for ever</td><td><strong>Dangerous</strong> for the timetable, not the program. Check this before the lesson, not during.</td></tr>
+      <tr><td>Wokwi: never clicked the sensor</td><td>Perfectly flat graph, no error</td><td><strong>Dangerous.</strong> First thing to check on the Wokwi route.</td></tr>
+      <tr><td>Underscore/dot library name swapped between routes</td><td><code>ImportError</code></td><td>Kind. One of the three lines that differ.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>The two things that decide whether this lesson works</h2>
+  <h3>1. The network</h3>
+  <ul>
+    <li><strong>Test it yourself, on a Pico W, in the room, before the lesson.</strong> Nothing else on this
+    page matters if this fails.</li>
+    <li>A Pico W joins <strong>2.4&nbsp;GHz only</strong>. A dual-band router advertising one name can hand
+    it a 5&nbsp;GHz-only association and it will simply never join.</li>
+    <li><strong>Captive portals are fatal.</strong> If the school network shows a sign-in page, no Pico will
+    ever get past it &mdash; there is no browser on the board.</li>
+    <li><strong>Phone hotspot is the agreed fallback</strong> for this module. Set it to 2.4&nbsp;GHz
+    (Android: <em>Maximise compatibility</em>; iPhone: <em>Maximise Compatibility</em>). One hotspot will
+    take roughly eight to ten boards; plan a hotspot per group of three or four rather than one for the
+    room.</li>
+    <li>Have the network name and password on the board (the whiteboard) before they start. Typing a
+    password wrong is the single commonest cause of &ldquo;it never joins&rdquo;.</li>
+    <li><strong>The Wokwi route needs no local network at all</strong> &mdash; only that wokwi.com and
+    io.adafruit.com are reachable from the classroom browsers. Worth checking the school does not block
+    either.</li>
+  </ul>
+
+  <h3>2. The accounts</h3>
+  <ul>
+    <li><strong>One free account each, made in the lesson</strong> &mdash; Kamil&rsquo;s call. Budget ten
+    minutes and expect email-confirmation friction.</li>
+    <li>Everyone&rsquo;s own account means everyone&rsquo;s own <strong>30 messages a minute</strong>, which
+    is the main reason not to share one.</li>
+    <li>If accounts cannot be made, one shared account works, but then <em>every board must use a different
+    name for itself</em> in the broker line, and the whole room shares one rate limit &mdash; push the wait
+    up to fifteen seconds.</li>
+    <li><strong>The key is a password.</strong> Say it once, firmly, at the start. Somebody will screenshot
+    their screen for a friend. The <em>My Key</em> page can throw a leaked key away and issue a new one.</li>
+    <li>Feeds are private to an account by default. The page says so, and also says not to publish anything
+    about a person.</li>
+    <li><strong>The Adafruit IO screens change.</strong> The student page&rsquo;s four setup steps were
+    written from the STEM Lab&rsquo;s own deck &mdash; click through them yourself the week before, and tell
+    the STEM Lab if a menu has moved.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The Wokwi route &mdash; what was actually verified</h2>
+  <ul>
+    <li><strong>Wokwi&rsquo;s simulated network reaches the real internet.</strong> Verified during this
+    build, in the browser: a simulated Pico W joined <code>Wokwi-GUEST</code>, opened a connection to the
+    real <code>io.adafruit.com</code>, and was refused with a genuine <code>MQTTException(5,)</code> when
+    handed a deliberately fake key. Nothing was faked by the simulator.</li>
+    <li>Earlier notes in this repository said WiFi and MQTT were real-board-only. That was true once and is
+    no longer; <code>CONTEXT.md</code> &sect;5.2 has been corrected.</li>
+    <li>The starter project carries a <strong>custom BME280 chip</strong> written by the STEM Lab &mdash;
+    Wokwi has no built-in BME280 &mdash; plus a screen, and <code>bme280.py</code>, <code>ssd1306.py</code>
+    and <code>umqtt_simple.py</code> as project files. <code>main.py</code> is empty on purpose.</li>
+    <li>Verified on the rewired project: <code>i2c.scan()</code> answered <strong>[60, 118]</strong> with
+    both parts on <span class="gp">GP0</span>/<span class="gp">GP1</span>, and the sensor returned
+    <code>('21.64C', '1010.39hPa', '55.04%')</code>.</li>
+    <li>The exact probe, for anyone who wants to repeat it:<br><span class="codeimg" data-code="IyBXaGF0IHdhcyBhY3R1YWxseSBydW4gaW4gV29rd2kgdG8gcHJvdmUgdGhlIHJvdXRlIHdvcmtzCnByaW50KCJzY2FuOiIsIGkyYy5zY2FuKCkpICAgICAgICAgICAgIyBbNjAsIDExOF0KcHJpbnQoInZhbHVlczoiLCBibWUudmFsdWVzKSAgICAgICAgICAjICgnMjEuNjRDJywgJzEwMTAuMzloUGEnLCAnNTUuMDQlJykKcHJpbnQoIndpZmk6Iiwgd2xhbi5pZmNvbmZpZygpWzBdKSAgICAjIDEwLjEwLjAuMQptcXR0LmNvbm5lY3QoKSAgICAgICAgICAgICAgICAgICAgICAgICMgTVFUVEV4Y2VwdGlvbig1LCkgd2l0aCBhIGZha2Uga2V5" role="img" aria-label="Python code, 5 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></li>
+    <li><strong>The chip&rsquo;s sliders are the whole route.</strong> Press play, then click the green
+    block: temperature, pressure and humidity sliders appear. Not discoverable. Demonstrate it on the
+    projector.</li>
+    <li>Wokwi cannot create a folder on the simulated Pico, which is why the broker library is a flat
+    <code>umqtt_simple.py</code> there and <code>umqtt.simple</code> on the real board.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Exercise answer &mdash; the reading on the screen as well as on the graph</h2>
+  <span class="codeimg" data-code="IyBBY3Rpdml0eSA4IGV4ZXJjaXNlIC0gdGhlIHJlYWRpbmcgb24gdGhlIHNjcmVlbiBhcyB3ZWxsIGFzIG9uIHRoZSBncmFwaApmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmltcG9ydCBibWUyODAKZnJvbSBzc2QxMzA2IGltcG9ydCBTU0QxMzA2X0kyQwpmcm9tIHVtcXR0X3NpbXBsZSBpbXBvcnQgTVFUVENsaWVudAppbXBvcnQgbmV0d29yawpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpXSUZJX05BTUUgPSAiV29rd2ktR1VFU1QiCldJRklfUEFTUyA9ICIiCkFJT19VU0VSID0gInlvdXItdXNlcm5hbWUiCkFJT19LRVkgPSAieW91ci1rZXkiCkZFRUQgPSAieW91ci11c2VybmFtZS9mZWVkcy90ZW1wZXJhdHVyZSIKCiMgT25lIGJ1cywgdHdvIHBhcnRzIG9uIGl0IC0gbm9uZSBvZiB0aGlzIGlzIG5ldwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKYm1lID0gYm1lMjgwLkJNRTI4MChpMmM9aTJjKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKd2xhbiA9IG5ldHdvcmsuV0xBTihuZXR3b3JrLlNUQV9JRikKd2xhbi5hY3RpdmUoVHJ1ZSkKd2xhbi5jb25uZWN0KFdJRklfTkFNRSwgV0lGSV9QQVNTKQp3aGlsZSBub3Qgd2xhbi5pc2Nvbm5lY3RlZCgpOgogICAgc2xlZXAoMSkKcHJpbnQoImpvaW5lZCB0aGUgbmV0d29yazoiLCB3bGFuLmlmY29uZmlnKClbMF0pCgptcXR0ID0gTVFUVENsaWVudCgibGlsZXg1IiwgImlvLmFkYWZydWl0LmNvbSIsIHVzZXI9QUlPX1VTRVIsIHBhc3N3b3JkPUFJT19LRVkpCm1xdHQuY29ubmVjdCgpCnByaW50KCJjb25uZWN0ZWQgdG8gQWRhZnJ1aXQgSU8iKQoKd2hpbGUgVHJ1ZToKICAgIHJlYWRpbmcgPSBibWUudmFsdWVzWzBdICAgICAgIyB0YWtlbiBvbmNlLCB1c2VkIHR3aWNlCiAgICB0ZW1wID0gcmVhZGluZ1s6LTFdCiAgICBtcXR0LnB1Ymxpc2goRkVFRCwgdGVtcCkgICAgICMgdGhlIGdyYXBoIGdldHMgdGhlIGJhcmUgbnVtYmVyCgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAjIHRoZSBwZXJzb24gZ2V0cyB0aGUgd2hvbGUgdGhpbmcKICAgIG9sZWQudGV4dCgiVGVtcCIsIDAsIDApCiAgICBvbGVkLnRleHQocmVhZGluZywgMCwgMTYpCiAgICBvbGVkLnNob3coKQogICAgc2xlZXAoNSk=" role="img" aria-label="Python code, 40 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li><strong>The reading is taken once and used twice.</strong> That is the point of the exercise. Taking
+    it twice is not wrong enough to fail, but the two will disagree and it looks like a bug.</li>
+    <li><strong>The screen gets the whole reading, the graph gets the stripped one.</strong> Accept the
+    stripped version on the screen too &mdash; but ask which one a person would rather read.</li>
+    <li>Nothing above the loop changes except two lines: the screen&rsquo;s import, and the screen itself
+    after the bus. Watch for the screen being made <em>before</em> the bus line.</li>
+    <li>Wipe inside the loop, show last. Activity 7&rsquo;s order, unchanged, and it still catches people
+    two activities later.</li>
+    <li>Down-numbers 0 and 16, as in Activities 7 and 8. Accept 0 and anything from 12 to 40.</li>
+    <li>Accept any order of publish and screen within the round. Publishing first is marginally better
+    because the network is the slow part, but do not make a thing of it.</li>
+    <li><strong>The most instructive wrong answer</strong> is putting the screen work outside the loop:
+    one reading appears, freezes, and the graph carries on without it.</li>
+  </ul>
+  <div class="cal warn"><b>Wokwi pairs: the screen is already in the starter project</b>
+  So is <code>ssd1306.py</code>. Nobody needs to add a part or a file for this exercise on either route
+  &mdash; if a group is trying to, they have started a new project.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Publish the humidity</td>
+      <td><span class="codeimg inline" data-code="SFVNX0ZFRUQgPSAieW91ci11c2VybmFtZS9mZWVkcy9odW1pZGl0eSIKbXF0dC5wdWJsaXNoKEhVTV9GRUVELCBibWUudmFsdWVzWzJdWzotMV0p" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      The third of the three answers, and its unit is one character like the temperature&rsquo;s, so almost
+      nothing changes. A second feed has to exist on the site first.</td></tr>
+      <tr><td>Publish the pressure</td>
+      <td><span class="codeimg inline" data-code="UFJTX0ZFRUQgPSAieW91ci11c2VybmFtZS9mZWVkcy9wcmVzc3VyZSIKbXF0dC5wdWJsaXNoKFBSU19GRUVELCBibWUudmFsdWVzWzFdWzotM10pICAgIyBoUGEgaXMgdGhyZWUgY2hhcmFjdGVycw==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      <strong>The interesting one.</strong> Three characters, not one, so a rule learned as &ldquo;take the
+      last one off&rdquo; breaks. Let them discover it by looking at the value rather than telling
+      them.</td></tr>
+      <tr><td>One digit on the screen instead of two</td>
+      <td><span class="codeimg inline" data-code="b2xlZC50ZXh0KHJlYWRpbmdbOi0yXSArICJDIiwgMCwgMTYpICAgIyAyMy40NUMgYmVjb21lcyAyMy40Qw==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      Same tool as the stripping line, used with a different number, and the unit stuck back on. Accept a
+      version that drops the unit as well.</td></tr>
+      <tr><td>Publish only when it has moved</td>
+      <td><span class="codeimg inline" data-code="bGFzdCA9IDAuMAojIC4uLiBpbnNpZGUgdGhlIGxvb3AsIGluIHBsYWNlIG9mIHRoZSBwbGFpbiBwdWJsaXNoOgogICAgbm93ID0gZmxvYXQodGVtcCkKICAgIGlmIG5vdyAtIGxhc3QgPiAwLjUgb3IgbGFzdCAtIG5vdyA+IDAuNToKICAgICAgICBtcXR0LnB1Ymxpc2goRkVFRCwgdGVtcCkKICAgICAgICBsYXN0ID0gbm93" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
+      First use of <code>&gt;</code> in a main program on this route, and it needs the board to
+      <em>remember</em> the last value &mdash; a variable that survives the round. <code>or</code> is
+      Activity 6 and covers movement in both directions.</td></tr>
+      <tr><td>A Gauge block instead of a line chart</td>
+      <td>No code. Worth doing on the projector: the same feed, two ways of looking at it, and a
+      conversation about which one suits a temperature and which suits a switch.</td></tr>
+      <tr><td>A Rule that emails you</td>
+      <td>No code &mdash; it is set up on the site. The good question is what number is worth an email, and
+      what happens if the reading sits right on it and jitters.</td></tr>
+      <tr><td>Somebody in another room watching</td>
+      <td>Needs the dashboard shared, which is a setting on the site and needs checking before you promise
+      it. Easiest reliable version: put your own dashboard on the projector and let a group publish to it
+      from down the corridor.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li><strong>Run the whole thing yourself, on the network the class will use.</strong> Both routes. This
+    is the one activity where the room can defeat a correct program.</li>
+    <li><strong>Put <code>bme280.py</code> and <code>umqtt.simple</code> on every real board yourself.</strong>
+    Same argument as Activities 7 and 8 &mdash; the library step is not what today is about, and the package
+    manager needs the board connected and idle.</li>
+    <li>Files from <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">ump-stemlab/stemcube</a>
+    on a shared drive or a USB stick. Assume the lab has no internet for GitHub.</li>
+    <li><strong>Make your own Adafruit IO account and dashboard first</strong>, and have it on the projector
+    before anybody starts. Seeing a graph move is what makes the room want one.</li>
+    <li>Check the school does not block <code>io.adafruit.com</code> or <code>wokwi.com</code>.</li>
+    <li>Decide the network answer in advance: school WiFi, or hotspots. If hotspots, tell students the day
+    before so the phones are charged.</li>
+    <li>Have the Wokwi starter link ready to paste into a chat or write on the board.</li>
+    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>;
+    <a href="pinout.html">pin reference</a> open on every machine.</li>
+    <li>If a board misbehaves, scan the bus before believing anything else:</li>
+  </ul>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICMgMTE4IGlzIHRoZSB3ZWF0aGVyIHNlbnNvciwgNjAgdGhlIHNjcmVlbg==" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p class="muted"><strong>118</strong> is the weather sensor, <strong>60</strong> the screen,
+  <strong>104</strong> the tilt sensor. On a real LilEx5 the list is longer &mdash; every I&sup2;C part
+  answers.</p>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Typed the feed address instead of copying it</td><td>Everything looks perfect; graph is empty</td><td>The commonest silent failure. Put their address next to the site&rsquo;s, letter by letter, on the projector.</td></tr>
+      <tr><td>Used their email instead of their username</td><td><code>MQTTException: 5</code></td><td>The username is the short blue name, not the address they signed up with.</td></tr>
+      <tr><td>Missed a character off the key</td><td><code>MQTTException: 5</code></td><td>Copy it again with the button rather than by dragging. Do not read it out loud in class.</td></tr>
+      <tr><td>Published the reading with its unit on</td><td>Shell fine, graph flat at nothing</td><td>Ask what the graph received. Do not say the answer.</td></tr>
+      <tr><td>Put the joining inside the loop</td><td>Slow, then stops</td><td>Ask how often a phone joins the WiFi. Once, on arriving.</td></tr>
+      <tr><td>Deleted the wait, or made it 0.5</td><td>Works, then stops for no visible reason</td><td>The rate limit. Have them count: how many is five seconds a minute, and how many is half a second?</td></tr>
+      <tr><td>Wokwi: never clicked the sensor block</td><td>Flat graph, no error</td><td>Check this <em>first</em> on the Wokwi route, before reading anybody&rsquo;s program.</td></tr>
+      <tr><td>Wrong library spelling for the route</td><td><code>ImportError</code></td><td>Underscore in Wokwi, dot on the board. One of the three lines.</td></tr>
+      <tr><td>Password typed with the wrong capitals</td><td>Never joins</td><td>Network passwords are case-sensitive. Have them retype rather than stare.</td></tr>
+      <tr><td>Joined the 5&nbsp;GHz network</td><td>Never joins</td><td>Not their fault and not fixable in the program. Move them to the hotspot.</td></tr>
+      <tr><td>Two boards sharing one name for themselves</td><td>Both keep dropping and reconnecting</td><td>Only on a shared account. Give each board its own name.</td></tr>
+      <tr><td>Left the whole program running at break</td><td>Rate limit hit; nothing works after break</td><td>Stop the program when you stop looking at it. A minute of quiet clears it.</td></tr>
+      <tr><td>Screenshotted the key onto the class chat</td><td>&nbsp;</td><td>Deal with it calmly: regenerate the key on the <em>My Key</em> page, and use it as the security lesson it is.</td></tr>
+      <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Open with your own dashboard on the projector and breathe on the sensor.</strong> The graph
+    twitching because somebody in the room breathed is the hook, and it takes fifteen seconds.</li>
+    <li><strong>Do the broker with three volunteers.</strong> One publishes a number on a sticky note to a
+    person in the middle; the other two ask that person for it. Nobody in the room forgets what a broker is
+    after that.</li>
+    <li><strong>The publishing widget on the student page is worth five minutes.</strong> Publish once with
+    the unit left on, change the username and watch the address change, then publish thirty times. Three
+    failures, nothing typed.</li>
+    <li><strong>Name the two halves separately as they happen.</strong> &ldquo;We are on the network&rdquo;
+    is one milestone; &ldquo;we are talking to the broker&rdquo; is another. Students who cannot tell them
+    apart cannot debug either.</li>
+    <li><strong>Let them see the second between the Shell line and the graph point.</strong> That second is
+    the internet, and it is the only time in this module they can watch it happen.</li>
+    <li>Say <strong>&ldquo;still no new pins&rdquo;</strong> and point at the pin table. Twice in two
+    lessons.</li>
+    <li>The security line is short and firm: the key is a password. One sentence, not a lecture, and
+    repeated once at the end.</li>
+    <li>Safety rules unchanged: never 5V to a GP pin, never a power pin to GND, power off at SW5 before
+    changing wires.</li>
+    <li><strong>Next lesson is soil moisture</strong> &mdash; an analogue pin, and the discovery that a
+    sensor&rsquo;s numbers mean nothing until you have measured what they mean on your own sensor. The
+    board <em>listens</em> to this same broker in <a href="teacher-11.html">Activity 11</a>, so
+    today&rsquo;s middleman is not spent.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <div class="tablescroll">
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-10.html">activity-10.html</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-8.html">activity-8.html</a> &middot; <a href="teacher-8.html">teacher-8.html</a></td></tr>
+      <tr><td>Wokwi starter project</td><td><a href="https://wokwi.com/projects/472388087907794945" target="_blank" rel="noopener">wokwi.com/projects/472388087907794945</a> &mdash; Pico W, custom BME280, screen, three library files</td></tr>
+      <tr><td>Adafruit IO</td><td><a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a> &middot; free account, feeds, dashboards, My Key</td></tr>
+      <tr><td>The library files</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a> &mdash; <code>bme280.py</code></td></tr>
+      <tr><td>The bus</td><td><a href="activity-7.html#bus">activity-7.html#bus</a></td></tr>
+      <tr><td>Adding a library</td><td><a href="activity-7.html#library">activity-7.html#library</a></td></tr>
+      <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>Activity 10</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP0</span></td><td>SDA &mdash; I&sup2;C data</td><td><strong>required &mdash; shared with the screen and the tilt sensor</strong></td></tr>
+      <tr><td><span class="gp">GP1</span></td><td>SCL &mdash; I&sup2;C clock</td><td><strong>required &mdash; shared with the screen and the tilt sensor</strong></td></tr>
+      <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP3</span></td><td>Button SW2</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP4</span></td><td>Button SW3</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP11</span></td><td>LED1 red</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP12</span></td><td>LED2 yellow</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>not used</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted"><strong>Activity 10 adds no pins either.</strong> The weather sensor is the third part on
+  <span class="gp">GP0</span> and <span class="gp">GP1</span>, and the WiFi radio is inside the Pico W and
+  is not on a GP pin at all. Full map: <a href="pinout.html">pin reference</a>.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

@@ -15,11 +15,13 @@
   <a class="nl" href="index.html" aria-current="page">Home</a>
   <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
-  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
@@ -46,7 +48,7 @@
   single light to sending data across the internet.</p>
   <figure class="board"><img src="img/lilex5-board.png"
     alt="The LilEx5 board seen from above" loading="lazy">
-    <figcaption>The LilEx5 board. Everything you will use for the next nine activities is
+    <figcaption>The LilEx5 board. Everything you will use for the next twelve activities is
     already on it &mdash; see the <a href="pinout.html">pin reference</a> to find each part.</figcaption>
   </figure>
   <p>Every idea is introduced from scratch, in plain language, one step at a time.</p>
@@ -65,17 +67,21 @@
 
 <section id="activities">
   <h2>Activities</h2>
-  <p class="lede">Nine activities. Each one adds exactly one new idea.</p>
+  <p class="lede">Thirteen activities, numbered 0 to 12. Each one adds exactly one new idea.</p>
   <div class="actlist">
+    <div class="act soon"><span class="n">0</span><span class="t"><b>Getting Started</b><small>the board, the simulator, and the program that talks to it</small></span><span class="badge">Coming soon</span></div>
     <a class="act live" href="activity-1.html"><span class="n">1</span><span class="t"><b>Light Up an LED</b><small>variables, comments, GPIO pins</small></span><span class="badge">Start here</span></a>
     <a class="act live" href="activity-2.html"><span class="n">2</span><span class="t"><b>Make an LED Blink</b><small>loops, indentation, sleep</small></span><span class="badge">Ready</span></a>
-    <a class="act live" href="activity-3.html"><span class="n">3</span><span class="t"><b>Digital Input</b><small>reading buttons, print()</small></span><span class="badge">Ready</span></a>
-    <a class="act live" href="activity-4.html"><span class="n">4</span><span class="t"><b>Making Decisions</b><small>if / else, comparing with ==</small></span><span class="badge">Ready</span></a>
-    <a class="act live" href="activity-5.html"><span class="n">5</span><span class="t"><b>And, Or, Not</b><small>and / or / not, joining two questions</small></span><span class="badge">Ready</span></a>
-    <a class="act live" href="activity-6.html"><span class="n">6</span><span class="t"><b>Words on a Screen</b><small>the OLED screen, the I&sup2;C bus, adding a library</small></span><span class="badge">Ready</span></a>
-    <a class="act live" href="activity-7.html"><span class="n">7</span><span class="t"><b>Sensors and Numbers</b><small>a sensor on the same bus, decimals, round()</small></span><span class="badge">New</span></a>
-    <div class="act soon"><span class="n">8</span><span class="t"><b>Internet and Data</b><small>WiFi, MQTT, live dashboards</small></span><span class="badge">Coming soon</span></div>
-    <div class="act soon"><span class="n">9</span><span class="t"><b>Radio Communication</b><small>sending messages board to board</small></span><span class="badge">Coming soon</span></div>
+    <div class="act soon"><span class="n">3</span><span class="t"><b>Digital Output / Servo</b><small>pulses, and telling a motor exactly where to point</small></span><span class="badge">Coming soon</span></div>
+    <a class="act live" href="activity-4.html"><span class="n">4</span><span class="t"><b>Digital Input</b><small>reading buttons, print()</small></span><span class="badge">Ready</span></a>
+    <a class="act live" href="activity-5.html"><span class="n">5</span><span class="t"><b>Making Decisions</b><small>if / else, comparing with ==</small></span><span class="badge">Ready</span></a>
+    <a class="act live" href="activity-6.html"><span class="n">6</span><span class="t"><b>And, Or, Not</b><small>and / or / not, joining two questions</small></span><span class="badge">Ready</span></a>
+    <a class="act live" href="activity-7.html"><span class="n">7</span><span class="t"><b>Words on a Screen</b><small>the OLED screen, the I&sup2;C bus, adding a library</small></span><span class="badge">Ready</span></a>
+    <a class="act live" href="activity-8.html"><span class="n">8</span><span class="t"><b>Sensors and Numbers</b><small>a sensor on the same bus, decimals, round()</small></span><span class="badge">Ready</span></a>
+    <div class="act soon"><span class="n">9</span><span class="t"><b>Soil Moisture</b><small>an analogue pin, choosing your own numbers, and calibration</small></span><span class="badge">Coming soon</span></div>
+    <a class="act live" href="activity-10.html"><span class="n">10</span><span class="t"><b>Internet and Data</b><small>joining WiFi, MQTT, a live graph on the internet</small></span><span class="badge">New</span></a>
+    <a class="act live" href="activity-11.html"><span class="n">11</span><span class="t"><b>Control from Anywhere</b><small>subscribing, your first function, and a switch on the web</small></span><span class="badge">New</span></a>
+    <div class="act soon"><span class="n">12</span><span class="t"><b>Sending Messages by Radio</b><small>board to board, with no internet at all</small></span><span class="badge">Coming soon</span></div>
   </div>
 </section>
 
@@ -120,11 +126,13 @@
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
-       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

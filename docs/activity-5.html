@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Activity 5 &mdash; And, Or, Not | LilEx5 Pico IoT Module</title>
-<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 5: joining two questions into one with and, or and not.">
+<title>Activity 5 &mdash; Making Decisions | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 5: press the button and the LED lights, using if and else.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
 </head>
@@ -31,20 +31,22 @@
   <a class="nl" href="index.html">Home</a>
   <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
-  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html" aria-current="page">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
   <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 5</p>
-    <h1>And, Or, Not</h1>
-    <p class="sub">Last lesson you wrote two decisions. Today you write <strong>one</strong> decision
-    that asks about two things at once &mdash; and the light only comes on when both of them are true.</p>
+    <h1>Making Decisions</h1>
+    <p class="sub">Press the button and the light comes on. This is the one you have been asking for
+    since the end of Activity 4 &mdash; and you now have everything you need to build it.</p>
     <div class="pills">
       <span class="pill">&#128013; MicroPython</span>
       <span class="pill">&#9201; About 45 minutes</span>
@@ -53,9 +55,9 @@
     </div>
     <div class="toc">
       <a href="#idea">The new idea</a>
-      <a href="#tables">The three words</a>
-      <a href="#whole">Two whole questions</a>
-      <a href="#not">The word not</a>
+      <a href="#trap">One equals, or two</a>
+      <a href="#zero">Which number</a>
+      <a href="#indent">Indenting twice</a>
       <a href="#try">Try it</a>
       <a href="#build">The circuit</a>
       <a href="#code">Write the code</a>
@@ -77,429 +79,410 @@
 
 <div class="wrap">
 
+<div class="cal note" id="rnnote"><b>The activity numbers have changed</b>
+  This page was <strong>Activity 4</strong> until August 2026, and is now
+  <strong>Activity 5</strong>, matching your Google Classroom. Nothing about the
+  activity itself has changed. Followed an old link expecting <strong>And, Or, Not</strong>? That is now <a href="activity-6.html">Activity 6</a>.
+  <button type="button" class="rnx">Got it</button></div>
+<script>
+(function(){var n=document.getElementById('rnnote');if(!n)return;
+try{if(localStorage.getItem('lilex5:renumber-note')==='1'){n.hidden=true;return;}}catch(e){}
+var b=n.querySelector('.rnx');if(b)b.addEventListener('click',function(){n.hidden=true;
+try{localStorage.setItem('lilex5:renumber-note','1');}catch(e){}});})();
+</script>
+
 <section>
   <h2>&#127919; Your mission</h2>
-  <p class="lede">A <strong>two-key safety switch</strong>. The red light comes on only while
-  <strong>both</strong> SW1 and SW2 are held down. One key on its own does nothing at all.</p>
-  <p>This is a real thing, not a puzzle. Machines that could take a hand off &mdash; presses, guillotines,
-  the big red cutters in a workshop &mdash; are started with two buttons far enough apart that you need
-  both hands to do it. Two hands on the buttons means no hands anywhere dangerous.</p>
-  <p>In Activity 4 you wrote two decisions that knew nothing about each other: one button, one light,
-  twice over. Today there is <strong>one</strong> decision, and its question has two halves.</p>
+  <p class="lede">Hold the button down and the red light comes on. Let go and it goes out. The Pico
+  works out what to do all by itself.</p>
+  <p>At the end of Activity 4 you could watch a number change on your screen, and almost everybody in
+  the room said the same thing: <em>&ldquo;can we make it turn the light on?&rdquo;</em> The answer was
+  &ldquo;not yet&rdquo;, because the Pico had no way of <strong>deciding</strong> anything. It could
+  read. It could report. It could not choose.</p>
+  <p>That is what this activity adds, and it is the biggest single step in the whole module. Up to now
+  your programs have done exactly the same thing every time they ran. From today they can do
+  <strong>one thing or a different thing</strong>, depending on what is actually happening in the room.</p>
 
-<svg class="dia" viewBox="0 0 720 300" role="img" aria-label="The loop for this activity. The Pico reads SW1 and reads SW2, then asks one question with two halves: is the first one held down and is the second one held down. If the answer is yes the light comes on; anything else and the light goes off. Then it starts again.">
-  <text x="360" y="24" class="dttl" text-anchor="middle">Two readings, one question, one answer</text>
-  <rect x="24" y="72" width="132" height="46" rx="10" class="step"/>
-  <text x="90" y="100" class="dlbl" text-anchor="middle">read SW1</text>
-  <rect x="24" y="148" width="132" height="46" rx="10" class="step"/>
-  <text x="90" y="176" class="dlbl" text-anchor="middle">read SW2</text>
-  <path d="M156 95 L196 95 L196 128" class="arrow"/>
-  <path d="M156 171 L196 171 L196 140" class="arrow"/>
-  <rect x="212" y="106" width="188" height="58" rx="26" class="pinbox"/>
-  <text x="306" y="130" class="dlbl" text-anchor="middle">both held down?</text>
-  <text x="306" y="150" class="dsub" text-anchor="middle">one question, two halves</text>
-  <path d="M400 135 L428 135 L428 78 L458 78" class="arrow"/>
-  <path d="M400 135 L428 135 L428 192 L458 192" class="arrow"/>
-  <text x="442" y="64" class="dlbl" text-anchor="middle">yes</text>
-  <text x="442" y="224" class="dlbl" text-anchor="middle">no</text>
-  <rect x="466" y="54" width="180" height="48" rx="10" class="step"/>
-  <text x="556" y="84" class="dlbl" text-anchor="middle">light on</text>
-  <rect x="466" y="168" width="180" height="48" rx="10" class="step"/>
-  <text x="556" y="198" class="dlbl" text-anchor="middle">light off</text>
-  <path d="M646 78 L682 78 L682 254" class="lead"/>
-  <path d="M646 192 L682 192" class="lead"/>
-  <path d="M682 254 L44 254 L44 202" class="arrow"/>
-  <text x="360" y="278" class="dsub" text-anchor="middle">&hellip; and round again, ten times a second, for ever</text>
+<svg class="dia" viewBox="0 0 720 276" role="img" aria-label="The loop for this activity: read the button, then ask whether it is pressed. If the answer is yes the light is switched on; if the answer is no the light is switched off. Either way the program goes back to the start and does it all again.">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Read, decide, act &mdash; then start again</text>
+  <rect x="30" y="90" width="150" height="54" rx="10" class="step"/>
+  <text x="105" y="114" class="dlbl" text-anchor="middle">read the button</text>
+  <text x="105" y="132" class="dsub" text-anchor="middle">1 or 0</text>
+  <path d="M188 117 L222 117" class="arrow"/>
+  <rect x="230" y="88" width="170" height="58" rx="26" class="pinbox"/>
+  <text x="315" y="112" class="dlbl" text-anchor="middle">is it pressed?</text>
+  <text x="315" y="132" class="dsub" text-anchor="middle">the new part</text>
+  <path d="M400 117 L424 117 L424 66 L452 66" class="arrow"/>
+  <path d="M400 117 L424 117 L424 168 L452 168" class="arrow"/>
+  <text x="436" y="52" class="dlbl" text-anchor="middle">yes</text>
+  <text x="436" y="200" class="dlbl" text-anchor="middle">no</text>
+  <rect x="460" y="42" width="180" height="48" rx="10" class="step"/>
+  <text x="550" y="72" class="dlbl" text-anchor="middle">switch the light on</text>
+  <rect x="460" y="144" width="180" height="48" rx="10" class="step"/>
+  <text x="550" y="174" class="dlbl" text-anchor="middle">switch the light off</text>
+  <path d="M640 66 L676 66 L676 234" class="lead"/>
+  <path d="M640 168 L676 168" class="lead"/>
+  <path d="M676 234 L50 234 L50 152" class="arrow"/>
+  <text x="360" y="256" class="dsub" text-anchor="middle">&hellip; and round again, ten times a second, for ever</text>
 </svg>
 
   <h3>What you will learn</h3>
   <div class="grid2">
-    <div class="mini"><h4>The word <em>and</em></h4><p>Both halves have to be true. The strictest of the three.</p></div>
-    <div class="mini"><h4>The word <em>or</em></h4><p>One half is enough &mdash; and both is fine too.</p></div>
-    <div class="mini"><h4>The word <em>not</em></h4><p>Turns an answer round: yes becomes no, no becomes yes.</p></div>
-    <div class="mini"><h4>Two whole questions</h4><p>Each side of <code>and</code> has to stand on its own, complete.</p></div>
+    <div class="mini"><h4>How to ask a question</h4><p><strong>if</strong> &mdash; do the next few lines <em>only</em> when something is true.</p></div>
+    <div class="mini"><h4>What to do otherwise</h4><p><strong>else</strong> &mdash; and do these other lines when it is not.</p></div>
+    <div class="mini"><h4>One equals, or two</h4><p>The difference between putting something into a name and asking whether two things match.</p></div>
+    <div class="mini"><h4>Indenting twice</h4><p>Four spaces put a line inside the loop. Eight put it inside the decision as well.</p></div>
   </div>
 
   <div class="cal info"><b>You need Activities 1 to 4 first</b>
-  Naming pins, the forever-loop, stopping it, <code>print()</code>, <code>if</code>, <code>else</code>,
-  the double equals and both levels of indentation are all assumed here, and none of them is taught
-  again. If the double equals is still shaky, go back to
-  <a href="activity-4.html#trap">Activity 4</a> before you start.</div>
+  This one assumes you can name an output pin, name an input pin, run a forever-loop, stop one, and
+  read a button. None of that is taught again here. If any of it is shaky, go back to
+  <a href="activity-4.html">Activity 4</a> &mdash; especially the part about what number a button gives you.</div>
 
   <h3>Which route are you taking?</h3>
   <table>
     <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
     <tbody>
-      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. Activity 4&rsquo;s circuit with a <em>second</em> button added.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
+      <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. The circuit is Activity 4&rsquo;s button <em>plus</em> Activity 1&rsquo;s LED.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
       <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
     </tbody>
   </table>
-  <div class="cal tip"><b>No new hardware today either</b>
-  SW1, SW2 and LED1 are all parts you have already used. Everything new is in one line of the program
-  &mdash; which is why the thinking sections come first and the wiring section is short.</div>
+  <div class="cal tip"><b>No new hardware today</b>
+  Every part in this activity is one you have already met. What is new is entirely in the program
+  &mdash; which is why the wiring section is short and the thinking section is long.</div>
 </section>
 
 <section id="idea">
-  <h2>&#129517; The new idea &mdash; joining two questions</h2>
-  <p class="lede">A question can only ever answer <strong>yes</strong> or <strong>no</strong>. So can a
-  pair of questions joined together &mdash; and that is the whole trick.</p>
+  <h2>&#129517; The new idea &mdash; a fork in the road</h2>
+  <p class="lede">One idea, and it arrives in two steps. First <code>if</code>. Then, once that makes
+  sense, <code>else</code>.</p>
 
-  <p>You already know how to ask one question. <em>Is SW1 held down?</em> Yes or no. You can ask a
-  second one just as easily. <em>Is SW2 held down?</em> Yes or no.</p>
-  <p>What you could not do until today is <strong>join them</strong>, so that the two answers become one
-  answer that an <code>if</code> can use. That is what the joining words are for.</p>
+  <h3>1. Step one &mdash; if</h3>
+  <p>Everything you have written so far has been a straight road. The Pico starts at the top, walks
+  down the lines one after another, and never has a choice about it.</p>
+  <p><code>if</code> puts a <strong>fork</strong> in that road. You write a question. When the Pico
+  reaches the fork it works out whether the answer is yes or no, and takes the matching road.</p>
 
-<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Two separate questions being joined into one. The first question, is SW1 held down, gives yes or no. The second question, is SW2 held down, gives yes or no. Both answers go into a joining word, and out of it comes a single yes or no, which is what the if line uses.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">Two answers in, one answer out</text>
-  <rect x="24" y="62" width="216" height="60" rx="26" class="pinbox"/>
-  <text x="132" y="88" class="dlbl" text-anchor="middle">is SW1 held down?</text>
-  <text x="132" y="108" class="dsub" text-anchor="middle">yes or no</text>
-  <rect x="24" y="178" width="216" height="60" rx="26" class="pinbox"/>
-  <text x="132" y="204" class="dlbl" text-anchor="middle">is SW2 held down?</text>
-  <text x="132" y="224" class="dsub" text-anchor="middle">yes or no</text>
-  <path d="M240 92 L296 92 L296 136" class="arrow"/>
-  <path d="M240 208 L296 208 L296 164" class="arrow"/>
-  <rect x="312" y="120" width="132" height="60" rx="12" class="namebox"/>
-  <text x="378" y="148" class="dlbl" text-anchor="middle">the joining</text>
-  <text x="378" y="168" class="dlbl" text-anchor="middle">word</text>
-  <path d="M444 150 L508 150" class="arrow"/>
-  <rect x="516" y="120" width="150" height="60" rx="26" class="pinbox"/>
-  <text x="591" y="148" class="dlbl" text-anchor="middle">one answer</text>
-  <text x="591" y="168" class="dsub" text-anchor="middle">yes or no</text>
-  <path d="M591 180 L591 214" class="arrow"/>
-  <text x="591" y="238" class="dlbl" text-anchor="middle">and that is what</text>
-  <text x="591" y="258" class="dlbl" text-anchor="middle">the decision uses</text>
-  <text x="378" y="200" class="dsub" text-anchor="middle">and &middot; or</text>
-  <text x="390" y="284" class="dsub" text-anchor="middle">Whichever word you choose, exactly one answer comes out. That is why an <tspan class="dmono">if</tspan> can still use it.</text>
+<svg class="dia" viewBox="0 0 720 300" role="img" aria-label="A fork in the road. The program walks along one road, reaches a question, and takes one of two roads depending on whether the answer is yes or no. Both roads join up again afterwards and the program carries on.">
+  <text x="360" y="24" class="dttl" text-anchor="middle">A question, and two roads</text>
+  <path d="M30 150 L182 150" stroke="var(--muted)" stroke-width="14" stroke-linecap="round" fill="none" opacity=".35"/>
+  <text x="98" y="132" class="dsub" text-anchor="middle">the program</text>
+  <text x="98" y="182" class="dsub" text-anchor="middle">walks this way</text>
+  <rect x="190" y="118" width="150" height="64" rx="26" class="pinbox"/>
+  <text x="265" y="146" class="dlbl" text-anchor="middle">is the button</text>
+  <text x="265" y="166" class="dlbl" text-anchor="middle">down?</text>
+  <path d="M340 150 L372 150 L372 74 L432 74" stroke="var(--teal)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M340 150 L372 150 L372 226 L432 226" stroke="var(--muted)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".55"/>
+  <text x="392" y="58" class="dlbl">yes</text>
+  <text x="392" y="256" class="dlbl">no</text>
+  <circle cx="470" cy="74" r="24" fill="#FF2B2B"/>
+  <circle cx="470" cy="226" r="24" fill="#4A2323"/>
+  <text x="510" y="68" class="dlbl">the light comes on</text>
+  <text x="510" y="90" class="dsub">this road is taken</text>
+  <text x="510" y="220" class="dlbl">the light goes out</text>
+  <text x="510" y="242" class="dsub">this one is not</text>
+  <text x="360" y="288" class="dsub" text-anchor="middle">Exactly one road is taken, every single time. Never both, and never neither.</text>
 </svg>
 
-  <p>There are three of these words in Python, and they are the three words this activity is about:</p>
-  <table>
-    <thead><tr><th>Word</th><th>What it does</th><th>How strict it is</th></tr></thead>
-    <tbody>
-      <tr><td><strong>and</strong></td><td>Joins two questions. The answer is yes only when <em>both</em> are yes.</td><td>The strictest</td></tr>
-      <tr><td><strong>or</strong></td><td>Joins two questions. The answer is yes when <em>at least one</em> is yes.</td><td>The most generous</td></tr>
-      <tr><td><strong>not</strong></td><td>Sits in front of <em>one</em> question and turns its answer round.</td><td>Neither &mdash; it flips</td></tr>
-    </tbody>
-  </table>
+  <p>The question goes in a line that looks like this:</p>
+  <span class="codeimg" data-code="aWYgc3cudmFsdWUoKSA9PSAwOg==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Read it out loud, left to right: <em>if the number the button gives me is the same as zero, then
+  &hellip;</em>. The colon on the end is doing the same job it did on the <code>while</code> line in
+  <a href="activity-2.html">Activity 2</a> &mdash; it means <strong>&ldquo;and here is what to
+  do&rdquo;</strong>, and what to do is the indented lines underneath.</p>
 
-  <div class="cal warn"><b>English is not Python, and this is where people come unstuck</b>
-  In the corridor, &ldquo;press SW1 and SW2&rdquo; is a perfectly good sentence. In a program it is not
-  a question at all, and Python will either refuse it or quietly answer something you did not ask.
-  The section on <a href="#whole">two whole questions</a> is the one to read twice.</div>
+  <div class="cal tip"><b>You already know two thirds of that line</b>
+  <code>sw.value()</code> is straight out of Activity 4 &mdash; it asks the pin what it can hear. The
+  colon is straight out of Activity 2. The only genuinely new thing in the line is the
+  <strong>double equals</strong>, and it gets its own section below because it is the trap.</div>
 
-  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say what a joining word takes in, and what comes out of it</span></label>
-  <label class="chk"><input type="checkbox" data-p="i2"><span>I can name the three words and say which is the strictest</span></label>
+  <h3>2. Step two &mdash; else</h3>
+  <p>With <code>if</code> on its own, only one of the two roads does anything. The other road is empty
+  &mdash; the Pico simply walks past and carries on.</p>
+  <p>That is a problem here. Switching the light on when you press is easy; the trouble is that
+  <strong>nothing ever switches it off again</strong>. Press once and it stays on for ever.</p>
+  <p><code>else</code> fills in the other road: <em>and when the answer is no, do this instead.</em></p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Two versions compared. With if on its own, the yes road switches the light on and the no road does nothing at all, so the light never goes out. With if and else, the yes road switches the light on and the no road switches it off.">
+  <rect x="20" y="44" width="360" height="238" rx="12" class="pane"/>
+  <text x="200" y="70" class="dlbl" text-anchor="middle">if on its own</text>
+  <path d="M50 150 L104 150" stroke="var(--muted)" stroke-width="9" stroke-linecap="round" fill="none" opacity=".4"/>
+  <rect x="110" y="128" width="60" height="44" rx="18" class="pinbox"/>
+  <text x="140" y="156" class="dsub" text-anchor="middle">?</text>
+  <path d="M170 150 L194 150" stroke="var(--muted)" stroke-width="8" stroke-linecap="round" fill="none" opacity=".4"/>
+  <path d="M194 150 L196 150 L196 106 L246 106" stroke="var(--teal)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M194 150 L196 150 L196 200 L240 200" stroke="var(--muted)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
+  <text x="214" y="96" class="dsub">yes</text>
+  <text x="214" y="224" class="dsub">no</text>
+  <circle cx="272" cy="106" r="19" fill="#FF2B2B"/>
+  <text x="300" y="112" class="dsub">on</text>
+  <text x="254" y="194" class="dwarn">nothing at all</text>
+  <text x="200" y="256" class="dsub" text-anchor="middle">the light comes on and stays on</text>
+  <text x="200" y="274" class="dsub" text-anchor="middle">for ever, however often you let go</text>
+
+  <rect x="400" y="44" width="360" height="238" rx="12" class="pane"/>
+  <text x="580" y="70" class="dlbl" text-anchor="middle">if and else</text>
+  <path d="M430 150 L484 150" stroke="var(--muted)" stroke-width="9" stroke-linecap="round" fill="none" opacity=".4"/>
+  <rect x="490" y="128" width="60" height="44" rx="18" class="pinbox"/>
+  <text x="520" y="156" class="dsub" text-anchor="middle">?</text>
+  <path d="M550 150 L574 150" stroke="var(--muted)" stroke-width="8" stroke-linecap="round" fill="none" opacity=".4"/>
+  <path d="M574 150 L576 150 L576 106 L626 106" stroke="var(--teal)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M574 150 L576 150 L576 200 L626 200" stroke="var(--teal)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="594" y="96" class="dsub">yes</text>
+  <text x="594" y="224" class="dsub">no</text>
+  <circle cx="652" cy="106" r="19" fill="#FF2B2B"/>
+  <circle cx="652" cy="200" r="19" fill="#4A2323"/>
+  <text x="680" y="112" class="dsub">on</text>
+  <text x="680" y="206" class="dsub">off</text>
+  <text x="580" y="256" class="dsub" text-anchor="middle">the light follows your finger</text>
+  <text x="580" y="274" class="dsub" text-anchor="middle">down and up, as fast as you can press</text>
+</svg>
+
+  <p>The word by itself, with a colon and nothing else on the line:</p>
+  <span class="codeimg" data-code="ZWxzZTo=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>There is no question after <code>else</code>, and there must not be one. It already knows what it
+  means: <em>every other case</em>. The question was asked once, on the <code>if</code> line, and
+  <code>else</code> is simply the other answer to it.</p>
+
+  <div class="cal warn"><b>else never comes first, and never comes alone</b>
+  It has to sit directly underneath an <code>if</code>, at exactly the same distance from the left
+  edge, with the lines that belong to the <code>if</code> in between. An <code>else</code> on its own
+  is an error &mdash; Python has no idea what it is the opposite of.</div>
+
+  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say what <code>if</code> does to the path a program takes</span></label>
+  <label class="chk"><input type="checkbox" data-p="i2"><span>I can say why <code>if</code> on its own would leave the light stuck on</span></label>
 </section>
 
-<section id="tables">
-  <h2>&#128203; The three words, one at a time</h2>
-  <p class="lede">Every one of these pictures says the same thing in the same shape: what SW1 is doing,
-  what SW2 is doing, and whether the light comes on. Only the joining word changes.</p>
+<section id="trap">
+  <h2>&#9888;&#65039; One equals, or two</h2>
+  <p class="lede">This is the trap of the activity, the way the backwards number was the trap of
+  Activity 4. Two characters that look almost identical and mean completely different things.</p>
 
-  <h3>1. <em>and</em> &mdash; both, or nothing</h3>
+  <p>You have been typing <code>=</code> since Activity 1, in lines like this one:</p>
+  <span class="codeimg" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>That is not a statement about the world. It is an <strong>instruction</strong>: <em>make a name,
+  and put this thing into it</em>. Afterwards, the name <code>led</code> points at pin 11. Nothing was
+  asked and nothing was compared.</p>
+  <p>The question you need now is a completely different kind of thing:</p>
+  <span class="codeimg" data-code="c3cudmFsdWUoKSA9PSAw" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Nothing is being put anywhere. This <strong>asks</strong> whether the number on the left and the
+  number on the right are the same, and hands back one of two answers: yes or no. It is a question, and
+  a question needs <strong>two</strong> equals signs.</p>
 
-<svg class="dia" viewBox="0 0 720 320" role="img" aria-label="A table of the four cases for the word and. Both buttons up: the light is off. SW1 held and SW2 up: off. SW1 up and SW2 held: off. Both held down: the light is on. Only the last of the four lights.">
-  <text x="360" y="26" class="dttl" text-anchor="middle">and &mdash; the light needs both</text>
-  <rect x="30" y="46" width="660" height="240" rx="12" class="pane"/>
-  <text x="180" y="76" class="dsub" text-anchor="middle">SW1</text>
-  <text x="360" y="76" class="dsub" text-anchor="middle">SW2</text>
-  <text x="560" y="76" class="dsub" text-anchor="middle">the light</text>
-  <g class="lead">
-    <path d="M46 90 L674 90"/>
-    <path d="M46 140 L674 140"/>
-    <path d="M46 188 L674 188"/>
-    <path d="M46 236 L674 236"/>
-  </g>
-  <text x="180" y="120" class="dsub" text-anchor="middle">up</text>
-  <text x="360" y="120" class="dsub" text-anchor="middle">up</text>
-  <circle cx="560" cy="115" r="14" fill="#4A2323"/>
-  <text x="180" y="168" class="dlbl" text-anchor="middle">held down</text>
-  <text x="360" y="168" class="dsub" text-anchor="middle">up</text>
-  <circle cx="560" cy="163" r="14" fill="#4A2323"/>
-  <text x="180" y="216" class="dsub" text-anchor="middle">up</text>
-  <text x="360" y="216" class="dlbl" text-anchor="middle">held down</text>
-  <circle cx="560" cy="211" r="14" fill="#4A2323"/>
-  <text x="180" y="264" class="dlbl" text-anchor="middle">held down</text>
-  <text x="360" y="264" class="dlbl" text-anchor="middle">held down</text>
-  <circle cx="560" cy="259" r="14" fill="#FF2B2B"/>
-  <circle cx="560" cy="259" r="21" fill="none" stroke="#FF2B2B" stroke-width="2.5" opacity=".45"/>
-  <text x="360" y="308" class="dsub" text-anchor="middle">One row out of four. That is what &ldquo;strict&rdquo; means.</text>
-</svg>
+<svg class="dia wide" viewBox="0 0 780 352" role="img" aria-label="One equals sign versus two. A single equals sign puts something into a name: an arrow carries pin eleven into a box labelled led, and afterwards the name points at the pin. A double equals sign is a pair of scales: it weighs what the pin says against zero and gives back yes or no. Nothing is stored.">
+  <rect x="20" y="44" width="360" height="288" rx="12" class="pane"/>
+  <text x="200" y="72" class="dttl" text-anchor="middle">one &mdash; puts something in</text>
+  <text x="200" y="122" text-anchor="middle" style="font:700 46px 'SFMono-Regular',Consolas,monospace" fill="var(--blue)">=</text>
+  <rect x="52" y="160" width="104" height="52" rx="10" class="namebox"/>
+  <text x="104" y="192" class="dmono2" text-anchor="middle">a name</text>
+  <path d="M296 186 L166 186" class="arrow"/>
+  <rect x="300" y="160" width="60" height="52" rx="8" class="part"/>
+  <text x="330" y="192" class="dsub" text-anchor="middle">pin 11</text>
+  <text x="231" y="168" class="dsub" text-anchor="middle">goes into</text>
+  <text x="200" y="252" class="dsub" text-anchor="middle">Afterwards the name points at the pin.</text>
+  <text x="200" y="272" class="dsub" text-anchor="middle">Nothing was asked. Nothing came back.</text>
+  <text x="200" y="300" class="dlbl" text-anchor="middle">An order.</text>
 
-  <h3>2. <em>or</em> &mdash; one is enough</h3>
-
-<svg class="dia" viewBox="0 0 720 320" role="img" aria-label="The same table for the word or. Both buttons up: the light is off. SW1 held: the light is on. SW2 held: the light is on. Both held: the light is on. Three of the four rows light.">
-  <text x="360" y="26" class="dttl" text-anchor="middle">or &mdash; the light needs at least one</text>
-  <rect x="30" y="46" width="660" height="240" rx="12" class="pane"/>
-  <text x="180" y="76" class="dsub" text-anchor="middle">SW1</text>
-  <text x="360" y="76" class="dsub" text-anchor="middle">SW2</text>
-  <text x="560" y="76" class="dsub" text-anchor="middle">the light</text>
-  <g class="lead">
-    <path d="M46 90 L674 90"/>
-    <path d="M46 140 L674 140"/>
-    <path d="M46 188 L674 188"/>
-    <path d="M46 236 L674 236"/>
-  </g>
-  <text x="180" y="120" class="dsub" text-anchor="middle">up</text>
-  <text x="360" y="120" class="dsub" text-anchor="middle">up</text>
-  <circle cx="560" cy="115" r="14" fill="#4A2323"/>
-  <text x="180" y="168" class="dlbl" text-anchor="middle">held down</text>
-  <text x="360" y="168" class="dsub" text-anchor="middle">up</text>
-  <circle cx="560" cy="163" r="14" fill="#FF2B2B"/>
-  <text x="180" y="216" class="dsub" text-anchor="middle">up</text>
-  <text x="360" y="216" class="dlbl" text-anchor="middle">held down</text>
-  <circle cx="560" cy="211" r="14" fill="#FF2B2B"/>
-  <text x="180" y="264" class="dlbl" text-anchor="middle">held down</text>
-  <text x="360" y="264" class="dlbl" text-anchor="middle">held down</text>
-  <circle cx="560" cy="259" r="14" fill="#FF2B2B"/>
-  <text x="360" y="308" class="dsub" text-anchor="middle">Three rows out of four &mdash; including the last one. Both is still &ldquo;at least one&rdquo;.</text>
-</svg>
-
-  <div class="cal note"><b>&ldquo;Or&rdquo; in Python is not the &ldquo;or&rdquo; in a caf&eacute;</b>
-  When somebody says &ldquo;tea or coffee?&rdquo; they mean <em>one, not both</em>. Python&rsquo;s
-  <code>or</code> is the other kind: <em>at least one, and both is fine</em>. The bottom row of that
-  picture is the one people get wrong.</div>
-
-  <h3>3. <em>not</em> &mdash; the other way round</h3>
-
-<svg class="dia" viewBox="0 0 720 226" role="img" aria-label="A table for the word not, which works on one question only. When SW1 is up the plain question answers no and the not version answers yes. When SW1 is held down the plain question answers yes and the not version answers no.">
-  <text x="360" y="26" class="dttl" text-anchor="middle">not &mdash; whatever the answer was, it is now the other one</text>
-  <rect x="30" y="46" width="660" height="146" rx="12" class="pane"/>
-  <text x="170" y="76" class="dsub" text-anchor="middle">SW1</text>
-  <text x="400" y="76" class="dsub" text-anchor="middle">is it held down?</text>
-  <text x="600" y="76" class="dsub" text-anchor="middle">not held down?</text>
-  <g class="lead">
-    <path d="M46 90 L674 90"/>
-    <path d="M46 142 L674 142"/>
-  </g>
-  <text x="170" y="122" class="dsub" text-anchor="middle">up</text>
-  <text x="400" y="122" class="dlbl" text-anchor="middle">no</text>
-  <text x="600" y="122" class="dlbl" text-anchor="middle">yes</text>
-  <text x="170" y="174" class="dlbl" text-anchor="middle">held down</text>
-  <text x="400" y="174" class="dlbl" text-anchor="middle">yes</text>
-  <text x="600" y="174" class="dlbl" text-anchor="middle">no</text>
-  <text x="360" y="214" class="dsub" text-anchor="middle">One question in, one answer out &mdash; flipped. There is nothing to join.</text>
-</svg>
-
-  <h3>The same wiring, one word changed</h3>
-  <p>Here are <code>and</code> and <code>or</code> side by side on exactly the circuit you are about to
-  build. Nothing is rewired between the two rows; one word in one line is the only difference:</p>
-
-<svg class="dia wide" viewBox="0 0 780 268" role="img" aria-label="A comparison of and against or across the four possible cases. With and, only the both-held case lights. With or, everything except the nothing-pressed case lights.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">and is strict &middot; or is generous</text>
-  <text x="228" y="62" class="dsub" text-anchor="middle">nothing held</text>
-  <text x="378" y="62" class="dsub" text-anchor="middle">SW1 only</text>
-  <text x="528" y="62" class="dsub" text-anchor="middle">SW2 only</text>
-  <text x="678" y="62" class="dsub" text-anchor="middle">both held</text>
-  <g class="lead"><path d="M150 76 L740 76"/><path d="M150 148 L740 148"/></g>
-  <text x="136" y="118" class="dlbl" text-anchor="end">joined with and</text>
-  <circle cx="228" cy="112" r="17" fill="#4A2323"/>
-  <circle cx="378" cy="112" r="17" fill="#4A2323"/>
-  <circle cx="528" cy="112" r="17" fill="#4A2323"/>
-  <circle cx="678" cy="112" r="17" fill="#FF2B2B"/>
-  <text x="136" y="190" class="dlbl" text-anchor="end">joined with or</text>
-  <circle cx="228" cy="184" r="17" fill="#4A2323"/>
-  <circle cx="378" cy="184" r="17" fill="#FF2B2B"/>
-  <circle cx="528" cy="184" r="17" fill="#FF2B2B"/>
-  <circle cx="678" cy="184" r="17" fill="#FF2B2B"/>
-  <text x="390" y="234" class="dsub" text-anchor="middle">A safety switch has to be the top row. A doorbell with two buttons wants the bottom one.</text>
-  <text x="390" y="256" class="dsub" text-anchor="middle">Choosing the word <tspan class="dlbl">is</tspan> the design decision.</text>
-</svg>
-
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I can fill in the four rows of the <em>and</em> table from memory</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I know what <code>or</code> answers when <strong>both</strong> are held down</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I can say what <code>not</code> does to an answer</span></label>
-</section>
-
-<section id="whole">
-  <h2>&#9888;&#65039; Each half has to be a whole question</h2>
-  <p class="lede">This is the trap of the activity, and it is the double equals from Activity 4 arriving
-  one level up. <code>and</code> does not join two <em>things</em>. It joins two <strong>complete
-  questions</strong>.</p>
-
-  <p>A complete question has three parts: something to look at, a comparison, and something to compare
-  it with. You have been writing them since Activity 4:</p>
-
-<svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="A whole question drawn as three boxes: what SW1 says, a double equals sign, and the number zero. Two of these, joined by the word and, make one question with two whole halves. Underneath, a broken version where the right-hand half has nothing to look at: the comparison and the zero are there but the thing being compared is missing, and it is marked wrong.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">Two whole questions, side by side</text>
-
-  <rect x="30" y="56" width="150" height="52" rx="10" class="namebox"/>
-  <text x="105" y="88" class="dsub" text-anchor="middle">what SW1 says</text>
-  <text x="208" y="94" text-anchor="middle" style="font:700 26px 'SFMono-Regular',Consolas,monospace" fill="var(--teal)">==</text>
-  <rect x="240" y="56" width="60" height="52" rx="10" class="part"/>
-  <text x="270" y="90" class="dmono2" text-anchor="middle">0</text>
-  <text x="345" y="90" text-anchor="middle" style="font:700 22px -apple-system,'Segoe UI',Verdana,sans-serif" fill="var(--blue)">and</text>
-  <rect x="396" y="56" width="150" height="52" rx="10" class="namebox"/>
-  <text x="471" y="88" class="dsub" text-anchor="middle">what SW2 says</text>
-  <text x="574" y="94" text-anchor="middle" style="font:700 26px 'SFMono-Regular',Consolas,monospace" fill="var(--teal)">==</text>
-  <rect x="606" y="56" width="60" height="52" rx="10" class="part"/>
-  <text x="636" y="90" class="dmono2" text-anchor="middle">0</text>
-  <g class="lead"><path d="M30 124 L300 124"/><path d="M30 118 L30 130"/><path d="M300 118 L300 130"/></g>
-  <g class="lead"><path d="M396 124 L666 124"/><path d="M396 118 L396 130"/><path d="M666 118 L666 130"/></g>
-  <text x="165" y="146" class="dsub" text-anchor="middle">a whole question</text>
-  <text x="531" y="146" class="dsub" text-anchor="middle">another whole question</text>
-  <text x="390" y="176" class="dlbl" text-anchor="middle">Cover either half with your hand. What is left still makes sense on its own.</text>
-
-  <rect x="30" y="204" width="720" height="106" rx="12" class="pane"/>
-  <text x="390" y="230" class="dwarn" text-anchor="middle">AND HERE IS THE ONE THAT DOES NOT WORK</text>
-  <rect x="118" y="244" width="150" height="46" rx="10" class="namebox"/>
-  <text x="193" y="273" class="dsub" text-anchor="middle">what SW1 says</text>
-  <text x="292" y="278" text-anchor="middle" style="font:700 22px 'SFMono-Regular',Consolas,monospace" fill="var(--teal)">==</text>
-  <rect x="316" y="244" width="52" height="46" rx="10" class="part"/>
-  <text x="342" y="275" class="dmono2" text-anchor="middle">0</text>
-  <text x="404" y="276" text-anchor="middle" style="font:700 19px -apple-system,'Segoe UI',Verdana,sans-serif" fill="var(--blue)">and</text>
-  <rect x="446" y="244" width="150" height="46" rx="10" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-dasharray="6 5"/>
-  <text x="521" y="273" class="dwarn" text-anchor="middle">nothing here</text>
-  <text x="620" y="278" text-anchor="middle" style="font:700 22px 'SFMono-Regular',Consolas,monospace" fill="var(--teal)">==</text>
-  <rect x="644" y="244" width="52" height="46" rx="10" class="part"/>
-  <text x="670" y="275" class="dmono2" text-anchor="middle">0</text>
-  <text x="390" y="330" class="dsub" text-anchor="middle">The second half has a comparison and a number, but nothing to compare. It is half a sentence.</text>
-</svg>
-
-  <h3>The two ways people write it wrongly</h3>
-  <p>The first is the one the picture shows &mdash; the second half is left unfinished, because in
-  English you would never say the same thing twice:</p>
-  <span class="codeimg" data-code="aWYgc3cxLnZhbHVlKCkgPT0gMCBhbmQgPT0gMDo=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p>Python answers <code>SyntaxError: invalid syntax</code> and nothing runs. Like the single equals in
-  Activity 4, this one shouts &mdash; which makes it the kind mistake.</p>
-
-  <p>The second is the dangerous one, because it <strong>runs</strong>:</p>
-  <span class="codeimg" data-code="aWYgc3cxIGFuZCBzdzI6" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p>It reads beautifully in English and it means nothing you want. Those two names are the
-  <em>pins themselves</em>, not what the pins are saying &mdash; and Python treats a thing that exists
-  as good enough for a yes. The pins always exist, so the answer is always yes, so the light is always
-  on. No error, no warning, and nothing to see except a light that never goes out.</p>
-
-<svg class="dia wide" viewBox="0 0 780 240" role="img" aria-label="A comparison of naming the pin against asking the pin. Naming the pin on its own hands back the pin, which Python treats as a yes whatever the button is doing. Asking the pin with value and comparing it with zero hands back a real yes or no that changes when you press.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">The name of a pin is not the same as what the pin says</text>
-  <rect x="20" y="48" width="360" height="164" rx="12" class="pane"/>
-  <text x="200" y="76" class="dlbl" text-anchor="middle">just the name</text>
-  <rect x="76" y="98" width="112" height="46" rx="10" class="namebox"/>
-  <text x="132" y="127" class="dsub" text-anchor="middle">the pin itself</text>
-  <path d="M196 121 L246 121" class="arrow"/>
-  <rect x="254" y="98" width="96" height="46" rx="10" class="part"/>
-  <text x="302" y="127" class="dlbl" text-anchor="middle">always yes</text>
-  <text x="200" y="172" class="dwarn" text-anchor="middle">it does not change when you press</text>
-  <text x="200" y="194" class="dsub" text-anchor="middle">the light never goes out</text>
-
-  <rect x="400" y="48" width="360" height="164" rx="12" class="pane"/>
-  <text x="580" y="76" class="dlbl" text-anchor="middle">the whole question</text>
-  <rect x="440" y="98" width="128" height="46" rx="10" class="pinbox"/>
-  <text x="504" y="121" class="dsub" text-anchor="middle">what the pin</text>
-  <text x="504" y="137" class="dsub" text-anchor="middle">says, against 0</text>
-  <path d="M576 121 L626 121" class="arrow"/>
-  <rect x="634" y="98" width="96" height="46" rx="10" class="part"/>
-  <text x="682" y="121" class="dlbl" text-anchor="middle">yes or no</text>
-  <text x="682" y="137" class="dsub" text-anchor="middle">it depends</text>
-  <text x="580" y="172" class="dlbl" text-anchor="middle">this is the one you want</text>
-  <text x="580" y="194" class="dsub" text-anchor="middle">it changes the moment your finger lands</text>
+  <rect x="400" y="44" width="360" height="288" rx="12" class="pane"/>
+  <text x="580" y="72" class="dttl" text-anchor="middle">two &mdash; asks a question</text>
+  <text x="580" y="122" text-anchor="middle" style="font:700 46px 'SFMono-Regular',Consolas,monospace" fill="var(--teal)">==</text>
+  <path d="M580 148 L580 168" class="wire"/>
+  <path d="M496 178 L664 178" class="wire"/>
+  <path d="M496 178 L474 206 L518 206 Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M664 178 L642 206 L686 206 Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M568 168 L592 168 L586 192 L574 192 Z" fill="var(--muted)"/>
+  <text x="496" y="230" class="dsub" text-anchor="middle">what the</text>
+  <text x="496" y="247" class="dsub" text-anchor="middle">pin says</text>
+  <text x="664" y="230" class="dmono2" text-anchor="middle" style="font-size:22px">0</text>
+  <rect x="516" y="264" width="128" height="34" rx="9" class="pinbox"/>
+  <text x="580" y="287" class="dlbl" text-anchor="middle">yes, or no</text>
+  <text x="580" y="322" class="dsub" text-anchor="middle">It weighs the two sides and hands back an answer.</text>
 </svg>
 
   <div class="cal tip"><b>A sentence that fixes it</b>
-  <strong>Each side of <code>and</code> must be able to stand up on its own.</strong> Cover one half with
-  your hand: if what is left is still a question you could ask, you have written it correctly.</div>
+  <strong>One equals puts. Two equals asks.</strong> Say it out loud before you type the
+  <code>if</code> line, every time, until you stop needing to.</div>
 
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I can say why the second half needs its own <code>==</code> and its own 0</span></label>
-  <label class="chk"><input type="checkbox" data-p="w2"><span>I know why naming the two pins on their own gives a light that never goes out</span></label>
+  <h3>The good news: this one shouts</h3>
+  <p>In Activity 2 the indentation trap was so nasty because a wrongly indented program still runs. It
+  does the wrong thing quietly, and you have to spot it yourself.</p>
+  <p>This trap is much kinder. Type a single equals in a question and Python refuses to run the program
+  at all:</p>
+  <span class="codeimg" data-code="aWYgc3cudmFsdWUoKSA9IDA6" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>You get an error before anything happens, and the message names the line:</p>
+  <p><code>SyntaxError: invalid syntax</code></p>
+  <p><strong>Syntax</strong> means the shape of the sentence &mdash; the grammar. Python is telling you
+  that what you wrote is not a sentence it knows how to read at all, which is exactly right: you asked
+  it to put something into a question, and a question is not a name.</p>
+
+  <div class="cal note"><b>Where you will actually meet this</b>
+  Almost never on the first try, and almost always at half past ten when you are typing quickly. When a
+  program that worked five minutes ago suddenly refuses to start and the word <code>SyntaxError</code>
+  appears, count the equals signs before you look at anything else.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say what <strong>one</strong> equals sign does</span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I can say what <strong>two</strong> equals signs do</span></label>
+  <label class="chk"><input type="checkbox" data-p="t3"><span>I know which one belongs in an <code>if</code> line, and what happens if I get it wrong</span></label>
 </section>
 
-<section id="not">
-  <h2>&#8635; The word <em>not</em>, and why it is the fiddliest</h2>
-  <p class="lede">Learn it, use it sparingly, and be very careful what you point it at.</p>
+<section id="zero">
+  <h2>&#128290; Which number means pressed</h2>
+  <p class="lede">The second trap, and it is not a new one. It is Activity 4&rsquo;s trap, arriving at
+  the moment it finally does damage.</p>
+  <p>The question compares the button&rsquo;s value with <strong>0</strong>, not with 1. Zero is the
+  number a button gives you <em>while you are pressing it</em>. If that still feels backwards, go back
+  and read <a href="activity-4.html#trap">the section in Activity 4</a> &mdash; the pull-up holds the
+  pin up at 1 all the time, and your finger is what pulls it down.</p>
 
-  <p><code>not</code> goes in front of one question and turns its answer round. Written out in full, with
-  the question it flips wrapped in brackets so you can see exactly what is being flipped:</p>
-  <span class="codeimg" data-code="bm90IChzdzEudmFsdWUoKSA9PSAwKQ==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p>Read out loud, that is <em>&ldquo;it is <strong>not</strong> the case that SW1 is pressed&rdquo;</em>
-  &mdash; in other words, <em>SW1 is not being pressed</em>. The brackets are not compulsory, but put them
-  in anyway. They show you and everybody else where the question being flipped starts and ends.</p>
-
-  <div class="cal warn"><b>Do not reach for <code>not</code> to &ldquo;fix&rdquo; the button numbers</b>
-  A button reads <strong>0 while it is pressed</strong>. That is not a mistake and it does not need
-  undoing &mdash; it is how a pull-up works, and it was the whole of
-  <a href="activity-3.html#trap">Activity 3&rsquo;s trap</a>. A student who writes <code>not</code> in
-  front of a comparison in order to make it &ldquo;the right way round&rdquo; ends up with two
-  negatives stacked on top of each other and no idea which way the answer points. Compare with 0 and
-  leave it alone &mdash; see <a href="activity-4.html#zero">Activity 4</a>.</div>
-
-  <p>Here is the double negative that this produces. It runs, and it does the opposite of what its
-  author meant:</p>
-  <span class="codeimg" data-code="aWYgbm90IHN3MS52YWx1ZSgpID09IDAgYW5kIG5vdCBzdzIudmFsdWUoKSA9PSAwOg==" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-  <p>That asks whether <strong>neither</strong> button is being pressed &mdash; so the light is on when
-  the machine is untouched, and goes out the moment somebody grabs the keys. For a safety switch, that
-  is about as wrong as it is possible to be.</p>
-
-<svg class="dia" viewBox="0 0 720 236" role="img" aria-label="What the double negative does. The intended safety switch is dark until both keys are held and then lights. The version with not in front of both halves is lit while nobody is touching it and goes dark as soon as either key is held.">
-  <text x="360" y="26" class="dttl" text-anchor="middle">What the flipped version actually does</text>
-  <text x="290" y="66" class="dsub" text-anchor="middle">nobody touching</text>
-  <text x="470" y="66" class="dsub" text-anchor="middle">both keys held</text>
-  <text x="250" y="118" class="dlbl" text-anchor="end">what you wanted</text>
-  <circle cx="290" cy="112" r="18" fill="#4A2323"/>
-  <circle cx="470" cy="112" r="18" fill="#FF2B2B"/>
-  <text x="516" y="118" class="dsub">safe until both hands are busy</text>
-  <text x="250" y="182" class="dlbl" text-anchor="end">with not on both halves</text>
-  <circle cx="290" cy="176" r="18" fill="#FF2B2B"/>
-  <circle cx="470" cy="176" r="18" fill="#4A2323"/>
-  <text x="516" y="176" class="dwarn">running while nobody</text>
-  <text x="516" y="196" class="dwarn">is holding it</text>
-  <text x="360" y="226" class="dsub" text-anchor="middle">No error message. The board is the only thing that will tell you.</text>
+<svg class="dia wide" viewBox="0 0 780 330" role="img" aria-label="A table drawn as a picture. When your finger is off the button the pin says 1, the question is the pin the same as zero has the answer no, the else road is taken and the light is off. When your finger is on the button the pin says 0, the answer is yes, the if road is taken and the light is on.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What happens at each step</text>
+  <rect x="264" y="46" width="220" height="250" rx="12" class="pane"/>
+  <rect x="510" y="46" width="220" height="250" rx="12" class="pane"/>
+  <text x="374" y="74" class="dlbl" text-anchor="middle">finger off</text>
+  <text x="620" y="74" class="dlbl" text-anchor="middle">finger down</text>
+  <text x="248" y="122" class="dsub" text-anchor="end">what the pin says</text>
+  <text x="374" y="126" class="dmono2" text-anchor="middle" style="font-size:26px">1</text>
+  <text x="620" y="126" class="dmono2" text-anchor="middle" style="font-size:26px">0</text>
+  <text x="248" y="176" class="dsub" text-anchor="end">is it the same as 0?</text>
+  <text x="374" y="180" class="dlbl" text-anchor="middle">no</text>
+  <text x="620" y="180" class="dlbl" text-anchor="middle">yes</text>
+  <text x="248" y="228" class="dsub" text-anchor="end">which road is taken</text>
+  <text x="374" y="232" class="dmono" text-anchor="middle">else</text>
+  <text x="620" y="232" class="dmono" text-anchor="middle">if</text>
+  <text x="248" y="278" class="dsub" text-anchor="end">the light</text>
+  <circle cx="374" cy="272" r="17" fill="#4A2323"/>
+  <circle cx="620" cy="272" r="17" fill="#FF2B2B"/>
+  <text x="390" y="314" class="dsub" text-anchor="middle">Pressing takes the number <tspan class="dmono">down</tspan>, and that is what makes the light come up.</text>
 </svg>
 
-  <p>So where <em>is</em> <code>not</code> useful? When the thing you want really is the absence of
-  something: a light that is on until a door closes, a warning that stops when a switch is armed, or
-  the going-further task at the bottom of this page, where a third key must <strong>not</strong> be
-  held. Reach for it then &mdash; and not before.</p>
+  <p>Compare with 1 by mistake and the program still runs perfectly. There is no error and no warning.
+  It simply does the exact opposite of what you wanted:</p>
 
-  <label class="chk"><input type="checkbox" data-p="n1"><span>I can read a <code>not</code> question out loud in English</span></label>
-  <label class="chk"><input type="checkbox" data-p="n2"><span>I know why I should <em>not</em> use it to turn the button numbers round</span></label>
+<svg class="dia" viewBox="0 0 720 258" role="img" aria-label="What comparing with one instead of zero does. With the comparison against zero the light is off when the button is up and on when it is held down. With the comparison against one the light is on all the time and goes out only while you press.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">Comparing with the wrong number</text>
+  <text x="252" y="66" class="dsub" text-anchor="middle">button up</text>
+  <text x="420" y="66" class="dsub" text-anchor="middle">button down</text>
+  <text x="216" y="122" class="dlbl" text-anchor="end">compared with 0</text>
+  <circle cx="252" cy="116" r="18" fill="#4A2323"/>
+  <circle cx="420" cy="116" r="18" fill="#FF2B2B"/>
+  <text x="466" y="122" class="dsub">what you wanted</text>
+  <text x="216" y="192" class="dlbl" text-anchor="end">compared with 1</text>
+  <circle cx="252" cy="186" r="18" fill="#FF2B2B"/>
+  <circle cx="420" cy="186" r="18" fill="#4A2323"/>
+  <text x="466" y="186" class="dwarn">on all the time,</text>
+  <text x="466" y="206" class="dwarn">out only while you press</text>
+  <text x="360" y="244" class="dsub" text-anchor="middle">No error message either way. The board is the only thing that will tell you.</text>
+</svg>
+
+  <div class="cal warn"><b>This is why Activity 4 refused to fix the number for you</b>
+  A student who has quietly decided that pressing &ldquo;really&rdquo; means 1 will write this
+  comparison the wrong way round, get an LED that is on except when they press, and have nothing to
+  argue with. Learning to read <strong>0 as pressed</strong> is the whole reason that activity existed.</div>
+
+  <label class="chk"><input type="checkbox" data-p="z1"><span>I know which number the button gives while I am pressing it</span></label>
+  <label class="chk"><input type="checkbox" data-p="z2"><span>I can describe what the wrong comparison would look like on the board</span></label>
+</section>
+
+<section id="indent">
+  <h2>&#8677; Indenting twice</h2>
+  <p class="lede">The first time in this module that anything is pushed in <strong>twice</strong>.
+  Activity 2 taught you four spaces. This adds a second four.</p>
+  <p>Nothing about the rule has changed: Python still decides what belongs to what by looking at how far
+  each line is pushed in from the left. There are just two levels of belonging now.</p>
+
+<svg class="dia" viewBox="0 0 720 406" role="img" aria-label="A program drawn as bars at three different left edges. Lines at the edge run once at the start. The while line is at the edge; lines pushed in by four spaces belong to the loop. The if line is one of those; lines pushed in by eight spaces belong to the if.">
+  <text x="360" y="24" class="dttl" text-anchor="middle">Three left edges, three meanings</text>
+  <g class="lead">
+    <path d="M120 46 L120 342"/>
+    <path d="M168 108 L168 342"/>
+    <path d="M216 154 L216 300"/>
+  </g>
+  <g class="codeline">
+    <path d="M120 60 L300 60"/>
+    <path d="M120 82 L262 82"/>
+  </g>
+  <path d="M120 122 L248 122" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M168 168 L316 168" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="codeline">
+    <path d="M216 200 L326 200"/>
+    <path d="M216 222 L342 222"/>
+  </g>
+  <path d="M168 254 L232 254" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g class="codeline">
+    <path d="M216 286 L318 286"/>
+  </g>
+  <g class="codeline">
+    <path d="M168 320 L266 320"/>
+  </g>
+  <g class="lead"><path d="M120 356 L168 356"/><path d="M120 350 L120 362"/><path d="M168 350 L168 362"/></g>
+  <text x="178" y="361" class="dsub">4 spaces &mdash; inside the loop</text>
+  <g class="lead"><path d="M120 386 L216 386"/><path d="M120 380 L120 392"/><path d="M216 380 L216 392"/></g>
+  <text x="226" y="391" class="dsub">8 spaces &mdash; inside the question as well</text>
+  <text x="372" y="72" class="dsub">at the edge &mdash; runs once</text>
+  <text x="372" y="127" class="dlbl">the loop line</text>
+  <text x="372" y="173" class="dlbl">the question &mdash; inside the loop</text>
+  <text x="372" y="206" class="dsub">inside the question:</text>
+  <text x="372" y="226" class="dsub">done only when the answer is yes</text>
+  <text x="372" y="259" class="dlbl">the other answer</text>
+  <text x="372" y="291" class="dsub">done only when the answer is no</text>
+  <text x="372" y="325" class="dsub">back out to the loop &mdash; always done</text>
+</svg>
+
+  <p>Read the picture from the outside in. The two short bars at the very left edge run once and are
+  never seen again. The loop line is at the left edge too, and everything belonging to it is pushed in
+  by four. The question line is one of <em>those</em>, and everything belonging to <em>it</em> is pushed
+  in by four more &mdash; eight in total.</p>
+
+  <div class="cal tip"><b>Your editor does most of it</b>
+  Type the colon on the end of the <code>if</code> line, press <kbd>Enter</kbd>, and both Thonny and
+  Wokwi push the next line in another four spaces for you. Coming back out is the part you have to do
+  yourself: press <kbd>Backspace</kbd> once before typing <code>else</code>, so that it lines up with
+  <code>if</code> and not with the lines underneath it.</div>
+
+  <p>That last point is where nearly everybody trips. The <code>else</code> has to be at
+  <strong>four</strong> spaces, level with the <code>if</code>, not at eight. Push it in too far and it
+  is inside the very block it is supposed to be the alternative to:</p>
+  <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGlmIHN3LnZhbHVlKCkgPT0gMDoKICAgICAgICBsZWQub24oKQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIGxlZC5vZmYoKQ==" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p>Python answers with <code>SyntaxError</code> or <code>IndentationError</code> depending on how far
+  out you were. Either way it will not run, which is the kind thing to do.</p>
+
+  <label class="chk"><input type="checkbox" data-p="n1"><span>I know how far in a line inside the <code>if</code> goes</span></label>
+  <label class="chk"><input type="checkbox" data-p="n2"><span>I know that <code>else</code> lines up with <code>if</code>, not with the lines under it</span></label>
 </section>
 
 <section id="try">
-  <h2>&#128268; Try the joining words before you write them</h2>
-  <p>Two pads, two readings, one light. Hold one, then the other, then both &mdash; and watch the answer
-  at the bottom. Then press <strong>Join with or</strong> and do exactly the same three things again.</p>
+  <h2>&#128268; Try the decision before you write it</h2>
+  <p>Hold the pad down and watch all four things move together: what the pin says, what the question
+  answers, which road is taken, and the light. Then press <strong>Compare with 1</strong> and hold it
+  again &mdash; that is the mistake from the section above, running.</p>
 
   <div class="sim">
     <div class="board">
       <div style="text-align:center">
-        <button class="pushbtn" id="logsw1" type="button">SW1</button>
+        <button class="pushbtn" id="ifsw" type="button">hold</button>
         <span class="readlbl">SW1 &middot; GP2</span>
       </div>
       <div style="text-align:center">
-        <div class="readout" id="logv1">1</div>
-        <span class="readlbl">what SW1 says</span>
-      </div>
-      <div style="text-align:center">
-        <button class="pushbtn" id="logsw2" type="button">SW2</button>
-        <span class="readlbl">SW2 &middot; GP3</span>
-      </div>
-      <div style="text-align:center">
-        <div class="readout" id="logv2">1</div>
-        <span class="readlbl">what SW2 says</span>
+        <div class="readout" id="ifval">1</div>
+        <span class="readlbl">what the pin says</span>
       </div>
       <div class="led-unit">
-        <div class="bulb red" id="logled"></div>
+        <div class="bulb red" id="ifled"></div>
         <b>LED1</b><small>GP11</small>
       </div>
     </div>
     <div class="sim-ctl">
-      <button class="btn" id="logrun" type="button">&#9654; Run the loop</button>
-      <button class="btn ghost" type="button" data-logop="and">Join with and</button>
-      <button class="btn ghost" type="button" data-logop="or">Join with or</button>
-      <button class="btn ghost" type="button" data-logop="not">Flip SW1 with not</button>
+      <button class="btn" id="ifrun" type="button">&#9654; Run the loop</button>
+      <button class="btn ghost" type="button" data-ifcmp="0">Compare with 0</button>
+      <button class="btn ghost" type="button" data-ifcmp="1">Compare with 1</button>
+      <button class="btn ghost" type="button" data-ifelse="off">Take the else away</button>
     </div>
-    <div class="sim-out tall" id="logout">Nothing running yet. Press Run the loop, then hold the pads down.</div>
+    <div class="sim-out tall" id="ifout">Nothing running yet. Press Run the loop, then hold the pad down.</div>
   </div>
 
-  <div class="cal tip"><b>Three things to try on purpose</b>
-  Hold <em>both</em> pads with <strong>or</strong> chosen &mdash; the light stays on, which is the row
-  most people expect to be dark. Then choose <strong>not</strong> and let go of everything: the light is
-  on because nothing is pressed. Then hold SW1 and watch it go out.</div>
-
-  <label class="chk"><input type="checkbox" data-p="s1"><span>With <code>and</code>, one pad on its own did nothing</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>With <code>or</code>, holding both still lit the light</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I saw what <code>not</code> did to a single question</span></label>
+  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the light follow my finger with the question set to 0</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw what comparing with 1 does instead</span></label>
+  <label class="chk"><input type="checkbox" data-p="s3"><span>I saw what happens with the <code>else</code> taken away</span></label>
 </section>
 
 <section id="build">
@@ -510,28 +493,29 @@
   </div>
 
   <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
-    <p>This is <a href="activity-4.html#build">Activity 4&rsquo;s circuit</a> with one part added: a
-    <strong>second pushbutton</strong> on GP3. If your Activity 4 project is still open, start from
-    that one &mdash; you only have to add a button and two wires.</p>
+    <p>Nothing here is new. This circuit is <a href="activity-4.html#build">Activity 4&rsquo;s button</a>
+    and <a href="activity-1.html#build">Activity 1&rsquo;s LED and resistor</a> living on the same Pico
+    at the same time. If you still have either project open, start from that one and add the missing
+    half.</p>
 
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Get the parts on the diagram</h4>
-      <p>Click the blue <strong>+</strong> and add <strong>two Pushbuttons</strong>, an
+      <p>Click the blue <strong>+</strong> and add a <strong>Pushbutton</strong>, an
       <strong>LED</strong> and a <strong>Resistor</strong>. Set the LED to red and the resistor to
       <strong>330</strong> in the panel on the right.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>Two pushbuttons, a red LED and a 330 &Omega; resistor are on the diagram</span></label>
+      <label class="chk"><input type="checkbox" data-p="a1"><span>A pushbutton, a red LED and a 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
-      <h4>Draw the six wires</h4>
-      <p>Two for each button, two for the LED. The button rule from Activity 3 has not changed: pick two
-      legs that are <strong>diagonally opposite</strong>, and use <strong>no resistor</strong> on a
+      <h4>Draw the four wires</h4>
+      <p>Two for the button and two for the LED. The button rules from Activity 4 still apply: pick two
+      legs that are <strong>diagonally opposite</strong>, and use <strong>no resistor</strong> on the
       button.</p>
 
-<svg class="dia wide" viewBox="0 0 780 690" role="img" aria-label="The Wokwi circuit for Activity 5, drawn the way Wokwi draws it. The first pushbutton has one leg wired to physical pin 4, which is GP2, and its diagonally opposite leg wired to the ground on physical pin 8. The second pushbutton has one leg wired to physical pin 5, which is GP3, and its diagonally opposite leg wired to the ground on physical pin 13. A red LED has its long leg wired through a 330 ohm resistor to physical pin 15, which is GP11, and its short leg wired back to the ground on physical pin 18.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">Activity 4&rsquo;s circuit, plus a second button on GP3</text>
+<svg class="dia wide" viewBox="0 0 780 600" role="img" aria-label="The Wokwi circuit for Activity 5, drawn the way Wokwi draws it. A pushbutton has one leg wired to physical pin 4, which is GP2, and the diagonally opposite leg wired to the ground on physical pin 8. A red LED has its long leg wired through a 330 ohm resistor to physical pin 15, which is GP11, and its short leg wired back to the ground on physical pin 18.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Everything from Activity 1 and Activity 4, in one circuit</text>
   <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
-<g class="wk">
+  <g class="wk">
   <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
   <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
   <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
@@ -703,107 +687,81 @@
   <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
   <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
   <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
-  </g>
   <circle cx="555" cy="194" r="10.5" class="wk-ring"/>
-  <circle cx="555" cy="214" r="10.5" class="wk-ring"/>
-  <circle cx="555" cy="274" r="10.5" class="wk-ring"/>
-  <circle cx="555" cy="374" r="10.5" class="wk-ring"/>
   <circle cx="555" cy="414" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="274" r="10.5" class="wk-ring"/>
   <circle cx="555" cy="474" r="10.5" class="wk-ring"/>
-
-  <rect x="150" y="118" width="92" height="92" rx="3" class="wk-btn-frame"/>
-  <rect x="156" y="124" width="80" height="80" rx="2" class="wk-btn-face"/>
-  <circle cx="162.9" cy="131.8" r="2.6" class="wk-btn-screw"/>
-  <circle cx="229.1" cy="131.8" r="2.6" class="wk-btn-screw"/>
-  <circle cx="229.1" cy="196.2" r="2.6" class="wk-btn-screw"/>
-  <circle cx="162.9" cy="196.2" r="2.6" class="wk-btn-screw"/>
-  <circle cx="196" cy="164" r="30.4" fill="url(#wkcap)"/>
-  <rect x="128" y="139.7" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="242" y="139.7" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="128" y="178.3" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="242" y="178.3" width="22" height="10" rx="2" class="wk-leg"/>
-  <text x="196" y="234" class="dlbl" text-anchor="middle">pushbutton &mdash; SW1</text>
-
-  <rect x="150" y="268" width="92" height="92" rx="3" class="wk-btn-frame"/>
-  <rect x="156" y="274" width="80" height="80" rx="2" class="wk-btn-face"/>
-  <circle cx="162.9" cy="281.8" r="2.6" class="wk-btn-screw"/>
-  <circle cx="229.1" cy="281.8" r="2.6" class="wk-btn-screw"/>
-  <circle cx="229.1" cy="346.2" r="2.6" class="wk-btn-screw"/>
-  <circle cx="162.9" cy="346.2" r="2.6" class="wk-btn-screw"/>
-  <circle cx="196" cy="314" r="30.4" fill="url(#wkcap)"/>
-  <rect x="128" y="289.7" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="242" y="289.7" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="128" y="328.3" width="22" height="10" rx="2" class="wk-leg"/>
-  <rect x="242" y="328.3" width="22" height="10" rx="2" class="wk-leg"/>
-  <text x="196" y="384" class="dlbl" text-anchor="middle">pushbutton &mdash; SW2</text>
-
-  <path d="M166 476 L166 451 A19 19 0 0 1 204 451 L204 476 Z" fill="url(#wkled)"/>
-  <rect x="162" y="473" width="46" height="8" rx="3" class="wk-led-rim"/>
-  <path d="M176 454 q6 -8 12 -3" class="wk-led-gloss"/>
-  <rect x="170" y="481" width="7" height="79" rx="2" class="wk-leg"/>
-  <rect x="193" y="481" width="7" height="79" rx="2" class="wk-leg"/>
-  <text x="185" y="428" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
-  <text x="158" y="526" class="dsub" text-anchor="end">C &mdash; short leg</text>
-  <text x="214" y="526" class="dsub">A &mdash; long leg</text>
-
-  <rect x="242" y="556.5" width="186" height="7" rx="2" class="wk-leg"/>
-  <defs><clipPath id="rbody5">
-    <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
-  </clipPath></defs>
-  <g clip-path="url(#rbody5)">
-    <rect x="269" y="544" width="132" height="32" fill="url(#wkres)"/>
-    <rect x="286" y="544" width="11" height="32" class="wk-b-or"/>
-    <rect x="310" y="544" width="11" height="32" class="wk-b-or"/>
-    <rect x="330" y="544" width="11" height="32" class="wk-b-br"/>
-    <rect x="370" y="544" width="11" height="32" class="wk-b-gd"/>
   </g>
-  <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
-  <text x="335" y="530" class="dlbl" text-anchor="middle">330 &#8486;</text>
-
-  <path d="M128 144.7 L100 144.7 L100 104 L520 104 L520 194 L537 194" class="wkwire green"/>
-  <path d="M264 183.3 L500 183.3 L500 274 L537 274" class="wkwire black"/>
-  <path d="M128 294.7 L88 294.7 L88 76 L530 76 L530 214 L537 214" class="wkwire green"/>
-  <path d="M264 333.3 L478 333.3 L478 374 L537 374" class="wkwire black"/>
-  <path d="M196.5 560 L242 560" class="wkwire red"/>
-  <path d="M428 560 L470 560 L470 414 L537 414" class="wkwire red"/>
-  <path d="M173.5 560 L173.5 650 L505 650 L505 474 L537 474" class="wkwire black"/>
+  <rect x="150" y="140" width="92" height="92" rx="3" class="wk-btn-frame"/>
+  <rect x="156" y="146" width="80" height="80" rx="2" class="wk-btn-face"/>
+  <circle cx="162.9" cy="153.8" r="2.6" class="wk-btn-screw"/>
+  <circle cx="229.1" cy="153.8" r="2.6" class="wk-btn-screw"/>
+  <circle cx="229.1" cy="218.2" r="2.6" class="wk-btn-screw"/>
+  <circle cx="162.9" cy="218.2" r="2.6" class="wk-btn-screw"/>
+  <circle cx="196" cy="186" r="30.4" fill="url(#wkcap)"/>
+  <rect x="128" y="161.7" width="22" height="10" rx="2" class="wk-leg"/>
+  <rect x="242" y="161.7" width="22" height="10" rx="2" class="wk-leg"/>
+  <rect x="128" y="200.3" width="22" height="10" rx="2" class="wk-leg"/>
+  <rect x="242" y="200.3" width="22" height="10" rx="2" class="wk-leg"/>
+  <text x="196" y="266" class="dlbl" text-anchor="middle">pushbutton &mdash; SW1</text>
+  <path d="M166 396 L166 371 A19 19 0 0 1 204 371 L204 396 Z" fill="url(#wkled)"/>
+  <rect x="162" y="393" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 374 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="401" width="7" height="79" rx="2" class="wk-leg"/>
+  <rect x="193" y="401" width="7" height="79" rx="2" class="wk-leg"/>
+  <text x="185" y="340" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
+  <text x="158" y="446" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="446" class="dsub">A &mdash; long leg</text>
+  <rect x="242" y="476.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbody4">
+    <path d="M284 468 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbody4)">
+    <rect x="269" y="464" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="464" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="464" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="464" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="464" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 468 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="450" class="dlbl" text-anchor="middle">330 &#8486;</text>
+  <path d="M128 166.7 L100 166.7 L100 120 L520 120 L520 194 L537 194" class="wkwire green"/>
+  <path d="M264 205.3 L500 205.3 L500 274 L537 274" class="wkwire black"/>
+  <path d="M196.5 480 L242 480" class="wkwire red"/>
+  <path d="M428 480 L470 480 L470 414 L537 414" class="wkwire red"/>
+  <path d="M173.5 480 L173.5 556 L505 556 L505 474 L537 474" class="wkwire black"/>
+  <rect x="270" y="300" width="190" height="112" rx="10" class="note"/>
+  <text x="286" y="328" class="dlbl">Four pads this time</text>
+  <text x="286" y="352" class="dsub">pin 4 is GP2 &mdash; the button</text>
+  <text x="286" y="370" class="dsub">pin 8 is the button&rsquo;s ground</text>
+  <text x="286" y="388" class="dsub">pin 15 is GP11 &mdash; the LED</text>
+  <text x="286" y="406" class="dsub">pin 18 is the LED&rsquo;s ground</text>
 </svg>
 
-      <p><strong>In words:</strong> six wires, six pads. The two green wires are the ones your program
-      reads; the three black ones are grounds; the red pair is the light.</p>
-
-      <table>
-        <thead><tr><th>Physical pin</th><th>Name on the board</th><th>What goes there</th></tr></thead>
-        <tbody>
-          <tr><td><strong>4</strong></td><td><span class="gp">GP2</span></td><td>SW1 &mdash; one leg</td></tr>
-          <tr><td><strong>8</strong></td><td>GND</td><td>SW1 &mdash; the diagonally opposite leg</td></tr>
-          <tr><td><strong>5</strong></td><td><span class="gp">GP3</span></td><td>SW2 &mdash; one leg</td></tr>
-          <tr><td><strong>13</strong></td><td>GND</td><td>SW2 &mdash; the diagonally opposite leg</td></tr>
-          <tr><td><strong>15</strong></td><td><span class="gp">GP11</span></td><td>LED1 &mdash; long leg (A), through the 330 &Omega; resistor</td></tr>
-          <tr><td><strong>18</strong></td><td>GND</td><td>LED1 &mdash; short leg (C)</td></tr>
-        </tbody>
-      </table>
+      <p><strong>In words:</strong> one leg of the button goes to <strong>GP2</strong> (physical pin 4)
+      and the diagonally opposite leg goes to <strong>GND</strong> (physical pin 8). The LED&rsquo;s
+      <strong>long leg (A)</strong> goes through the 330&nbsp;&Omega; resistor to <strong>GP11</strong>
+      (physical pin 15), and its <strong>short leg (C)</strong> goes back to the <strong>GND</strong> on
+      physical pin 18.</p>
 
       <div class="cal note"><b>Two sets of numbers, and only one of them goes in your code</b>
-      The big white numbers are the <strong>physical pins</strong> &mdash; where a wire physically goes.
-      The names beside them are what you type. GP2 is physical pin 4 and GP3 is physical pin 5; typing 4
-      or 5 in your program would give you two completely different pins.</div>
+      The big white numbers on the board are the <strong>physical pins</strong> &mdash; where a wire
+      physically goes. The names beside them are what you type. GP2 is physical pin 4 and GP11 is
+      physical pin 15; typing 4 or 15 in your program would give you two completely different pins.</div>
 
-      <label class="chk"><input type="checkbox" data-p="a2"><span>SW1: one leg &rarr; GP2, diagonally opposite leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="a3"><span>SW2: one leg &rarr; GP3, diagonally opposite leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="a4"><span>LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
-
+      <label class="chk"><input type="checkbox" data-p="a2"><span>Button: one leg &rarr; GP2, diagonally opposite leg &rarr; GND</span></label>
+      <label class="chk"><input type="checkbox" data-p="a3"><span>LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
       <div class="cal tip"><b>Any GND pad will do</b>
-      There are eight of them and they are all the same piece of metal inside the Pico. Pins 8, 13 and
-      18 are drawn here only because they are nearest the wires that need them &mdash; a tidy diagram,
-      not a rule.</div>
+      There are eight of them and they are all the same piece of metal inside the Pico. Pins 8 and 18
+      are drawn here only because they are the closest ones to the wires that need them &mdash; a tidy
+      diagram, not a rule.</div>
     </div></div>
   </div>
 
   <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
-    <p>Nothing to wire. SW1 is already joined to GP2, SW2 to GP3 and LED1 to GP11, inside the board, in
+    <p>Nothing to wire, as usual. SW1 is already joined to GP2 and LED1 to GP11, inside the board, in
     copper.</p>
-    <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above, with the red LED1 and the row of pushbuttons" loading="lazy"><figcaption>SW1 and SW2 are the first two of the three pushbuttons, and LED1 is the red one.</figcaption></figure>
+    <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above, with the red LED1 and the row of pushbuttons" loading="lazy"><figcaption>Everything this activity needs is already on the board: SW1, the first of the three pushbuttons, and LED1, the red one.</figcaption></figure>
 
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
@@ -820,10 +778,10 @@
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
-      <h4>Work out which two buttons you can hold at once</h4>
-      <p>SW1 and SW2 sit close together. Decide now whether you are using two fingers on one hand or one
-      finger from each &mdash; a two-key switch you cannot comfortably hold is hard to test.</p>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>I can hold SW1 and SW2 down at the same time</span></label>
+      <h4>Check you can find both parts with a finger</h4>
+      <p>SW1 is the first of the three small pushbuttons. LED1 is the red one. This program is the first
+      that uses an input and an output at once, so being sure which is which saves a lot of time later.</p>
+      <label class="chk"><input type="checkbox" data-p="b3"><span>I can point at SW1 and at LED1 on the board</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
@@ -834,80 +792,83 @@
 
 <section id="code">
   <h2>&#9000;&#65039; Write the program</h2>
-  <p>Start a new file. Everything except one line is a shape you have written before &mdash; two input
-  pins from Activity 3, one output pin from Activity 1, and the decision from Activity 4 with a longer
-  question in it.</p>
+  <p>Start a new file. The top half is entirely lines you have written before &mdash; one input pin from
+  Activity 4, one output pin from Activity 1. The loop is where the new work is.</p>
 
-  <span class="codeimg" data-code="IyBUd28gdG9vbHM6IFBpbiBmb3IgdGhlIGJ1dHRvbnMgYW5kIHRoZSBsaWdodCwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBhbmQgU1cyIGFyZSBidXR0b25zLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyB0aGVtCnN3MSA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzIgPSBQaW4oMywgUGluLklOLCBQaW4uUFVMTF9VUCkKCiMgTEVEMSBpcyBhIGxpZ2h0IG9uIEdQMTEKbGVkID0gUGluKDExLCBQaW4uT1VUKQoKIyBPbmUgZGVjaXNpb24sIGFza2luZyBhYm91dCB0d28gdGhpbmdzIGF0IG9uY2UKd2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDA6ICAgIyBib3RoIGhlbGQgZG93bj8KICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBvbmx5IHRoZW4gZG9lcyBpdCBsaWdodAogICAgICAgIHByaW50KCJib3RoIGtleXMgaGVsZCIpCiAgICBlbHNlOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgb25lIGtleSwgb3Igbm9uZSwgaXMgbm90IGVub3VnaAogICAgICAgIGxlZC5vZmYoKQogICAgICAgIHByaW50KCJsb2NrZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgYnV0dG9uIGFuZCB0aGUgbGlnaHQsIHNsZWVwIGZvciB0aGUgcGF1c2UKZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBTVzEgaXMgYSBidXR0b24gb24gR1AyLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyBpdApzdyA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQoKIyBMRUQxIGlzIGEgbGlnaHQgb24gR1AxMQpsZWQgPSBQaW4oMTEsIFBpbi5PVVQpCgojIFJlYWQgdGhlIGJ1dHRvbiwgZGVjaWRlLCBhY3QgLSBvdmVyIGFuZCBvdmVyCndoaWxlIFRydWU6CiAgICBpZiBzdy52YWx1ZSgpID09IDA6ICAgICAgICMgMCBtZWFucyB0aGUgYnV0dG9uIGlzIHByZXNzZWQKICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgIyBzbyBzd2l0Y2ggdGhlIGxpZ2h0IG9uCiAgICAgICAgcHJpbnQoInByZXNzZWQiKQogICAgZWxzZTogICAgICAgICAgICAgICAgICAgICAjIGFueXRoaW5nIGVsc2UgbWVhbnMgaXQgaXMgbm90CiAgICAgICAgbGVkLm9mZigpICAgICAgICAgICAgICMgc28gc3dpdGNoIHRoZSBsaWdodCBvZmYKICAgICAgICBwcmludCgibm90IHByZXNzZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
 
   <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
-  Slow right down on the question line. It contains two complete comparisons, four brackets and one
-  joining word, and every one of them has to be in the right place. Type it in two halves: the first
-  comparison, then the word, then the second comparison, then the colon.</div>
+  Six of these lines are old friends. Type them anyway &mdash; and slow right down for the two that
+  are not, because a single equals sign or a comparison with the wrong number will cost you ten minutes
+  of hunting.</div>
 
   <h3>Type it here first</h3>
   <p>The five lines that matter. The box turns green when a line is exactly right.</p>
 
   <div class="typer" id="typer">
-    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="sw2 = Pin(3, Pin.IN, Pin.PULL_UP)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
-    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="if sw1.value() == 0 and sw2.value() == 0:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="led = Pin(11, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="if sw.value() == 0:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="led.on()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="else:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="led.off()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
-    <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 2 has two whole questions in it &mdash; check both halves.</p>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Count your equals signs on line 2.</p>
   </div>
   <div class="cal note"><b>These boxes ignore the spaces at the front</b>
   Python does not. When you type them for real, lines 2 and 4 go in by <strong>four</strong> spaces and
-  lines 3 and 5 by <strong>eight</strong> &mdash; exactly as in Activity 4. Nothing about indentation
-  changes today.</div>
+  lines 3 and 5 by <strong>eight</strong>.</div>
   <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <table>
     <thead><tr><th>Code</th><th>What it means</th></tr></thead>
     <tbody>
-      <tr><td><span class="codeimg inline" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVAp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>From Activity 3. Pin 2, set to listen, held up until something pulls it down.</td></tr>
-      <tr><td><span class="codeimg inline" data-code="c3cyID0gUGluKDMsIFBpbi5JTiwgUGluLlBVTExfVVAp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>The same again for the second button, with its own name and its own pin. Two buttons,
-          two names &mdash; the rule from Activity 1 has not changed.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="c3cgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>From Activity 4. Pin 2, set to listen, held up until something pulls it down.</td></tr>
       <tr><td><span class="codeimg inline" data-code="bGVkID0gUGluKDExLCBQaW4uT1VUKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>From Activity 1. Pin 11, set to be driven.</td></tr>
-      <tr><td><span class="codeimg inline" data-code="ICAgIGlmIHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDA6" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td><strong>The only new line in the activity.</strong> Two whole questions, joined by one
-          word. Both have to answer yes for the whole thing to answer yes.</td></tr>
+          <td>From Activity 1. Pin 11, set to be driven. One equals sign &mdash; this one is putting
+          something into a name.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ICAgIGlmIHN3LnZhbHVlKCkgPT0gMDo=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>The new line. Ask the pin what it can hear, and compare the answer with 0. Two equals
+          signs, because this is a question. Four spaces in, because it belongs to the loop.</td></tr>
       <tr><td><span class="codeimg inline" data-code="ICAgICAgICBsZWQub24oKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>Eight spaces in, so it happens only when the joined answer was yes.</td></tr>
+          <td>Eight spaces in, so it happens only when the answer was yes. Same instruction you wrote in
+          Activity 1.</td></tr>
       <tr><td><span class="codeimg inline" data-code="ICAgIGVsc2U6" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>Every other case: one key, the other key, or neither. Four spaces, level with the question.</td></tr>
+          <td>The other road. Four spaces, level with the question &mdash; not eight.</td></tr>
       <tr><td><span class="codeimg inline" data-code="ICAgICAgICBsZWQub2ZmKCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>Eight spaces again, so it happens only when the joined answer was no.</td></tr>
+          <td>Eight spaces again, so it happens only when the answer was no.</td></tr>
       <tr><td><span class="codeimg inline" data-code="ICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
-          <td>Back out to four spaces. Ten decisions a second, whichever road was taken.</td></tr>
+          <td>Back out to four spaces, so it happens every time round whichever road was taken. Ten
+          readings a second.</td></tr>
     </tbody>
   </table>
 
-  <div class="cal info"><b>Still one <code>if</code>, still one <code>else</code></b>
-  Nothing about the shape of a decision has changed today. The question got longer; the two roads out of
-  it did not multiply. Whatever you join and however many halves you add, an <code>if</code> still ends
-  up with exactly one yes-road and one no-road.</div>
+  <div class="cal info"><b>Why <code>print</code> is still here</b>
+  You could delete both printing lines and the light would work exactly the same. Leave them in. When
+  the light is doing the opposite of what you expect, the words on your screen are the fastest way to
+  find out whether the Pico is reading the button wrongly or deciding wrongly &mdash; and those are two
+  completely different bugs.</div>
 
   <details>
-    <summary>&#128065;&#65039; What the same program does with <em>or</em> in it</summary>
-    <p>One word changed, and the safety switch becomes something else entirely &mdash; a light that
-    comes on if <em>anybody</em> touches <em>either</em> key:</p>
-    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDAgb3Igc3cyLnZhbHVlKCkgPT0gMDogICAjIGVpdGhlciBvbmUgaXMgZW5vdWdoCiAgICAgICAgbGVkLm9uKCkKICAgIGVsc2U6CiAgICAgICAgbGVkLm9mZigpCiAgICBzbGVlcCgwLjEp" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-    <p>Run it for thirty seconds. Hold one key, then the other, then both. It is the fastest way to feel
-    the difference between the two words, and it is worth doing before you move on.</p>
+    <summary>&#128065;&#65039; What it looks like with the else taken out</summary>
+    <p>This runs. There is no error. It switches the light on the first time you press and then never
+    touches it again:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGlmIHN3LnZhbHVlKCkgPT0gMDoKICAgICAgICBsZWQub24oKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 4 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>The Pico still asks the question ten times a second and still takes one of the two roads &mdash;
+    it is just that one of the roads is empty, so nothing happens on it. Try it once on purpose; it is
+    the clearest possible demonstration of what <code>else</code> is for.</p>
   </details>
 
   <details>
-    <summary>&#129300; Could I not just write two <code>if</code>s like last time?</summary>
-    <p>Not for this. Two separate decisions can each switch the light on, but neither one knows what the
-    other found, so nothing can insist on <em>both</em> at once. You would end up switching the light on
-    in one block and off again in the next, and the result depends on which block ran last.</p>
-    <p>That is exactly the situation <code>and</code> exists for: one question, one answer, one decision.
-    When a thing depends on two facts together, join the facts &mdash; do not split the decision.</p>
+    <summary>&#129300; Could I not just hand the button&rsquo;s value straight to the LED?</summary>
+    <p>Some of you will have spotted that there is a shorter way, and it does work. Leave it alone for
+    now, for two reasons.</p>
+    <p>The first is that it gives you the light <em>on</em> when the button is up, because of the
+    backwards number &mdash; so it needs undoing before it does what you want. The second is that this
+    activity is not really about the light. It is about the Pico being able to choose, and
+    <code>if</code> and <code>else</code> are how it chooses for the rest of the module. There is no
+    short cut for the OLED screen in Activity 7, or for a sensor reading that has gone too high.</p>
+    <p>Get this shape into your fingers now and the next five activities are much easier.</p>
   </details>
 </section>
 
@@ -917,7 +878,7 @@
     <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
     <tbody>
       <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button</td><td>The LED on the diagram, and the <strong>Serial Monitor</strong></td></tr>
-      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>twokey.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>LED1 on the board, and the <strong>Shell</strong></td></tr>
+      <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>decide.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>LED1 on the board, and the <strong>Shell</strong></td></tr>
     </tbody>
   </table>
   <div class="cal tip"><b>Stopping it works exactly as before</b>
@@ -925,46 +886,43 @@
   <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</div>
 
   <h3>&#9989; What you should see</h3>
-  <p>Four things to test, and all four have to be right. Three of them are the light staying
-  <em>off</em> &mdash; which is the whole point of a safety switch.</p>
+  <p>Nothing at all until you touch it. Hold SW1 down and the red light comes on and stays on for as
+  long as your finger is there. Let go and it goes out immediately.</p>
 
-<svg class="dia wide" viewBox="0 0 780 288" role="img" aria-label="The four cases the finished program must produce. Nothing held: the light is off and the screen says locked. SW1 only: off, locked. SW2 only: off, locked. Both held: the light is on and the screen says both keys held.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">Only the fourth one lights</text>
-  <rect x="24" y="46" width="168" height="176" rx="12" class="pane"/>
-  <text x="108" y="74" class="dlbl" text-anchor="middle">nothing held</text>
-  <circle cx="108" cy="126" r="22" fill="#4A2323"/>
-  <rect x="44" y="166" width="128" height="34" rx="8" class="pinbox"/>
-  <text x="108" y="188" class="dsub" text-anchor="middle">locked</text>
+<svg class="dia" viewBox="0 0 720 250" role="img" aria-label="Two pictures side by side. With nobody touching the button the red LED is dark and the screen repeats the words not pressed. With a finger holding the button down the LED is lit and the screen repeats the word pressed.">
+  <text x="360" y="26" class="dttl" text-anchor="middle">The light follows your finger</text>
+  <rect x="40" y="48" width="300" height="172" rx="12" class="pane"/>
+  <text x="190" y="76" class="dlbl" text-anchor="middle">not touching it</text>
+  <circle cx="120" cy="140" r="26" fill="#4A2323"/>
+  <text x="120" y="192" class="dsub" text-anchor="middle">LED1 dark</text>
+  <rect x="180" y="108" width="130" height="64" rx="8" class="pinbox"/>
+  <text x="245" y="132" class="dsub" text-anchor="middle">not pressed</text>
+  <text x="245" y="152" class="dsub" text-anchor="middle">not pressed</text>
+  <text x="245" y="168" class="dsub" text-anchor="middle">&hellip;</text>
 
-  <rect x="216" y="46" width="168" height="176" rx="12" class="pane"/>
-  <text x="300" y="74" class="dlbl" text-anchor="middle">SW1 only</text>
-  <circle cx="300" cy="126" r="22" fill="#4A2323"/>
-  <rect x="236" y="166" width="128" height="34" rx="8" class="pinbox"/>
-  <text x="300" y="188" class="dsub" text-anchor="middle">locked</text>
-
-  <rect x="408" y="46" width="168" height="176" rx="12" class="pane"/>
-  <text x="492" y="74" class="dlbl" text-anchor="middle">SW2 only</text>
-  <circle cx="492" cy="126" r="22" fill="#4A2323"/>
-  <rect x="428" y="166" width="128" height="34" rx="8" class="pinbox"/>
-  <text x="492" y="188" class="dsub" text-anchor="middle">locked</text>
-
-  <rect x="600" y="46" width="156" height="176" rx="12" class="pane"/>
-  <text x="678" y="74" class="dlbl" text-anchor="middle">both held</text>
-  <circle cx="678" cy="126" r="22" fill="#FF2B2B"/>
-  <circle cx="678" cy="126" r="31" fill="none" stroke="#FF2B2B" stroke-width="3" opacity=".45"/>
-  <rect x="614" y="166" width="128" height="34" rx="8" class="pinbox"/>
-  <text x="678" y="188" class="dsub" text-anchor="middle">both keys held</text>
-  <text x="390" y="252" class="dsub" text-anchor="middle">Let go of either key and it goes out immediately &mdash; the question is asked again ten times a second.</text>
-  <text x="390" y="274" class="dsub" text-anchor="middle">The words on your screen should change at exactly the same moment as the light.</text>
+  <rect x="380" y="48" width="300" height="172" rx="12" class="pane"/>
+  <text x="530" y="76" class="dlbl" text-anchor="middle">holding it down</text>
+  <circle cx="460" cy="140" r="26" fill="#FF2B2B"/>
+  <circle cx="460" cy="140" r="36" fill="none" stroke="#FF2B2B" stroke-width="3" opacity=".45"/>
+  <text x="460" y="192" class="dsub" text-anchor="middle">LED1 lit</text>
+  <rect x="520" y="108" width="130" height="64" rx="8" class="pinbox"/>
+  <text x="585" y="132" class="dsub" text-anchor="middle">pressed</text>
+  <text x="585" y="152" class="dsub" text-anchor="middle">pressed</text>
+  <text x="585" y="168" class="dsub" text-anchor="middle">&hellip;</text>
+  <text x="360" y="240" class="dsub" text-anchor="middle">Ten decisions a second, so the light keeps up with you however fast you tap.</text>
 </svg>
 
+  <div class="cal info"><b>No missed taps this time</b>
+  In Activity 4 a quick tap could land entirely between two readings and produce no 0 at all. That does
+  not happen here, because the light <em>stays</em> where the last decision put it. Even a tap the Pico
+  half-missed leaves the light on for a moment.</div>
+
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Holding <strong>SW1 alone</strong> does nothing at all</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>Holding <strong>SW2 alone</strong> does nothing at all</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>Holding <strong>both</strong> lights the red LED</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>Letting go of either one puts it out again straight away</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>The words on my screen match what the light is doing</span></label>
-  <label class="chk"><input type="checkbox" data-p="r6"><span>I stopped the program on purpose, rather than closing the window</span></label>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>The light is <strong>off</strong> when nobody is touching the button</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>The light comes <strong>on</strong> while I hold SW1 down</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>It goes out again the moment I let go</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>The words on my screen match what the light is doing</span></label>
+  <label class="chk"><input type="checkbox" data-p="r5"><span>I stopped the program on purpose, rather than closing the window</span></label>
 </section>
 
 <section id="fix">
@@ -972,16 +930,17 @@
   <table>
     <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
     <tbody>
-      <tr><td><strong>The light comes on with one key</strong></td><td>You wrote <code>or</code> where you meant <code>and</code>. One word, one edit.</td></tr>
-      <tr><td><strong>The light is on all the time, whatever I do</strong></td><td>The halves are not whole questions &mdash; the names of the pins are in the line on their own, without <code>.value()</code> and without the comparison. Read each half with the other one covered up.</td></tr>
-      <tr><td><code>SyntaxError: invalid syntax</code> on the <code>if</code> line</td><td>Something is missing from one half. Count: each side needs a value, two equals signs and a number. Then check the colon on the end.</td></tr>
-      <tr><td><strong>The light is on except when I hold both</strong></td><td>You have a <code>not</code> in the line, or you compared with 1. Take the <code>not</code> out and compare with 0 &mdash; see <a href="#not">the section above</a>.</td></tr>
-      <tr><td><strong>Nothing lights at all, ever</strong></td><td>Check the second button first: in Wokwi, its two wires must be on <em>diagonally opposite</em> legs, and it must go to GP3, not to another GP2.</td></tr>
-      <tr><td><strong>One key works, the other never does</strong></td><td>Both setup lines are pointing at the same pin, or the second one is missing entirely and Python is reusing the first name.</td></tr>
-      <tr><td><code>NameError: name 'sw2' is not defined</code></td><td>The second button&rsquo;s setup line is missing, or the name in the question is spelt differently from the name at the top.</td></tr>
-      <tr><td><strong>The light flickers randomly</strong></td><td><code>Pin.PULL_UP</code> is missing from one of the two setup lines. The pin is floating and its answer changes on its own.</td></tr>
-      <tr><td><code>IndentationError</code></td><td>Nothing about indentation changed today: four spaces for the question and the <code>else</code>, eight for the lines inside them.</td></tr>
-      <tr><td><strong>It works in Wokwi but not on the board</strong></td><td>On the board SW1 and SW2 are fixed to GP2 and GP3. If your program uses different numbers it will read two buttons that are not there.</td></tr>
+      <tr><td><code>SyntaxError: invalid syntax</code>, pointing at the <code>if</code> line</td><td><strong>Count the equals signs.</strong> A question needs two. This is by far the most common error in this activity.</td></tr>
+      <tr><td><strong>The light is on except when I press</strong></td><td>You compared with 1. It has to be 0 &mdash; that is the number a pressed button gives you. Nothing else is wrong.</td></tr>
+      <tr><td><strong>The light comes on and never goes off</strong></td><td>The <code>else</code> half is missing, or the line that switches the light off is not underneath it.</td></tr>
+      <tr><td><strong>The light never comes on at all</strong></td><td>Check the LED first, not the code: long leg through the resistor to GP11, short leg to GND. Wokwi: an LED in backwards is silent and dark.</td></tr>
+      <tr><td><strong>The light flickers randomly</strong></td><td>The pull-up is missing from the button&rsquo;s setup line. The pin is floating and the answer changes at random.</td></tr>
+      <tr><td><code>SyntaxError</code> pointing at <code>else</code></td><td>The <code>else</code> is at the wrong distance from the left edge. It lines up with <code>if</code> &mdash; four spaces, not eight, and not none.</td></tr>
+      <tr><td><code>IndentationError: expected an indented block</code></td><td>You wrote the question and its colon, then left the next line at the same edge. Something has to be pushed in underneath it.</td></tr>
+      <tr><td><strong>The words on screen are right but the light is wrong</strong></td><td>The decision is fine and the wiring is not. Look at the LED, the resistor and the pin number.</td></tr>
+      <tr><td><strong>The light is right but the words are wrong</strong></td><td>The two printing lines have been swapped between the roads. Read down the block and check each one is on the road it describes.</td></tr>
+      <tr><td><code>NameError: name 'led' is not defined</code></td><td>The output pin&rsquo;s setup line is missing, or you nicknamed it something else and then used a name that does not exist.</td></tr>
+      <tr><td><strong>Nothing happens and nothing prints</strong></td><td>The loop line is missing, or nothing is indented underneath it, so the program ran once and finished before you could press anything.</td></tr>
       <tr><td><strong>I cannot save, or the Shell will not respond</strong></td><td>The previous forever-loop is still running. Press the red <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd>.</td></tr>
       <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. That is the power switch, not a button.</td></tr>
     </tbody>
@@ -989,116 +948,119 @@
 </section>
 
 <section id="exercise">
-  <h2>&#128640; Exercise &mdash; the two-of-three keypad</h2>
-  <p class="lede">A lock that opens for <strong>any two</strong> of three keys. It needs
-  <code>and</code> <em>and</em> <code>or</code> in the same question &mdash; and a little thinking
-  before you type anything.</p>
-  <p><strong>Task:</strong> three buttons, one light. The <strong>green</strong> LED comes on when
-  <strong>at least two</strong> of SW1, SW2 and SW3 are held down at the same time. It does not matter
-  <em>which</em> two.</p>
-  <ul>
-    <li>SW1 is <span class="gp">2</span>, SW2 is <span class="gp">3</span>, SW3 is <span class="gp">4</span></li>
-    <li>LED3, the green one, is <span class="gp">13</span></li>
-  </ul>
+  <h2>&#128640; Exercise &mdash; two decisions at once</h2>
+  <p class="lede">One button, one light was one decision. Now make the Pico take two of them, every time
+  round the loop, without either one interfering with the other.</p>
+  <p><strong>Task:</strong> <strong>SW1</strong> lights the <strong>red</strong> LED and
+  <strong>SW2</strong> lights the <strong>green</strong> one:</p>
+  <ol>
+    <li>Hold SW1 and only the red light comes on.</li>
+    <li>Hold SW2 and only the green light comes on.</li>
+    <li>Hold both and both lights come on.</li>
+    <li>Let go of everything and both go out.</li>
+  </ol>
 
-<svg class="dia wide" viewBox="0 0 780 288" role="img" aria-label="The four cases the keypad must produce. No keys held: the green light is off. One key held: still off. Any two keys held: the green light is on. All three held: also on.">
-  <text x="390" y="26" class="dttl" text-anchor="middle">What the finished keypad has to do</text>
-  <rect x="24" y="46" width="168" height="184" rx="12" class="pane"/>
-  <text x="108" y="74" class="dlbl" text-anchor="middle">no keys</text>
-  <circle cx="72" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="108" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="144" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="108" cy="176" r="21" fill="#123A1E"/>
-  <text x="108" y="216" class="dsub" text-anchor="middle">locked</text>
-
-  <rect x="216" y="46" width="168" height="184" rx="12" class="pane"/>
-  <text x="300" y="74" class="dlbl" text-anchor="middle">any one key</text>
-  <circle cx="264" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="300" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="336" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="300" cy="176" r="21" fill="#123A1E"/>
-  <text x="300" y="216" class="dsub" text-anchor="middle">still locked</text>
-
-  <rect x="408" y="46" width="168" height="184" rx="12" class="pane"/>
-  <text x="492" y="74" class="dlbl" text-anchor="middle">any two keys</text>
-  <circle cx="456" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="492" cy="122" r="11" fill="#2B3A41"/>
-  <circle cx="528" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="492" cy="176" r="21" fill="#2BE06A"/>
-  <text x="492" y="216" class="dsub" text-anchor="middle">open</text>
-
-  <rect x="600" y="46" width="156" height="184" rx="12" class="pane"/>
-  <text x="678" y="74" class="dlbl" text-anchor="middle">all three</text>
-  <circle cx="642" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="678" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="714" cy="122" r="11" fill="#02ADA5"/>
-  <circle cx="678" cy="176" r="21" fill="#2BE06A"/>
-  <text x="678" y="216" class="dsub" text-anchor="middle">also open</text>
-  <text x="390" y="258" class="dsub" text-anchor="middle">Teal dots are keys being held. Any pair opens it &mdash; SW1 with SW2, SW1 with SW3, or SW2 with SW3.</text>
-  <text x="390" y="280" class="dsub" text-anchor="middle">All three counts as open too: three keys are still &ldquo;at least two&rdquo;.</text>
+<svg class="dia wide" viewBox="0 0 780 268" role="img" aria-label="The four states the finished exercise should produce. Nothing pressed: both lights out. SW1 only: the red light on and the green out. SW2 only: the green light on and the red out. Both pressed: both lights on.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">All four of these have to work</text>
+  <g>
+    <rect x="24" y="50" width="168" height="150" rx="12" class="pane"/>
+    <text x="108" y="78" class="dlbl" text-anchor="middle">nothing pressed</text>
+    <circle cx="80" cy="126" r="20" fill="#4A2323"/>
+    <circle cx="136" cy="126" r="20" fill="#123A1E"/>
+    <text x="80" y="172" class="dsub" text-anchor="middle">red</text>
+    <text x="136" y="172" class="dsub" text-anchor="middle">green</text>
+    <text x="108" y="192" class="dsub" text-anchor="middle">both out</text>
+  </g>
+  <g>
+    <rect x="216" y="50" width="168" height="150" rx="12" class="pane"/>
+    <text x="300" y="78" class="dlbl" text-anchor="middle">SW1 only</text>
+    <circle cx="272" cy="126" r="20" fill="#FF2B2B"/>
+    <circle cx="328" cy="126" r="20" fill="#123A1E"/>
+    <text x="272" y="172" class="dsub" text-anchor="middle">red</text>
+    <text x="328" y="172" class="dsub" text-anchor="middle">green</text>
+    <text x="300" y="192" class="dsub" text-anchor="middle">red only</text>
+  </g>
+  <g>
+    <rect x="408" y="50" width="168" height="150" rx="12" class="pane"/>
+    <text x="492" y="78" class="dlbl" text-anchor="middle">SW2 only</text>
+    <circle cx="464" cy="126" r="20" fill="#4A2323"/>
+    <circle cx="520" cy="126" r="20" fill="#2BE06A"/>
+    <text x="464" y="172" class="dsub" text-anchor="middle">red</text>
+    <text x="520" y="172" class="dsub" text-anchor="middle">green</text>
+    <text x="492" y="192" class="dsub" text-anchor="middle">green only</text>
+  </g>
+  <g>
+    <rect x="600" y="50" width="156" height="150" rx="12" class="pane"/>
+    <text x="678" y="78" class="dlbl" text-anchor="middle">both pressed</text>
+    <circle cx="650" cy="126" r="20" fill="#FF2B2B"/>
+    <circle cx="706" cy="126" r="20" fill="#2BE06A"/>
+    <text x="650" y="172" class="dsub" text-anchor="middle">red</text>
+    <text x="706" y="172" class="dsub" text-anchor="middle">green</text>
+    <text x="678" y="192" class="dsub" text-anchor="middle">both on</text>
+  </g>
+  <text x="390" y="240" class="dsub" text-anchor="middle">Two decisions that know nothing about each other. Neither button should ever affect the other light.</text>
+  <text x="390" y="260" class="dsub" text-anchor="middle">Green is LED3, on GP13.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>One key on its own never opens it</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>SW1 + SW2 opens it</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>SW1 + SW3 opens it, and so does SW2 + SW3</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>All three together opens it as well</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>It keeps running until I stop it on purpose</span></label>
+  <label class="chk"><input type="checkbox" data-p="e1"><span>SW1 lights the red LED and nothing else</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>SW2 lights the green LED and nothing else</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>Both together light both</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>Both go out when I let go, and it keeps running until I stop it</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
-    <p>Do not write any code yet. On paper, list every way of holding <strong>exactly two</strong> of the
-    three keys. There are only a few, and once they are written down the rest is typing.</p>
-    <p>Then ask yourself: to open the lock, do you need <em>all</em> of the ways on your list to be
-    happening at once, or just <em>one</em> of them? The answer to that question tells you which joining
-    word goes between them.</p>
-    <p>Four names go at the top, before the loop, and every one is a shape you have already written:</p>
-    <span class="codeimg" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzMgPSBQaW4oNCwgUGluLklOLCBQaW4uUFVMTF9VUCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQp" role="img" aria-label="Python code, 4 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>Four things, four names. This is the same lesson as the three LEDs in Activity 1 and the two
+    buttons in Activity 4: <strong>one nickname can only ever point at one pin</strong>.</p>
+    <ul>
+      <li>SW1 is <span class="gp">2</span>, SW2 is <span class="gp">3</span></li>
+      <li>LED1 red is <span class="gp">11</span>, LED3 green is <span class="gp">13</span></li>
+    </ul>
+    <p>All four lines go at the top, before the loop, and every one of them is a shape you have already
+    written:</p>
+    <span class="codeimg" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpyZWQgPSBQaW4oMTEsIFBpbi5PVVQpCmdyZWVuID0gUGluKDEzLCBQaW4uT1VUKQ==" role="img" aria-label="Python code, 4 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
   </details>
 
-  <details><summary>&#128161; Clue 2 &mdash; how do I write &ldquo;one pair&rdquo;?</summary>
-    <p>You already have. One pair of keys held together is exactly the question you wrote for the
-    two-key safety switch:</p>
-    <span class="codeimg" data-code="aWYgc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3cyLnZhbHVlKCkgPT0gMDo=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-    <p>Your list from Clue 1 has more than one pair on it. Write each pair the same way, and then join
-    the pairs together with the <em>other</em> joining word &mdash; because any one of them opening the
-    lock is enough.</p>
-    <p>Put brackets around each pair. They are not compulsory, but with three pairs in one line they are
-    the difference between a line you can read and a line you cannot.</p>
+  <details><summary>&#128161; Clue 2 &mdash; do I need a cleverer question?</summary>
+    <p>No. Resist every urge to be clever here. You do <strong>not</strong> need a way of asking about
+    two buttons in one question &mdash; that is the whole of Activity 6, and it is not needed for this.</p>
+    <p>What you need is the block you have already written, <strong>twice</strong>, one after the other,
+    both inside the same loop. The second one is a copy of the first with two names changed.</p>
+    <p>Ask yourself what the Pico does each time round the loop: it takes one of two roads for the red
+    light, finishes that, and then arrives at a completely fresh fork for the green one.</p>
   </details>
 
   <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
-    <p>The finished question is <strong>one line</strong>, and it is a long one. That is normal and it is
-    not a mistake &mdash; the editor will let it run off the right-hand side, and Python does not mind.</p>
-    <p>Three things to check before you run it:</p>
-    <ul>
-      <li>Every single half is a <strong>whole question</strong>: a value, two equals signs, and a 0.
-      Six of them altogether.</li>
-      <li>The word <em>inside</em> each pair of brackets is not the same as the word
-      <em>between</em> them.</li>
-      <li>The rest of the program &mdash; the loop, the decision, the two roads and the wait &mdash; is
-      identical to the one you have already written. Only the question changed.</li>
-    </ul>
-    <p>Test it by holding SW1 and SW3 &mdash; the pair people most often leave off the list.</p>
+    <p>Here is the first half, with the space where the second half goes. Notice that the second
+    question is at <strong>four</strong> spaces, exactly like the first one &mdash; it is a new
+    decision, not part of the old one:</p>
+    <span class="codeimg" data-code="d2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDA6CiAgICAgICAgcmVkLm9uKCkKICAgIGVsc2U6CiAgICAgICAgcmVkLm9mZigpCgogICAgIyBub3cgZG8gdGhlIHNhbWUgYWdhaW4gZm9yIFNXMiBhbmQgdGhlIGdyZWVuIGxpZ2h0CgogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 9 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <p>One waiting line at the bottom, at four spaces, outside both decisions. You do not need two of
+    them, and two would make the lights sluggish.</p>
+    <p><strong>Wokwi route:</strong> you will need a <strong>second pushbutton</strong> on
+    <strong>GP3</strong> and a <strong>second LED</strong> &mdash; green, with its own
+    330&nbsp;&Omega; resistor &mdash; on <strong>GP13</strong>. Same wiring rules as the first pair.
+    That is setting up, not solving.</p>
   </details>
 
   <div class="cal info"><b>No answer on this page</b>
-  There is no answer block here on purpose &mdash; work it out from the clues, and check it by pressing
-  the keys rather than by reading. Your teacher has the worked answer if the class needs it.</div>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by
+  looking at the board rather than by reading. Your teacher has the worked answer if the class
+  needs it.</div>
 
   <h3>&#127775; Going further</h3>
   <p>Finished early? Try these &mdash; no answers given.</p>
   <ol>
-    <li>Make the keypad accept <strong>exactly two</strong> keys and refuse all three. This is where
-    <code>not</code> earns its place.</li>
-    <li>Build a <strong>door alarm</strong>: the slide switch <strong>SW4</strong> on
-    <span class="gp">15</span> arms it, and the buzzer <strong>BZ1</strong> on
-    <span class="gp">14</span> sounds only when it is armed <em>and</em> SW1 is pressed. Find out for
-    yourself which way round SW4 reads &mdash; print it and look.</li>
-    <li>Add the green LED to the two-key switch as a &ldquo;safe&rdquo; light: green on whenever the red
-    one is off, and out when the machine is running.</li>
-    <li>Make a doorbell out of <code>or</code>: either SW1 or SW2 sounds the buzzer.</li>
-    <li>Three keys, all three needed. How many joining words does that question have in it?</li>
-    <li>Take the two-key switch and make it need SW1 held down <em>and</em> SW2 <strong>not</strong>
-    held. Predict what it will do before you run it.</li>
+    <li>Add <strong>SW3</strong> on <span class="gp">4</span> and the yellow <strong>LED2</strong> on
+    <span class="gp">12</span> as a third decision.</li>
+    <li>Make SW2 do the opposite: the green light is <strong>on</strong> until you press it, and goes
+    out while you hold it. Only one thing in the block has to change.</li>
+    <li>Use the buzzer <strong>BZ1</strong> on <span class="gp">14</span> instead of a light. It is set
+    up exactly like an LED. Your neighbours will love it.</li>
+    <li>Make SW1 light the red LED <em>and</em> switch the green one off at the same time, so only one
+    can ever be lit. How many lines go inside the <code>if</code>?</li>
+    <li>The slide switch <strong>SW4</strong> is on <span class="gp">15</span> and stays where you put
+    it. Use it to decide which light SW1 controls.</li>
+    <li>Take the waiting line out completely and watch what the light does. Predict first: does it
+    flicker, does it dim, or does nothing change at all?</li>
   </ol>
 </section>
 
@@ -1106,21 +1068,23 @@
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
   <div id="quizbox"></div>
-  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now ask
-  about several things at once and still make one clean decision. Next up &mdash; Activity 6, where the
-  answers stop living on a computer screen and start appearing on the board&rsquo;s own display.</div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now
+  read the world <em>and</em> decide what to do about it. Next up &mdash; Activity 6, where one
+  decision gets to depend on more than one thing at a time.</div>
 </section>
 
 <section>
   <h2>&#128214; Words to remember</h2>
   <table>
     <tbody>
-      <tr><td><strong>and</strong></td><td>Joins two whole questions. Yes only when both halves are yes.</td></tr>
-      <tr><td><strong>or</strong></td><td>Joins two whole questions. Yes when at least one half is yes &mdash; both included.</td></tr>
-      <tr><td><strong>not</strong></td><td>Goes in front of one question and turns its answer round.</td></tr>
-      <tr><td><strong>Condition</strong></td><td>The question an <code>if</code> asks. It can now have several halves, and it still gives exactly one answer.</td></tr>
-      <tr><td><strong>Boolean</strong></td><td>The proper name for a value that can only be yes or no &mdash; true or false. Everything on this page is boolean logic.</td></tr>
-      <tr><td><strong>Brackets</strong></td><td>Put round a half to show where it starts and ends. Rarely compulsory, always kind to the next person reading it.</td></tr>
+      <tr><td><strong>if</strong></td><td>Do the indented lines underneath, but only when the question is true.</td></tr>
+      <tr><td><strong>else</strong></td><td>And do these other lines when it is not. Never on its own, never with a question of its own.</td></tr>
+      <tr><td><strong>Condition</strong></td><td>The question an <code>if</code> asks. It can only ever come back true or false.</td></tr>
+      <tr><td><strong>Block</strong></td><td>The lines that belong to an <code>if</code> or an <code>else</code>, marked out by being pushed in.</td></tr>
+      <tr><td><strong>=</strong></td><td>One equals: puts something into a name. An order.</td></tr>
+      <tr><td><strong>==</strong></td><td>Two equals: asks whether two things are the same. A question.</td></tr>
+      <tr><td><strong>SyntaxError</strong></td><td>Python cannot read the line at all. Nothing runs. Usually a missing equals sign, colon or bracket.</td></tr>
+      <tr><td><strong>IndentationError</strong></td><td>A line is at a distance from the left edge that Python was not expecting.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1130,33 +1094,33 @@
 <script>
 window.ACTIVITY = {
   typer: [
-    "sw2 = Pin(3, Pin.IN, Pin.PULL_UP)",
-    "if sw1.value() == 0 and sw2.value() == 0:",
+    "led = Pin(11, Pin.OUT)",
+    "if sw.value() == 0:",
     "led.on()",
     "else:",
     "led.off()"
   ],
   quiz: [
-    { q: 'With the two halves joined by <code>and</code>, when does the light come on?',
-      opts: ['When either key is held', 'Only when both keys are held', 'When neither key is held', 'Whenever the program is running'],
+    { q: 'Which one asks whether two things are the same?',
+      opts: ['One equals sign', 'Two equals signs', 'A colon', 'A full stop'],
       right: 1,
-      why: 'and is the strict word: one row out of four. Either-key behaviour is what or would give you.' },
-    { q: 'Both keys are held down and the two halves are joined by <code>or</code>. What is the answer?',
-      opts: ['No — or means one but not both', 'Yes — at least one is true, and both counts', 'It depends which key you pressed first', 'Python reports an error'],
+      why: 'One equals puts something into a name. Two equals asks a question and hands back yes or no — and a question is what an if line needs.' },
+    { q: 'You want the light on <strong>while the button is held down</strong>. What should the question compare the button&rsquo;s value with?',
+      opts: ['1, because pressed means on', '0, because pressing pulls the pin down', 'Either one works', 'Nothing — you compare it with the LED'],
       right: 1,
-      why: 'Python&rsquo;s or means at least one. It is not the "tea or coffee" or — both is a perfectly good yes.' },
-    { q: 'Why is writing the two pin names on their own, joined by <code>and</code>, a bad idea?',
-      opts: ['It is a SyntaxError', 'It runs, but the answer is always yes, so the light never goes out', 'It reads the buttons twice as slowly', 'It only works in Wokwi'],
-      right: 1,
-      why: 'A name on its own is not a question. Python treats a pin that exists as a yes, so the joined answer never changes.' },
-    { q: 'How many complete comparisons are there in a question that joins two halves with <code>and</code>?',
-      opts: ['One, shared between the halves', 'Two — one on each side', 'Three', 'None — and does the comparing'],
-      right: 1,
-      why: 'Each side of and has to stand up on its own: its own value, its own double equals and its own number.' },
-    { q: 'A button reads 0 while it is pressed. What should you do about that in this activity?',
-      opts: ['Put not in front of every comparison', 'Compare with 1 instead', 'Nothing — compare with 0, exactly as in Activity 4', 'Swap the wires round'],
+      why: 'The pull-up holds the pin at 1 until your finger pulls it down to 0. Comparing with 1 gives you a light that is on except when you press.' },
+    { q: 'How far in does a line that belongs to the <code>if</code> go, when the <code>if</code> is already inside a loop?',
+      opts: ['Not at all', 'Four spaces', 'Eight spaces', 'It does not matter'],
       right: 2,
-      why: 'The inversion is how a pull-up works, not a mistake. Using not to "fix" it stacks two negatives and makes the line impossible to read.' }
+      why: 'Four spaces put it inside the loop, and four more put it inside the decision. Eight in total — the first time anything in this module is indented twice.' },
+    { q: 'What happens if you type a single equals sign in the <code>if</code> line?',
+      opts: ['It works the same way', 'The program runs but does the wrong thing', 'Python refuses to run it and reports a SyntaxError', 'The LED comes on and stays on'],
+      right: 2,
+      why: 'Unlike the indentation trap in Activity 2, this one announces itself. Nothing runs at all, and the message points at the line.' },
+    { q: 'You write the <code>if</code> half but leave the <code>else</code> half out entirely. What does the light do?',
+      opts: ['Nothing ever happens', 'It comes on when you press and never goes off again', 'It flickers', 'Python reports an error'],
+      right: 1,
+      why: 'if on its own is perfectly legal. One road switches the light on; the other road is empty, so nothing ever switches it off.' }
   ]
 };
 </script>
@@ -1167,11 +1131,13 @@ window.ACTIVITY = {
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
-       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;
        <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

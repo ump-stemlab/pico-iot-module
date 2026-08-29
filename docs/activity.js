@@ -12,6 +12,29 @@
   var CFG = window.ACTIVITY || {};
   var KEY = 'lilex5:' + location.pathname.split('/').pop();
 
+  /* ---------- one-off: numbering brought into line with the Classroom, Aug 2026 ----------
+     Progress is keyed by filename, so when a page's file was renamed its saved ticks
+     would have been left behind on the old key -- and, because two pages can use the
+     same data-p names, the page arriving at a filename would have picked up the
+     previous occupant's ticks. This walks the renames highest-first, so every
+     destination key is vacated before it is written, and runs once per browser. */
+  (function(){
+    var FLAG = 'lilex5:renumbered-2026-08';
+    try {
+      if (localStorage.getItem(FLAG)) return;
+      var moves = [[8,10],[7,8],[6,7],[5,6],[4,5],[3,4]];
+      for (var i = 0; i < moves.length; i++){
+        var from = 'lilex5:activity-' + moves[i][0] + '.html';
+        var to   = 'lilex5:activity-' + moves[i][1] + '.html';
+        var v = localStorage.getItem(from);
+        if (v === null) { localStorage.removeItem(to); continue; }
+        localStorage.setItem(to, v);
+        localStorage.removeItem(from);
+      }
+      localStorage.setItem(FLAG, '1');
+    } catch(e){}
+  })();
+
   function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
   function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
   var state = load();
@@ -47,8 +70,8 @@
   }
 
   /* ---------- route tabs ----------
-     One pair per group. Every page up to Activity 5 has exactly one group,
-     tab-a / tab-b; Activity 6 has a second, tab-c / tab-d, because the two
+     One pair per group. Every page up to Activity 6 has exactly one group,
+     tab-a / tab-b; Activity 7 has a second, tab-c / tab-d, because the two
      routes differ twice on that page (getting the library on, and wiring). All
      groups share one stored choice, so picking Wokwi once picks it everywhere.
      A page without a group is left alone. */
@@ -333,7 +356,7 @@
   }
 
   /* ---------- decision simulator (guarded by #ifrun) ----------
-     Activity 4. Shows the four things that move together: what the pin says,
+     Activity 5. Shows the four things that move together: what the pin says,
      what the question answers, which road is taken, and the light. The two
      presets reproduce the activity's two traps — comparing with the wrong
      number, and leaving the else out. The output is written in words on
@@ -430,7 +453,7 @@
   }
 
   /* ---------- logic simulator (guarded by #logrun) ----------
-     Activity 5. Two pads, two readings, one light, and a joining word that can
+     Activity 6. Two pads, two readings, one light, and a joining word that can
      be swapped while it runs. The point is that the two halves are answered
      separately and then joined into a single answer. As with every simulator
      here, the output is written in words and never prints a line of code
@@ -536,7 +559,7 @@
   }
 
   /* ---------- screen widget (guarded by #oledrun) ----------
-     Activity 6. Two boxes: the page held in memory and the glass itself. The
+     Activity 7. Two boxes: the page held in memory and the glass itself. The
      whole point is that writing changes the left-hand box and nothing else --
      the right-hand one only catches up when Show it is pressed. As with every
      widget here the output is written in words and never prints a line of code
@@ -603,10 +626,10 @@
   }
 
   /* ---------- reading widget (guarded by #numrun) ----------
-     Activity 7. Drag the tilt and watch three things at once: the number the
+     Activity 8. Drag the tilt and watch three things at once: the number the
      sensor hands back with its whole tail of digits, the same number after
      round(), and what actually reaches the glass. The screen only catches up
-     when Send it is pressed, so Activity 6's write-then-show survives. The
+     when Send it is pressed, so Activity 7's write-then-show survives. The
      "as a number" setting reproduces the TypeError in words. As with every
      widget here the output is written in words and never prints a line of code
      (CONTEXT.md rule 5.1). */
@@ -707,11 +730,245 @@
       sent++;
       npaint();
       nsay('Sent. The rounded number became words, the words went onto the page, and '
-         + 'the page went onto the glass — the same wipe, write, show as Activity 6.');
+         + 'the page went onto the glass — the same wipe, write, show as Activity 7.');
     });
 
     nrefresh();
     npaint();
+  }
+
+  /* ---------- dashboard switch widget (guarded by #mqrun) ----------
+     Activity 11. Three things have to line up before a click on a web page
+     moves anything: the switch writes into the feed, the board has to have
+     subscribed, and something has to ask whether a message came. The widget
+     lets each one fail on its own. Flipping while not subscribed is the
+     Activity 11 moment - the switch works perfectly and nothing happens.
+     As with every widget here the output is words and never a line of code
+     (CONTEXT.md rule 5.1). */
+  var mqrun = document.getElementById('mqrun');
+  if(mqrun){
+    var mtog  = document.getElementById('mqtog');
+    var mfeed = document.getElementById('mqfeed');
+    var mled  = document.getElementById('mqled');
+    var mout  = document.getElementById('mqout');
+    var msub  = document.getElementById('mqsub');
+    var mauto = document.getElementById('mqauto');
+    var subscribed = false, timer = null;
+    var rows = [];      /* newest first; each {word, read} */
+    var queue = [];     /* what the server still has to deliver */
+    var on = false, delivered = 0, missed = 0;
+
+    var mpaint = function(){
+      var kids = mfeed.querySelectorAll('b');
+      for(var i = 0; i < kids.length; i++){
+        var r = rows[i];
+        kids[i].textContent = r ? r.word : ' ';
+        kids[i].classList.toggle('unread', !!(r && !r.read));
+      }
+      mled.classList.toggle('on', on);
+    };
+
+    var msay = function(head){
+      mout.textContent = head + '\n\nDelivered so far: ' + delivered
+        + '  ·  written to the feed while nobody was listening: ' + missed;
+    };
+
+    var mwrite = function(word){
+      rows.unshift({ word: word, read: false });
+      if(rows.length > 4) rows.pop();
+      if(subscribed){ queue.push(word); }
+      else { missed++; }
+      mpaint();
+    };
+
+    mtog.addEventListener('click', function(){
+      var word = mtog.textContent.trim() === 'ON' ? 'OFF' : 'ON';
+      mtog.textContent = word;
+      mtog.classList.toggle('on', word === 'ON');
+      mwrite(word);
+      msay(subscribed
+        ? 'The switch wrote the word ' + word + ' into the feed, and the server has it '
+          + 'waiting for your board. Nothing reaches the light until something asks.'
+        : 'The switch worked. A row landed in the feed. Your board has never asked to be '
+          + 'told about this feed, so the message was not kept for it and the light did '
+          + 'not move — which is exactly what happens in a real classroom.');
+    });
+
+    var mcheck = function(byHand){
+      if(!subscribed){
+        if(byHand) msay('You asked, but you never subscribed. The server has nothing for a '
+          + 'board that never asked to be told, so there is nothing to hand over.');
+        return;
+      }
+      if(!queue.length){
+        if(byHand) msay('You asked, there was nothing, and the answer came straight back. '
+          + 'That is what makes it safe to ask ten times a second.');
+        return;
+      }
+      var word = queue.shift();
+      for(var i = 0; i < rows.length; i++){
+        if(!rows[i].read && rows[i].word === word){ rows[i].read = true; break; }
+      }
+      on = (word === 'ON');
+      delivered++;
+      mpaint();
+      msay('A message was waiting, so your job ran — right there, before the loop carried '
+        + 'on. It turned what arrived into words, compared it with ON, and '
+        + (on ? 'lit the light.' : 'put the light out.')
+        + (queue.length ? ' There is still another one waiting.' : ''));
+    };
+
+    mqrun.addEventListener('click', function(){ mcheck(true); });
+
+    msub.addEventListener('click', function(){
+      subscribed = !subscribed;
+      msub.textContent = subscribed ? '✓ subscribed to the feed' : '✗ not subscribed yet';
+      msub.classList.toggle('ghost', !subscribed);
+      msay(subscribed
+        ? 'You have handed your job over and asked the server to tell you about this feed. '
+          + 'Nothing has arrived yet — subscribing does not fetch what you already missed.'
+        : 'You have stopped listening. The switch will still work and the feed will still '
+          + 'fill up; none of it will reach your board.');
+      if(!subscribed){ queue = []; }
+    });
+
+    mauto.addEventListener('click', function(){
+      if(timer){
+        clearInterval(timer); timer = null;
+        mauto.textContent = '▶️ Keep asking, in a loop';
+        mauto.classList.add('ghost');
+        msay('The loop has stopped asking. Anything you send now piles up on the server '
+          + 'until something asks again.');
+      } else {
+        timer = setInterval(function(){ mcheck(false); }, 400);
+        mauto.textContent = '⏸️ Stop asking';
+        mauto.classList.remove('ghost');
+        msay('The loop is asking on its own now, several times a second. Flip the switch and '
+          + 'the light follows it — which is the whole of today.');
+      }
+    });
+
+    mpaint();
+  }
+
+  /* ---------- publishing widget (guarded by #pubrun) ----------
+     Activity 10. Three things decide whether a message draws itself on the far
+     end: the unit has to come off the reading, the address has to be built
+     correctly, and you have to stay under the free account's limit. All three
+     are here. Like every widget on this site the output is written in words and
+     never prints a line of code (CONTEXT.md rule 5.1). */
+  var pubrun = document.getElementById('pubrun');
+  if(pubrun){
+    var ptemp  = document.getElementById('pubtemp');
+    var praw   = document.getElementById('pubraw');
+    var psend  = document.getElementById('pubsend');
+    var pdash  = document.getElementById('pubdash');
+    var pout   = document.getElementById('pubout');
+    var puser  = document.getElementById('pubuser');
+    var pstrip = document.getElementById('pubstrip');
+    var pclear = document.getElementById('pubclear');
+    var stripping = true, ppts = [], psent = 0;
+    var PLIMIT = 30, PKEEP = 14;
+
+    var pval  = function(){ return parseInt(ptemp.value, 10) / 100; };
+    var ptext = function(){ return pval().toFixed(2) + 'C'; };
+
+    var ptopic = function(){
+      var u = (puser.value || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      if(!u) u = 'your-username';
+      return u + '/feeds/temperature';
+    };
+
+    var prefresh = function(){
+      praw.textContent = ptext();
+      psend.textContent = stripping ? ptext().slice(0, -1) : ptext();
+    };
+
+    var pdraw = function(){
+      while(pdash.firstChild){ pdash.removeChild(pdash.firstChild); }
+      if(!ppts.length){
+        var m = document.createElement('span');
+        m.className = 'dashmsg';
+        m.textContent = 'nothing has arrived yet';
+        pdash.appendChild(m);
+        return;
+      }
+      var lo = 999, hi = -999, i;
+      for(i = 0; i < ppts.length; i++){
+        if(!ppts[i].bad){
+          if(ppts[i].v < lo) lo = ppts[i].v;
+          if(ppts[i].v > hi) hi = ppts[i].v;
+        }
+      }
+      if(hi < lo){ lo = 0; hi = 1; }
+      if(hi - lo < 1){ hi = lo + 1; }
+      for(i = 0; i < ppts.length; i++){
+        var b = document.createElement('i');
+        if(ppts[i].bad){
+          b.className = 'flat';
+          b.style.height = '3px';
+        } else {
+          b.style.height = (8 + 74 * (ppts[i].v - lo) / (hi - lo)) + 'px';
+        }
+        pdash.appendChild(b);
+      }
+    };
+
+    ptemp.addEventListener('input', function(){
+      prefresh();
+      pout.textContent = 'The room changed, so the reading changed. Nothing has left the board yet '
+        + 'though — a reading only goes anywhere when the program publishes it.';
+    });
+
+    if(puser){
+      puser.addEventListener('input', function(){
+        pout.textContent = 'The address is now ' + ptopic() + '. It is built out of your username and '
+          + 'the name of your box, so getting the username wrong sends your reading to somebody '
+          + 'else’s address — where it is simply refused.';
+      });
+    }
+
+    pstrip.addEventListener('click', function(){
+      stripping = !stripping;
+      pstrip.textContent = stripping ? '✓ taking the unit off' : '✗ leaving the unit on';
+      pstrip.classList.toggle('ghost', !stripping);
+      prefresh();
+      pout.textContent = stripping
+        ? 'The unit will be taken off before the message goes out, so what leaves the board is a '
+          + 'number and nothing else. That is what the graph wants.'
+        : 'The whole reading will go out with its unit still on the end. Press Publish it and watch '
+          + 'what the graph does with that.';
+    });
+
+    pclear.addEventListener('click', function(){
+      ppts = []; psent = 0;
+      pdraw();
+      pout.textContent = 'Graph cleared, and the minute has started again.';
+    });
+
+    pubrun.addEventListener('click', function(){
+      if(psent >= PLIMIT){
+        pout.textContent = 'Refused. That is ' + PLIMIT + ' messages already, and a free account takes '
+          + PLIMIT + ' a minute. In a real program this is where it quietly stops working — and it '
+          + 'looks exactly like a broken board, which is why the program waits five seconds between '
+          + 'messages. Press Clear the graph to start the minute again.';
+        return;
+      }
+      psent++;
+      var bad = !stripping;
+      ppts.push({ v: pval(), bad: bad });
+      if(ppts.length > PKEEP) ppts.shift();
+      pdraw();
+      pout.textContent = bad
+        ? 'Sent to ' + ptopic() + ' — and the graph could not use it. What arrived still had a '
+          + 'letter on the end, so it was words rather than a number, and the point landed at nothing. '
+          + 'Sent this minute: ' + psent + ' of ' + PLIMIT + '.'
+        : 'Sent ' + ptext().slice(0, -1) + ' to ' + ptopic() + '. It crossed the internet, the broker '
+          + 'handed it on, and the graph drew a point. Sent this minute: ' + psent + ' of ' + PLIMIT + '.';
+    });
+
+    prefresh();
+    pdraw();
   }
 
 })();

@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 11 &mdash; Control from Anywhere | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico W IoT board. Activity 11: joining WiFi, subscribing to an MQTT feed, and writing your first function.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+  <radialGradient id="wkcap" cx="36%" cy="30%" r="78%">
+    <stop offset="0" stop-color="#63d963"/><stop offset=".55" stop-color="#1f9e1f"/><stop offset="1" stop-color="#0b5f0b"/>
+  </radialGradient>
+  <linearGradient id="wkled" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ff9a9a"/><stop offset=".35" stop-color="#ef4040"/><stop offset="1" stop-color="#b81c1c"/>
+  </linearGradient>
+  <linearGradient id="wkledg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9df0a4"/><stop offset=".35" stop-color="#33bb45"/><stop offset="1" stop-color="#177a25"/>
+  </linearGradient>
+  <linearGradient id="wkres" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#eadfc6"/><stop offset=".5" stop-color="#d5c09c"/><stop offset="1" stop-color="#bda87f"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html" aria-current="page">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 11</p>
+    <h1>Control from Anywhere</h1>
+    <p class="sub">Every program you have written so far did the talking. It decided, it printed, it
+    measured, it drew. Today the board does the <em>listening</em> &mdash; and a switch on a web page,
+    which could be in the next room or in another country, turns on a light on your desk.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 70 minutes</span>
+      <span class="pill">&#128246; Needs a Pico W and WiFi</span>
+      <span class="pill">&#128273; Needs a free account</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#turn">The arrow turns round</a>
+      <a href="#wifi">Getting onto the internet</a>
+      <a href="#account">Your feed and your switch</a>
+      <a href="#callback">Writing a job, and handing it over</a>
+      <a href="#try">Try it</a>
+      <a href="#library">The library</a>
+      <a href="#build">The circuit</a>
+      <a href="#code">Write the program</a>
+      <a href="#run">Run it</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Build a <strong>switch on a web page</strong>, make your board <strong>listen</strong>
+  to it, and turn the red LED on and off by clicking it. Nobody has to be anywhere near the board.
+  That is the whole point.</p>
+  <p>You have made a light come on before &mdash; in Activity 1, by typing a line, and in Activity 5, by
+  holding a button. Both of those needed you to be <em>there</em>. Today the decision is made somewhere
+  else entirely, travels across the internet, and arrives at your board as a word.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The shape of today's program. Somebody clicks a switch on a web page. The click is written into a feed on a server. Your board, which has asked to be told about that feed, is handed the word. The word turns the red LED on. Underneath, a note says the four things are in four different places and none of them knows where the others are.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">From a click on a web page to a light on your desk</text>
+
+  <rect x="14" y="58" width="150" height="96" rx="10" class="step"/>
+  <text x="89" y="90" class="dlbl" text-anchor="middle">somebody</text>
+  <text x="89" y="110" class="dlbl" text-anchor="middle">clicks a switch</text>
+  <text x="89" y="134" class="dsub" text-anchor="middle">on a web page</text>
+
+  <path d="M168 106 L200 106" class="arrow2"/>
+
+  <rect x="206" y="58" width="150" height="96" rx="10" class="namebox"/>
+  <text x="281" y="90" class="dlbl" text-anchor="middle">a server</text>
+  <text x="281" y="112" class="dsub" text-anchor="middle">writes the word</text>
+  <text x="281" y="132" class="dsub" text-anchor="middle">into a feed</text>
+
+  <path d="M360 106 L392 106" class="arrow2"/>
+
+  <rect x="398" y="58" width="150" height="96" rx="10" class="pinbox"/>
+  <text x="473" y="90" class="dlbl" text-anchor="middle">your board</text>
+  <text x="473" y="112" class="dsub" text-anchor="middle">had asked to be</text>
+  <text x="473" y="132" class="dsub" text-anchor="middle">told about that feed</text>
+
+  <path d="M552 106 L584 106" class="arrow2"/>
+
+  <rect x="590" y="58" width="150" height="96" rx="10" class="step"/>
+  <text x="665" y="90" class="dlbl" text-anchor="middle">the red LED</text>
+  <text x="665" y="112" class="dlbl" text-anchor="middle">comes on</text>
+  <text x="665" y="134" class="dsub" text-anchor="middle">on your desk</text>
+
+  <rect x="14" y="192" width="726" height="88" rx="10" class="pane"/>
+  <text x="377" y="222" class="dlbl" text-anchor="middle">Those four things can be in four different places.</text>
+  <text x="377" y="248" class="dsub" text-anchor="middle">The page does not know where the board is. The board does not know where the page is.</text>
+  <text x="377" y="268" class="dsub" text-anchor="middle">They both know the address of one box on one server, and that is enough.</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>Subscribe</h4><p>Asking a server to tell you the <em>moment</em> something
+    changes, instead of asking it over and over.</p></div>
+    <div class="mini"><h4>Your first function</h4><p><code>def</code> &mdash; writing a job down, giving
+    it a name, and not running it.</p></div>
+    <div class="mini"><h4>Handing it over</h4><p>You never call today&rsquo;s function yourself. You give
+    the name away, and the message calls it.</p></div>
+    <div class="mini"><h4>A real switch on the web</h4><p>Your own dashboard, your own feed, and a
+    toggle that sends one of exactly two words.</p></div>
+  </div>
+
+  <div class="cal info"><b>You need Activities 1 to 8 first</b>
+  Turning an LED on and off, the forever-loop and how to stop it, <code>print()</code>,
+  <code>if</code> and <code>else</code>, <code>==</code>, <code>not</code>, variables, comments,
+  indentation, and the whole business of getting a library file onto the Pico. All of it comes back
+  today and none of it is taught again.</div>
+
+  <div class="cal warn"><b>This one needs a Pico W, and it needs WiFi</b>
+  The <strong>W</strong> is the version with a radio for WiFi inside it. A plain Pico has no way at all
+  of reaching the internet, and no amount of programming will change that. The LilEx5 carries a Pico
+  <strong>W</strong>, so you are fine &mdash; but if you ever try this on another board, look for the W.</div>
+</section>
+
+<section id="turn">
+  <h2>&#128260; The new idea &mdash; the arrow turns round</h2>
+  <p class="lede">There are only two things a small device can do with a feed on a server. It can
+  <strong>publish</strong> &mdash; put something in. Or it can <strong>subscribe</strong> &mdash; ask to
+  be told what turns up.</p>
+
+  <p>Everything the board has done so far has been the first sort. It worked something out and it said
+  so: a number in the Shell, a word on the screen. Today it does the opposite. It says, once,
+  &ldquo;tell me the moment anything lands in this box&rdquo;, and then it gets on with its loop and
+  waits.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="Two panes. On the left, publishing: the board sends a value out to a feed, saying here is a number, do what you like with it. On the right, subscribing: the board asks the feed to tell it whenever something lands, and the feed sends words back to the board. A strip underneath says a thing that publishes can be watched, and a thing that subscribes can be controlled.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two directions, and today is the second one</text>
+
+  <rect x="16" y="46" width="360" height="200" rx="12" class="pane"/>
+  <text x="196" y="76" class="dlbl" text-anchor="middle">publish &mdash; telling</text>
+  <rect x="42" y="106" width="110" height="56" rx="8" class="pinbox"/>
+  <text x="97" y="140" class="dsub" text-anchor="middle">your board</text>
+  <path d="M158 134 L232 134" class="arrow2"/>
+  <rect x="240" y="106" width="110" height="56" rx="8" class="namebox"/>
+  <text x="295" y="140" class="dsub" text-anchor="middle">the feed</text>
+  <text x="196" y="196" class="dsub" text-anchor="middle">&ldquo;Here is a value.</text>
+  <text x="196" y="216" class="dsub" text-anchor="middle">Do what you like with it.&rdquo;</text>
+
+  <rect x="404" y="46" width="360" height="200" rx="12" class="pane"/>
+  <text x="584" y="76" class="dlbl" text-anchor="middle">subscribe &mdash; being told</text>
+  <rect x="430" y="106" width="110" height="56" rx="8" class="pinbox"/>
+  <text x="485" y="140" class="dsub" text-anchor="middle">your board</text>
+  <rect x="628" y="106" width="110" height="56" rx="8" class="namebox"/>
+  <text x="683" y="140" class="dsub" text-anchor="middle">the feed</text>
+  <path d="M546 118 L620 118" class="arrow2" stroke-dasharray="6 5"/>
+  <text x="584" y="100" class="dsub" text-anchor="middle">asked once, at the start</text>
+  <path d="M620 150 L546 150" class="arrow2"/>
+  <text x="584" y="196" class="dsub" text-anchor="middle">&ldquo;Tell me the moment anything</text>
+  <text x="584" y="216" class="dsub" text-anchor="middle">lands in this box.&rdquo;</text>
+
+  <rect x="16" y="264" width="748" height="44" rx="10" class="note"/>
+  <text x="390" y="292" class="dlbl" text-anchor="middle">A thing that publishes can be watched. A thing that subscribes can be controlled.</text>
+</svg>
+
+  <h3>The two ends never meet</h3>
+  <p>This is the part worth stopping on, because it is not obvious and it explains why the thing works
+  from another country. The web page does <strong>not</strong> send anything to your board. It writes
+  into a box on a server. Your board reads out of that same box. Neither one has any idea where the
+  other one is, and neither one needs to know.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Three boxes in a row: the web page on the left, the feed on the server in the middle, and your board on the right. An arrow runs from the page into the feed, and another from the feed to the board. A dashed line drawn directly between the page and the board is crossed out, with the words these two never speak to each other.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Everything goes through the middle</text>
+
+  <rect x="24" y="60" width="180" height="94" rx="10" class="step"/>
+  <text x="114" y="94" class="dlbl" text-anchor="middle">the web page</text>
+  <text x="114" y="118" class="dsub" text-anchor="middle">a switch somebody</text>
+  <text x="114" y="136" class="dsub" text-anchor="middle">is clicking</text>
+
+  <path d="M208 107 L286 107" class="arrow2"/>
+  <text x="247" y="94" class="dsub" text-anchor="middle">writes</text>
+
+  <rect x="294" y="60" width="192" height="94" rx="10" class="namebox"/>
+  <text x="390" y="94" class="dlbl" text-anchor="middle">the feed</text>
+  <text x="390" y="118" class="dsub" text-anchor="middle">one named box,</text>
+  <text x="390" y="136" class="dsub" text-anchor="middle">on a server</text>
+
+  <path d="M490 107 L568 107" class="arrow2"/>
+  <text x="529" y="94" class="dsub" text-anchor="middle">tells</text>
+
+  <rect x="576" y="60" width="180" height="94" rx="10" class="pinbox"/>
+  <text x="666" y="94" class="dlbl" text-anchor="middle">your board</text>
+  <text x="666" y="118" class="dsub" text-anchor="middle">which asked to</text>
+  <text x="666" y="136" class="dsub" text-anchor="middle">be told</text>
+
+  <path d="M114 176 L114 222 L666 222 L666 176" class="lead" stroke-dasharray="7 6"/>
+  <path d="M368 206 L412 238" class="wireR"/>
+  <path d="M412 206 L368 238" class="wireR"/>
+  <text x="390" y="270" class="dwarn" text-anchor="middle">These two never speak to each other. Not once.</text>
+  <text x="390" y="292" class="dsub" text-anchor="middle">That is exactly why it works when they are a thousand miles apart.</text>
+</svg>
+
+  <div class="cal tip"><b>The word for the middle box is a <em>topic</em></b>
+  A feed and a topic are the same thing seen from two sides. On the dashboard it is called a
+  <strong>feed</strong>, because that is what a person sees. In your program it is called a
+  <strong>topic</strong>, because that is what the message system calls an address. Same box.</div>
+
+  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say the difference between publishing and subscribing</span></label>
+  <label class="chk"><input type="checkbox" data-p="t2"><span>I can say why the web page and the board never talk to each other directly</span></label>
+</section>
+
+<section id="wifi">
+  <h2>&#128246; Getting the board onto the internet</h2>
+  <p class="lede">Before any of that can happen, the board has to join a WiFi network &mdash; the same
+  thing your phone does, and for once your program has to do it by hand.</p>
+
+  <p>Joining takes a moment. It is not instant, and it is not guaranteed: the board asks, the router
+  thinks about it, and a second or two later the board is either on the network or it is not. So the
+  program has to <strong>wait until the joining has actually finished</strong> before it tries to talk
+  to anything.</p>
+
+  <h3>A <code>while</code> loop with a real question in it</h3>
+  <p>Every loop you have written so far has been <code>while True</code> &mdash; a question whose answer
+  is always yes, which is why those loops go on for ever. Today&rsquo;s waiting loop is the other kind.
+  Its question is a real one, the answer changes while the program is running, and the loop stops the
+  moment it changes.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Two loop shapes drawn as bars. On the left, the forever loop: a question whose answer is always yes, with an arrow curving back on itself and no way out at all. On the right, the waiting loop: the same shape, still going back on itself, but with a second arrow leaving the loop on the left the moment the answer changes.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two loops, and only one of them ever ends</text>
+
+  <rect x="16" y="46" width="360" height="230" rx="12" class="pane"/>
+  <text x="196" y="76" class="dlbl" text-anchor="middle">the forever loop &mdash; Activity 2</text>
+  <rect x="66" y="98" width="204" height="34" rx="8" class="pinbox"/>
+  <text x="168" y="120" class="dsub" text-anchor="middle">is it still true? &mdash; always yes</text>
+  <path d="M96 156 L262 156" class="codeline"/>
+  <path d="M96 180 L240 180" class="codeline"/>
+  <path d="M280 115 L306 115 L306 200 L96 200" class="arrow"/>
+  <text x="196" y="234" class="dsub" text-anchor="middle">Nothing can change the answer,</text>
+  <text x="196" y="254" class="dsub" text-anchor="middle">so nothing ever leaves.</text>
+
+  <rect x="404" y="46" width="360" height="230" rx="12" class="pane"/>
+  <text x="584" y="76" class="dlbl" text-anchor="middle">the waiting loop &mdash; today</text>
+  <rect x="454" y="98" width="204" height="34" rx="8" class="namebox"/>
+  <text x="556" y="120" class="dsub" text-anchor="middle">not on the network yet?</text>
+  <path d="M484 156 L600 156" class="codeline"/>
+  <text x="484" y="180" class="dsub">wait half a second</text>
+  <path d="M668 115 L700 115 L700 200 L484 200" class="arrow"/>
+  <path d="M454 115 L424 115 L424 224" class="arrow"/>
+  <text x="442" y="222" class="dsub">out, the moment the answer changes</text>
+  <text x="584" y="254" class="dsub" text-anchor="middle">The network changes that answer from outside.</text>
+</svg>
+
+  <div class="cal note"><b><code>not</code> is finally being written, not just read</b>
+  In <a href="activity-6.html">Activity 6</a> you were told to learn to <em>read</em> <code>not</code>
+  and not to reach for it. This is the place it earns its keep: the loop should run <em>while the board
+  is not yet connected</em>, which is exactly how you would say it out loud.</div>
+
+  <div class="cal warn"><b>2.4 GHz only, and that is not a preference</b>
+  A Pico W can join <strong>2.4&nbsp;GHz</strong> networks and cannot join 5&nbsp;GHz ones at all. Most
+  home routers offer both, often under the same name, and your laptop quietly picks the fast one. If the
+  board sits there joining for ever and the name and password are definitely right, this is almost
+  always why.</div>
+
+  <div class="cal tip"><b>A network with a sign-in page will not work</b>
+  Airport, hotel and many school networks show you a page to agree to before they let you through. Your
+  board cannot click <em>I agree</em>. If your network does that, use a phone hotspot &mdash; set it to
+  2.4&nbsp;GHz &mdash; or do this activity on the Wokwi route, which has its own network and needs no
+  password at all.</div>
+
+  <label class="chk"><input type="checkbox" data-p="w1"><span>I can say why the program has to wait after asking to join</span></label>
+  <label class="chk"><input type="checkbox" data-p="w2"><span>I know which of the two loop shapes ever ends, and why</span></label>
+</section>
+
+<section id="account">
+  <h2>&#128273; Your feed, your key and your switch</h2>
+  <p class="lede">The box in the middle has to live somewhere. We are going to use
+  <strong>Adafruit IO</strong> &mdash; a free service that gives you feeds to put things in and a
+  dashboard to look at them on. It takes about two minutes to set up and it is the longest set of
+  clicking in this whole module.</p>
+
+  <div class="cal warn"><b>Your key is a password. Treat it like one.</b>
+  Adafruit IO gives you a <strong>username</strong> and a long <strong>key</strong>. Together they are
+  how the server knows a message really came from you. Anyone who has your key can read and change
+  <em>every</em> feed on your account. Do not put it in a screenshot, a group chat, a shared document
+  or anybody else&rsquo;s program. If it ever escapes, press <strong>Regenerate key</strong> and the old
+  one stops working immediately.</div>
+
+  <h3>A feed and a dashboard are not the same thing</h3>
+  <p>This trips people up for the first ten minutes and then never again. The <strong>feed</strong> is
+  the box that holds the value and remembers it. The <strong>dashboard</strong> is a page a human looks
+  at, with things on it that read from feeds and write to them. You need one of each, and only the
+  feed&rsquo;s name ever appears in your program.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="On the left, a browser window drawn as a dashboard with a toggle switch on it, labelled what a person looks at and clicks. On the right, the feed drawn as a box holding a list of remembered values, labelled what the server stores. An arrow runs from the switch to the feed. Underneath, a note says the dashboard's name never appears in your program but the feed's name does.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One is a page. The other is a box.</text>
+
+  <rect x="24" y="52" width="300" height="176" rx="8" class="win"/>
+  <rect x="24" y="52" width="300" height="24" rx="8" class="wintop"/>
+  <circle cx="42" cy="64" r="4" class="legdot"/>
+  <circle cx="58" cy="64" r="4" class="legdot"/>
+  <circle cx="74" cy="64" r="4" class="legdot"/>
+  <text x="174" y="102" class="dlbl" text-anchor="middle">your dashboard</text>
+  <rect x="94" y="122" width="160" height="62" rx="10" class="pane"/>
+  <text x="174" y="144" class="dsub" text-anchor="middle">LED on the board</text>
+  <rect x="134" y="152" width="80" height="24" rx="12" class="chip"/>
+  <circle cx="202" cy="164" r="9" fill="#fff"/>
+  <text x="174" y="208" class="dsub" text-anchor="middle">what a person looks at and clicks</text>
+
+  <path d="M332 140 L390 140" class="arrow2"/>
+  <text x="361" y="126" class="dsub" text-anchor="middle">writes</text>
+
+  <rect x="400" y="52" width="356" height="176" rx="10" class="namebox"/>
+  <text x="578" y="82" class="dlbl" text-anchor="middle">the feed called led</text>
+  <rect x="428" y="98" width="300" height="28" rx="5" class="pane"/>
+  <text x="444" y="118" class="dsub">ON</text>
+  <text x="712" y="118" class="dsub" text-anchor="end">a moment ago</text>
+  <rect x="428" y="132" width="300" height="28" rx="5" class="pane"/>
+  <text x="444" y="152" class="dsub">OFF</text>
+  <text x="712" y="152" class="dsub" text-anchor="end">before that</text>
+  <rect x="428" y="166" width="300" height="28" rx="5" class="pane"/>
+  <text x="444" y="186" class="dsub">ON</text>
+  <text x="712" y="186" class="dsub" text-anchor="end">and before that</text>
+  <text x="578" y="216" class="dsub" text-anchor="middle">what the server stores, and remembers</text>
+
+  <rect x="24" y="248" width="732" height="60" rx="10" class="pane"/>
+  <text x="390" y="274" class="dsub" text-anchor="middle">The dashboard&rsquo;s name is for humans, and never appears in your program.</text>
+  <text x="390" y="296" class="dlbl" text-anchor="middle">The feed&rsquo;s name does. Get that one exactly right.</text>
+</svg>
+
+  <h3>Six steps, in order</h3>
+
+  <div class="step"><div class="idx">1</div><div class="body">
+    <h4>Make a free account and find your username</h4>
+    <p>Go to <a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a> and
+    sign up. Once you are in, click <strong>Feeds</strong> in the black bar along the top. Your
+    username is shown on the left &mdash; write it down exactly as it is spelt, including any capital
+    letters or dashes.</p>
+    <label class="chk"><input type="checkbox" data-p="a1"><span>I have an account and I have written my username down</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">2</div><div class="body">
+    <h4>Make a feed called <code>led</code></h4>
+    <p>Click <strong>+ New Feed</strong>. Name it <strong>led</strong>, in lower case, with nothing else
+    in the name. The description is for you and can say anything. Click <strong>Create</strong>.</p>
+    <p>Your brand new account already came with a <em>Welcome Feed</em>. Leave it alone; it is not the
+    one we are using.</p>
+    <div class="cal note"><b>Lower case, and no capital letters</b>
+    Adafruit IO turns whatever you type into a <em>key</em>, and that key is what your program has to
+    match. Type <code>led</code> and the key is <code>led</code> and there is nothing to get wrong.
+    Type <code>LED</code> and you have given yourself a puzzle for later.</div>
+    <label class="chk"><input type="checkbox" data-p="a2"><span>My feed is called led and its key says led too</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">3</div><div class="body">
+    <h4>Find the feed&rsquo;s address</h4>
+    <p>Click the feed name to open it, then click the gear beside <strong>Feed Info</strong>. There is a
+    row marked <strong>MQTT</strong>, and what it shows is the address your program will use. It has
+    three parts joined by slashes.</p>
+
+<svg class="dia wide" viewBox="0 0 780 250" role="img" aria-label="The address of a feed drawn as three boxes joined by slashes. The first box is your username, which is different for everybody. The middle box is the fixed word feeds, which is the same for everybody. The last box is the feed's own name, which is led. Underneath, a note says get one of the three wrong and nothing arrives, and nothing tells you why.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three parts, and all three have to be right</text>
+
+  <rect x="40" y="56" width="240" height="66" rx="10" class="pinbox"/>
+  <text x="160" y="96" class="dmono" text-anchor="middle">your username</text>
+  <text x="352" y="98" class="dnumbig" text-anchor="middle">/</text>
+  <rect x="384" y="56" width="150" height="66" rx="10" class="namebox"/>
+  <text x="459" y="96" class="dmono" text-anchor="middle">feeds</text>
+  <text x="566" y="98" class="dnumbig" text-anchor="middle">/</text>
+  <rect x="598" y="56" width="142" height="66" rx="10" class="pinbox"/>
+  <text x="669" y="96" class="dmono" text-anchor="middle">led</text>
+
+  <text x="160" y="152" class="dsub" text-anchor="middle">yours, and nobody else&rsquo;s</text>
+  <text x="459" y="152" class="dsub" text-anchor="middle">the same for everybody</text>
+  <text x="669" y="152" class="dsub" text-anchor="middle">which box</text>
+
+  <rect x="40" y="176" width="700" height="60" rx="10" class="note"/>
+  <text x="390" y="202" class="dlbl" text-anchor="middle">Get one of the three wrong and nothing arrives.</text>
+  <text x="390" y="224" class="dsub" text-anchor="middle">There is no error message for a wrong address &mdash; it simply stays quiet for ever.</text>
+</svg>
+
+    <label class="chk"><input type="checkbox" data-p="a3"><span>I have copied down the three-part address of my feed</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">4</div><div class="body">
+    <h4>Get your key</h4>
+    <p>The round yellow key button sits at the top right of every page on the site. Click it and you get
+    two things: your <strong>username</strong> again, and your <strong>Active Key</strong>, which is a
+    long line of letters and numbers. Copy both, all of it.</p>
+    <div class="cal warn"><b>Blank the key out before you show anyone your screen</b>
+    Including the person sitting next to you, and including the projector. It is a password with a
+    different name.</div>
+    <label class="chk"><input type="checkbox" data-p="a4"><span>I have my key, and I have not shown it to anybody</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">5</div><div class="body">
+    <h4>Make a dashboard, and put a Toggle on it</h4>
+    <p>Click <strong>Dashboards</strong> in the black bar, then <strong>+ New Dashboard</strong>. Call it
+    anything you like &mdash; <em>LED Control</em> is fine. This name is only ever seen by humans, so
+    spaces and capitals do not matter here.</p>
+    <p>Open it, click <strong>+ New Block</strong>, and choose the very first one: the
+    <strong>Toggle</strong>, which looks like a switch that says ON.</p>
+    <div class="cal tip"><b>Why a Toggle and not a slider</b>
+    A slider can send any number it likes. A toggle sends one of <strong>exactly two words</strong>, and
+    two words is precisely what a light that is either on or off needs.</div>
+    <label class="chk"><input type="checkbox" data-p="a5"><span>I have a dashboard with a Toggle block being set up on it</span></label>
+  </div></div>
+
+  <div class="step"><div class="idx">6</div><div class="body">
+    <h4>Join the Toggle to the <code>led</code> feed, and set the two words</h4>
+    <p>Tick the box beside <strong>led</strong> &mdash; not <em>Welcome Feed</em> &mdash; and click
+    <strong>Next step</strong>. Give the block a title, and leave
+    <strong>Button On Text</strong> as <strong>ON</strong> and <strong>Button Off Text</strong> as
+    <strong>OFF</strong>. Scroll down and press <strong>Create block</strong>.</p>
+    <div class="cal warn"><b>Those two words are the ones that travel</b>
+    Whatever you type in those two boxes is literally what gets sent, letter for letter. Your program is
+    going to compare what arrives against the word <strong>ON</strong>. Change the word here and you have
+    to change it there too &mdash; and the two are on different screens, which is why this catches
+    people.</div>
+    <label class="chk"><input type="checkbox" data-p="a6"><span>The Toggle is joined to the led feed, and says ON and OFF</span></label>
+  </div></div>
+
+  <h3>Click it &mdash; and watch nothing happen</h3>
+  <p>Your switch works. Click it and the word changes, the colour changes, and a value is sent right
+  now. Go back to <strong>Feeds &rarr; led</strong> and you will see one row for every click, newest at
+  the top.</p>
+  <p>And absolutely nothing happens on your board, because nothing on your board has asked to be told
+  yet. That is not a fault. That is the other half of the lesson, and it starts now.</p>
+
+  <div class="cal tip"><b>If the block looks blank, reload the page</b>
+  A toggle only draws itself once its feed has a value in it. Click it once, reload, and it will be
+  there.</div>
+
+  <label class="chk"><input type="checkbox" data-p="a7"><span>Clicking the switch puts a new row in the feed, and I have seen it</span></label>
+</section>
+
+<section id="callback">
+  <h2>&#9997;&#65039; Writing a job down, and handing it over</h2>
+  <p class="lede">Two new pieces of Python, and they belong together: <code>def</code>, which writes a
+  job down and gives it a name, and handing that name to somebody else so that <em>they</em> can run it.</p>
+
+  <h3>First: writing it down is not running it</h3>
+  <p>Everything you have written so far ran the moment the program reached it. <code>def</code> is the
+  first thing in this module that does not. It writes a set of instructions down under a name, and then
+  the program walks straight past them. Nothing inside happens &mdash; not yet, and possibly not ever.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="A program drawn as stacked bars. The setting-up bars at the top run one after another. In the middle is a named block of bars, drawn to one side and greyed, labelled written down and waiting, with a note saying the program walks straight past it. Below that the loop bars run. An arrow shows that the named block only runs when a message arrives, later.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The program walks straight past it</text>
+
+  <rect x="30" y="48" width="330" height="248" rx="12" class="pane"/>
+  <text x="195" y="76" class="dlbl" text-anchor="middle">the program, top to bottom</text>
+  <path d="M70 104 L300 104" class="codeline"/>
+  <path d="M70 126 L262 126" class="codeline"/>
+  <path d="M70 148 L286 148" class="codeline"/>
+  <rect x="58" y="164" width="256" height="72" rx="8" class="namebox"/>
+  <path d="M76 186 L250 186" class="codeline"/>
+  <path d="M90 208 L232 208" class="codeline"/>
+  <path d="M90 226 L206 226" class="codeline"/>
+  <path d="M70 258 L300 258" class="codeline"/>
+  <path d="M70 280 L240 280" class="codeline"/>
+  <path d="M330 104 L330 152 L330 258" class="lead"/>
+  <path d="M330 152 L344 152 L344 250 L330 250" class="arrow"/>
+  <text x="352" y="132" class="dsub">skipped</text>
+
+  <rect x="400" y="48" width="356" height="248" rx="12" class="pane"/>
+  <text x="578" y="76" class="dlbl" text-anchor="middle">what the named block is for</text>
+  <rect x="426" y="98" width="304" height="60" rx="8" class="namebox"/>
+  <text x="578" y="124" class="dsub" text-anchor="middle">a job, written down</text>
+  <text x="578" y="146" class="dsub" text-anchor="middle">and given a name</text>
+  <path d="M578 164 L578 196" class="arrow"/>
+  <text x="578" y="222" class="dsub" text-anchor="middle">It runs later, when something</text>
+  <text x="578" y="242" class="dsub" text-anchor="middle">outside your program decides</text>
+  <text x="578" y="262" class="dsub" text-anchor="middle">that it should.</text>
+  <text x="578" y="286" class="dlbl" text-anchor="middle">Not when you write it.</text>
+</svg>
+
+  <h3>Then: you hand the name over, and never call it yourself</h3>
+  <p>This is the sentence to remember from today. You write the job, and then you give the
+  <strong>name</strong> of it to the message library, once. From that moment on, the library runs it
+  every time something arrives. You never call it. Not anywhere. If you find yourself calling it, the
+  program has gone wrong.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="A picture of handing something over. On the left you, the program, hand over a card with a name written on it, once, at the start. On the right the server keeps the card. Later, when a message lands, the server uses the card to run your job, and the arrow points back to you. The caption says you do not stand by the door all day: you leave your phone number and get on with your work.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Give the name away once, then get on with your work</text>
+
+  <rect x="24" y="52" width="212" height="106" rx="10" class="pinbox"/>
+  <text x="130" y="88" class="dlbl" text-anchor="middle">your program</text>
+  <text x="130" y="114" class="dsub" text-anchor="middle">writes the job and</text>
+  <text x="130" y="134" class="dsub" text-anchor="middle">gives away its name</text>
+
+  <path d="M242 88 L316 88" class="arrow2"/>
+  <text x="279" y="76" class="dsub" text-anchor="middle">once</text>
+
+  <rect x="324" y="52" width="212" height="106" rx="10" class="namebox"/>
+  <text x="430" y="88" class="dlbl" text-anchor="middle">the message library</text>
+  <text x="430" y="114" class="dsub" text-anchor="middle">keeps the name</text>
+  <text x="430" y="134" class="dsub" text-anchor="middle">and waits</text>
+
+  <path d="M542 88 L616 88" class="arrow2"/>
+  <text x="579" y="76" class="dsub" text-anchor="middle">later</text>
+
+  <rect x="624" y="52" width="132" height="106" rx="10" class="step"/>
+  <text x="690" y="88" class="dlbl" text-anchor="middle">a message</text>
+  <text x="690" y="108" class="dlbl" text-anchor="middle">lands</text>
+  <text x="690" y="134" class="dsub" text-anchor="middle">from anywhere</text>
+
+  <path d="M690 166 L690 196 L130 196 L130 168" class="arrow"/>
+  <text x="410" y="188" class="dsub" text-anchor="middle">and your job runs, without you asking</text>
+
+  <rect x="24" y="216" width="732" height="70" rx="10" class="note"/>
+  <text x="390" y="244" class="dsub" text-anchor="middle">You do not stand by the front door all day waiting for a parcel.</text>
+  <text x="390" y="268" class="dlbl" text-anchor="middle">You leave your phone number and get on with something else. They ring you.</text>
+</svg>
+
+  <div class="cal warn"><b>The brackets change everything, and there is no error</b>
+  When you hand the name over you write the name <strong>and nothing else</strong>. Adding brackets
+  after it does not hand over the job &mdash; it <em>runs</em> the job, immediately, once, and hands over
+  whatever it gave back, which is nothing. The program then runs perfectly and never responds to a
+  single message. It is the nastiest mistake on this page precisely because nothing complains.</div>
+
+  <h3>And the loop asks, very quickly, whether anything came</h3>
+  <p>Somebody has to look. The message library will not interrupt your program out of nowhere &mdash; it
+  can only run your job at a moment when you have given it the chance. That is what the last new line
+  does: it asks <em>once</em>, and comes straight back whether or not there was anything.</p>
+
+<svg class="dia wide" viewBox="0 0 780 280" role="img" aria-label="A timeline of loop rounds drawn as ticks along a line. Most of the rounds are marked nothing, and the program carries straight on. One round has a message waiting, and at that tick an arrow branches downwards into a box marked your job runs here, and then rejoins the line. A note says asking takes no time at all, which is why you can do it ten times a second.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Ask, ten times a second, and almost always hear nothing</text>
+
+  <path d="M40 92 L740 92" class="lead"/>
+  <circle cx="100" cy="92" r="7" class="legdot"/>
+  <circle cx="200" cy="92" r="7" class="legdot"/>
+  <circle cx="300" cy="92" r="7" class="legdot"/>
+  <circle cx="400" cy="92" r="9" class="pad"/>
+  <circle cx="500" cy="92" r="7" class="legdot"/>
+  <circle cx="600" cy="92" r="7" class="legdot"/>
+  <circle cx="700" cy="92" r="7" class="legdot"/>
+  <text x="100" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="200" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="300" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="400" y="66" class="dlbl" text-anchor="middle">a message!</text>
+  <text x="500" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="600" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="700" y="72" class="dsub" text-anchor="middle">nothing</text>
+  <text x="40" y="120" class="dsub">one round of the loop, every tenth of a second</text>
+
+  <path d="M400 104 L400 146" class="arrow"/>
+  <rect x="266" y="152" width="268" height="60" rx="10" class="namebox"/>
+  <text x="400" y="178" class="dsub" text-anchor="middle">your job runs, right here,</text>
+  <text x="400" y="198" class="dsub" text-anchor="middle">before the loop carries on</text>
+
+  <rect x="40" y="230" width="700" height="40" rx="10" class="note"/>
+  <text x="390" y="256" class="dsub" text-anchor="middle">Asking costs almost nothing, and it never waits &mdash; which is why you can afford to ask constantly.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="f1"><span>I can say why writing a function down does not run it</span></label>
+  <label class="chk"><input type="checkbox" data-p="f2"><span>I can say what goes wrong if you put brackets after the name you hand over</span></label>
+  <label class="chk"><input type="checkbox" data-p="f3"><span>I can say why the loop has to keep asking</span></label>
+</section>
+
+<section id="try">
+  <h2>&#128268; Try it before you write it</h2>
+  <p>Three things have to line up before a click on a web page moves anything on your desk, and it is
+  much easier to see them than to read about them. Flip the switch. Then subscribe, and flip it again.
+  Then find out what happens if nobody ever asks whether a message came.</p>
+
+  <div class="sim">
+    <div class="board">
+      <div style="text-align:center">
+        <button class="mqsw" id="mqtog" type="button">OFF</button>
+        <span class="readlbl">your dashboard</span>
+      </div>
+      <div style="text-align:center">
+        <div class="feedbox" id="mqfeed"><b> </b><b> </b><b> </b><b> </b></div>
+        <span class="readlbl">the feed on the server</span>
+      </div>
+      <div class="led-unit">
+        <div class="bulb red" id="mqled"></div>
+        <b>LED1</b><small>GP11</small>
+      </div>
+    </div>
+    <div class="sim-ctl">
+      <button class="btn ghost" id="mqsub" type="button">&#10007; not subscribed yet</button>
+      <button class="btn" id="mqrun" type="button">&#128066; Ask once &mdash; anything for me?</button>
+      <button class="btn ghost" id="mqauto" type="button">&#9654;&#65039; Keep asking, in a loop</button>
+    </div>
+    <div class="sim-out tall" id="mqout">Start by flipping the switch. It will work perfectly and nothing at all will happen to the light &mdash; which is exactly what happens in a real classroom, and exactly what the rest of this page is about fixing.</div>
+  </div>
+
+  <div class="cal tip"><b>Three things to try on purpose</b>
+  Flip the switch a few times <em>before</em> subscribing, and watch the feed fill up while the light
+  stays dark. Then subscribe and press <strong>Ask once</strong> repeatedly &mdash; notice it takes one
+  press per message, and that the messages arrive in the order they were sent. Then turn on
+  <strong>Keep asking</strong> and flip the switch: that is what your loop is going to do.</div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the switch work while the board was not subscribed, and nothing happened</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw that subscribing on its own is still not enough &mdash; something has to ask</span></label>
+  <label class="chk"><input type="checkbox" data-p="s3"><span>I have the loop asking on its own, and the light following the switch</span></label>
+</section>
+
+<section id="library">
+  <h2>&#128218; The library that speaks MQTT</h2>
+  <p class="lede">Same job as <a href="activity-7.html#library">Activity 7</a> and
+  <a href="activity-8.html#library">Activity 8</a>: something MicroPython does not come with has to be
+  put onto the Pico first. Only the way you get it there is different this time.</p>
+
+  <p>The library is called <strong>umqtt.simple</strong>. It is somebody else&rsquo;s tool, so you do not
+  type it out &mdash; that rule has not changed since Activity 7. What has changed is that the two routes
+  genuinely get it in two different ways, and the difference shows up in your very first import line.</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Make a file called <code>umqtt_simple.py</code></h4>
+      <p>The same <strong>&#9662;</strong> menu beside the file tabs, the same <strong>New file&hellip;</strong>,
+      the same paste as Activity 7. The file comes from
+      <a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">the STEM LAB
+      library repository</a> or from wherever your teacher has put it.</p>
+      <div class="cal note"><b>An underscore, not a dot</b>
+      Wokwi keeps every project file in one flat list and cannot make folders, so the library arrives as
+      a single file called <code>umqtt_simple.py</code>. On the real board it lives in a folder called
+      <code>umqtt</code>, which is why the import line has a dot in it there and an underscore here.
+      One character, two routes.</div>
+      <label class="chk"><input type="checkbox" data-p="l1"><span>My Wokwi project has a tab called umqtt_simple.py</span></label>
+    </div></div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Let Thonny install it for you</h4>
+      <p><strong>Tools &rarr; Manage packages&hellip;</strong>, search for
+      <strong>micropython-umqtt.simple</strong>, and click <strong>Install</strong>. The Pico has to be
+      plugged in and Thonny has to be connected to it, or the file goes onto your computer instead and
+      nothing works.</p>
+      <p>This is the alternative that Activity 7 showed you in a <code>&lt;details&gt;</code> and never
+      used. Here it is the easy way, because the library is a published package rather than one file in
+      a repository.</p>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Check it landed on the Pico</h4>
+      <p><strong>View &rarr; Files</strong>. In the lower panel, inside <code>lib</code>, you want a
+      <em>folder</em> called <code>umqtt</code> with <code>simple.py</code> in it. A folder, not a file
+      &mdash; that is what the dot in the import line is about.</p>
+      <label class="chk"><input type="checkbox" data-p="l1b"><span>There is a folder called umqtt inside lib on the Pico</span></label>
+    </div></div>
+  </div>
+
+  <div class="cal warn"><b>The message that means it is not there</b>
+  <code>ImportError: no module named 'umqtt'</code> means Python looked on the <em>Pico&rsquo;s</em> disk
+  and did not find it. Same message, same meaning and same fix as Activity 7 &mdash; and in Wokwi it
+  usually means the import line says <code>umqtt.simple</code> when the file is called
+  <code>umqtt_simple</code>.</div>
+
+  <label class="chk"><input type="checkbox" data-p="l2"><span>The MQTT library is on the Pico, not just on my computer</span></label>
+</section>
+
+<section id="build">
+  <h2>&#128295; The circuit</h2>
+  <p class="lede">On the real board there is nothing to wire at all. On Wokwi there are two LEDs, and you
+  may as well wire both now.</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-c" aria-selected="true" aria-controls="pan-c">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-d" aria-selected="false" aria-controls="pan-d">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-c" role="tabpanel" aria-labelledby="tab-c">
+    <p>Start a new project and pick the <strong>Raspberry Pi Pico W</strong> &mdash; not the plain Pico.
+    It is a different part in Wokwi and it is the only one with a network. You can tell them apart at a
+    glance: the W has a silver metal box on it with <strong>Wi-Fi</strong> written on the side.</p>
+    <p>Then two LEDs, each through its own 330&nbsp;&Omega; resistor. The red one is today&rsquo;s
+    mission. <strong>Wire the green one now as well</strong> &mdash; it is for the exercise at the end,
+    and stopping to wire it later breaks your concentration at exactly the wrong moment.</p>
+
+<svg class="dia wide" viewBox="0 0 780 720" role="img" aria-label="The Wokwi circuit. A Raspberry Pi Pico W is drawn on the right with its physical pin numbers in white beside each pad and the pin names inside. A silver metal box marked Wi-Fi sits on the board, which is how you tell a Pico W from a plain Pico. On the left are two LEDs, red above and green below, each with a long leg A and a short leg C. The red LED's long leg goes through a 330 ohm resistor to physical pin 15, which is GP11, and its short leg goes to physical pin 13, a ground. The green LED's long leg goes through its own 330 ohm resistor to physical pin 17, which is GP13, and its short leg goes to physical pin 18, another ground. No wire crosses another.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two LEDs, two resistors, four wires &mdash; and a board with a radio in it</text>
+
+  <g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb w"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="333" class="wk-brand w" text-anchor="middle" transform="rotate(-90 633 333)">Raspberry Pi Pico W</text>
+  <rect x="614" y="386" width="62" height="80" rx="4" class="wk-wifi"/>
+  <text x="645" y="433" class="wk-wifi-lbl" text-anchor="middle">Wi-Fi</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+  <circle cx="555" cy="374" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="414" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="454" r="10.5" class="wk-ring"/>
+  <circle cx="555" cy="474" r="10.5" class="wk-ring"/>
+
+  <path d="M166 176 L166 151 A19 19 0 0 1 204 151 L204 176 Z" fill="url(#wkled)"/>
+  <rect x="162" y="173" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 154 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="181" width="7" height="79" rx="2" class="wk-leg"/>
+  <rect x="193" y="181" width="7" height="79" rx="2" class="wk-leg"/>
+  <text x="200" y="136" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
+  <text x="158" y="232" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="232" class="dsub">A &mdash; long leg</text>
+
+  <rect x="242" y="256.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbodyA">
+    <path d="M284 248 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbodyA)">
+    <rect x="269" y="244" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="244" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="244" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="244" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="244" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 248 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="232" class="dlbl" text-anchor="middle">330 &#8486;</text>
+
+  <path d="M166 476 L166 451 A19 19 0 0 1 204 451 L204 476 Z" fill="url(#wkledg)"/>
+  <rect x="162" y="473" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M176 454 q6 -8 12 -3" class="wk-led-gloss"/>
+  <rect x="170" y="481" width="7" height="79" rx="2" class="wk-leg"/>
+  <rect x="193" y="481" width="7" height="79" rx="2" class="wk-leg"/>
+  <text x="185" y="428" class="dlbl" text-anchor="middle">green LED &mdash; LED3</text>
+  <text x="158" y="532" class="dsub" text-anchor="end">C &mdash; short leg</text>
+  <text x="214" y="532" class="dsub">A &mdash; long leg</text>
+
+  <rect x="242" y="556.5" width="186" height="7" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rbodyB">
+    <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
+  </clipPath></defs>
+  <g clip-path="url(#rbodyB)">
+    <rect x="269" y="544" width="132" height="32" fill="url(#wkres)"/>
+    <rect x="286" y="544" width="11" height="32" class="wk-b-or"/>
+    <rect x="310" y="544" width="11" height="32" class="wk-b-or"/>
+    <rect x="330" y="544" width="11" height="32" class="wk-b-br"/>
+    <rect x="370" y="544" width="11" height="32" class="wk-b-gd"/>
+  </g>
+  <path d="M284 548 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
+  <text x="335" y="532" class="dlbl" text-anchor="middle">330 &#8486;</text>
+
+  <path d="M196.5 260 L242 260" class="wkwire red"/>
+  <path d="M428 260 L470 260 L470 414 L537 414" class="wkwire red"/>
+  <path d="M173.5 260 L56 260 L56 70 L505 70 L505 374 L537 374" class="wkwire black"/>
+  <path d="M196.5 560 L242 560" class="wkwire green"/>
+  <path d="M428 560 L490 560 L490 454 L537 454" class="wkwire green"/>
+  <path d="M173.5 560 L173.5 650 L515 650 L515 474 L537 474" class="wkwire black"/>
+
+  <text x="40" y="682" class="dsub">Both black wires are grounds. Any GND pad would have done;</text>
+  <text x="40" y="704" class="dsub">these two are simply the nearest ones to the wires that need them.</text>
+</svg>
+
+      <table>
+        <thead><tr><th>Physical pin</th><th>Name on the board</th><th>What goes there</th></tr></thead>
+        <tbody>
+          <tr><td><strong>15</strong></td><td><span class="gp">GP11</span></td><td>Red LED1 &mdash; long leg (A), through the 330 &Omega; resistor</td></tr>
+          <tr><td><strong>13</strong></td><td>GND</td><td>Red LED1 &mdash; short leg (C)</td></tr>
+          <tr><td><strong>17</strong></td><td><span class="gp">GP13</span></td><td>Green LED3 &mdash; long leg (A), through its own 330 &Omega; resistor</td></tr>
+          <tr><td><strong>18</strong></td><td>GND</td><td>Green LED3 &mdash; short leg (C)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="cal note"><b>Two sets of numbers, and only one of them goes in your code</b>
+      The big white numbers are the <strong>physical pins</strong> &mdash; where a wire physically goes.
+      The names beside them are what you type. GP11 is physical pin 15 and GP13 is physical pin 17;
+      typing 15 or 17 in your program would give you two completely different pins.</div>
+
+      <label class="chk"><input type="checkbox" data-p="c1"><span>I picked the Pico <strong>W</strong>, and I can see the Wi-Fi box on it</span></label>
+      <label class="chk"><input type="checkbox" data-p="c2"><span>Red LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
+      <label class="chk"><input type="checkbox" data-p="c3"><span>Green LED: long leg &rarr; resistor &rarr; GP13, short leg &rarr; GND</span></label>
+  </div>
+
+  <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
+    <p>Nothing. There is nothing to wire, and there never was &mdash; the three LEDs were soldered onto
+    the LilEx5 at the factory. The only thing you are building today is the program.</p>
+
+    <figure class="board">
+      <img src="img/lilex5-board.png" alt="The LilEx5 board with all three LEDs unlit." loading="lazy">
+      <figcaption>The red LED1 is on <span class="gp">GP11</span> and the green LED3 is on
+      <span class="gp">GP13</span> &mdash; the same pins as Activity 1 and Activity 5. Nothing about the
+      LEDs has changed. Only who is deciding.</figcaption>
+    </figure>
+
+    <div class="step"><div class="idx">1</div><div class="body">
+      <h4>Plug the board in and check Thonny is talking to it</h4>
+      <p>The Shell should show <code>&gt;&gt;&gt;</code>. If it does not, the board is not connected and
+      nothing else on this page will work.</p>
+      <label class="chk"><input type="checkbox" data-p="d1"><span>The Shell shows &gt;&gt;&gt;</span></label>
+    </div></div>
+    <div class="step"><div class="idx">2</div><div class="body">
+      <h4>Have your WiFi name and password ready</h4>
+      <p>The exact name, with the exact capital letters, and a network on <strong>2.4&nbsp;GHz</strong>
+      without a sign-in page. If you are not sure, a phone hotspot set to 2.4&nbsp;GHz is the reliable
+      fallback, and there is no shame in it.</p>
+      <label class="chk"><input type="checkbox" data-p="d2"><span>I have a 2.4 GHz network name and password I know works</span></label>
+    </div></div>
+
+    <div class="cal warn"><b>The safety rules have not gone away</b>
+    <strong>SW5</strong> is still the power switch, and the board still runs on the USB supply. Nothing
+    about being on the internet changes what happens if you short something.</div>
+  </div>
+</section>
+
+<section id="code">
+  <h2>&#9000;&#65039; Write the program</h2>
+  <p>This is the longest program in the module so far, and most of it you already know. Read it once
+  before you start typing, and notice how much of it is Activity 1, Activity 2 and Activity 5 with a
+  new middle.</p>
+
+  <span class="codeimg" data-code="IyBGb3VyIHRvb2xzOiB0aGUgcGluLCB0aGUgY2xvY2ssIHRoZSBuZXR3b3JrLCBhbmQgdGhlIG9uZSB0aGF0IHNwZWFrcyBNUVRUCmZyb20gbWFjaGluZSBpbXBvcnQgUGluCmZyb20gdGltZSBpbXBvcnQgc2xlZXAKZnJvbSBuZXR3b3JrIGltcG9ydCBXTEFOLCBTVEFfSUYKZnJvbSB1bXF0dC5zaW1wbGUgaW1wb3J0IE1RVFRDbGllbnQKCiMgVGhlIGZpdmUgYmxhbmtzLiBGaWxsIGluIHlvdXIgb3duIGRldGFpbHMgYW5kIGtlZXAgdGhlIHF1b3RhdGlvbiBtYXJrcy4KV0lGSV9OQU1FID0gInlvdXIgd2lmaSBuYW1lIgpXSUZJX1BBU1MgPSAieW91ciB3aWZpIHBhc3N3b3JkIgpBSU9fVVNFUiA9ICJ5b3VyIGFkYWZydWl0IGlvIHVzZXJuYW1lIgpBSU9fS0VZID0gInlvdXIgYWRhZnJ1aXQgaW8ga2V5IgpNWV9OQU1FID0gInBpY28yNiIgICAgICAgICAgICAgICAgICAjIHlvdXIgc2VhdCBudW1iZXIsIHNvIG5vIHR3byBib2FyZHMgY2xhc2gKClNFUlZFUiA9ICJpby5hZGFmcnVpdC5jb20iICAgICAgICAgICMgdGhlIG1hY2hpbmUgaW4gdGhlIG1pZGRsZQpGRUVEID0gQUlPX1VTRVIgKyAiL2ZlZWRzL2xlZCIgICAgICAjIGJ1aWx0IG9uY2UsIHNvIHlvdSBuZXZlciB0eXBlIGl0IHR3aWNlCnJlZCA9IFBpbigxMSwgUGluLk9VVCkgICAgICAgICAgICAgICMgTEVEMSwgdGhlIHJlZCBvbmUgLSBBY3Rpdml0eSAxJ3MgcGluCgojIEpvaW4gdGhlIG5ldHdvcmssIHRoZW4gd2FpdCB1bnRpbCB0aGUgam9pbmluZyBoYXMgYWN0dWFsbHkgZmluaXNoZWQKd2xhbiA9IFdMQU4oU1RBX0lGKQp3bGFuLmFjdGl2ZShUcnVlKQp3bGFuLmNvbm5lY3QoV0lGSV9OQU1FLCBXSUZJX1BBU1MpCnByaW50KCJKb2luaW5nIHRoZSBuZXR3b3JrLi4uIikKd2hpbGUgbm90IHdsYW4uaXNjb25uZWN0ZWQoKToKICAgIHNsZWVwKDAuNSkKcHJpbnQoIk9uIHRoZSBuZXR3b3JrLiIpCgojIFRoZSBqb2IgdG8gZG8gd2hlbiBhIG1lc3NhZ2UgbGFuZHMuIFdyaXRpbmcgaXQgZG93biBkb2VzIG5vdCBydW4gaXQuCmRlZiB3aGVuX2FfbWVzc2FnZV9hcnJpdmVzKHRvcGljLCBtZXNzYWdlKToKICAgIG9yZGVyID0gbWVzc2FnZS5kZWNvZGUoKSAgICAgICAgIyB3aGF0IGFycml2ZWQgaXMgYnl0ZXMgLSBtYWtlIGl0IHdvcmRzCiAgICBwcmludCgiVGhlIG9yZGVyIGlzIiwgb3JkZXIpCiAgICBpZiBvcmRlciA9PSAiT04iOgogICAgICAgIHJlZC5vbigpCiAgICBlbHNlOgogICAgICAgIHJlZC5vZmYoKQoKIyBDYWxsIHRoZSBzZXJ2ZXIsIGhhbmQgdGhlIGpvYiBvdmVyLCBhbmQgYXNrIHRvIGJlIHRvbGQKbXF0dCA9IE1RVFRDbGllbnQoTVlfTkFNRSwgU0VSVkVSLCB1c2VyPUFJT19VU0VSLCBwYXNzd29yZD1BSU9fS0VZKQptcXR0LmNvbm5lY3QoKQptcXR0LnNldF9jYWxsYmFjayh3aGVuX2FfbWVzc2FnZV9hcnJpdmVzKSAgICAjIG5vIGJyYWNrZXRzIC0gdGhlIG5hbWUgb25seQptcXR0LnN1YnNjcmliZShGRUVEKQpwcmludCgiTGlzdGVuaW5nLiBGbGlwIHRoZSBzd2l0Y2ggb24geW91ciBkYXNoYm9hcmQuIikKCndoaWxlIFRydWU6CiAgICBtcXR0LmNoZWNrX21zZygpICAgICAgICAgICAgICAgICMgYW55dGhpbmcgZm9yIG1lPyBpdCBuZXZlciB3YWl0cwogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 45 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
+  Five of those lines are blanks you have to fill in with your own details. Everything else is typed
+  exactly as it stands &mdash; and capital letters matter more than usual today, because
+  <code>MQTTClient</code>, <code>WLAN</code> and <code>STA_IF</code> are all names somebody else chose.</div>
+
+  <div class="cal note"><b>Give your board a name of its own</b>
+  <code>MY_NAME</code> is how the server tells one board from another. If two boards in the room use the
+  same name, the server keeps throwing one off to make room for the other and both of them keep dying
+  after about a minute. Put your seat number in it, or your own name.</div>
+
+  <h3>Type it here first</h3>
+  <p>The five lines that are new. The box turns green when a line is exactly right.</p>
+
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from umqtt.simple import MQTTClient" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="while not wlan.isconnected():" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="def when_a_message_arrives(topic, message):" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="mqtt.set_callback(when_a_message_arrives)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="mqtt.subscribe(FEED)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Lines 2 and 3 both end in a colon, and both start a block that is indented underneath. Line 4 has no brackets after the name &mdash; that is the whole point of it.</p>
+  </div>
+
+  <div class="cal note"><b>Three levels of indentation, for the first time</b>
+  Inside the function is four spaces. Inside the <code>if</code> that is inside the function is
+  <strong>eight</strong>. Activity 5 got you to two levels; this is the same rule one step further, and
+  the rule has not changed: a line is inside whatever is above it and further left.</div>
+
+  <label class="chk"><input type="checkbox" data-p="p1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+
+  <h3>&#128269; What each new line is doing</h3>
+  <div class="tablescroll">
+  <table class="codetable">
+    <thead><tr><th>Code</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSB1bXF0dC5zaW1wbGUgaW1wb3J0IE1RVFRDbGllbnQ=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Borrow the one tool that knows how to speak MQTT. On Wokwi this line is spelt differently &mdash; see below.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="RkVFRCA9IEFJT19VU0VSICsgIi9mZWVkcy9sZWQi" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Build the three-part address once and keep it in a name, so that a typo can only happen in one place instead of two.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="d2xhbiA9IFdMQU4oU1RBX0lGKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Get hold of the WiFi radio, as the kind of thing that <em>joins</em> a network rather than the kind that makes one.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="d2hpbGUgbm90IHdsYW4uaXNjb25uZWN0ZWQoKTo=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Wait here for as long as the board is not yet on the network. The first loop in this module that ever ends by itself.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="ZGVmIHdoZW5fYV9tZXNzYWdlX2Fycml2ZXModG9waWMsIG1lc3NhZ2UpOg==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Write a job down and give it a name. The two words in the brackets are what the message system will hand you: which feed it came from, and what it said.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="b3JkZXIgPSBtZXNzYWdlLmRlY29kZSgp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>What arrives over a network is raw bytes, not letters. This turns it back into words, so that comparing it with <code>"ON"</code> means something.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bXF0dCA9IE1RVFRDbGllbnQoTVlfTkFNRSwgU0VSVkVSLCB1c2VyPUFJT19VU0VSLCBwYXNzd29yZD1BSU9fS0VZKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Who you are, which server you are calling, and the two things that prove the account is yours.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bXF0dC5zZXRfY2FsbGJhY2sod2hlbl9hX21lc3NhZ2VfYXJyaXZlcyk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Hand the job over. The name on its own &mdash; <strong>no brackets</strong>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bXF0dC5zdWJzY3JpYmUoRkVFRCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>&ldquo;Tell me whenever anything lands in this feed.&rdquo; Asked once, and it stays true.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bXF0dC5jaGVja19tc2coKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Anything for me? If there is, your job has already run by the time this line finishes. If there is not, it comes straight back.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cal info"><b>Everything else you have already met</b>
+  The imports, the comments, the variable names, <code>Pin(11, Pin.OUT)</code>, <code>print()</code>,
+  <code>if</code> / <code>else</code>, <code>==</code>, the forever-loop and <code>sleep</code>. Not one
+  of them is new, and if any of them feels new, the activity to go back to is linked in the nav above.</div>
+
+  <h3>&#129514; On Wokwi, three lines are different</h3>
+  <p>Only three, and the reason for each is worth knowing. Everything else &mdash; your username, your
+  key, the feed, the function, <code>Pin(11)</code> &mdash; is identical, and the dashboard cannot tell
+  the two boards apart.</p>
+
+  <span class="codeimg" data-code="IyBMaW5lIDQgLSBvbmUgZmxhdCBmaWxlIGluIFdva3dpLCBzbyBhIGRhc2ggYW5kIG5vIGRvdApmcm9tIHVtcXR0X3NpbXBsZSBpbXBvcnQgTVFUVENsaWVudAoKIyBMaW5lcyA4IGFuZCA5IC0gV29rd2kncyBvd24gbmV0d29yay4gVGhlIHBhc3N3b3JkIGlzIG5vdGhpbmcgYXQgYWxsLgpXSUZJX05BTUUgPSAiV29rd2ktR1VFU1QiCldJRklfUEFTUyA9ICIi" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal tip"><b>Empty quotation marks are a password with no letters in it</b>
+  Two quote marks with nothing between them is not a mistake and it is not a blank to fill in. It is how
+  you say &ldquo;there is no password&rdquo;. Wokwi&rsquo;s network really is open, and the name really is
+  spelt <strong>Wokwi-GUEST</strong>, capitals and hyphen exactly like that.</div>
+
+  <div class="cal info"><b>Wokwi&rsquo;s pretend network reaches the real internet</b>
+  This is the surprising part, and it is what makes today work without a board at all. A simulated Pico W
+  on <strong>Wokwi-GUEST</strong> can reach a real server, so a real switch on your real dashboard
+  controls a simulated LED. It is the same account, the same feed and the same messages either way.</div>
+
+  <details>
+    <summary>&#128218; The other way people write the network lines</summary>
+    <p>You will find this form all over the internet. It borrows the whole toolbox instead of two tools
+    out of it, and then has to say which drawer every time. It does exactly the same thing &mdash; it is
+    only a different way of writing it, and it is worth recognising when you meet it.</p>
+    <span class="codeimg" data-code="aW1wb3J0IG5ldHdvcmsgICAgICAgICAgICAgICAgICAgICAgICAjIGJvcnJvdyB0aGUgd2hvbGUgdG9vbGJveCBpbnN0ZWFkCndsYW4gPSBuZXR3b3JrLldMQU4obmV0d29yay5TVEFfSUYpICAgIyB0aGVuIG5hbWUgdGhlIGRyYXdlciBldmVyeSB0aW1l" role="img" aria-label="Python code, 2 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  </details>
+
+  <details>
+    <summary>&#128269; Proving the board really is on the network</summary>
+    <p>Once the waiting loop has let go, this prints the four numbers the network handed your board. The
+    first one is its address on that network &mdash; if you see it, the WiFi half is definitely working
+    and any remaining problem is further along.</p>
+    <span class="codeimg" data-code="cHJpbnQod2xhbi5pZmNvbmZpZygpKSAgICAgICMgdGhlIGZvdXIgbnVtYmVycyB0aGUgbmV0d29yayBnYXZlIHlvdXIgYm9hcmQ=" role="img" aria-label="Python code, 1 line, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  </details>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Save it and run it</h2>
+  <p><strong>Wokwi:</strong> press Play. <strong>Thonny:</strong> save it onto the Pico as
+  <code>led_control.py</code>, then press F5. Either way, watch the Shell for the first three lines
+  before you touch anything &mdash; they tell you how far it got.</p>
+
+  <div class="cal tip"><b>This one loops, so you have to stop it</b>
+  Same as every activity since Activity 2: Wokwi&rsquo;s Stop button, or Thonny&rsquo;s Stop, or
+  Ctrl&#8209;C in the Shell.</div>
+
+  <h3>&#9989; What you should see</h3>
+  <p>Then open your dashboard, on the same computer or on your phone, and click the switch.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Two panes showing the finished result. On the left the dashboard switch reads ON, and the red LED on the board is lit. On the right the switch reads OFF, and the LED is dark. In both, a line of the Shell prints the order that arrived. Underneath, a note says that flipping it twice quickly gets both messages, in order, in under a second.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Click the switch. Watch the light.</text>
+
+  <rect x="16" y="46" width="360" height="196" rx="12" class="pane"/>
+  <rect x="56" y="76" width="130" height="46" rx="23" class="chip"/>
+  <circle cx="166" cy="99" r="16" fill="#fff"/>
+  <text x="102" y="105" class="dchip" text-anchor="middle">ON</text>
+  <circle cx="292" cy="99" r="30" fill="url(#wkled)"/>
+  <text x="292" y="146" class="dsub" text-anchor="middle">LED1 lit</text>
+  <text x="121" y="146" class="dsub" text-anchor="middle">the switch</text>
+  <rect x="46" y="168" width="300" height="42" rx="6" class="win"/>
+  <text x="62" y="195" class="dmono2">The order is ON</text>
+  <text x="196" y="230" class="dsub" text-anchor="middle">one line in the Shell for every flip</text>
+
+  <rect x="404" y="46" width="360" height="196" rx="12" class="pane"/>
+  <rect x="444" y="76" width="130" height="46" rx="23" class="part"/>
+  <circle cx="466" cy="99" r="16" class="legdot"/>
+  <text x="520" y="105" class="dsub" text-anchor="middle">OFF</text>
+  <circle cx="680" cy="99" r="30" class="part"/>
+  <text x="680" y="146" class="dsub" text-anchor="middle">LED1 dark</text>
+  <text x="509" y="146" class="dsub" text-anchor="middle">the switch</text>
+  <rect x="434" y="168" width="300" height="42" rx="6" class="win"/>
+  <text x="450" y="195" class="dmono2">The order is OFF</text>
+  <text x="584" y="230" class="dsub" text-anchor="middle">and the light goes out again</text>
+
+  <rect x="16" y="256" width="748" height="40" rx="10" class="note"/>
+  <text x="390" y="282" class="dsub" text-anchor="middle">Flip it twice, fast. Both messages arrive, in the right order, in well under a second.</text>
+</svg>
+
+  <div class="cal tip"><b>Now do the thing that makes the point</b>
+  Open the dashboard on a phone, and turn the phone&rsquo;s WiFi <em>off</em> so it is on mobile data.
+  The phone and the board now share no network at all &mdash; and the switch still works. That is the
+  entire lesson in one gesture, and it is worth thirty seconds of class time.</div>
+
+  <h3>Check yourself</h3>
+  <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell printed <em>On the network</em> within a few seconds</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>The Shell printed <em>Listening</em> after that, with no error</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>Clicking the switch to ON lights the red LED</span></label>
+  <label class="chk"><input type="checkbox" data-p="r4"><span>Clicking it to OFF puts the LED out again</span></label>
+  <label class="chk"><input type="checkbox" data-p="r5"><span>One line appears in the Shell for every flip</span></label>
+  <label class="chk"><input type="checkbox" data-p="r6"><span>I flipped it twice quickly and both messages arrived, in order</span></label>
+  <label class="chk"><input type="checkbox" data-p="r7"><span>I controlled it from a phone that was not on the same network</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><strong>It prints <em>Joining the network</em> and never gets past it</strong></td><td>The name or the password is wrong, or it is a 5&nbsp;GHz network, or it is one with a sign-in page. Check the spelling first &mdash; capital letters count. Then try a phone hotspot set to 2.4&nbsp;GHz.</td></tr>
+      <tr><td><code>MQTTException: 5</code></td><td>The server refused you. The username or the key is wrong. Copy the key again, all of it, and check you have not picked up a space at either end.</td></tr>
+      <tr><td><code>ImportError: no module named 'umqtt'</code></td><td>The library is not on the Pico. See <a href="#library">the library section</a>. In Wokwi, this usually means the import line has a dot in it where it needs an underscore.</td></tr>
+      <tr><td><strong>It says <em>Listening</em>, and then nothing ever arrives</strong></td><td>The feed address does not match the feed you made. Check all three parts, and check the feed&rsquo;s <em>key</em> rather than its display name &mdash; a capital letter in the name is the usual culprit.</td></tr>
+      <tr><td><strong>It works, then dies after about a minute, over and over</strong></td><td>Another board is using the same <code>MY_NAME</code>. The server allows only one of each, so the two of you keep evicting each other. Change yours.</td></tr>
+      <tr><td><strong>The switch moves and the Shell stays silent</strong></td><td>The program is not running. Press Play or F5 again and watch for the first three lines. If they do not appear, it is not the network &mdash; it never started.</td></tr>
+      <tr><td><strong>Messages arrive but the LED never changes</strong></td><td>The words do not match. The block sends <code>ON</code>; your <code>if</code> has to compare against exactly that, capitals and all. Look at what the Shell printed and compare it letter by letter.</td></tr>
+      <tr><td><strong>The program runs perfectly and never responds to anything</strong></td><td>Brackets after the name you handed over. It ran your job once, at the start, and gave the server nothing. Take the brackets off &mdash; see <a href="#callback">the section above</a>.</td></tr>
+      <tr><td><code>AssertionError: Subscribe callback is not set</code></td><td>You asked to be told before you handed the job over. Those two lines are the wrong way round: hand it over first, then subscribe.</td></tr>
+      <tr><td><code>OSError</code> partway through, out of nowhere</td><td>The network dropped. That is a real thing that happens to real devices and there is nothing wrong with your program. Run it again.</td></tr>
+      <tr><td><strong>The LED lights when the switch says OFF</strong></td><td>The two words are the wrong way round somewhere &mdash; either in the block&rsquo;s settings or in your <code>if</code>. Only one of the two needs changing.</td></tr>
+      <tr><td><strong>It works in Wokwi and not on the board</strong></td><td>Three things differ, and they are the three lines above: the import, and the two WiFi lines. The library also has to be on the real Pico, which is a different disk.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; never leave it in the dark</h2>
+  <p class="lede">One light can tell you the lamp is on. It cannot tell you the board is still
+  <strong>listening</strong> &mdash; because dark could mean OFF, and dark could equally mean crashed,
+  unplugged, or thrown off the network ten minutes ago.</p>
+
+  <p><strong>Task:</strong> make the <strong>green LED3</strong> come on whenever the order is
+  <code>OFF</code>, so that one of the two lights is always lit. From then on, two lights dark means
+  something is genuinely wrong, and you can see it from across the room.</p>
+  <ul>
+    <li>Both LEDs are already wired &mdash; green LED3 is on <span class="gp">GP13</span>, and on the
+    real board it was soldered on years ago</li>
+    <li>You are not adding a new decision. The <code>if</code> / <code>else</code> is already there</li>
+    <li>Exactly one of the two lights should be on at any moment. Never both, never neither</li>
+    <li>Nothing above the function changes except one new line, and you can guess which one</li>
+  </ul>
+
+<svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="Three states the finished board has to show. With the order ON, the red light is lit and the green is dark. With the order OFF, the red is dark and the green is lit. In the third state, both are dark, and that now means something has gone wrong rather than that the lamp is simply off. A note underneath says that before this change, two of these three states looked identical.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Three states, and all three now look different</text>
+
+  <rect x="16" y="46" width="240" height="188" rx="12" class="pane"/>
+  <text x="136" y="76" class="dlbl" text-anchor="middle">the order is ON</text>
+  <circle cx="96" cy="132" r="26" fill="url(#wkled)"/>
+  <text x="96" y="176" class="dsub" text-anchor="middle">red, lit</text>
+  <circle cx="186" cy="132" r="26" class="part"/>
+  <text x="186" y="176" class="dsub" text-anchor="middle">green, dark</text>
+  <text x="136" y="212" class="dsub" text-anchor="middle">the lamp is on</text>
+
+  <rect x="270" y="46" width="240" height="188" rx="12" class="pane"/>
+  <text x="390" y="76" class="dlbl" text-anchor="middle">the order is OFF</text>
+  <circle cx="350" cy="132" r="26" class="part"/>
+  <text x="350" y="176" class="dsub" text-anchor="middle">red, dark</text>
+  <circle cx="440" cy="132" r="26" fill="url(#wkledg)"/>
+  <text x="440" y="176" class="dsub" text-anchor="middle">green, lit</text>
+  <text x="390" y="212" class="dsub" text-anchor="middle">off, and still listening</text>
+
+  <rect x="524" y="46" width="240" height="188" rx="12" class="pane"/>
+  <text x="644" y="76" class="dlbl" text-anchor="middle">both dark</text>
+  <circle cx="604" cy="132" r="26" class="part"/>
+  <text x="604" y="176" class="dsub" text-anchor="middle">red, dark</text>
+  <circle cx="694" cy="132" r="26" class="part"/>
+  <text x="694" y="176" class="dsub" text-anchor="middle">green, dark</text>
+  <text x="644" y="212" class="dwarn" text-anchor="middle">something is wrong</text>
+
+  <rect x="16" y="252" width="748" height="76" rx="10" class="note"/>
+  <text x="390" y="280" class="dsub" text-anchor="middle">Before this change, the middle picture and the right-hand one looked exactly the same.</text>
+  <text x="390" y="306" class="dlbl" text-anchor="middle">A thing that can only say one word cannot tell you it is still alive.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="e1"><span>ON lights the red one and puts the green one out</span></label>
+  <label class="chk"><input type="checkbox" data-p="e2"><span>OFF lights the green one and puts the red one out</span></label>
+  <label class="chk"><input type="checkbox" data-p="e3"><span>Exactly one is lit at any moment &mdash; never both</span></label>
+  <label class="chk"><input type="checkbox" data-p="e4"><span>I stopped the program on purpose and saw both go dark</span></label>
+  <label class="chk"><input type="checkbox" data-p="e5"><span>It still keeps up when I flip the switch quickly</span></label>
+
+  <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
+    <p>Do not start a new file. Start from the program you have just got working, which already does
+    everything for one light, and make it do the same for two.</p>
+    <p>There are only two places in the whole program where the red light is mentioned. Find both of
+    them. Whatever had to be done for red, something like it has to be done for green.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; what has to happen on each order?</summary>
+    <p>Write it out in words before you type anything:</p>
+    <ul>
+      <li>When the order is <code>ON</code>: red on, <em>and</em> green off.</li>
+      <li>When the order is <code>OFF</code>: red off, <em>and</em> green on.</li>
+    </ul>
+    <p>Notice that each road now has <strong>two</strong> things to do instead of one. That is the whole
+    change, and it is the reason the answer is four lines rather than two: you have to put a light
+    <em>out</em> as well as light one, or you will end up with both on.</p>
+    <p>The green LED also needs a name before it can be used, in exactly the way the red one did. That
+    line goes with the other setting-up lines near the top, not inside the function.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Check every one of these before you decide it is broken:</p>
+    <ol>
+      <li>Is there a line near the top giving the green LED a name, on the pin the table says?</li>
+      <li>Is that line <em>outside</em> the function, level with the red one, at no indentation?</li>
+      <li>Are the two new lines inside the function <em>indented by eight spaces</em>, level with the
+      lines they are joining?</li>
+      <li>Does the <code>ON</code> road turn the green one <em>off</em>, and not just leave it alone?</li>
+      <li>Does the <code>OFF</code> road do the mirror image of that?</li>
+    </ol>
+    <p>If exactly one light is on when you start and both are on a moment later, you have added the
+    switching-on lines and forgotten the switching-off ones. That is the usual answer.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by flipping
+  the switch rather than by reading. Your teacher has the worked answer if the class needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li>Print the time the order arrived as well as the order itself, so you can see how long a message
+    really takes to cross the internet.</li>
+    <li>Add a <strong>second Toggle</strong> on your dashboard, joined to a second feed, and make it
+    control the yellow LED2 on <span class="gp">GP12</span>. You will need a second
+    <code>subscribe</code> &mdash; but only one function, which now has to look at
+    <em>which</em> feed the message came from.</li>
+    <li>Make the buzzer on <span class="gp">GP14</span> beep once each time any order arrives. Then
+    decide whether a room of thirty of them was a good idea.</li>
+    <li>Put the last order on the OLED screen from <a href="activity-7.html">Activity 7</a>, so the board
+    shows the word as well as the light.</li>
+    <li>Make the board <strong>publish</strong> as well as subscribe: send Activity 8&rsquo;s tilt
+    reading to a second feed while it listens, and add a graph block to your dashboard. Send the full
+    number and round only what you show &mdash; that is what
+    <a href="activity-8.html#numbers">Activity 8</a> was for.</li>
+    <li>Only act when the order is genuinely different from the last one, so a switch flipped twenty
+    times does not make the light flicker twenty times. You will need somewhere to remember what the
+    last order was.</li>
+    <li>Find out what happens if you unplug the router while the program is running, and then plug it
+    back in. Decide what a well-behaved device ought to do about that.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now be
+  told what to do by something that is not in the room, is not on your network, and has never heard of
+  it &mdash; which is the whole of what people mean by the Internet of Things.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Publish</strong></td><td>Putting a value into a feed. What a device does when it has something to say.</td></tr>
+      <tr><td><strong>Subscribe</strong></td><td>Asking a server to tell you the moment anything lands in a feed. Asked once; stays true.</td></tr>
+      <tr><td><strong>Feed</strong></td><td>One named box on the server that holds one kind of value, and remembers it.</td></tr>
+      <tr><td><strong>Topic</strong></td><td>The address of a feed, in three parts: your username, the word <em>feeds</em>, and the feed&rsquo;s name.</td></tr>
+      <tr><td><strong>MQTT</strong></td><td>The way small devices publish and subscribe. Deliberately tiny, because the devices are.</td></tr>
+      <tr><td><strong>Dashboard</strong></td><td>A web page with blocks on it that read from feeds and write to them. For humans, not for programs.</td></tr>
+      <tr><td><strong>Toggle</strong></td><td>A dashboard block with exactly two states, sending one word for each of them.</td></tr>
+      <tr><td><strong>Key</strong></td><td>The long secret that proves a message really came from your account. A password with a different name.</td></tr>
+      <tr><td><strong><code>def</code></strong></td><td>Writes a job down and gives it a name. It does not run it.</td></tr>
+      <tr><td><strong>Function</strong></td><td>The job that <code>def</code> wrote down. Yours has a name and takes two things: where it came from, and what it said.</td></tr>
+      <tr><td><strong>Callback</strong></td><td>A function you hand over so that something else can run it later. You never call it yourself.</td></tr>
+      <tr><td><strong><code>check_msg()</code></strong></td><td>Asks once, quickly, whether a message has arrived. It never waits, so a loop can afford to ask constantly.</td></tr>
+      <tr><td><strong>Bytes</strong></td><td>What actually travels over a network. Turning bytes back into words is what <code>decode()</code> is for.</td></tr>
+      <tr><td><strong>2.4 GHz</strong></td><td>The kind of WiFi a Pico W can join. It cannot join a 5&nbsp;GHz network at all.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from umqtt.simple import MQTTClient",
+    "while not wlan.isconnected():",
+    "def when_a_message_arrives(topic, message):",
+    "mqtt.set_callback(when_a_message_arrives)",
+    "mqtt.subscribe(FEED)"
+  ],
+  quiz: [
+    { q: 'Your board did the talking in every activity until now. What is it doing differently today?',
+      opts: ['Publishing faster', 'Subscribing &mdash; asking to be told when something lands in a feed', 'Making its own WiFi network', 'Measuring something new'],
+      right: 1,
+      why: 'Publishing is telling. Subscribing is being told — and a thing that subscribes can be controlled, not just watched.' },
+    { q: 'You hand your function&rsquo;s name over, but you accidentally put brackets after it. What happens?',
+      opts: ['A SyntaxError, so nothing runs', 'The program refuses to connect', 'It runs your function once immediately, hands over nothing, and then never responds to a message', 'It runs your function twice for every message'],
+      right: 2,
+      why: 'That is why it is the nastiest mistake here: the program runs perfectly and simply never does anything. There is no error to go looking for.' },
+    { q: 'The dashboard switch works, the feed fills up with rows, and the LED never moves. Which of these would <em>not</em> explain it?',
+      opts: ['The feed address in the program is spelt wrongly', 'The loop never asks whether a message came', 'The board is on a different WiFi network from the phone', 'The program was never subscribed to that feed'],
+      right: 2,
+      why: 'They never need to share a network. Both ends only need to reach the same server — which is the entire point of doing it this way.' },
+    { q: 'What does the waiting loop after <code>wlan.connect</code> actually do?',
+      opts: ['It joins the network', 'It holds the program there until the joining has finished', 'It runs for ever, like every other loop so far', 'It checks for messages'],
+      right: 1,
+      why: 'Joining takes a moment and is not guaranteed. This is the first loop in the module whose question can change from outside, so it is the first one that ends by itself.' },
+    { q: 'What arrives in your function as the message, before you do anything to it?',
+      opts: ['Words, ready to compare', 'A number', 'Raw bytes, which have to be turned into words first', 'The name of the feed'],
+      right: 2,
+      why: 'Networks carry bytes. decode() turns them back into letters — and until you do, comparing the message with "ON" cannot possibly be true.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>
