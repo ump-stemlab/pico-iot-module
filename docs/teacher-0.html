@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 0 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 0.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-0.html">Activity 0</a>
+  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the instructor notes for <strong>Activity 0 &mdash; Getting Started</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the activity first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-0.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 0 &mdash; teacher notes</h1>
+    <p class="sub">Getting Started. Two tools working, one tiny program, and the rules for the rest of the module.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-0.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea:</strong> the Pico runs a program from top to bottom, instantly, with no screen or keyboard. Everything else is built on that.</li>
+    <li><strong>The no-AI rule is not punitive.</strong> It exists because every program in this module is small enough to type, break, and fix. The skill is in the fingers, not in the prompt.</li>
+    <li><strong>Two routes, same code.</strong> Wokwi first, then the real board. Students must see that the code does not care which machine runs it.</li>
+    <li><strong>Errors are normal.</strong> The activity deliberately tells students to expect red text and to read it from the bottom up.</li>
+    <li><strong>No pins today.</strong> That keeps the first day focused on tools, typing, and the shape of a program. Pins arrive in Activity 1.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The five-line program</h2>
+  <span class="codeimg" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKd2hpbGUgVHJ1ZToKICAgIHByaW50KCJIZWxsbyBQaWNvIikKICAgIHNsZWVwKDEp" role="img" aria-label="Python code, 5 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <ul>
+    <li><strong>Line 1</strong> imports a tool. Without it, <code>sleep</code> does not exist.</li>
+    <li><strong>Line 3</strong> starts a forever-loop. The colon is the most common first-day mistake.</li>
+    <li><strong>Lines 4 and 5</strong> are indented. Any mix of tabs and spaces will fail.</li>
+    <li><strong>True</strong> has a capital T. This is the first place students meet case-sensitivity.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <table>
+    <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
+    <tbody>
+      <tr><td>Change the message</td><td>Anything inside the quotes works. Remind them the quotes must stay.</td></tr>
+      <tr><td>Change the speed</td><td><code>sleep(0.5)</code> prints twice a second; <code>sleep(2)</code> prints every two seconds. The number is seconds, and it can be a decimal.</td></tr>
+      <tr><td>Remove the colon</td><td><code>SyntaxError: invalid syntax</code> on the <code>while</code> line. The fix is the colon.</td></tr>
+      <tr><td>Change <code>True</code> to <code>true</code></td><td><code>NameError: name 'true' is not defined</code>. Capital letters matter.</td></tr>
+      <tr><td>Remove the indentation</td><td><code>IndentationError</code>. The lines inside the loop must be indented by the same amount.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li>Every student can reach <a href="https://wokwi.com/projects/new/micropython-pi-pico" target="_blank" rel="noopener">wokwi.com/projects/new/micropython-pi-pico</a> from the school network.</li>
+    <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
+    <li>One LilEx5 board, Pico and USB cable per pair. Check <strong>SW5</strong> on each board.</li>
+    <li>At least one spare USB cable that carries data, for the inevitable "Thonny cannot see it" moments.</li>
+    <li>The <a href="pinout.html">pin reference</a> open on every machine &mdash; needed from Activity 1 onwards.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students make today</h2>
+  <table>
+    <thead><tr><th>Mistake</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Missing colon after <code>while True</code></td><td><code>SyntaxError: invalid syntax</code></td><td>The colon tells Python the next lines belong inside the loop.</td></tr>
+      <tr><td><code>true</code> instead of <code>True</code></td><td><code>NameError: name 'true' is not defined</code></td><td>Python is case-sensitive. Show them the capital T in the picture.</td></tr>
+      <tr><td>Indentation mix of tabs and spaces</td><td><code>IndentationError</code></td><td>Use the space bar four times, or Thonny's Tab set to four spaces. Do not mix.</td></tr>
+      <tr><td>Running Thonny on the computer instead of the Pico</td><td>Program works, but unplugging the board stops it</td><td>Check the bottom-right interpreter. It must say MicroPython (Raspberry Pi Pico).</td></tr>
+      <tr><td>Closing Wokwi without saving</td><td>Work disappears</td><td>Sign in and save, or keep the link in a document.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Do not demo by copying code.</strong> Type it slowly, make a deliberate mistake, fix it. Students need to see that errors are recoverable.</li>
+    <li><strong>Make them read the error out loud.</strong> "SyntaxError: invalid syntax" is meaningless until they say it slowly and point at the line.</li>
+    <li><strong>The no-AI rule needs a reason.</strong> Explain that the final project has not been written down, so nobody can generate it. The point is not punishment; it is capability.</li>
+    <li><strong>Self-paced starts after today.</strong> Today runs together because everybody needs the same two tools. From Activity 1, pairs move at their own speed.</li>
+    <li><strong>Safety rules from day one:</strong> never 5V to a GP pin, never a power pin to GND, power off at SW5 before changing wires.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <div class="tablescroll">
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-0.html">activity-0.html</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Wokwi &middot; new Pico project</td><td><a href="https://wokwi.com/projects/new/micropython-pi-pico" target="_blank" rel="noopener">wokwi.com/projects/new/micropython-pi-pico</a></td></tr>
+      <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <p class="muted">No pins are used in Activity 0. The first pin appears in Activity 1.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>
