@@ -20,7 +20,7 @@ window.ACTIVITY = {
     { q: "The signal wire connects to which physical pin on the LilEx5 header?",
       opts: ["Pin 2", "Pin 6", "Pin 12", "Pin 28"],
       right: 2,
-      why: "GP28 lives at header pin 12 — the twelfth hole from the top on the left-hand side of the board. The silkscreen on the board says GPIO18, which is a third name for the same hole." },
+      why: "GP28 comes out at H1 pin 12 — the sixth pad from the left end of the top row, on the header along the top edge of the board. The silkscreen there says GPIO18, which is a third name for the same hole." },
     { q: "What does servo.freq(50) do?",
       opts: ["Sets the servo speed to fast", "Tells the servo to expect 50 pulses per second", "Moves the servo to position 50", "Limits the servo to 50 degrees"],
       right: 1,
@@ -203,14 +203,14 @@ window.ACTIVITY = {
   <div class="tablescroll"><table>
     <thead><tr><th>Name in your code</th><th>Name on the LilEx5 silkscreen</th><th>Physical header pin</th></tr></thead>
     <tbody>
-      <tr class="hl"><td><code>GP28</code></td><td>GPIO18</td><td>Pin 12 (left side, 12th from the top)</td></tr>
+      <tr class="hl"><td><code>GP28</code></td><td>GPIO18</td><td>H1 pin 12 (top row, 6th pad from the left end)</td></tr>
     </tbody>
   </table></div>
 
   <p>Why the mismatch? The LilEx5 board remaps the Pico&rsquo;s pins through its own header to save
   space. The silkscreen prints the header&rsquo;s own numbering, not the Pico&rsquo;s GPIO number.
   Your code talks to the Pico, so you use <code>GP28</code>. Your wire goes to the header hole, so
-  you count down to pin&nbsp;12.</p>
+  you count along the top row to pin&nbsp;12.</p>
 
   <p>You will meet this same situation in every activity that uses the header. The
   <a href="pinout.html">Pin reference page</a> has the full translation table.</p>
@@ -219,30 +219,31 @@ window.ACTIVITY = {
 <!-- ═══════════════════════════════ BUILD ═══════════════════════════════ -->
 <section id="build">
   <h2>&#128268; Build the circuit</h2>
-  <p class="lede">Three wires. All three go to the left side of the board.</p>
+  <p class="lede">Three wires. In Wokwi they go down the right-hand side of the Pico; on the real
+  LilEx5 they go into H1, the header along the top edge.</p>
 
   <div class="route-table">
     <div class="tablescroll"><table>
-      <thead><tr><th>Servo wire</th><th>Colour</th><th>Goes to</th><th>Header pin</th><th>What it is</th></tr></thead>
+      <thead><tr><th>Servo wire</th><th>Colour</th><th>Goes to</th><th>Wokwi &mdash; Pico pin</th><th>LilEx5 &mdash; H1 pin</th></tr></thead>
       <tbody>
-        <tr><td>V+</td><td><span class="dot red"></span> Red</td><td>VBUS</td><td>Pin 2</td><td>5&thinsp;V USB power</td></tr>
-        <tr><td>GND</td><td><span class="dot black"></span> Black / Brown</td><td>GND</td><td>Pin 6</td><td>Ground</td></tr>
-        <tr><td>PWM</td><td><span class="dot orange"></span> Orange</td><td>GP28 (GPIO18)</td><td>Pin 12</td><td>Signal</td></tr>
+        <tr><td>V+</td><td><span class="dot red"></span> Red</td><td>VBUS &mdash; 5&thinsp;V from the USB cable</td><td>Pin 40</td><td>Pin 2</td></tr>
+        <tr><td>GND</td><td><span class="dot black"></span> Black / Brown</td><td>GND &mdash; ground</td><td>Pin 38</td><td>Pin 6</td></tr>
+        <tr><td>PWM</td><td><span class="dot orange"></span> Orange</td><td>GP28 &mdash; the signal, silkscreen GPIO18</td><td>Pin 34</td><td>Pin 12</td></tr>
       </tbody>
     </table></div>
-    <p class="note">Pin numbers count down the left side of the header, starting from the top. Pin&nbsp;1 is top-left; pin&nbsp;2 is directly below it.</p>
+    <p class="note">Two boards, two sets of numbers. In Wokwi you wire a bare Raspberry&nbsp;Pi Pico, so the numbers are the Pico’s own physical pins. On the LilEx5 the wires go into <strong>H1</strong>, the 40-pin header along the top edge, and the numbers are H1’s. The line you type &mdash; <code>Pin(28)</code> &mdash; is the same either way.</p>
   </div>
 
-  <div class="tabs" id="build-tabs">
-    <button class="tab active" data-tab="wokwi">Wokwi (simulator)</button>
-    <button class="tab" data-tab="real">Real board</button>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
   </div>
 
-  <div class="tab-panel active" id="tab-wokwi">
-    <svg class="dia wide" viewBox="0 0 780 590" role="img" aria-label="The Wokwi circuit for Activity 3. An SG90 servo motor sits to the left. Three wires connect it to the left side of the Pico: a red wire from the servo V+ to header pin 2 (VBUS), a black wire from servo GND to pin 6, and an orange signal wire from servo PWM to pin 12 which is GP28.">
-      <text x="390" y="26" class="dttl" text-anchor="middle">Three wires, all to the left side of the Pico</text>
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <svg class="dia wide" viewBox="0 0 780 590" role="img" aria-label="The Wokwi circuit for Activity 3. A Raspberry Pi Pico is drawn on the left with its physical pin numbers in white beside each pad. An SG90 servo sits to the right. Three wires run from the right-hand column of the Pico into the servo: a red wire from physical pin 40, VBUS, to the servo V plus lead; a black wire from physical pin 38, a ground, to the servo GND lead; and an orange wire from physical pin 34, which is GP28, to the servo PWM lead. No wire crosses another.">
+      <text x="390" y="26" class="dttl" text-anchor="middle">Three wires, all down the right-hand side of the Pico</text>
       <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
-<g class="wk">
+<g class="wk" transform="translate(-490,0)">
   <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
   <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
   <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
@@ -416,12 +417,12 @@ window.ACTIVITY = {
   <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
   </g>
       <!-- highlight rings on used pins -->
-      <circle cx="555" cy="154" r="10.5" class="wk-ring"/>
-      <circle cx="555" cy="234" r="10.5" class="wk-ring"/>
-      <circle cx="555" cy="354" r="10.5" class="wk-ring"/>
+      <circle cx="245" cy="134" r="10.5" class="wk-ring"/>
+      <circle cx="245" cy="174" r="10.5" class="wk-ring"/>
+      <circle cx="245" cy="254" r="10.5" class="wk-ring"/>
 
       <!-- servo component -->
-      <g class="wk-bme">
+      <g class="wk-bme" transform="translate(430,0)">
         <rect x="50" y="175" width="185" height="205" rx="7" class="wk-bme-pcb"/>
         <!-- motor barrel -->
         <rect x="62" y="192" width="95" height="80" rx="10" fill="#444" stroke="#777" stroke-width="1.5"/>
@@ -435,52 +436,193 @@ window.ACTIVITY = {
         <text x="120" y="320" class="wk-bme-ttl" text-anchor="middle">SG90</text>
         <text x="120" y="343" class="wk-bme-sub" text-anchor="middle">Servo Motor</text>
         <!-- pads on right side -->
-        <circle cx="235" cy="230" r="6" class="wk-bme-pad"/>
-        <circle cx="235" cy="295" r="6" class="wk-bme-pad"/>
-        <circle cx="235" cy="360" r="6" class="wk-bme-pad"/>
-        <text x="220" y="234" class="wk-oled-lbl" text-anchor="end">V+</text>
-        <text x="220" y="299" class="wk-oled-lbl" text-anchor="end">GND</text>
-        <text x="220" y="364" class="wk-oled-lbl" text-anchor="end">PWM</text>
+        <circle cx="50" cy="230" r="6" class="wk-bme-pad"/>
+        <circle cx="50" cy="295" r="6" class="wk-bme-pad"/>
+        <circle cx="50" cy="360" r="6" class="wk-bme-pad"/>
+        <text x="64" y="234" class="wk-oled-lbl">V+</text>
+        <text x="64" y="299" class="wk-oled-lbl">GND</text>
+        <text x="64" y="364" class="wk-oled-lbl">PWM</text>
       </g>
-      <text x="143" y="406" class="dlbl" text-anchor="middle">the servo motor</text>
-      <text x="143" y="424" class="dsub" text-anchor="middle">three wires, right-hand side</text>
+      <text x="573" y="406" class="dlbl" text-anchor="middle">the servo motor</text>
+      <text x="573" y="424" class="dsub" text-anchor="middle">three wires, into its left-hand side</text>
 
       <!-- wires -->
-      <path d="M235 230 H420 V154 H537" class="wkwire red"/>
-      <path d="M235 295 H370 V234 H537" class="wkwire black"/>
-      <path d="M235 360 H537" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
+      <path d="M480 230 H400 V134 H263" class="wkwire red"/>
+      <path d="M480 295 H360 V174 H263" class="wkwire black"/>
+      <path d="M480 360 H320 V254 H263" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
 
       <!-- legend -->
-      <rect x="50" y="442" width="310" height="118" rx="10" class="pane"/>
-      <path d="M70 472 L100 472" class="wkwire red"/>
-      <text x="110" y="477" class="dsub">V+ &rarr; VBUS &middot; pin 2 (5&thinsp;V USB)</text>
-      <path d="M70 504 L100 504" class="wkwire black"/>
-      <text x="110" y="509" class="dsub">GND &rarr; GND &middot; pin 6</text>
-      <path d="M70 536 L100 536" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round"/>
-      <text x="110" y="541" class="dsub">PWM &rarr; GP28 (GPIO18) &middot; pin 12</text>
+      <rect x="420" y="442" width="330" height="118" rx="10" class="pane"/>
+      <path d="M440 472 L470 472" class="wkwire red"/>
+      <text x="480" y="477" class="dsub">V+ &rarr; VBUS &middot; Pico pin 40 (5&thinsp;V USB)</text>
+      <path d="M440 504 L470 504" class="wkwire black"/>
+      <text x="480" y="509" class="dsub">GND &rarr; GND &middot; Pico pin 38</text>
+      <path d="M440 536 L470 536" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round"/>
+      <text x="480" y="541" class="dsub">PWM &rarr; GP28 &middot; Pico pin 34</text>
 
-      <text x="390" y="570" class="dsub" text-anchor="middle">Pins 2, 6 and 12 are all on the left side, so all three wires go the same direction.</text>
+      <text x="390" y="570" class="dsub" text-anchor="middle">VBUS (40), GND (38) and GP28 (34) all sit near the USB end of the right-hand column.</text>
     </svg>
   </div>
 
-  <div class="tab-panel" id="tab-real" hidden>
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
     <div class="callout">
       <strong>Share the servo.</strong> One physical servo is shared between two people at the same board.
       Disconnect the servo before the other person runs their code, then reconnect it for yours.
       In Wokwi there is no sharing &mdash; each person gets their own simulation.
     </div>
-    <p>On the real LilEx5 board, find the 40-pin header on the right-hand edge. Count from the top.</p>
+    <p>On the real LilEx5 board the wires go into <strong>H1</strong> &mdash; the black 40-pin header
+    that runs along the <strong>top edge</strong>. Pin&nbsp;1 is the left-hand end of the <em>bottom</em>
+    row, the corner nearest the CN2 connector. Even pins run along the top row, nearest the edge of the
+    board, and all three of your wires go into that top row.</p>
+
+    <svg class="dia wide" viewBox="0 0 780 620" role="img" aria-label="Hardware wiring on the real LilEx5 board. On the left, a photo of the board with the black 40-pin header H1 outlined along its top edge. On the right, a close-up of that header drawn as two rows of pads: even pins 2 to 40 along the top row and odd pins 1 to 39 along the bottom row. Three of the top-row pads are ringed: pin 2 for the red 5 volt wire, pin 6 for the black ground wire, and pin 12, labelled GPIO18, for the orange signal wire. The three wires run down from those pads to an SG90 servo drawn below, entering its V plus, GND and SIG leads in that order without crossing.">
+      <text x="390" y="26" class="dttl" text-anchor="middle">Hardware wiring &mdash; the servo on H1</text>
+      <text x="390" y="48" class="dsub" text-anchor="middle">The same three wires, this time on the real board.</text>
+      <image href="img/lilex5-board.png" x="24" y="150" width="300" height="260"/>
+      <rect x="61" y="162" width="222" height="27" rx="4" fill="none" stroke="#02ADA5" stroke-width="3"/>
+      <text x="174" y="436" class="dsub" text-anchor="middle">H1 runs along the top edge of the board.</text>
+      <path d="M285 176 L356 202" stroke="#02ADA5" stroke-width="2" stroke-dasharray="6 5" fill="none"/>
+      <text x="756" y="118" class="dlbl" text-anchor="end">H1, close up</text>
+      <text x="756" y="138" class="dsub" text-anchor="end">pin 1 is the corner nearest CN2</text>
+      <rect x="360" y="185" width="396" height="86" rx="8" fill="#22303A" stroke="#0C1418" stroke-width="1.5"/>
+      <circle cx="369.9" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="369.9" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="369.9" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="369.9" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="389.7" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="389.7" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="389.7" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="389.7" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="409.5" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="409.5" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="409.5" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="409.5" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="429.3" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="429.3" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="429.3" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="429.3" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="449.1" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="449.1" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="449.1" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="449.1" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="468.9" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="468.9" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="468.9" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="468.9" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="488.7" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="488.7" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="488.7" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="488.7" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="508.5" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="508.5" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="508.5" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="508.5" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="528.3" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="528.3" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="528.3" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="528.3" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="548.1" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="548.1" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="548.1" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="548.1" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="567.9" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="567.9" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="567.9" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="567.9" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="587.7" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="587.7" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="587.7" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="587.7" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="607.5" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="607.5" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="607.5" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="607.5" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="627.3" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="627.3" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="627.3" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="627.3" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="647.1" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="647.1" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="647.1" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="647.1" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="666.9" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="666.9" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="666.9" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="666.9" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="686.7" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="686.7" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="686.7" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="686.7" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="706.5" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="706.5" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="706.5" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="706.5" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="726.3" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="726.3" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="726.3" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="726.3" cy="248" r="2.4" fill="#F7F3E4"/>
+      <circle cx="746.1" cy="210" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="746.1" cy="210" r="2.4" fill="#F7F3E4"/>
+      <circle cx="746.1" cy="248" r="6" fill="#C7A94B" stroke="#8C7526" stroke-width="1"/>
+      <circle cx="746.1" cy="248" r="2.4" fill="#F7F3E4"/>
+      <text x="369.9" y="197" class="wk-num" text-anchor="middle">2</text>
+      <text x="449.1" y="197" class="wk-num" text-anchor="middle">10</text>
+      <text x="548.1" y="197" class="wk-num" text-anchor="middle">20</text>
+      <text x="647.1" y="197" class="wk-num" text-anchor="middle">30</text>
+      <text x="746.1" y="197" class="wk-num" text-anchor="middle">40</text>
+      <text x="449.1" y="266" class="wk-num" text-anchor="middle">9</text>
+      <text x="548.1" y="266" class="wk-num" text-anchor="middle">19</text>
+      <text x="647.1" y="266" class="wk-num" text-anchor="middle">29</text>
+      <text x="746.1" y="266" class="wk-num" text-anchor="middle">39</text>
+      <text x="756" y="178" class="dsub" text-anchor="end">top row &mdash; even pins, nearest the board edge</text>
+      <text x="756" y="292" class="dsub" text-anchor="end">bottom row &mdash; odd pins</text>
+      <circle cx="369.9" cy="210" r="10.5" fill="none" stroke="#E03131" stroke-width="3.5"/>
+      <path d="M369.9 118 V200" stroke="#E03131" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+      <text x="376" y="112" style="fill:#E03131" class="dlbl">+5V &middot; pin 2</text>
+      <circle cx="409.5" cy="210" r="10.5" fill="none" stroke="#E8EEF0" stroke-width="3.5"/>
+      <path d="M409.5 146 V200" stroke="#5B7284" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+      <text x="416" y="140" class="dlbl">GND &middot; pin 6</text>
+      <circle cx="468.9" cy="210" r="10.5" fill="none" stroke="#C56200" stroke-width="3.5"/>
+      <path d="M468.9 174 V200" stroke="#C56200" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+      <text x="476" y="168" style="fill:#C56200" class="dlbl">GPIO18 &middot; pin 12</text>
+      <path d="M369.9 216 V390 H420 V430" class="wkwire red"/>
+      <path d="M409.5 216 V360 H470 V430" class="wkwire black"/>
+      <path d="M468.9 216 V330 H520 V430" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
+      <rect x="400" y="430" width="175" height="95" rx="8" fill="#1C6FD6" stroke="#14549E" stroke-width="2"/>
+      <rect x="583" y="438" width="26" height="46" rx="7" fill="#2E7BE0" stroke="#14549E" stroke-width="2"/>
+      <circle cx="596" cy="470" r="9" fill="#E8EEF0" stroke="#14549E" stroke-width="2"/>
+      <rect x="591" y="440" width="10" height="26" rx="5" fill="#E8EEF0" stroke="#14549E" stroke-width="1.5"/>
+      <text x="487" y="484" style="fill:#fff" class="dlbl" text-anchor="middle">SG90 servo</text>
+      <circle cx="420" cy="430" r="5" fill="#fff" stroke="#14549E" stroke-width="1.5"/>
+      <text x="410" y="422" class="dsub" text-anchor="end">V+</text>
+      <circle cx="470" cy="430" r="5" fill="#fff" stroke="#14549E" stroke-width="1.5"/>
+      <text x="460" y="422" class="dsub" text-anchor="end">GND</text>
+      <circle cx="520" cy="430" r="5" fill="#fff" stroke="#14549E" stroke-width="1.5"/>
+      <text x="510" y="422" class="dsub" text-anchor="end">SIG</text>
+      <rect x="24" y="470" width="350" height="112" rx="10" class="pane"/>
+      <path d="M44 500 L74 500" class="wkwire red"/>
+      <text x="84" y="505" class="dsub">V+ &rarr; +5V &middot; H1 pin 2 (top row, 1st pad)</text>
+      <path d="M44 530 L74 530" class="wkwire black"/>
+      <text x="84" y="535" class="dsub">GND &rarr; GND &middot; H1 pin 6 (top row, 3rd pad)</text>
+      <path d="M44 560 L74 560" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round"/>
+      <text x="84" y="565" class="dsub">SIG &rarr; GPIO18 &middot; H1 pin 12 (top row, 6th pad)</text>
+      <text x="560" y="556" class="dsub" text-anchor="middle">Servo lead: brown GND, red +5&thinsp;V, orange signal.</text>
+      <text x="390" y="604" class="dsub" text-anchor="middle">The header hole labelled GPIO18 is the Pico&rsquo;s GP28 inside &mdash; your code still says Pin(28).</text>
+    </svg>
+
     <div class="tablescroll"><table>
-      <thead><tr><th>What to connect</th><th>Header pin</th><th>Board silkscreen label</th></tr></thead>
+      <thead><tr><th>What to connect</th><th>H1 pin</th><th>Where it is</th><th>Board silkscreen label</th></tr></thead>
       <tbody>
-        <tr><td>Servo V+ (red wire)</td><td><strong>Pin 2</strong></td><td>5V / VBUS</td></tr>
-        <tr><td>Servo GND (black or brown wire)</td><td><strong>Pin 6</strong></td><td>GND</td></tr>
-        <tr><td>Servo PWM (orange wire)</td><td><strong>Pin 12</strong></td><td>GPIO18</td></tr>
+        <tr><td>Servo V+ (red wire)</td><td><strong>Pin 2</strong></td><td>Top row, 1st pad</td><td>+5V</td></tr>
+        <tr><td>Servo GND (black or brown wire)</td><td><strong>Pin 6</strong></td><td>Top row, 3rd pad</td><td>GND</td></tr>
+        <tr><td>Servo PWM (orange wire)</td><td><strong>Pin 12</strong></td><td>Top row, 6th pad</td><td>GPIO18</td></tr>
       </tbody>
     </table></div>
-    <p>The servo connector snaps onto three adjacent pins; these three are <em>not</em> adjacent on the
-    header, so you will use three separate jumper wires, one per servo lead. Match the wire colours
-    carefully &mdash; connecting V+ to GND will not break the Pico, but the servo will not move.</p>
+    <p>The servo connector snaps onto three adjacent pins; these three are <em>not</em> adjacent on H1,
+    so you will use three separate jumper wires, one per servo lead. Match the wire colours carefully
+    &mdash; connecting V+ to GND will not break the board, but the servo will not move.</p>
+    <p class="note">Watch the row. Pin&nbsp;1 (3V3) sits <em>below</em> pin&nbsp;2 (+5V), not beside it,
+    so a wire one row out lands on 3.3&thinsp;V and the servo only twitches.</p>
   </div>
 </section>
 
@@ -537,7 +679,7 @@ window.ACTIVITY = {
   <div class="callout">
     <strong>Servo humming but not moving?</strong> The arm may already be at the stop.
     Watch carefully &mdash; it moves three times before returning to the same spot.
-    If it never moves at all, check the wiring (especially whether the red wire is in pin&nbsp;2, not pin&nbsp;1).
+    If it never moves at all, check the wiring (especially whether the red wire is in H1 pin&nbsp;2, the top row, and not pin&nbsp;1 below it).
   </div>
 </section>
 
@@ -587,12 +729,12 @@ window.ACTIVITY = {
       <tr>
         <td>Servo does not move at all</td>
         <td>Power wire in wrong pin</td>
-        <td>Check that the red wire is in pin&nbsp;2 (VBUS, 5&thinsp;V), not pin&nbsp;1 (3V3).</td>
+        <td>Check that the red wire is in H1 pin&nbsp;2 (+5V, top row), not pin&nbsp;1 (3V3, the pad below it). In Wokwi, check it is on VBUS, physical pin&nbsp;40.</td>
       </tr>
       <tr>
         <td>Servo buzzes but does not swing</td>
         <td>Signal wire in wrong pin</td>
-        <td>Count down the left side of the header &mdash; the orange wire must be in pin&nbsp;12 (GPIO18).</td>
+        <td>Count along the top row of H1 &mdash; the orange wire must be in pin&nbsp;12 (GPIO18), the 6th pad. In Wokwi it goes to GP28, physical pin&nbsp;34.</td>
       </tr>
       <tr>
         <td><code>TypeError</code> in Shell</td>

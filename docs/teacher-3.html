@@ -95,14 +95,14 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <thead><tr><th>Mistake</th><th>What happens</th><th>How dangerous</th></tr></thead>
     <tbody>
       <tr>
-        <td>Red wire in pin&nbsp;1 (3V3) instead of pin&nbsp;2 (VBUS)</td>
+        <td>Red wire in H1 pin&nbsp;1 (3V3) instead of pin&nbsp;2 (+5V) &mdash; one row out, not one pad out</td>
         <td>Servo twitches once, then nothing</td>
         <td><strong>Not dangerous to hardware</strong>, but very misleading. Fix before anything else.</td>
       </tr>
       <tr>
         <td>Orange wire in wrong pin (not pin&nbsp;12 / GPIO18)</td>
         <td>Servo does not respond; no error</td>
-        <td><strong>Safe</strong>, just silent. Count down the header carefully.</td>
+        <td><strong>Safe</strong>, just silent. Count along the top row of H1 carefully.</td>
       </tr>
       <tr>
         <td><code>servo = PWM(Pin(18))</code> instead of <code>Pin(28)</code></td>
@@ -169,15 +169,20 @@ repository is public &mdash; anyone with the URL can read it.</div>
 <section>
   <h2>Pin quick-reference for this activity</h2>
   <div class="tablescroll"><table>
-    <thead><tr><th>Purpose</th><th>Wire colour</th><th>Header pin</th><th>Board silkscreen</th><th>Code name</th></tr></thead>
+    <thead><tr><th>Purpose</th><th>Wire colour</th><th>LilEx5 H1 pin</th><th>Board silkscreen</th><th>Wokwi &mdash; Pico pin</th><th>Code name</th></tr></thead>
     <tbody>
-      <tr><td>5&thinsp;V power</td><td>Red</td><td>Pin 2</td><td>5V / VBUS</td><td>&mdash;</td></tr>
-      <tr><td>Ground</td><td>Black / Brown</td><td>Pin 6</td><td>GND</td><td>&mdash;</td></tr>
-      <tr><td>Signal (PWM)</td><td>Orange</td><td>Pin 12</td><td>GPIO18</td><td><code>GP28</code></td></tr>
+      <tr><td>5&thinsp;V power</td><td>Red</td><td>Pin 2 (top row, 1st pad)</td><td>+5V</td><td>Pin 40 (VBUS)</td><td>&mdash;</td></tr>
+      <tr><td>Ground</td><td>Black / Brown</td><td>Pin 6 (top row, 3rd pad)</td><td>GND</td><td>Pin 38 (GND)</td><td>&mdash;</td></tr>
+      <tr><td>Signal (PWM)</td><td>Orange</td><td>Pin 12 (top row, 6th pad)</td><td>GPIO18</td><td>Pin 34 (GP28)</td><td><code>GP28</code></td></tr>
     </tbody>
   </table></div>
-  <p>The three header pins (2, 6, 12) are all on the <strong>left side</strong> of the 40-pin header,
-  counting down from the top. Pin&nbsp;1 is top-left; pin&nbsp;2 is directly below it.</p>
+  <p>All three are in the <strong>top row</strong> of H1, the 40-pin header along the <strong>top edge</strong>
+  of the board: even pins run along the top row, nearest the board edge, odd pins along the bottom row.
+  Pin&nbsp;1 is the left-hand end of the <em>bottom</em> row, the corner nearest CN2 &mdash; so 3V3 (pin&nbsp;1)
+  sits below +5V (pin&nbsp;2), and a red wire one row out is the classic failure.</p>
+  <p>Wokwi is a bare Pico, so the numbers there are the Pico&rsquo;s own physical pins (40, 38, 34) &mdash;
+  a different set of numbers for the same three connections. Do not read the H1 numbers onto the Wokwi
+  diagram or the other way round.</p>
 </section>
 
 </div><!-- /.wrap -->

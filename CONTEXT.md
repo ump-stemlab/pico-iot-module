@@ -381,12 +381,20 @@ them in the markup if they are there.
   moves visibly and the Shell simultaneously prints the position name — two outputs at once makes
   `print()` immediately useful rather than abstract. Every activity from here on can use it without
   re-introduction.
-- **The pin trap is the hardest part.** GP28 = silkscreen GPIO18 = header pin 12. Three names,
+- **The pin trap is the hardest part.** GP28 = silkscreen GPIO18 = H1 pin 12. Three names,
   one hole, and the code needs the *Pico* number (28), not the *header* number (12) or the *board*
   label (18). Check every group's wiring before power-on.
-- **VBUS (pin 2), not 3V3 (pin 1).** The SG90 is a 5 V part. At 3.3 V it twitches once and
-  stalls. All three wires go to the left-hand side of the header (pins 2, 6, 12), so routing is
-  clean with no crossings.
+- **Two boards, two sets of pin numbers, and this was got wrong once.** Wokwi wires a **bare Pico**,
+  so there the servo goes to the Pico's own physical pins **40 (VBUS), 38 (GND), 34 (GP28)** — the
+  right-hand column. The LilEx5 numbers (H1 pins 2, 6, 12) are a *different* numbering for the same
+  three connections and must never be drawn onto the Wokwi Pico. The original build did exactly that
+  (wires ran to Pico pins 2/6/12 = GP1/GP4/GP9, labelled VBUS/GND/GP28); **fixed 31 Aug 2026.**
+- **H1 runs along the TOP edge**, not the right-hand edge, and pin 1 is the left-hand end of the
+  *bottom* row (the corner nearest CN2). Even pins run along the top row, so all three servo wires
+  (2, 6, 12) are in the **top row** — 1st, 3rd and 6th pads from the left end. The earlier text
+  said "right-hand edge, count down the left side", which is the Wokwi Pico's geometry, not the board's.
+- **VBUS (H1 pin 2), not 3V3 (H1 pin 1).** The SG90 is a 5 V part. At 3.3 V it twitches once and
+  stalls. Pin 1 sits *below* pin 2, so the classic failure is one **row** out, not one pad out.
 - **No `for` loops in the exercise.** Only `while True:`, `sleep()`, `duty_u16()`, and
   `print()`. Students who reach for a `for` loop are asked to rewrite it. This is the
   module-wide rule; Activity 3 follows it.
@@ -394,9 +402,19 @@ them in the markup if they are there.
   is identical either way. Groups disconnect the servo before swapping who runs the code.
 - The exercise asks students to visit **four custom stops** with at least one different hold time,
   using only the constructs above. The answer is on `teacher-3.html`.
-- `activity-3.html` uses the same wk-group SVG as Activity 9's wiring diagram (extracted). The
-  servo component is a new `wk-bme`-style group. Servo pads are at x=235 on the right edge;
-  all three wires route left to right with different x-waypoints to avoid crossings.
+- `activity-3.html` uses the same wk-group SVG as Activity 9's wiring diagram (extracted). Since
+  the fix the Pico group carries `transform="translate(-490,0)"` and the servo group
+  `transform="translate(430,0)"`, so the Pico sits left and the servo right; servo pads moved to
+  x=50 (its left edge) and the three wires run right-to-left into Pico pins 40/38/34 with
+  different x-waypoints to avoid crossings.
+- **The "Real board" tab has its own diagram** (added 31 Aug 2026, modelled on slide 7 of
+  `Module Revamp/PPTX/Activity 3 - Servo Motor.pptx`): the board photo `img/lilex5-board.png` with
+  H1 outlined, a close-up of H1 drawn as two rows of pads (even 2–40 top, odd 1–39 bottom), rings on
+  pins 2/6/12 and three wires down to an SG90. Pad geometry in the close-up: 20 columns,
+  x = 369.9 + 19.8·i, top row cy=210, bottom cy=248. It is the only diagram on the site that embeds
+  the board photo inside an SVG — the photo is otherwise only on `pinout.html`.
+- The deck's exercise is a *smooth sweep with a `for` loop*; the site's is **four custom stops with
+  no `for` loop**, because `for` has not been taught yet. Deliberate divergence, do not "fix".
 
 ### Activity 4 — Digital Input
 
