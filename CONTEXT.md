@@ -887,6 +887,16 @@ Built from `Activity 11 - Control from Anywhere.pptx` in the STEM LAB PPTX folde
 This page was the first to use the Google Classroom's numbering, and during Activity 10's
 build the whole site was renumbered to match it. See §1.1.
 
+- **The Adafruit IO walkthrough is real screenshots, not drawings** (added 31 Aug 2026).
+  Sixteen `figure.shot` pictures cut from slides 7&ndash;22 of the deck, saved as
+  `docs/img/aio11-*.png` (1000&nbsp;px wide, 256-colour, ~40&ndash;95&nbsp;KB each). They sit in the
+  six steps of the *feed, key and switch* section and in *Click it &mdash; and watch nothing happen*:
+  feeds list, new feed, feed made, MQTT address, key, new/named/listed dashboard, empty dashboard,
+  block gallery, connect feed, block settings, create block, toggle OFF, toggle ON, feed rows.
+  They are **separate files from Activity 10's `aio-*.png`** &mdash; different crops, different feed
+  (`led`, not `temperature`). The key screenshot has the Active Key blacked out in the deck already;
+  keep it that way. The SVG diagrams beside them were kept &mdash; the screenshots show *where to
+  click*, the diagrams show *what is happening*.
 - **The one idea is that the arrow turns round.** Every activity before this one had the
   board doing the talking. Today it *listens* — it subscribes, and something else decides.
   A thing that publishes can be watched; a thing that subscribes can be **controlled**.

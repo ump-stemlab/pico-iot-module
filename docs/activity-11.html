@@ -367,6 +367,8 @@
     sign up. Once you are in, click <strong>Feeds</strong> in the black bar along the top. Your
     username is shown on the left &mdash; write it down exactly as it is spelt, including any capital
     letters or dashes.</p>
+    <figure class="shot"><img src="img/aio11-feeds.png" alt="The Adafruit IO Feeds page. The username kamilkhal96 is shown at the top left, above a blue New Feed button and a table with one row in it called Welcome Feed." loading="lazy">
+    <figcaption><strong>Feeds</strong> in the black bar. The blue word at the top left is your <strong>username</strong> &mdash; here it is <code>kamilkhal96</code>, and yours will be different. Write it down exactly.</figcaption></figure>
     <label class="chk"><input type="checkbox" data-p="a1"><span>I have an account and I have written my username down</span></label>
   </div></div>
 
@@ -376,6 +378,10 @@
     in the name. The description is for you and can say anything. Click <strong>Create</strong>.</p>
     <p>Your brand new account already came with a <em>Welcome Feed</em>. Leave it alone; it is not the
     one we are using.</p>
+    <figure class="shot"><img src="img/aio11-new-feed.png" alt="The Create a new Feed dialog. The Name box contains the word led in lower case, and the description box says ON or OFF for the LED on the board." loading="lazy">
+    <figcaption>Name it <strong>led</strong>, in lower case. The description is only ever read by you.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-feed-made.png" alt="The Feeds table with two rows. The new row says led in the Feed Name column, led in the Key column, an empty Last value, and less than a minute in the Recorded column." loading="lazy">
+    <figcaption>Feed Name <code>led</code>, Key <code>led</code>, and <strong>Last value empty</strong> &mdash; which is right, because nothing has been sent to it yet.</figcaption></figure>
     <div class="cal note"><b>Lower case, and no capital letters</b>
     Adafruit IO turns whatever you type into a <em>key</em>, and that key is what your program has to
     match. Type <code>led</code> and the key is <code>led</code> and there is nothing to get wrong.
@@ -388,6 +394,8 @@
     <p>Click the feed name to open it, then click the gear beside <strong>Feed Info</strong>. There is a
     row marked <strong>MQTT</strong>, and what it shows is the address your program will use. It has
     three parts joined by slashes.</p>
+    <figure class="shot"><img src="img/aio11-mqtt-address.png" alt="The Edit Feed panel for the led feed. A list headed Current Endpoints shows three addresses: a Web one, an API one, and an MQTT one which reads kamilkhal96 slash feeds slash led." loading="lazy">
+    <figcaption>Three addresses are shown. <strong>The one you want is the MQTT one</strong> &mdash; the short one, with no <code>https://</code> in front of it. Copy it; do not retype it.</figcaption></figure>
 
 <svg class="dia wide" viewBox="0 0 780 250" role="img" aria-label="The address of a feed drawn as three boxes joined by slashes. The first box is your username, which is different for everybody. The middle box is the fixed word feeds, which is the same for everybody. The last box is the feed's own name, which is led. Underneath, a note says get one of the three wrong and nothing arrives, and nothing tells you why.">
   <text x="390" y="26" class="dttl" text-anchor="middle">Three parts, and all three have to be right</text>
@@ -418,6 +426,8 @@
     <p>The round yellow key button sits at the top right of every page on the site. Click it and you get
     two things: your <strong>username</strong> again, and your <strong>Active Key</strong>, which is a
     long line of letters and numbers. Copy both, all of it.</p>
+    <figure class="shot"><img src="img/aio11-key.png" alt="The Adafruit IO key panel. It shows the username kamilkhal96 and an Active Key which has been blacked out in this picture, with a Regenerate Key button beside it." loading="lazy">
+    <figcaption>The <strong>yellow key button</strong> opens this. The key is blacked out here on purpose &mdash; do the same before anybody else sees your screen.</figcaption></figure>
     <div class="cal warn"><b>Blank the key out before you show anyone your screen</b>
     Including the person sitting next to you, and including the projector. It is a password with a
     different name.</div>
@@ -429,8 +439,18 @@
     <p>Click <strong>Dashboards</strong> in the black bar, then <strong>+ New Dashboard</strong>. Call it
     anything you like &mdash; <em>LED Control</em> is fine. This name is only ever seen by humans, so
     spaces and capitals do not matter here.</p>
+    <figure class="shot"><img src="img/aio11-new-dashboard.png" alt="The Dashboards page, with a blue New Dashboard button above a table containing one row called Welcome Dashboard." loading="lazy">
+    <figcaption><strong>Dashboards</strong> in the black bar, then <strong>+ New Dashboard</strong>.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-name-dashboard.png" alt="The Create a new Dashboard dialog, with LED Control typed in the Name box and a description reading a switch on the internet for the LED on my board." loading="lazy">
+    <figcaption>Call it <strong>LED Control</strong>. Unlike the feed, this name never appears in your program.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-dashboard-list.png" alt="The Dashboards table with two rows. The new one is named LED Control with a key of led-control, created in August 2026." loading="lazy">
+    <figcaption>It appears in the list with a key of its own, <code>led-control</code>. Click the name to open it.</figcaption></figure>
     <p>Open it, click <strong>+ New Block</strong>, and choose the very first one: the
     <strong>Toggle</strong>, which looks like a switch that says ON.</p>
+    <figure class="shot"><img src="img/aio11-empty-dashboard.png" alt="An open dashboard called LED Control. The page is completely empty and black, with New Block, Edit Layout, full screen and gear buttons along the top right." loading="lazy">
+    <figcaption>A brand new dashboard is empty. Everything you will ever see on one is a <strong>block</strong>, added one at a time. <strong>+ New Block</strong> is top right.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-block-gallery.png" alt="The Create a new block dialog, showing a grid of block types. The first one, top left, is a green switch reading ON." loading="lazy">
+    <figcaption>Sixteen kinds of block. The one you want is <strong>the very first</strong> &mdash; the green ON switch.</figcaption></figure>
     <div class="cal tip"><b>Why a Toggle and not a slider</b>
     A slider can send any number it likes. A toggle sends one of <strong>exactly two words</strong>, and
     two words is precisely what a light that is either on or off needs.</div>
@@ -443,6 +463,12 @@
     <strong>Next step</strong>. Give the block a title, and leave
     <strong>Button On Text</strong> as <strong>ON</strong> and <strong>Button Off Text</strong> as
     <strong>OFF</strong>. Scroll down and press <strong>Create block</strong>.</p>
+    <figure class="shot"><img src="img/aio11-connect-feed.png" alt="The Connect a Feed step. A table lists led, which is ticked, and Welcome Feed, which is not. Underneath it says one of one feeds selected, with a Next step button." loading="lazy">
+    <figcaption>Tick <strong>led</strong> &mdash; not <em>Welcome Feed</em>. A block joined to the wrong feed will never reach your board.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-block-settings.png" alt="The Block settings step. Block Title reads LED on the board, Button On Text reads ON, Button Off Text reads OFF, and a preview on the right shows a red toggle reading OFF." loading="lazy">
+    <figcaption><strong>Button On Text</strong> and <strong>Button Off Text</strong> are the exact words that get sent. Leave them as <code>ON</code> and <code>OFF</code>.</figcaption></figure>
+    <figure class="shot"><img src="img/aio11-create-block.png" alt="The bottom of the Block settings step, showing the empty Button On Value and Button Off Value boxes and a blue Create block button." loading="lazy">
+    <figcaption>Leave <strong>On Value</strong> and <strong>Off Value</strong> empty &mdash; left blank they copy the two words above, which is what you want. Then <strong>Create block</strong>.</figcaption></figure>
     <div class="cal warn"><b>Those two words are the ones that travel</b>
     Whatever you type in those two boxes is literally what gets sent, letter for letter. Your program is
     going to compare what arrives against the word <strong>ON</strong>. Change the word here and you have
@@ -455,6 +481,12 @@
   <p>Your switch works. Click it and the word changes, the colour changes, and a value is sent right
   now. Go back to <strong>Feeds &rarr; led</strong> and you will see one row for every click, newest at
   the top.</p>
+  <figure class="shot"><img src="img/aio11-toggle-off.png" alt="The finished dashboard with one block on it, titled LED on the board. The toggle is red and reads OFF." loading="lazy">
+  <figcaption><strong>OFF</strong> &mdash; clicking it sends the word <code>OFF</code>.</figcaption></figure>
+  <figure class="shot"><img src="img/aio11-toggle-on.png" alt="The same dashboard block, now green and reading ON, with a timestamp underneath showing when it was last changed." loading="lazy">
+  <figcaption><strong>ON</strong> &mdash; clicking it sends the word <code>ON</code>. The switch works perfectly, and nothing whatever happens on your board.</figcaption></figure>
+  <figure class="shot"><img src="img/aio11-feed-rows.png" alt="The data table of the led feed, showing two rows: one with the value ON and one with the value OFF, each with the time it was created." loading="lazy">
+  <figcaption>Proof. Every flip has written one row into the feed, newest at the top. <strong>The switch never talks to your board</strong> &mdash; it writes here, and your board reads here.</figcaption></figure>
   <p>And absolutely nothing happens on your board, because nothing on your board has asked to be told
   yet. That is not a fault. That is the other half of the lesson, and it starts now.</p>
 
