@@ -45,7 +45,7 @@ with [Thonny](https://thonny.org).
 | 0 | Getting Started | the board, Thonny, and your first run | 🔜 |
 | 1 | [Light Up an LED](https://ump-stemlab.github.io/pico-iot-module/activity-1.html) | variables, comments, GPIO pins | ✅ live |
 | 2 | [Make an LED Blink](https://ump-stemlab.github.io/pico-iot-module/activity-2.html) | loops, indentation, `sleep` | ✅ live |
-| 3 | Digital Output &amp; Servo | moving something, not just lighting it | 🔜 |
+| 3 | [Digital Output & Servo](https://ump-stemlab.github.io/pico-iot-module/activity-3.html) | moving something, not just lighting it | ✅ live |
 | 4 | [Digital Input](https://ump-stemlab.github.io/pico-iot-module/activity-4.html) | reading buttons, `print()` | ✅ live |
 | 5 | [Making Decisions](https://ump-stemlab.github.io/pico-iot-module/activity-5.html) | `if` / `else`, comparing with `==` | ✅ live |
 | 6 | [And, Or, Not](https://ump-stemlab.github.io/pico-iot-module/activity-6.html) | `and` / `or` / `not`, joining two questions | ✅ live |

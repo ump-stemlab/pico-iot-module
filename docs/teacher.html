@@ -17,6 +17,7 @@
   <a class="nl" href="index.html">Home</a>
   <a class="nl" href="activity-0.html">Activity 0</a>  <a class="nl" href="activity-1.html">Activity 1</a>
   <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
   <a class="nl" href="activity-4.html">Activity 4</a>
   <a class="nl" href="activity-5.html">Activity 5</a>
   <a class="nl" href="activity-6.html">Activity 6</a>
@@ -75,6 +76,10 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><strong>2</strong></td><td><a href="activity-2.html">Make an LED Blink</a></td>
         <td>Loops, <code>sleep</code>, and indentation. Stopping a forever-loop is taught here and assumed after.</td>
         <td><a href="teacher-2.html">teacher-2</a></td></tr>
+      <tr><td><strong>3</strong></td><td><a href="activity-3.html">Digital Output &amp; Servo</a></td>
+        <td>PWM repurposed for movement: three duty values move a servo arm to left, middle, and right.
+        The pin trap (GP28 = GPIO18 = header pin&nbsp;12) and VBUS for power. <code>print()</code> arrives here for the first time.</td>
+        <td><a href="teacher-3.html">teacher-3</a></td></tr>
       <tr><td><strong>4</strong></td><td><a href="activity-4.html">Digital Input</a></td>
         <td>A pin can be read, and a program can print. The button reads <strong>0 when pressed</strong> &mdash; the inversion everything later depends on.</td>
         <td><a href="teacher-4.html">teacher-4</a></td></tr>
@@ -123,9 +128,11 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
     <div class="mini"><h4>Libraries may be pasted</h4>
       <p>The no-copying rule is about students&rsquo; own programs. From Activity 7 a library file is
       pasted or copied onto the Pico &mdash; nobody retypes one. Say so, or the rule looks arbitrary.</p></div>
-    <div class="mini"><h4>No <code>for</code> loops, still</h4>
-      <p>Every repeat in this module is a forever-loop, and nothing up to Activity 11 has needed
-      anything else.</p></div>
+    <div class="mini"><h4>No <code>for</code> loops until Activity 9</h4>
+      <p>Every main program uses <code>while True:</code> only. Exercises follow the same rule &mdash;
+      if a student reaches for a <code>for</code> loop, ask them to rewrite it without one.
+      Activity 9&rsquo;s <code>elif</code> arrives first; <code>for</code> loops are never
+      explicitly introduced in this module.</p></div>
     <div class="mini"><h4>Answers live here, not there</h4>
       <p>Student pages carry the task, the expected result and progressive clues. The worked answer is
       on these pages only.</p></div>
@@ -152,6 +159,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only, so far</td></tr>
       <tr><td><span class="gp">GP26</span></td><td>Analogue in &mdash; soil probe. Printed <em>GPIO24</em> on the LilEx5, header pin 18.</td><td>Activity 9 main program</td></tr>
       <tr><td><span class="gp">GP27</span></td><td>Analogue in &mdash; free. Printed <em>GPIO23</em>, header pin 16.</td><td>Activity 9 going-further only &mdash; a second probe</td></tr>
+      <tr><td><span class="gp">GP28</span></td><td>Servo motor signal. Printed <em>GPIO18</em> on the LilEx5, header pin&nbsp;12.</td><td>Activity 3 main program and exercise</td></tr>
     </tbody>
   </table>
   <p class="muted"><strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. <strong>Activity 9 adds <span class="gp">GP26</span></strong>, the module&rsquo;s first analogue pin and its first wire to the 40-pin header; only <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span> can measure a voltage, and the H3 connector&rsquo;s analogue inputs are <em>not</em> these &mdash; they come back over I&sup2;C. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
@@ -198,6 +206,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
     <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
     <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
        <a href="activity-5.html">Activity 5</a> &middot;
        <a href="activity-6.html">Activity 6</a> &middot;

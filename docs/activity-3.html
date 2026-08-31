@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Activity 3 – Servo Motor | Pico IoT Module</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="activity.css">
+</head>
+<body>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "servo = PWM(Pin(28))",
+    "servo.freq(50)",
+    "servo.duty_u16(left)"
+  ],
+  quiz: [
+    { q: "The signal wire connects to which physical pin on the LilEx5 header?",
+      opts: ["Pin 2", "Pin 6", "Pin 12", "Pin 28"],
+      right: 2,
+      why: "GP28 lives at header pin 12 — the twelfth hole from the top on the left-hand side of the board. The silkscreen on the board says GPIO18, which is a third name for the same hole." },
+    { q: "What does servo.freq(50) do?",
+      opts: ["Sets the servo speed to fast", "Tells the servo to expect 50 pulses per second", "Moves the servo to position 50", "Limits the servo to 50 degrees"],
+      right: 1,
+      why: "PWM sends pulses, and the servo motor expects exactly 50 of them every second. That is the standard for hobby servos. Change this and the servo will not respond correctly." },
+    { q: "Why is the 5 V pin (VBUS) used instead of the 3.3 V pin?",
+      opts: ["Because VBUS is closer on the header", "Because the servo needs 5 volts to move properly; 3.3 volts is not enough", "Because 3.3 V is already being used by the LED", "There is no difference — either works"],
+      right: 1,
+      why: "The SG90 is a 5 V part. At 3.3 V it may twitch, stall, or not move at all. VBUS draws directly from the USB cable, which is always 5 V." },
+    { q: "What does servo.duty_u16(1638) do?",
+      opts: ["Moves the arm to the middle position", "Moves the arm to the right position", "Moves the arm to the left position", "Turns the servo off"],
+      right: 2,
+      why: "1638 is the duty value that produces the shortest pulse (about 0.5 ms), which tells the servo to swing as far left as it can go. 4915 is middle, 8192 is right." },
+    { q: "Which statement does this activity use for the first time?",
+      opts: ["from machine import", "while True:", "sleep()", "print()"],
+      right: 3,
+      why: "print() sends text to the Shell window in Thonny. You see it appear each time the servo moves. Every activity from here on can use it to show what the program is doing." }
+  ]
+};
+</script>
+
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-0.html">Activity 0</a>  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html" aria-current="page">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 3</p>
+    <h1>Servo Motor</h1>
+    <p class="sub">Until now every output was a light. Today you move something. A servo motor has an
+    arm that swings to a precise angle on command &mdash; no guessing, no drifting. You tell it
+    <em>exactly</em> where to point, and it goes there.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 50 minutes</span>
+      <span class="pill">&#128260; Builds on Activity 2</span>
+      <span class="pill">&#129302; SG90 servo needed</span>
+      <span class="pill">&#129514; Works without a board</span>
+    </div>
+    <div class="toc">
+      <a href="#servo">What is a servo?</a>
+      <a href="#pwm">How the Pico moves it</a>
+      <a href="#numbers">The three numbers</a>
+      <a href="#pin">The pin trap</a>
+      <a href="#build">Build the circuit</a>
+      <a href="#code">Write the program</a>
+      <a href="#run">Run it</a>
+      <a href="#shell">Introducing print()</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ═══════════════════════════════ WHAT IS A SERVO ═══════════════════════════════ -->
+<section id="servo">
+  <h2>&#129302; What is a servo motor?</h2>
+  <p class="lede">A servo is a motor with a brain attached. The brain watches a pulse signal and keeps
+  the arm pointed wherever that pulse says &mdash; even if something pushes back.</p>
+  <p>Inside the SG90 there are three things: a small DC motor, a gear train that makes the movement
+  precise, and a tiny circuit that listens for pulses. You send a short pulse, it measures it, turns
+  the motor until its arm matches, and stops. It holds that position until you send a different pulse.
+  That is all a servo does &mdash; but it is enough to open a door, aim a camera, steer a robot, or
+  move any mechanical part to a known angle.</p>
+  <p>The arm does not spin all the way round like a wheel. It swings through about 180&deg; &mdash;
+  from left to right &mdash; and the pulse length decides where it stops inside that arc.</p>
+  <div class="callout">
+    <strong>One servo per pair.</strong> On the real board, you will share one servo between two
+    people. In Wokwi each person simulates their own. The program is identical either way.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ HOW THE PICO MOVES IT ═══════════════════════════════ -->
+<section id="pwm">
+  <h2>&#128268; How the Pico moves it (PWM)</h2>
+  <p class="lede">PWM stands for <em>Pulse Width Modulation</em>. Instead of sending a steady voltage,
+  the pin flickers on and off very quickly. The length of each &#8220;on&#8221; burst is what the servo reads.</p>
+
+  <p>You already used PWM without knowing it: in Activity 2, the LED dimmed because the pin was on for
+  a short fraction of each flicker cycle. The servo uses the same flickering, but it cares about the
+  exact length of one pulse &mdash; not about how bright a lamp gets.</p>
+
+  <svg class="dia wide" viewBox="0 0 780 220" role="img" aria-label="Two timing diagrams. The top shows Activity 2 LED dimming: many short on-bursts, no particular length matters. The bottom shows a servo pulse: one long on-burst per cycle of exactly 1.5 ms means middle; a short one means left; a long one means right.">
+    <text x="390" y="26" class="dttl" text-anchor="middle">Same flickering &mdash; different meaning</text>
+
+    <text x="10" y="60" class="dsub" text-anchor="start">Activity 2 (LED dim)</text>
+    <line x1="30" y1="95" x2="750" y2="95" class="dax"/>
+    <rect x="30" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="86" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="142" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="198" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="254" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="310" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="366" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="422" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="478" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="534" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="590" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="646" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <rect x="702" y="68" width="26" height="27" class="dfill" rx="1"/>
+    <text x="395" y="116" class="dsub" text-anchor="middle">The duty number controls brightness. The timing of each pulse does not matter.</text>
+
+    <text x="10" y="148" class="dsub" text-anchor="start">Activity 3 (servo)</text>
+    <line x1="30" y1="190" x2="750" y2="190" class="dax"/>
+    <rect x="30" y="163" width="14" height="27" class="dfill2" rx="1"/>
+    <text x="37" y="157" class="dlbl" text-anchor="middle">left</text>
+    <rect x="230" y="163" width="28" height="27" class="dfill2" rx="1"/>
+    <text x="244" y="157" class="dlbl" text-anchor="middle">middle</text>
+    <rect x="440" y="163" width="44" height="27" class="dfill2" rx="1"/>
+    <text x="462" y="157" class="dlbl" text-anchor="middle">right</text>
+    <text x="395" y="212" class="dsub" text-anchor="middle">The exact width of the pulse picks the angle. The servo ignores everything else.</text>
+  </svg>
+
+  <p>The Pico generates these pulses at 50 per second (50&thinsp;Hz). Your code sets the pulse length
+  by calling <span class="codeimg inline" data-code="c2Vydm8uZnJlcSg1MCk=" role="img" aria-label="servo.freq(50)"><span class="codefallback">Code is shown as a picture.</span></span> &mdash; once at the start &mdash; and then calling <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobGVmdCk=" role="img" aria-label="servo.duty_u16(left)"><span class="codefallback">Code is shown as a picture.</span></span>, <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobWlkZGxlKQ==" role="img" aria-label="servo.duty_u16(middle)"><span class="codefallback">Code is shown as a picture.</span></span>, or
+  <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span> each time you want to change position.</p>
+</section>
+
+<!-- ═══════════════════════════════ THE THREE NUMBERS ═══════════════════════════════ -->
+<section id="numbers">
+  <h2>&#128257; The three numbers</h2>
+  <p class="lede">The Pico&rsquo;s duty scale runs from&nbsp;0 to&nbsp;65535. You do not use the
+  whole scale &mdash; only a small slice near the bottom.</p>
+
+  <svg class="dia wide" viewBox="0 0 780 160" role="img" aria-label="A number line from 0 to 65535. Three markers appear near the left end: 1638 labelled left, 4915 labelled middle, 8192 labelled right. The rest of the line is empty.">
+    <text x="390" y="26" class="dttl" text-anchor="middle">Three positions inside a huge scale</text>
+    <line x1="30" y1="80" x2="750" y2="80" class="dax"/>
+    <line x1="30" y1="70" x2="30" y2="90" class="dax"/>
+    <line x1="750" y1="70" x2="750" y2="90" class="dax"/>
+    <text x="30" y="106" class="dlbl" text-anchor="middle">0</text>
+    <text x="750" y="106" class="dlbl" text-anchor="middle">65535</text>
+
+    <line x1="52" y1="60" x2="52" y2="100" class="dmark"/>
+    <text x="52" y="54" class="dlbl" text-anchor="middle">1638</text>
+    <text x="52" y="120" class="dlbl" text-anchor="middle">left</text>
+
+    <line x1="86" y1="60" x2="86" y2="100" class="dmark"/>
+    <text x="86" y="54" class="dlbl" text-anchor="middle">4915</text>
+    <text x="86" y="120" class="dlbl" text-anchor="middle">middle</text>
+
+    <line x1="120" y1="60" x2="120" y2="100" class="dmark"/>
+    <text x="120" y="54" class="dlbl" text-anchor="middle">8192</text>
+    <text x="120" y="120" class="dlbl" text-anchor="middle">right</text>
+
+    <text x="450" y="80" class="dsub" text-anchor="middle" dy="5">not used</text>
+  </svg>
+
+  <p>These numbers correspond to pulse lengths: 1638 is a very short pulse (about 0.5&thinsp;ms), 4915
+  is a medium one (1.5&thinsp;ms), and 8192 is a long one (2.5&thinsp;ms). The servo motor was
+  built to understand these pulse lengths as positions &mdash; no arithmetic needed on your part.
+  You just pass the number and the arm goes there.</p>
+
+  <p>Your program stores the three numbers in variables so the names
+  (<strong>left</strong>, <strong>middle</strong>, <strong>right</strong>) appear in the code
+  instead of bare numbers. That makes it easy to read and easy to change later.</p>
+</section>
+
+<!-- ═══════════════════════════════ THE PIN TRAP ═══════════════════════════════ -->
+<section id="pin">
+  <h2>&#9888;&#65039; The pin trap: three names, one hole</h2>
+  <p class="lede">The signal wire goes to the hole labelled <strong>GPIO18</strong> on the LilEx5
+  board. But in your program you type <strong>GP28</strong>. And the connection table says
+  <strong>pin&nbsp;12</strong>. Same hole &mdash; three names.</p>
+
+  <div class="tablescroll"><table>
+    <thead><tr><th>Name in your code</th><th>Name on the LilEx5 silkscreen</th><th>Physical header pin</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td><code>GP28</code></td><td>GPIO18</td><td>Pin 12 (left side, 12th from the top)</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>Why the mismatch? The LilEx5 board remaps the Pico&rsquo;s pins through its own header to save
+  space. The silkscreen prints the header&rsquo;s own numbering, not the Pico&rsquo;s GPIO number.
+  Your code talks to the Pico, so you use <code>GP28</code>. Your wire goes to the header hole, so
+  you count down to pin&nbsp;12.</p>
+
+  <p>You will meet this same situation in every activity that uses the header. The
+  <a href="pinout.html">Pin reference page</a> has the full translation table.</p>
+</section>
+
+<!-- ═══════════════════════════════ BUILD ═══════════════════════════════ -->
+<section id="build">
+  <h2>&#128268; Build the circuit</h2>
+  <p class="lede">Three wires. All three go to the left side of the board.</p>
+
+  <div class="route-table">
+    <div class="tablescroll"><table>
+      <thead><tr><th>Servo wire</th><th>Colour</th><th>Goes to</th><th>Header pin</th><th>What it is</th></tr></thead>
+      <tbody>
+        <tr><td>V+</td><td><span class="dot red"></span> Red</td><td>VBUS</td><td>Pin 2</td><td>5&thinsp;V USB power</td></tr>
+        <tr><td>GND</td><td><span class="dot black"></span> Black / Brown</td><td>GND</td><td>Pin 6</td><td>Ground</td></tr>
+        <tr><td>PWM</td><td><span class="dot orange"></span> Orange</td><td>GP28 (GPIO18)</td><td>Pin 12</td><td>Signal</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Pin numbers count down the left side of the header, starting from the top. Pin&nbsp;1 is top-left; pin&nbsp;2 is directly below it.</p>
+  </div>
+
+  <div class="tabs" id="build-tabs">
+    <button class="tab active" data-tab="wokwi">Wokwi (simulator)</button>
+    <button class="tab" data-tab="real">Real board</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-wokwi">
+    <svg class="dia wide" viewBox="0 0 780 590" role="img" aria-label="The Wokwi circuit for Activity 3. An SG90 servo motor sits to the left. Three wires connect it to the left side of the Pico: a red wire from the servo V+ to header pin 2 (VBUS), a black wire from servo GND to pin 6, and an orange signal wire from servo PWM to pin 12 which is GP28.">
+      <text x="390" y="26" class="dttl" text-anchor="middle">Three wires, all to the left side of the Pico</text>
+      <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+<g class="wk">
+  <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
+  <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
+  <rect x="617" y="85" width="56" height="30" rx="4" class="wk-usb"/>
+  <rect x="626" y="101" width="38" height="9" rx="2" class="wk-usb2"/>
+  <rect x="621" y="140" width="24" height="28" rx="7" class="wk-boot"/>
+  <rect x="613" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="640" y="196" width="13" height="19" rx="2" class="wk-smd"/>
+  <rect x="610" y="232" width="46" height="46" rx="3" class="wk-chip"/>
+  <text x="633" y="400" class="wk-brand" text-anchor="middle" transform="rotate(-90 633 400)">Raspberry Pi Pico</text>
+  <circle cx="585" cy="113" r="8" class="wk-mount"/>
+  <circle cx="705" cy="113" r="8" class="wk-mount"/>
+  <rect x="537" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="134" r="3.4" class="wk-hole"/>
+  <text x="567" y="137.3" class="wk-num">1</text>
+  <text x="583" y="137.3" class="wk-silk">GP0</text>
+  <rect x="537" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="154" r="3.4" class="wk-hole"/>
+  <text x="567" y="157.3" class="wk-num">2</text>
+  <text x="583" y="157.3" class="wk-silk">GP1</text>
+  <rect x="537" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="174" r="3.4" class="wk-hole"/>
+  <text x="567" y="177.3" class="wk-num">3</text>
+  <text x="583" y="177.3" class="wk-silk">GND</text>
+  <rect x="537" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="194" r="3.4" class="wk-hole"/>
+  <text x="567" y="197.3" class="wk-num">4</text>
+  <text x="583" y="197.3" class="wk-silk">GP2</text>
+  <rect x="537" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="214" r="3.4" class="wk-hole"/>
+  <text x="567" y="217.3" class="wk-num">5</text>
+  <text x="583" y="217.3" class="wk-silk">GP3</text>
+  <rect x="537" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="234" r="3.4" class="wk-hole"/>
+  <text x="567" y="237.3" class="wk-num">6</text>
+  <text x="583" y="237.3" class="wk-silk">GP4</text>
+  <rect x="537" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="254" r="3.4" class="wk-hole"/>
+  <text x="567" y="257.3" class="wk-num">7</text>
+  <text x="583" y="257.3" class="wk-silk">GP5</text>
+  <rect x="537" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="274" r="3.4" class="wk-hole"/>
+  <text x="567" y="277.3" class="wk-num">8</text>
+  <text x="583" y="277.3" class="wk-silk">GND</text>
+  <rect x="537" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="294" r="3.4" class="wk-hole"/>
+  <text x="567" y="297.3" class="wk-num">9</text>
+  <text x="583" y="297.3" class="wk-silk">GP6</text>
+  <rect x="537" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="314" r="3.4" class="wk-hole"/>
+  <text x="567" y="317.3" class="wk-num">10</text>
+  <text x="583" y="317.3" class="wk-silk">GP7</text>
+  <rect x="537" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="334" r="3.4" class="wk-hole"/>
+  <text x="567" y="337.3" class="wk-num">11</text>
+  <text x="583" y="337.3" class="wk-silk">GP8</text>
+  <rect x="537" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="354" r="3.4" class="wk-hole"/>
+  <text x="567" y="357.3" class="wk-num">12</text>
+  <text x="583" y="357.3" class="wk-silk">GP9</text>
+  <rect x="537" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="374" r="3.4" class="wk-hole"/>
+  <text x="567" y="377.3" class="wk-num">13</text>
+  <text x="583" y="377.3" class="wk-silk">GND</text>
+  <rect x="537" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="394" r="3.4" class="wk-hole"/>
+  <text x="567" y="397.3" class="wk-num">14</text>
+  <text x="583" y="397.3" class="wk-silk">GP10</text>
+  <rect x="537" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="414" r="3.4" class="wk-hole"/>
+  <text x="567" y="417.3" class="wk-num">15</text>
+  <text x="583" y="417.3" class="wk-silk">GP11</text>
+  <rect x="537" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="434" r="3.4" class="wk-hole"/>
+  <text x="567" y="437.3" class="wk-num">16</text>
+  <text x="583" y="437.3" class="wk-silk">GP12</text>
+  <rect x="537" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="454" r="3.4" class="wk-hole"/>
+  <text x="567" y="457.3" class="wk-num">17</text>
+  <text x="583" y="457.3" class="wk-silk">GP13</text>
+  <rect x="537" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="474" r="3.4" class="wk-hole"/>
+  <text x="567" y="477.3" class="wk-num">18</text>
+  <text x="583" y="477.3" class="wk-silk">GND</text>
+  <rect x="537" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="494" r="3.4" class="wk-hole"/>
+  <text x="567" y="497.3" class="wk-num">19</text>
+  <text x="583" y="497.3" class="wk-silk">GP14</text>
+  <rect x="537" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="555" cy="514" r="3.4" class="wk-hole"/>
+  <text x="567" y="517.3" class="wk-num">20</text>
+  <text x="583" y="517.3" class="wk-silk">GP15</text>
+  <rect x="727" y="508.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="514" r="3.4" class="wk-hole"/>
+  <text x="723" y="517.3" class="wk-num" text-anchor="end">21</text>
+  <text x="707" y="517.3" class="wk-silk" text-anchor="end">GP16</text>
+  <rect x="727" y="488.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="494" r="3.4" class="wk-hole"/>
+  <text x="723" y="497.3" class="wk-num" text-anchor="end">22</text>
+  <text x="707" y="497.3" class="wk-silk" text-anchor="end">GP17</text>
+  <rect x="727" y="468.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="474" r="3.4" class="wk-hole"/>
+  <text x="723" y="477.3" class="wk-num" text-anchor="end">23</text>
+  <text x="707" y="477.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="448.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="454" r="3.4" class="wk-hole"/>
+  <text x="723" y="457.3" class="wk-num" text-anchor="end">24</text>
+  <text x="707" y="457.3" class="wk-silk" text-anchor="end">GP18</text>
+  <rect x="727" y="428.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="434" r="3.4" class="wk-hole"/>
+  <text x="723" y="437.3" class="wk-num" text-anchor="end">25</text>
+  <text x="707" y="437.3" class="wk-silk" text-anchor="end">GP19</text>
+  <rect x="727" y="408.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="414" r="3.4" class="wk-hole"/>
+  <text x="723" y="417.3" class="wk-num" text-anchor="end">26</text>
+  <text x="707" y="417.3" class="wk-silk" text-anchor="end">GP20</text>
+  <rect x="727" y="388.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="394" r="3.4" class="wk-hole"/>
+  <text x="723" y="397.3" class="wk-num" text-anchor="end">27</text>
+  <text x="707" y="397.3" class="wk-silk" text-anchor="end">GP21</text>
+  <rect x="727" y="368.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="374" r="3.4" class="wk-hole"/>
+  <text x="723" y="377.3" class="wk-num" text-anchor="end">28</text>
+  <text x="707" y="377.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="348.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="354" r="3.4" class="wk-hole"/>
+  <text x="723" y="357.3" class="wk-num" text-anchor="end">29</text>
+  <text x="707" y="357.3" class="wk-silk" text-anchor="end">GP22</text>
+  <rect x="727" y="328.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="334" r="3.4" class="wk-hole"/>
+  <text x="723" y="337.3" class="wk-num" text-anchor="end">30</text>
+  <text x="707" y="337.3" class="wk-silk" text-anchor="end">RUN</text>
+  <rect x="727" y="308.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="314" r="3.4" class="wk-hole"/>
+  <text x="723" y="317.3" class="wk-num" text-anchor="end">31</text>
+  <text x="707" y="317.3" class="wk-silk" text-anchor="end">GP26</text>
+  <rect x="727" y="288.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="294" r="3.4" class="wk-hole"/>
+  <text x="723" y="297.3" class="wk-num" text-anchor="end">32</text>
+  <text x="707" y="297.3" class="wk-silk" text-anchor="end">GP27</text>
+  <rect x="727" y="268.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="274" r="3.4" class="wk-hole"/>
+  <text x="723" y="277.3" class="wk-num" text-anchor="end">33</text>
+  <text x="707" y="277.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="248.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="254" r="3.4" class="wk-hole"/>
+  <text x="723" y="257.3" class="wk-num" text-anchor="end">34</text>
+  <text x="707" y="257.3" class="wk-silk" text-anchor="end">GP28</text>
+  <rect x="727" y="228.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="234" r="3.4" class="wk-hole"/>
+  <text x="723" y="237.3" class="wk-num" text-anchor="end">35</text>
+  <text x="707" y="237.3" class="wk-silk" text-anchor="end">ADC_VREF</text>
+  <rect x="727" y="208.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="214" r="3.4" class="wk-hole"/>
+  <text x="723" y="217.3" class="wk-num" text-anchor="end">36</text>
+  <text x="707" y="217.3" class="wk-silk" text-anchor="end">3V3</text>
+  <rect x="727" y="188.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="194" r="3.4" class="wk-hole"/>
+  <text x="723" y="197.3" class="wk-num" text-anchor="end">37</text>
+  <text x="707" y="197.3" class="wk-silk" text-anchor="end">3V3_EN</text>
+  <rect x="727" y="168.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="174" r="3.4" class="wk-hole"/>
+  <text x="723" y="177.3" class="wk-num" text-anchor="end">38</text>
+  <text x="707" y="177.3" class="wk-silk" text-anchor="end">GND</text>
+  <rect x="727" y="148.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="154" r="3.4" class="wk-hole"/>
+  <text x="723" y="157.3" class="wk-num" text-anchor="end">39</text>
+  <text x="707" y="157.3" class="wk-silk" text-anchor="end">VSYS</text>
+  <rect x="727" y="128.5" width="26" height="11" rx="5.5" class="wk-pad"/>
+  <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
+  <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
+  <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
+  </g>
+      <!-- highlight rings on used pins -->
+      <circle cx="555" cy="154" r="10.5" class="wk-ring"/>
+      <circle cx="555" cy="234" r="10.5" class="wk-ring"/>
+      <circle cx="555" cy="354" r="10.5" class="wk-ring"/>
+
+      <!-- servo component -->
+      <g class="wk-bme">
+        <rect x="50" y="175" width="185" height="205" rx="7" class="wk-bme-pcb"/>
+        <!-- motor barrel -->
+        <rect x="62" y="192" width="95" height="80" rx="10" fill="#444" stroke="#777" stroke-width="1.5"/>
+        <!-- output shaft -->
+        <circle cx="157" cy="232" r="20" fill="#777" stroke="#aaa" stroke-width="1.5"/>
+        <circle cx="157" cy="232" r="7" fill="#ccc"/>
+        <!-- servo arm -->
+        <rect x="153" y="200" width="9" height="36" rx="4" fill="#ddd" stroke="#999" stroke-width="1"/>
+        <circle cx="157.5" cy="202" r="5" fill="#ddd" stroke="#999" stroke-width="1"/>
+        <!-- label -->
+        <text x="120" y="320" class="wk-bme-ttl" text-anchor="middle">SG90</text>
+        <text x="120" y="343" class="wk-bme-sub" text-anchor="middle">Servo Motor</text>
+        <!-- pads on right side -->
+        <circle cx="235" cy="230" r="6" class="wk-bme-pad"/>
+        <circle cx="235" cy="295" r="6" class="wk-bme-pad"/>
+        <circle cx="235" cy="360" r="6" class="wk-bme-pad"/>
+        <text x="220" y="234" class="wk-oled-lbl" text-anchor="end">V+</text>
+        <text x="220" y="299" class="wk-oled-lbl" text-anchor="end">GND</text>
+        <text x="220" y="364" class="wk-oled-lbl" text-anchor="end">PWM</text>
+      </g>
+      <text x="143" y="406" class="dlbl" text-anchor="middle">the servo motor</text>
+      <text x="143" y="424" class="dsub" text-anchor="middle">three wires, right-hand side</text>
+
+      <!-- wires -->
+      <path d="M235 230 H420 V154 H537" class="wkwire red"/>
+      <path d="M235 295 H370 V234 H537" class="wkwire black"/>
+      <path d="M235 360 H537" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
+
+      <!-- legend -->
+      <rect x="50" y="442" width="310" height="118" rx="10" class="pane"/>
+      <path d="M70 472 L100 472" class="wkwire red"/>
+      <text x="110" y="477" class="dsub">V+ &rarr; VBUS &middot; pin 2 (5&thinsp;V USB)</text>
+      <path d="M70 504 L100 504" class="wkwire black"/>
+      <text x="110" y="509" class="dsub">GND &rarr; GND &middot; pin 6</text>
+      <path d="M70 536 L100 536" class="wkwire" style="stroke:#C56200;stroke-width:4;stroke-linecap:round"/>
+      <text x="110" y="541" class="dsub">PWM &rarr; GP28 (GPIO18) &middot; pin 12</text>
+
+      <text x="390" y="570" class="dsub" text-anchor="middle">Pins 2, 6 and 12 are all on the left side, so all three wires go the same direction.</text>
+    </svg>
+  </div>
+
+  <div class="tab-panel" id="tab-real" hidden>
+    <div class="callout">
+      <strong>Share the servo.</strong> One physical servo is shared between two people at the same board.
+      Disconnect the servo before the other person runs their code, then reconnect it for yours.
+      In Wokwi there is no sharing &mdash; each person gets their own simulation.
+    </div>
+    <p>On the real LilEx5 board, find the 40-pin header on the right-hand edge. Count from the top.</p>
+    <div class="tablescroll"><table>
+      <thead><tr><th>What to connect</th><th>Header pin</th><th>Board silkscreen label</th></tr></thead>
+      <tbody>
+        <tr><td>Servo V+ (red wire)</td><td><strong>Pin 2</strong></td><td>5V / VBUS</td></tr>
+        <tr><td>Servo GND (black or brown wire)</td><td><strong>Pin 6</strong></td><td>GND</td></tr>
+        <tr><td>Servo PWM (orange wire)</td><td><strong>Pin 12</strong></td><td>GPIO18</td></tr>
+      </tbody>
+    </table></div>
+    <p>The servo connector snaps onto three adjacent pins; these three are <em>not</em> adjacent on the
+    header, so you will use three separate jumper wires, one per servo lead. Match the wire colours
+    carefully &mdash; connecting V+ to GND will not break the Pico, but the servo will not move.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ WRITE THE PROGRAM ═══════════════════════════════ -->
+<section id="code">
+  <h2>&#128203; Write the program</h2>
+  <p class="lede">Open Thonny, create a new file, and type this exactly. Save it as
+  <code>main.py</code> on the Pico.</p>
+
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpzZXJ2byA9IFBXTShQaW4oMjgpKSAgICAgICAjIHRoZSBzZXJ2byBpcyBvbiBHUDI4CnNlcnZvLmZyZXEoNTApICAgICAgICAgICAgICMgc2Vydm9zIHdhbnQgNTAgcHVsc2VzIGEgc2Vjb25kCgpsZWZ0ICAgPSAxNjM4ICAgICAgICAgICAgICAjIGxlZnQgcG9zaXRpb24KbWlkZGxlID0gNDkxNSAgICAgICAgICAgICAgIyBtaWRkbGUgcG9zaXRpb24KcmlnaHQgID0gODE5MiAgICAgICAgICAgICAgIyByaWdodCBwb3NpdGlvbgoKd2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="Full Activity 3 program: from machine import Pin, PWM; from time import sleep; servo = PWM(Pin(28)); servo.freq(50); left=1638; middle=4915; right=8192; while True move left middle right"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <p class="note">The code is shown as a picture so that you practise typing it yourself.</p>
+</section>
+
+<!-- ═══════════════════════════════ LINE BY LINE ═══════════════════════════════ -->
+<section>
+  <h2>&#128269; Line by line</h2>
+  <div class="tablescroll"><table class="lineby">
+    <thead><tr><th>Line(s)</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQ==" role="img" aria-label="from machine import Pin, PWM"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Brings in the <code>Pin</code> and <code>PWM</code> tools from the machine module.</td>
+      </tr>
+      <tr>
+        <td><span class="codeimg inline" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcA==" role="img" aria-label="from time import sleep"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Brings in <code>sleep</code> so you can pause between movements.</td>
+      </tr>
+      <tr>
+        <td><span class="codeimg inline" data-code="c2Vydm8gPSBQV00oUGluKDI4KSkgICAgICAgIyB0aGUgc2Vydm8gaXMgb24gR1AyOApzZXJ2by5mcmVxKDUwKSAgICAgICAgICAgICAjIHNlcnZvcyB3YW50IDUwIHB1bHNlcyBhIHNlY29uZA==" role="img" aria-label="servo = PWM(Pin(28))  servo.freq(50)"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Creates a PWM object on GP28 and sets it to 50 pulses per second &mdash; the speed all hobby servos expect.</td>
+      </tr>
+      <tr>
+        <td><span class="codeimg inline" data-code="bGVmdCAgID0gMTYzOCAgICAgICAgICAgICAgIyBsZWZ0IHBvc2l0aW9uCm1pZGRsZSA9IDQ5MTUgICAgICAgICAgICAgICMgbWlkZGxlIHBvc2l0aW9uCnJpZ2h0ICA9IDgxOTIgICAgICAgICAgICAgICMgcmlnaHQgcG9zaXRpb24=" role="img" aria-label="left = 1638  middle = 4915  right = 8192"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Stores the three duty values as named variables. <strong>1638</strong> = left, <strong>4915</strong> = middle, <strong>8192</strong> = right.</td>
+      </tr>
+      <tr>
+        <td><span class="codeimg inline" data-code="d2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="while True: move left, middle, right loop"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Repeats forever. Each pass moves the arm left, waits one second, moves to middle, waits, then moves right and waits again.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════════════════════════ SAVE AND RUN ═══════════════════════════════ -->
+<section id="run">
+  <h2>&#9654;&#65039; Save and run</h2>
+  <ol>
+    <li>Make sure the Pico is connected by USB.</li>
+    <li>In Thonny, choose <strong>File &rarr; Save as&hellip;</strong> and pick <em>Raspberry Pi Pico</em>. Name the file <code>main.py</code>.</li>
+    <li>Press the green <strong>Run</strong> button (or press&nbsp;<kbd>F5</kbd>).</li>
+    <li>Watch the servo arm sweep: left &rarr; middle &rarr; right, every second. In Wokwi, click the green&nbsp;&#9654; button in the top-left corner of the simulator.</li>
+  </ol>
+  <div class="callout">
+    <strong>Servo humming but not moving?</strong> The arm may already be at the stop.
+    Watch carefully &mdash; it moves three times before returning to the same spot.
+    If it never moves at all, check the wiring (especially whether the red wire is in pin&nbsp;2, not pin&nbsp;1).
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ INTRODUCING PRINT ═══════════════════════════════ -->
+<section id="shell">
+  <h2>&#128196; New this activity &mdash; <code>print()</code></h2>
+  <p class="lede">Look at the Shell panel at the bottom of Thonny while the program runs. You will
+  see the words <em>left</em>, <em>middle</em> and <em>right</em> appearing one by one. That is
+  <span class="codeimg inline" data-code="cHJpbnQoImxlZnQiKQ==" role="img" aria-label="print("left")"><span class="codefallback">Code is shown as a picture.</span></span> at work.</p>
+
+  <p><span class="codeimg inline" data-code="cHJpbnQoImxlZnQiKQ==" role="img" aria-label="print("left")"><span class="codefallback">Code is shown as a picture.</span></span> sends text to the Shell. You pass it a message in quotes, and it prints that message
+  the moment the line runs. It does not change what the servo does &mdash; it is a window into
+  what your program is thinking. From this activity onwards you can use <span class="codeimg inline" data-code="cHJpbnQoImxlZnQiKQ==" role="img" aria-label="print("left")"><span class="codefallback">Code is shown as a picture.</span></span> any time you
+  want to know what a value is, whether a branch was taken, or simply how far your program has got.</p>
+
+  <div class="callout">
+    <strong>Shell not showing anything?</strong> The program may have crashed before reaching the
+    print line. Look for a red error message. If the Shell is blank and the servo is moving, you
+    may have an older version of the file still running &mdash; stop it, save again, and re-run.
+  </div>
+
+  <div class="typer-box">
+    <p class="typer-prompt">Practise typing these three lines &mdash; you will type them in every
+    servo program you write:</p>
+    <div id="typerwidget"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CHECK YOURSELF ═══════════════════════════════ -->
+<section>
+  <h2>&#9989; Check yourself</h2>
+  <ul class="checklist" id="checklist">
+    <li data-key="c1">The servo arm sweeps left &rarr; middle &rarr; right and repeats.</li>
+    <li data-key="c2">The Shell in Thonny shows <em>left</em>, <em>middle</em>, <em>right</em> one per second.</li>
+    <li data-key="c3">I can say which header pin the orange wire goes to (pin&nbsp;12).</li>
+    <li data-key="c4">I can explain why VBUS (pin&nbsp;2) is used instead of 3V3 (pin&nbsp;1).</li>
+    <li data-key="c5">I understand that <span class="codeimg inline" data-code="c2Vydm8gPSBQV00oUGluKDI4KSk=" role="img" aria-label="servo = PWM(Pin(28))"><span class="codefallback">Code is shown as a picture.</span></span> creates a PWM connection, not an ordinary pin.</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════ TROUBLESHOOT ═══════════════════════════════ -->
+<section id="fix">
+  <h2>&#128295; If it breaks</h2>
+  <div class="tablescroll"><table>
+    <thead><tr><th>Symptom</th><th>Most likely cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Servo does not move at all</td>
+        <td>Power wire in wrong pin</td>
+        <td>Check that the red wire is in pin&nbsp;2 (VBUS, 5&thinsp;V), not pin&nbsp;1 (3V3).</td>
+      </tr>
+      <tr>
+        <td>Servo buzzes but does not swing</td>
+        <td>Signal wire in wrong pin</td>
+        <td>Count down the left side of the header &mdash; the orange wire must be in pin&nbsp;12 (GPIO18).</td>
+      </tr>
+      <tr>
+        <td><code>TypeError</code> in Shell</td>
+        <td>Missing <code>freq()</code> call</td>
+        <td>Make sure <span class="codeimg inline" data-code="c2Vydm8uZnJlcSg1MCk=" role="img" aria-label="servo.freq(50)"><span class="codefallback">Code is shown as a picture.</span></span> appears before the while loop.</td>
+      </tr>
+      <tr>
+        <td>Servo twitches then stops</td>
+        <td>Power supply too weak</td>
+        <td>Try a different USB cable or a powered USB hub. Some cables only charge and cannot supply enough current for a servo.</td>
+      </tr>
+      <tr>
+        <td>Shell shows nothing</td>
+        <td>Old code running</td>
+        <td>Click the red Stop button, save the file again (Ctrl+S), and press Run.</td>
+      </tr>
+      <tr>
+        <td><code>NameError: name 'PWM' is not defined</code></td>
+        <td>Import line missing or misspelled</td>
+        <td>Check that <span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQ==" role="img" aria-label="from machine import Pin, PWM"><span class="codefallback">Code is shown as a picture.</span></span> is the very first line of your file.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════════════════════════ EXERCISE ═══════════════════════════════ -->
+<section id="exercise">
+  <h2>&#128736;&#65039; Exercise &mdash; Signal arm</h2>
+  <p class="lede">Change the program so the arm visits <strong>your own four stops</strong>, holds
+  each for a different amount of time, and prints its position at every stop.</p>
+  <p>Keep everything you already have &mdash; the imports, the setup, the three variables &mdash; but
+  change what happens inside the <code>while</code> loop. Here is what to figure out:</p>
+  <ol>
+    <li>Rename (or add) variables to give your four stops useful names. You already know that numbers
+    between 1638 and 8192 land somewhere between left and right.</li>
+    <li>Call <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobGVmdCk=" role="img" aria-label="servo.duty_u16(left)"><span class="codefallback">Code is shown as a picture.</span></span>, <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobWlkZGxlKQ==" role="img" aria-label="servo.duty_u16(middle)"><span class="codefallback">Code is shown as a picture.</span></span>, or <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span> &mdash; or a mix of them &mdash; four times in a row,
+    with a <code>sleep</code> between each.</li>
+    <li>Add a <span class="codeimg inline" data-code="cHJpbnQoImxlZnQiKQ==" role="img" aria-label="print("left")"><span class="codefallback">Code is shown as a picture.</span></span> after each movement so the Shell shows where the arm went.</li>
+    <li>Make at least one hold time different from the others (for example, pause longer at the end
+    before sweeping back).</li>
+  </ol>
+  <div class="callout">
+    <strong>No for loops yet.</strong> Use only <code>while True:</code>, <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobGVmdCk=" role="img" aria-label="servo.duty_u16(left)"><span class="codefallback">Code is shown as a picture.</span></span> / <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobWlkZGxlKQ==" role="img" aria-label="servo.duty_u16(middle)"><span class="codefallback">Code is shown as a picture.</span></span> /
+    <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span>, <code>sleep()</code>, and <code>print()</code>. Everything you need was introduced
+    in Activity 2 or earlier in this activity.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ GOING FURTHER ═══════════════════════════════ -->
+<section>
+  <h2>&#127919; Going further</h2>
+  <p>The numbers 1638, 4915, and 8192 are three points on a continuous scale. Any whole number
+  between 1638 and 8192 is a valid position &mdash; not just three of them. If you choose a number
+  halfway between left and middle (about 3276) the arm will stop there. Later activities will show
+  how to compute positions mathematically and how to sweep smoothly &mdash; but those tools have not
+  been introduced yet, so for now explore by experimenting with numbers.</p>
+  <p>You can also connect a servo to a different GP pin by changing the number inside
+  <span class="codeimg inline" data-code="c2Vydm8gPSBQV00oUGluKDI4KSk=" role="img" aria-label="servo = PWM(Pin(28))"><span class="codefallback">Code is shown as a picture.</span></span>. Any of the GP pins that do not already have a job can drive a servo. The duty values
+  stay the same regardless of which pin you use.</p>
+</section>
+
+<!-- ═══════════════════════════════ QUIZ ═══════════════════════════════ -->
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> You have moved
+  something for the first time &mdash; and you know exactly where it went. Activity 4 builds on this
+  to add a button that controls the arm directly.</div>
+</section>
+
+<!-- ═══════════════════════════════ WORDS TO REMEMBER ═══════════════════════════════ -->
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <div class="tablescroll"><table>
+    <tbody>
+      <tr><td><strong>Servo motor</strong></td><td>A motor with a built-in circuit that moves its arm to a precise angle based on the pulse it receives.</td></tr>
+      <tr><td><strong>PWM</strong></td><td><em>Pulse Width Modulation.</em> A pin that flickers on and off rapidly. The length of each &ldquo;on&rdquo; burst carries the signal.</td></tr>
+      <tr><td><strong>Duty value</strong></td><td>The number you pass to <code>duty_u16()</code>. It sets how long each pulse lasts. Range 0&ndash;65535; for this servo you use 1638&ndash;8192.</td></tr>
+      <tr><td><strong>VBUS</strong></td><td>The 5&thinsp;V supply drawn straight from the USB cable. Header pin&nbsp;2 on the LilEx5. The servo needs this &mdash; not 3V3.</td></tr>
+      <tr><td><strong><code>PWM(Pin(28))</code></strong></td><td>Creates a PWM-controlled connection to GP28. You must call this before you can set a duty value.</td></tr>
+      <tr><td><strong><code>freq(50)</code></strong></td><td>Sets 50 pulses per second, which is the standard all hobby servos expect. Call it once, right after creating the PWM object.</td></tr>
+      <tr><td><strong><code>duty_u16()</code></strong></td><td>Sets the pulse length. Pass 1638, 4915, or 8192 (or any number in between) to move the arm.</td></tr>
+      <tr><td><strong><code>print()</code></strong></td><td>Sends a message to the Shell panel. Useful for seeing what your program is doing while it runs.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="activity.js"></script>
+<script src="code.js"></script>
+</body>
+</html>

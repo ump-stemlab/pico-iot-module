@@ -327,8 +327,10 @@ them in the markup if they are there.
 ## 7. Teaching decisions already made
 
 - **Activity 1 has no `print()`.** The mission is "a pin makes a light come on"; a
-  console message competes with that. `print()` arrives in Activity 4 where reading a
-  button gives it a real job. Do not add it back to Activity 1.
+  console message competes with that. `print()` arrives in Activity 3, paired with the servo's movement so
+  students see it doing something useful immediately (Kamil's call; originally planned for
+  Activity 4). Activity 4 reuses `print()` rather than introducing it. Do not add it back
+  to Activity 1 or 2.
 - **Comments (`#`) are taught in Activity 1** and used in every code sample after.
 - Activity 1's exercise is *light all three LEDs*. The whole point is that one variable
   name can only point at one pin, so each LED needs its own name. Clues build up to
@@ -348,7 +350,7 @@ them in the markup if they are there.
   a toolbox" model, so every activity's import lines look alike. The `time.sleep()` style is shown
   once, in a `<details>`, so nobody is thrown by code they find online. Keep the single-tool form
   in later activities.
-- **Still no `print()`.** Same reason as Activity 1; it arrives in Activity 4.
+- **Still no `print()`.** It arrives in Activity 3, where the servo's output in the Shell gives it an immediate physical context. Activity 2's mission is loops and indentation; a console message competes with that.
 - **Stopping a forever-loop is taught here** (Wokwi's Stop button, Thonny's Stop or Ctrl+C) and is
   assumed from now on. Every activity after this one runs in a loop, so this never needs teaching
   again — but it does need to be in the troubleshooting table.
@@ -369,10 +371,38 @@ them in the markup if they are there.
   site, so the callout was rewritten to point back at the wiring diagram instead. `teacher-1.html`
   still carries a project id; it is not linked from the student page.
 
+### Activity 3 — Digital Output & Servo
+
+- **The one new idea is PWM repurposed for position.** Activity 2 used PWM to dim an LED;
+  here the same mechanism — a rapidly flickering pin — moves a servo arm to a named angle.
+  The new concept is that the *length* of the pulse decides a physical position, not a
+  brightness level. Three duty values (1638, 4915, 8192) encode left / middle / right.
+- **`print()` is introduced here** (Kamil's call; originally planned for Activity 4). The servo
+  moves visibly and the Shell simultaneously prints the position name — two outputs at once makes
+  `print()` immediately useful rather than abstract. Every activity from here on can use it without
+  re-introduction.
+- **The pin trap is the hardest part.** GP28 = silkscreen GPIO18 = header pin 12. Three names,
+  one hole, and the code needs the *Pico* number (28), not the *header* number (12) or the *board*
+  label (18). Check every group's wiring before power-on.
+- **VBUS (pin 2), not 3V3 (pin 1).** The SG90 is a 5 V part. At 3.3 V it twitches once and
+  stalls. All three wires go to the left-hand side of the header (pins 2, 6, 12), so routing is
+  clean with no crossings.
+- **No `for` loops in the exercise.** Only `while True:`, `sleep()`, `duty_u16()`, and
+  `print()`. Students who reach for a `for` loop are asked to rewrite it. This is the
+  module-wide rule; Activity 3 follows it.
+- **One servo per pair** on the real board; each person simulates their own in Wokwi. The program
+  is identical either way. Groups disconnect the servo before swapping who runs the code.
+- The exercise asks students to visit **four custom stops** with at least one different hold time,
+  using only the constructs above. The answer is on `teacher-3.html`.
+- `activity-3.html` uses the same wk-group SVG as Activity 9's wiring diagram (extracted). The
+  servo component is a new `wk-bme`-style group. Servo pads are at x=235 on the right edge;
+  all three wires route left to right with different x-waypoints to avoid crossings.
+
 ### Activity 4 — Digital Input
 
-- **The one idea is two halves**: a pin can be *read*, and a program can *print*. Neither is worth
-  teaching alone — a value you cannot see is not worth reading. Do not split them into two activities.
+- **The one idea is the digital input.** A pin can be *read*, and the reading printed. `print()` was
+  introduced in Activity 3; here it gets a new job — watching a pin change. Neither the reading nor
+  the printing is new; putting them together in a loop is. Do not split them into two activities.
 - **The inversion is the lesson**, the way indentation was Activity 2's. A button reads **1 when
   nobody is touching it and 0 when they are**. It gets its own top-level section (`#trap`), with the
   two pull-up state diagrams immediately before it and an expect-versus-get diagram inside it. Every
