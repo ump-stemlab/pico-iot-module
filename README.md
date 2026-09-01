@@ -29,6 +29,7 @@ type-the-code checker, progress tracking and a quiz.
 | 🌱 **Activity 9 — Soil Moisture** | https://ump-stemlab.github.io/pico-iot-module/activity-9.html |
 | 📡 **Activity 10 — Internet and Data** | https://ump-stemlab.github.io/pico-iot-module/activity-10.html |
 | 🎛️ **Activity 11 — Control from Anywhere** | https://ump-stemlab.github.io/pico-iot-module/activity-11.html |
+| 📻 **Activity 12 — Sending Messages by Radio** | https://ump-stemlab.github.io/pico-iot-module/activity-12.html |
 | 📌 **LilEx5 pin reference** | https://ump-stemlab.github.io/pico-iot-module/pinout.html |
 
 ## What the module covers
@@ -42,7 +43,7 @@ with [Thonny](https://thonny.org).
 
 | # | Activity | New idea | Status |
 |---|---|---|---|
-| 0 | Getting Started | the board, Thonny, and your first run | 🔜 |
+| 0 | [Getting Started](https://ump-stemlab.github.io/pico-iot-module/activity-0.html) | the board, Thonny, and your first run | ✅ live |
 | 1 | [Light Up an LED](https://ump-stemlab.github.io/pico-iot-module/activity-1.html) | variables, comments, GPIO pins | ✅ live |
 | 2 | [Make an LED Blink](https://ump-stemlab.github.io/pico-iot-module/activity-2.html) | loops, indentation, `sleep` | ✅ live |
 | 3 | [Digital Output & Servo](https://ump-stemlab.github.io/pico-iot-module/activity-3.html) | moving something, not just lighting it | ✅ live |
@@ -54,7 +55,7 @@ with [Thonny](https://thonny.org).
 | 9 | [Soil Moisture](https://ump-stemlab.github.io/pico-iot-module/activity-9.html) | an analogue pin, `elif`, `//`, and calibrating it yourself | ✅ live |
 | 10 | [Internet and Data](https://ump-stemlab.github.io/pico-iot-module/activity-10.html) | joining WiFi, MQTT, a live graph on the internet | ✅ live |
 | 11 | [Control from Anywhere](https://ump-stemlab.github.io/pico-iot-module/activity-11.html) | subscribing, `def`, callbacks, a switch on the web | ✅ live |
-| 12 | Sending Messages by Radio | board to board, with no internet at all | 🔜 |
+| 12 | [Sending Messages by Radio](https://ump-stemlab.github.io/pico-iot-module/activity-12.html) | UART, mode pins, channels, and no server at all | ✅ live |
 
 ## Pins used so far
 
@@ -83,6 +84,12 @@ weather sensor both join GP0 and GP1 alongside the screen — which is the whole
 having built a bus. Activity 11 reuses the red LED1 on **GP11** and, for its exercise, the
 green LED3 on **GP13**. Activities 10 and 11 need the Pico **W**: its WiFi radio is inside
 the chip, not on a pin.
+
+**Activity 12 adds six pins in one go** — **GP16** and **GP17** for the UART link to the
+radio, **GP18, GP19 and GP20** for its three mode pins, and **GP21** for the busy line
+(going-further only). They are all wired inside the board; nothing is plugged in. The mode
+pins idle at **1, 1, 1**, which means *asleep*, so every Activity 12 program has to set them
+before anything else will work — and it fails silently if it does not.
 
 **Activity 9 adds GP26** — the module's first *analogue* pin, and the first thing it asks
 anyone to wire to the 40-pin header. Only **GP26, GP27 and GP28** can measure a voltage.
@@ -119,6 +126,8 @@ docs/
   teacher-10.html   Activity 10 teacher notes (unlisted — see below)
   activity-11.html  Activity 11 — Control from Anywhere
   teacher-11.html   Activity 11 teacher notes (unlisted — see below)
+  activity-12.html  Activity 12 — Sending Messages by Radio
+  teacher-12.html   Activity 12 teacher notes (unlisted — see below)
   teacher.html      index of every teacher notes page (unlisted — see below)
   pinout.html       LilEx5 pin reference, searchable
   style.css         shared stylesheet
@@ -131,7 +140,7 @@ docs/
   robots.txt        keeps teacher pages out of search engines
   img/              LilEx5 board photos, and the Adafruit IO / Thonny screenshots
 CONTEXT.md          how this site is built — read before changing it
-PROMPT-activity-12.md hand this to a fresh chat to build the next activity
+PROMPT-activity-3.md  a leftover brief; Activity 3 is built, so it can go
 ```
 
 GitHub Pages serves the site from the `docs/` folder on `main`. Edit a file, commit,

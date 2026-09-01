@@ -36,10 +36,10 @@ during Activity 10's build, and the whole site was renumbered to it at the end o
 
 | # | Activity | State |
 |---|---|---|
-| 0 | Getting Started | not built |
+| 0 | Getting Started | live |
 | 1 | Light Up an LED | live |
 | 2 | Make an LED Blink | live |
-| 3 | Digital Output / Servo | not built |
+| 3 | Digital Output / Servo | live |
 | 4 | Digital Input | live |
 | 5 | Making Decisions | live |
 | 6 | Advanced Logic (And, Or, Not) | live |
@@ -48,11 +48,12 @@ during Activity 10's build, and the whole site was renumbered to it at the end o
 | 9 | Soil Moisture | live |
 | 10 | Wi-Fi Connectivity (Internet and Data) | live |
 | 11 | Control From Anywhere | live |
-| 12 | Radio Communication | not built |
+| 12 | Sending Messages by Radio | live |
 
-There is no Activity 0 or 3 on the site because it never had them; both have decks in
-`Module Revamp/PPTX`. The numbers **jump from 8 to 10** and that is correct, not a mistake —
-do not "tidy" it.
+**Every number from 0 to 12 now exists**, and the run is contiguous. Activity 0 and Activity 3
+were built on 31 Aug 2026 and Activity 12 on 1 Sep 2026; the earlier note about gaps at 0, 3
+and 12 is out of date and has been removed. The numbers are the Classroom's — do not renumber
+anything, the URLs are published.
 
 **What the renumber moved**, for anyone reading an old link or an old chat: 3→4, 4→5, 5→6,
 6→7, 7→8, 8→10. Activities 1, 2 and 11 did not move.
@@ -159,11 +160,12 @@ docs/activity.js       progress, tabs, board simulator, blink simulator, button 
                        box, quiz
 docs/board.js          the board explorer on pinout.html (see 3.1)
 docs/robots.txt        keeps teacher pages out of search engines
-                       (now lists teacher-1 … teacher-12)
+                       (lists teacher.html and teacher-0 … teacher-12)
 docs/img/lilex5-board.png         the board photo, LED1 **off** — the default
 docs/img/lilex5-board-red-on.png  the same board with LED1 **lit**
 docs/img/aio-*.png                real Adafruit IO screenshots (Activity 10)
 docs/img/thonny-packages.png      Thonny's package manager (Activity 10)
+docs/img/aio11-*.png              real Adafruit IO screenshots (Activity 11)
 ```
 
 In the repo root: `CONTEXT.md` (this file) and **`PROMPT-activity-N.md`** — the
@@ -172,13 +174,14 @@ only one of these: whoever builds activity N deletes it and leaves `PROMPT-activ
 behind.
 
 **There can be more than one at a time, on purpose.** A brief is only deleted when the
-activity it describes has been built. `PROMPT-activity-12.md` is the brief for *Radio
-Communication*, which is still unbuilt, so it stays where it is whoever is working.
+activity it describes has been built.
 
-**The numbering is not contiguous, also on purpose.** Activities 1, 2, 4–11 exist; 0, 3 and
-12 do not. The numbers are the Google Classroom's — see §1.1 — and the gaps are activities
-that have not been written yet. Do not renumber the existing pages; the URLs are published,
-and do not "tidy" the jump from 2 to 4 or from 11 to nothing.
+**As of 1 Sep 2026 there is no brief for a next activity, because every activity in the
+Classroom is built** — 0 to 12, contiguous. `PROMPT-activity-3.md` is a leftover from the
+Activity 3 build and can be deleted. `PROMPT-activity-12.md` was deleted during the Activity 3
+build while Activity 12 was still unbuilt, which is exactly what §3 says not to do; the
+Activity 12 build recovered it with `git show 2345bb7^:PROMPT-activity-12.md`. **If a brief
+goes missing, look in git before rewriting it.**
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -1009,6 +1012,100 @@ middle, the two loop shapes, feed versus dashboard, the three-part address, `def
 walked past, handing the name over, the `check_msg` timeline, the Wokwi wiring, the expected
 result, and the exercise's three states. Every one was rendered and looked at in both
 themes; four needed moving or resizing after seeing them.
+
+### Activity 12 — Sending Messages by Radio
+
+Built from `Activity 12 - Sending Messages by Radio.pptx` in the STEM LAB PPTX folder,
+on 1 Sep 2026. **This is the last activity in the module**: 0 to 12 are now all live and the
+numbering is contiguous.
+
+- **Use the PPTX. Ignore `Module Revamp/Activity 12.docx`.** The docx is an older, *wrong*
+  version of this activity: it calls it "Activity 10 — LoRa Communication", wires a
+  **LoRa-E5** module by hand to **GP4/GP5**, and drives it with **AT commands** and hex
+  strings. None of that is this board. The deck is the corrected version and the site follows
+  it. Do not merge anything from the docx.
+- **The module is an Ebyte E70-433MT14S — a TI CC1310 using GFSK, and it is NOT LoRa.**
+  LoRa is Semtech's patented chirp modulation (the E32, E22, E220). The two cannot hear each
+  other even on the same frequency. The student page never uses the word; `teacher-12.html`
+  says so explicitly so that nobody teaching from older material reintroduces it.
+- **The deck's pin numbers were checked against §2 and are correct** — TX/RX on GP16/GP17,
+  M2/M1/M0 on GP18/GP19/GP20, AUX on GP21. This is the first deck in the module whose pins
+  did not need correcting; Activity 11's LED pins and Activity 12's own "+3V3 (pin 17)" claim
+  (§2.1) both did.
+- **The one idea is that the middle is gone.** Activity 11 needed WiFi, an account, a key and
+  a server; today none of them exists and the message still arrives. The page opens on that
+  contrast, as `PROMPT-activity-12.md` asked, and the first diagram draws the two journeys
+  side by side.
+- **The honest cost is taught alongside the win**, in a `.cal warn` in the same section: no
+  acknowledgement, no ordering, no address. The server was doing all three of those jobs.
+  That is also the last quiz question and the collision diagram.
+- **This is the only activity in the module with no Wokwi route**, and that is settled, not
+  assumed: Wokwi has no part for a UART radio module and cannot simulate air. It is stated in
+  the hero pill, in a top-level section of its own (`#kit`), and on the teacher page. There is
+  no fallback for a student without a board — pair them. **The route table and the
+  `tab-a`/`tab-b` tabs are absent from this page on purpose.** Do not add them back.
+- **Nothing is wired.** The radio is joined to the Pico by tracks inside the PCB, so there is
+  no Wokwi-look board diagram on this page and none is needed. The UART diagram draws the two
+  chips and the crossover instead.
+- **The mode pins are the thing that eats the lesson.** Pull-ups hold M0/M1/M2 at
+  **1, 1, 1**, which is *asleep*, so every program starts with three `Pin` lines and three
+  `value` lines. **Every failure mode here is silent** — no exception, no message, just an
+  empty Shell. It gets its own top-level section (`#mode`) with a three-row diagram, and it is
+  the first row of the troubleshooting table and of the teacher page's mistakes table.
+  The order in the code is `mode(m0, m1, m2)`: **1,0,0** send and receive, **1,1,0** settings,
+  **1,1,1** asleep.
+- **Channels: 410 MHz + the channel number.** 23 is 433 MHz, 24 is 434 MHz, and **only those
+  two sit in the licence-free band**. The page says the other twenty-nine belong to somebody
+  else and to stay off them; that is the whole of the regulatory answer, and it is on the
+  teacher page too. The class listens on 23 and answers on 24 so thirty students are not
+  shouting over the instructor.
+- **The channel change is permanent** (byte 0 = `0xC0`, save for good). A board is still on 24
+  next term. `teacher-12.html` carries the one-line reset — change 24 to 23 in the same
+  program — and *Before the lesson* asks the teacher to decide whether the class ends on 23.
+- **Two genuinely new pieces of syntax, and only two**: hexadecimal literals (`0x`) and
+  picking one item out of six with a number in square brackets. Both appear only in
+  `channel.py`, both are explained in one `.cal tip`, and neither is needed for the exercise.
+  Everything else is reused — `def` and `decode()` from Activity 11, `+` and `str()` from
+  Activity 7, `if` from Activity 5, `print()` with commas from Activities 3 and 4.
+- **No `for` loops and no `elif`**, still.
+- Mission and exercise are the deck's: three programs (`listen.py`, `channel.py`, `send.py`),
+  and the exercise is **count the messages you catch**. It needs no new syntax at all — the
+  student already wrote the counting line in Part 3 — and puts the whole weight on *where* a
+  line goes: above the loop, or inside the `if`. **No answer on the student page** (rule 5.4);
+  three clues, ending in a four-point checklist. The answer is on `teacher-12.html`.
+- **The room needs the instructor's two boards.** Board A stays on 23 running the sender (the
+  broadcast); Board B moves to 24, runs the listener, and goes on the projector. **Board B is
+  the only proof the class gets that Part 3 worked** — without it thirty students transmit
+  into a room and see nothing. That is the first item in *How to run the room*.
+- **One board per student is what the page assumes** (the question `PROMPT-activity-12.md`
+  said to ask). It works because the instructor broadcasts and the class listens, then the
+  class answers on a second channel — so the thirty-links-in-one-room problem becomes the
+  *lesson* (collisions) rather than a design flaw. A pair per board also works and halves the
+  collisions.
+- Twelve diagrams: the three steps, the two journeys, the UART crossover, the three mode-pin
+  combinations, the listening Shell, one-transmits-everybody-hears, the channel line, the six
+  settings bytes, the channel-change Shell, your Shell versus the instructor's, the collision
+  timeline, and the exercise's expected output. All rendered and looked at in both themes;
+  three needed fixing after seeing them (mode-pin captions overran their boxes, the broadcast
+  rings sat on top of the title and the surrounding boards, and the two frequency labels
+  collided under boxes that were too narrow).
+- **`activity.js` and `style.css` were not touched.** Activity 12 needed no new widget and no
+  new component; the typer, quiz and progress bar are the stock ones. The typer markup needs
+  `.lno`, `data-i` and `.mark` in each `.line-row` or the widget silently does nothing and
+  throws on every keystroke — that was got wrong once during this build.
+
+#### Housekeeping done in the same pass
+
+- `docs/teacher-3.html` **had no footer at all** — a gap left by the Activity 3 build. One was
+  added from `teacher-4.html`'s template.
+- `docs/robots.txt` **did not list `teacher-0.html`**, so that page was reachable by search
+  engines. Added.
+- `docs/pinout.html`'s **AUX note was backwards** — it said the radio raises GP21 to say it is
+  *busy*; the module holds it high while it is *free*. Corrected on both rows.
+- `docs/teacher.html` had **no Activity 0 row** and still carried a "0, 3, 12 in preparation"
+  row. Both fixed, and the radio pins added to its cumulative table.
+- `docs/index.html`'s callout still said "Activities 3 and 12 are the ones still being
+  written". Rewritten.
 
 ### The Wokwi-look board diagrams (Activities 1, 4, 5, 6, 7, 8, 9, 10 and 11)
 

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 12 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 12.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-0.html">Activity 0</a>  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="activity-12.html">Activity 12</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 12 &mdash; Sending Messages by Radio</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-12.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 12 &mdash; teacher notes</h1>
+    <p class="sub">Sending Messages by Radio. The server is removed, the whole room shares one channel,
+    and the class hears what that costs as well as what it saves.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-12.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-11.html">&#8592; Activity 11 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<div class="tbanner"><b>This is the only activity in the module with no simulator.</b> There is no Wokwi
+project and there cannot be one. If a student has no board today, pair them &mdash; there is no
+fallback route to give them.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea: the middle is gone.</strong> Activity 11 needed WiFi, an account, a key and a
+    server in a data centre. Today none of them exists and the message still arrives. That sentence is
+    the hero, the first section and the last quiz question.</li>
+    <li><strong>The honest cost is taught alongside the win.</strong> No acknowledgement, no ordering, no
+    address. The server was doing all three of those jobs, and the class should be able to name at least
+    one of them by the end.</li>
+    <li><strong>UART is the new hardware idea.</strong> Two chips, two wires, no addresses &mdash;
+    deliberately contrasted with Activity 7&rsquo;s I&sup2;C bus, which has several parts and an address
+    each.</li>
+    <li><strong>Mode pins are the thing that will eat the lesson if you let them.</strong> They idle at
+    1,&nbsp;1,&nbsp;1, which is <em>asleep</em>, and every failure mode is silent. Three lines at the top
+    of every program.</li>
+    <li><strong>Broadcast, and collisions.</strong> Twenty Shells filling with the same words at the same
+    instant is the moment of the lesson. Do not rush past it to get to the code.</li>
+    <li><strong>Reused, not re-taught:</strong> the loop, <code>sleep</code>, <code>Pin</code>,
+    <code>print()</code> with commas, <code>if</code>, joining text with <code>+</code> and
+    <code>str()</code>, <code>def</code> (Activity 11), and <code>decode()</code> (Activity 11).</li>
+    <li><strong>Genuinely new syntax, and it is only two things:</strong> hexadecimal literals
+    (<code>0x</code>) and picking one item out of six with a number in square brackets. Both appear only
+    in the channel program, and both are explained on the student page.</li>
+    <li><strong>No <code>for</code> loops</strong>, still, and no <code>elif</code> is needed.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The radio, and what it is not</h2>
+  <ul>
+    <li><strong>The module is an Ebyte E70-433MT14S</strong> &mdash; a TI CC1310 using GFSK.</li>
+    <li><strong>It is not LoRa.</strong> LoRa is a different, patented way of shaping the wave, made by
+    Semtech (the E32, E22 and E220 modules). <strong>The two cannot hear each other, even on the same
+    frequency.</strong> If anyone has older material calling this activity a LoRa activity, it is wrong
+    and the student page deliberately never says the word.</li>
+    <li><strong>Channel 23 is 433&nbsp;MHz and channel 24 is 434&nbsp;MHz</strong> &mdash; 410 plus the
+    channel number. Those two sit inside the licence-free band; <strong>the other twenty-nine do
+    not</strong>. That is the honest answer to the licensing question: no licence is needed for what the
+    class is doing, and going outside those two channels is not a technical detail but somebody
+    else&rsquo;s allocation.</li>
+    <li><strong>The channel change is permanent.</strong> Byte 0 is set to the save-for-good command, so
+    it survives a power cut. See <em>Putting a board back</em> below.</li>
+    <li><strong>AUX (<span class="gp">GP21</span>) is not used today.</strong> It is the busy line &mdash;
+    high when the radio is free. Asking it instead of waiting a fixed time is the professional version of
+    the two <code>sleep</code> calls in the channel program, and it is a good going-further conversation.</li>
+  </ul>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Printed</th><th>Pico GPIO</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>TXD / RXD</td><td><span class="gp">GP16</span> / <span class="gp">GP17</span></td><td>UART0 &mdash; words out and in</td></tr>
+      <tr><td>M0 / M1 / M2</td><td><span class="gp">GP20</span> / <span class="gp">GP19</span> / <span class="gp">GP18</span></td><td>1,&nbsp;0,&nbsp;0 send and receive &middot; 1,&nbsp;1,&nbsp;0 settings &middot; 1,&nbsp;1,&nbsp;1 asleep</td></tr>
+      <tr><td>AUX</td><td><span class="gp">GP21</span></td><td>Busy line &mdash; high when the radio is free. Not used today.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cal warn"><b>Antennas on, before anybody presses Run</b>
+  A module transmitting into nothing can damage itself. Walk the room once. It takes thirty seconds and
+  it is the only hardware risk in the activity.</div>
+</section>
+
+<section>
+  <h2>How to run the room</h2>
+  <ul>
+    <li><strong>Board A</strong> stays on <strong>channel 23</strong> running the sending program. That
+    is the broadcast the class catches in Part 1.</li>
+    <li><strong>Board B</strong> moves to <strong>channel 24</strong>, runs the listening program, and
+    goes on the projector. <strong>Board B is the only proof the class gets that Part 3 worked</strong>
+    &mdash; without it, thirty students send messages into a room and see nothing.</li>
+    <li>Run <strong>Part 1 as a whole-class moment</strong>. Everybody has the program loaded and running
+    before you press Run on Board A. Twenty Shells filling at once <em>is</em> the lesson.</li>
+    <li><strong>Between Parts 2 and 3, check every hand is up.</strong> Anyone still on channel 23 fails
+    silently for the rest of the lesson and will not know why.</li>
+    <li><strong>Delete the wait inside the <code>if</code> once, live</strong>, and let them watch half a
+    message arrive. Then put it back.</li>
+    <li><strong>Let the collisions happen</strong> in Part 3 rather than preventing them, then ask how a
+    room of thirty people solves the same problem. Taking turns, and somebody saying who speaks next, are
+    both real answers used by real radio systems.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The exercise answer &mdash; never leave it in the dark</h2>
+  <p class="muted">Count the messages, and print the number in front of each one. Three changes to the
+  listening program; nothing about the radio moves.</p>
+  <span class="codeimg" data-code="IyBFeGVyY2lzZSBhbnN3ZXIgLSBsaXN0ZW4ucHkgd2l0aCBhIGNvdW50ZXIgYWRkZWQKZnJvbSBtYWNoaW5lIGltcG9ydCBVQVJULCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKbTAgPSBQaW4oMjAsIFBpbi5PVVQpCm0xID0gUGluKDE5LCBQaW4uT1VUKQptMiA9IFBpbigxOCwgUGluLk9VVCkKCm0wLnZhbHVlKDEpCm0xLnZhbHVlKDApCm0yLnZhbHVlKDApCnNsZWVwKDAuMSkKCnJhZGlvID0gVUFSVCgwLCBiYXVkcmF0ZT05NjAwLCB0eD1QaW4oMTYpLCByeD1QaW4oMTcpKQoKY291bnQgPSAwICAgICAgICAgICAgICAgICAgICAjIGFkZCB0aGlzLCBiZWZvcmUgdGhlIGxvb3AKCnByaW50KCJMaXN0ZW5pbmcgb24gY2hhbm5lbCAyMy4uLiIpCgp3aGlsZSBUcnVlOgogICAgaWYgcmFkaW8uYW55KCk6CiAgICAgICAgc2xlZXAoMC4xKQogICAgICAgIG1lc3NhZ2UgPSByYWRpby5yZWFkKCkuZGVjb2RlKCkKICAgICAgICBjb3VudCA9IGNvdW50ICsgMSAgICAgICAgICAgICAgICAgICAgICAgIyBhZGQgdGhpcyBsaW5lCiAgICAgICAgcHJpbnQoIk1lc3NhZ2UiLCBjb3VudCwgIjoiLCBtZXNzYWdlKSAgICMgY2hhbmdlIHRoaXMgbGluZQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 25 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Accepting it</th><th>What to look for</th></tr></thead>
+    <tbody>
+      <tr><td>The counter line</td><td>Above the loop, at no indentation. Inside the loop it resets every trip and the count never passes 1 &mdash; and that looks like a broken adding line.</td></tr>
+      <tr><td>The adding line</td><td><strong>Inside the <code>if</code></strong>, at eight spaces. At four spaces it counts trips round the loop, not messages, and the number races away while the Shell stays quiet. This is the whole exercise.</td></tr>
+      <tr><td>The printing line</td><td>Commas, not <code>+</code>. <code>print()</code> joins a number to text on its own; <code>+</code> would need <code>str()</code> and is also accepted.</td></tr>
+      <tr><td>The acceptance test</td><td>Send exactly five and count them landing. The last number must be 5.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cal note"><b>Why this exercise</b>
+  It needs no new syntax at all &mdash; the student wrote the same counting line in Part 3 &mdash; and it
+  puts the whole weight of the task on <em>where</em> a line goes rather than what it says. That is the
+  same lesson as Activity 2&rsquo;s indentation, arriving one last time.</div>
+</section>
+
+<section>
+  <h2>Going-further answers</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Task</th><th>Answer, in short</th></tr></thead>
+    <tbody>
+      <tr><td>Flash the green LED on each message</td><td><span class="gp">GP13</span>, on then <code>sleep(0.05)</code> then off, inside the <code>if</code>. Activity 2, unchanged.</td></tr>
+      <tr><td>Message on the OLED</td><td>Activity 7: wipe, write, show, inside the <code>if</code>. Needs <code>ssd1306.py</code> on the board. Watch the 16-character line width &mdash; a long message runs off the edge.</td></tr>
+      <tr><td>Print only messages with my name in</td><td><code>if "Aisyah" in message:</code>. The <code>in</code> keyword is new and is deliberately not taught on the student page &mdash; this is the going-further that introduces it, one student at a time.</td></tr>
+      <tr><td>Send a soil reading</td><td>Activity 9&rsquo;s ADC lines, then join the number with <code>str()</code> the way the message is already built. This is the honest use case for the whole module: a sensor in a field with no WiFi.</td></tr>
+      <tr><td>Send once a second, whole row at once</td><td>Collisions, loudly. The instructor&rsquo;s screen goes from readable to a mess. Ask them to work out the rate at which it stops being usable.</td></tr>
+      <tr><td>A private line between two boards</td><td>Bytes 1 and 2 of the settings are an address, and both must match as well as the channel. 65&nbsp;536 pairs, all inside the legal band. Change the two bytes the same way byte 4 is changed &mdash; and change them on both boards, or neither hears the other.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Putting a board back on channel 23</h2>
+  <p class="muted">Channel changes survive a power cut, so a board left on 24 will still be on 24 next
+  term. In the channel program, change 24 to 23 and run it once. Everything else is handed back exactly
+  as it was found, because only byte 4 is ever touched.</p>
+  <span class="codeimg" data-code="IyBQdXQgYSBib2FyZCBiYWNrIG9uIGNoYW5uZWwgMjM6IGNoYW5nZSBvbmUgbnVtYmVyIGluIGNoYW5uZWwucHkKY2hhbm5lbCA9IDIz" role="img" aria-label="Python code, 2 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <p class="muted">Worth doing as a five-minute whole-class step at the end of the lesson rather than
+  discovering it in the next one. If a board is ever left in an unknown state, run the channel program and
+  read the <em>before</em> line &mdash; it reports what the radio actually thinks it is set to.</p>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li><strong>Set up both of your boards and run the whole thing once.</strong> Board A sending on 23,
+    Board B listening on 24. Not optional &mdash; there is no simulator to fall back on.</li>
+    <li><strong>Check every antenna in the kit is screwed on</strong>, including the spares.</li>
+    <li><strong>Know how many boards are in the room.</strong> One each is fine and is what the activity
+    assumes: the instructor broadcasts, the class listens, then the class answers on a second channel. A
+    pair per board also works, and halves the collisions in Part 3.</li>
+    <li><strong>Put Board B on the projector before the lesson starts</strong>, running and visible. Part
+    3 is meaningless without it.</li>
+    <li><strong>Decide whether the class ends on 24 or on 23</strong>, and budget five minutes if it is
+    23.</li>
+    <li>Have the three programs on your own machine so you can put a stuck student back on track without
+    retyping.</li>
+    <li>Thonny preset to <em>MicroPython (Raspberry Pi Pico)</em>; <a href="pinout.html">pin reference</a>
+    open on every machine.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The mistakes students actually make</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>What they did</th><th>What they see</th><th>What to say</th></tr></thead>
+    <tbody>
+      <tr><td>Left the mode-pin lines out</td><td>Silence, and no error at all</td><td><strong>The dangerous one.</strong> Check it first on every silent board. The radio is asleep and nothing will ever tell you so.</td></tr>
+      <tr><td>Mode pins in the wrong order</td><td>Silence, or the settings read comes back <code>None</code></td><td>The first number is M0. Point at the three-row picture on the student page.</td></tr>
+      <tr><td>Still on channel 23 in Part 3</td><td>Their Shell looks perfect; nothing on the projector</td><td><strong>Dangerous</strong> because their own screen gives them no clue. This is why you check hands between Parts 2 and 3.</td></tr>
+      <tr><td>Ran the channel program before the mode line</td><td><code>before: None</code></td><td>The radio only answers in settings mode. Read the two printed lines rather than running it again.</td></tr>
+      <tr><td>Ran the channel program repeatedly &ldquo;to make sure&rdquo;</td><td>No harm, but no information either</td><td>Harmless &mdash; it writes the same six bytes back. Teach them to read the <em>before</em> line instead.</td></tr>
+      <tr><td>Deleted the wait inside the <code>if</code></td><td>Half messages, or <code>'NoneType' object has no attribute 'decode'</code></td><td>The message is still coming down the wire. Kind error, once they know what it means.</td></tr>
+      <tr><td>Put the wait next to the <code>if</code> instead of under it</td><td>Same as deleting it</td><td>Indentation, one last time.</td></tr>
+      <tr><td>Different baud rate at the two ends</td><td>Strange symbols</td><td>Letters arrive, but the wrong ones. Both ends must have agreed beforehand.</td></tr>
+      <tr><td>Expected their own board to hear itself</td><td>&ldquo;It is not working&rdquo;</td><td>It is sending, not listening. The proof is on the projector.</td></tr>
+      <tr><td>Left the name as Aisyah</td><td>Six identical messages on the projector</td><td>Catch this before Part 3 rather than after.</td></tr>
+      <tr><td>Typed <code>uart</code> or <code>pin</code> in lower case</td><td><code>NameError</code></td><td>Kind. One character.</td></tr>
+      <tr><td>Knocked SW5</td><td>Board goes dead</td><td>Still the power switch.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching notes</h2>
+  <ul>
+    <li><strong>Open by unplugging the internet.</strong> Ask what Activity 11 needed. Write the list on
+    the board &mdash; WiFi, account, key, server &mdash; then cross all four out and say the message still
+    arrives. That is the whole activity in one minute.</li>
+    <li><strong>The mode pins deserve five minutes on their own</strong>, before any code. They are three
+    ordinary output pins doing something students have never seen a pin do: configuring another chip
+    rather than driving something.</li>
+    <li><strong>The silence in Part 1 is not dead time.</strong> Let it sit. A room of quiet Shells
+    waiting for one transmitter is the difference between broadcast and everything they have done
+    before.</li>
+    <li><strong>Do not explain the six bytes exhaustively.</strong> The picture and the table are enough;
+    the point is read&ndash;change&ndash;write, and that reading first is what keeps the other five safe.</li>
+    <li><strong>Hexadecimal is worth one sentence, not a lesson.</strong> It is a way of writing a byte,
+    and the student page says so. Anyone who wants more can ask.</li>
+    <li><strong>The collision conversation is the best five minutes in the activity.</strong> Ask how a
+    room of people takes turns, then say that every real radio system had to invent that, because the air
+    does not do it for you.</li>
+    <li>Close the module here: from one LED on a pin to a message through the air with nothing in the
+    middle. It is worth saying out loud.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <table>
+    <tbody>
+      <tr><td>Student page</td><td><a href="activity-12.html">activity-12.html</a></td></tr>
+      <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
+      <tr><td>Previous activity</td><td><a href="activity-11.html">activity-11.html</a> &middot; <a href="teacher-11.html">teacher-11.html</a></td></tr>
+      <tr><td>The radio module</td><td><a href="https://www.cdebyte.com/products/E70-433MT14S" target="_blank" rel="noopener">cdebyte.com &mdash; E70-433MT14S</a></td></tr>
+      <tr><td>MicroPython UART</td><td><a href="https://docs.micropython.org/en/latest/library/machine.UART.html" target="_blank" rel="noopener">docs.micropython.org &mdash; machine.UART</a></td></tr>
+      <tr><td>Thonny</td><td><a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
+      <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
+      <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <div class="tablescroll">
+  <table>
+    <thead><tr><th>Pin</th><th>Used for</th><th>Activity 12</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">GP0</span> / <span class="gp">GP1</span></td><td>I&sup2;C data and clock</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP2</span> &ndash; <span class="gp">GP4</span></td><td>Buttons SW1&ndash;SW3</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP11</span> / <span class="gp">GP12</span> / <span class="gp">GP13</span></td><td>LED1 red, LED2 yellow, LED3 green</td><td>not used &mdash; going further only</td></tr>
+      <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>not used</td></tr>
+      <tr><td><span class="gp">GP16</span> / <span class="gp">GP17</span></td><td>Radio TXD / RXD</td><td><strong>required &mdash; the UART link</strong></td></tr>
+      <tr><td><span class="gp">GP18</span> / <span class="gp">GP19</span> / <span class="gp">GP20</span></td><td>Radio M2 / M1 / M0</td><td><strong>required &mdash; the mode pins</strong></td></tr>
+      <tr><td><span class="gp">GP21</span></td><td>Radio AUX</td><td>not used &mdash; going further only</td></tr>
+      <tr><td><span class="gp">GP26</span></td><td>Soil probe (Activity 9)</td><td>not used</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted"><strong>Activity 12 adds six pins</strong> &mdash; the whole radio block, and the last
+  block of the board to be used. Full map: <a href="pinout.html">pin reference</a>.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

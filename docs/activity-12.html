@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 12 &mdash; Sending Messages by Radio | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico W IoT board. Activity 12: UART, the radio module's mode pins, channels, and two boards talking with nothing in between but air.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<nav class="sitenav"><div class="wrap">
+  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
+  <a class="nl" href="index.html">Home</a>
+  <a class="nl" href="activity-0.html">Activity 0</a>  <a class="nl" href="activity-1.html">Activity 1</a>
+  <a class="nl" href="activity-2.html">Activity 2</a>
+  <a class="nl" href="activity-3.html">Activity 3</a>
+  <a class="nl" href="activity-4.html">Activity 4</a>
+  <a class="nl" href="activity-5.html">Activity 5</a>
+  <a class="nl" href="activity-6.html">Activity 6</a>
+  <a class="nl" href="activity-7.html">Activity 7</a>
+  <a class="nl" href="activity-8.html">Activity 8</a>
+  <a class="nl" href="activity-9.html">Activity 9</a>
+  <a class="nl" href="activity-10.html">Activity 10</a>
+  <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="activity-12.html" aria-current="page">Activity 12</a>
+  <a class="nl" href="pinout.html">Pin reference</a>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 12</p>
+    <h1>Sending Messages by Radio</h1>
+    <p class="sub">Yesterday your board sent a word across the world, and it went through somebody
+    else&rsquo;s computer to get there. Today it sends one across the room, and there is
+    <em>nothing in between but air</em>. No server, no account, no internet, and no permission
+    from anybody.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 60 minutes</span>
+      <span class="pill">&#128225; Real boards only &mdash; no Wokwi</span>
+      <span class="pill">&#128101; You and everybody else in the room</span>
+    </div>
+    <div class="toc">
+      <a href="#noserver">Nobody in the middle</a>
+      <a href="#kit">What you need</a>
+      <a href="#uart">How the Pico talks to the radio</a>
+      <a href="#mode">The three mode pins</a>
+      <a href="#listen">Part 1 &mdash; listen</a>
+      <a href="#channels">Part 2 &mdash; change lane</a>
+      <a href="#send">Part 3 &mdash; answer back</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Catch what your instructor is broadcasting. Then move your radio onto a different
+  channel, and <strong>answer back</strong>.</p>
+  <p>Three short programs, none of them longer than a page. The first one listens on
+  <strong>channel 23</strong>. The second moves your radio to <strong>channel 24</strong> and stops.
+  The third sends your own message out on 24, where your instructor is waiting for it.</p>
+
+<svg class="dia wide" viewBox="0 0 780 262" role="img" aria-label="The three steps of today's activity. Step one, listen on channel twenty-three and catch the instructor's broadcast. Step two, move your own radio to channel twenty-four. Step three, send a message of your own on channel twenty-four, which the instructor's second board is listening to.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Listen on 23, move to 24, answer on 24</text>
+
+  <rect x="20" y="56" width="220" height="120" rx="12" class="step"/>
+  <text x="130" y="90" class="dnumbig" text-anchor="middle">1</text>
+  <text x="130" y="126" class="dlbl" text-anchor="middle">LISTEN on 23</text>
+  <text x="130" y="152" class="dsub" text-anchor="middle">catch the broadcast</text>
+
+  <path d="M246 116 L274 116" class="arrow"/>
+
+  <rect x="280" y="56" width="220" height="120" rx="12" class="pinbox"/>
+  <text x="390" y="90" class="dnumbig" text-anchor="middle">2</text>
+  <text x="390" y="126" class="dlbl" text-anchor="middle">MOVE to 24</text>
+  <text x="390" y="152" class="dsub" text-anchor="middle">change one setting</text>
+
+  <path d="M506 116 L534 116" class="arrow"/>
+
+  <rect x="540" y="56" width="220" height="120" rx="12" class="namebox"/>
+  <text x="650" y="90" class="dnumbig" text-anchor="middle">3</text>
+  <text x="650" y="126" class="dlbl" text-anchor="middle">SEND on 24</text>
+  <text x="650" y="152" class="dsub" text-anchor="middle">your own message</text>
+
+  <text x="390" y="214" class="dsub" text-anchor="middle">Every board in the room is on the same channel at the same time. That is not a fault &mdash; it is</text>
+  <text x="390" y="238" class="dsub" text-anchor="middle">the whole difference between a radio and a phone call, and you are about to hear it.</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>&#128260; UART</h4>
+      <p>The oldest and simplest way for two chips to talk: one wire out, one wire in, one bit at a
+      time.</p></div>
+    <div class="mini"><h4>&#127899;&#65039; Mode pins</h4>
+      <p>Three ordinary output pins that tell the radio what job to do &mdash; including whether to
+      wake up at all.</p></div>
+    <div class="mini"><h4>&#128225; Channels</h4>
+      <p>A number that picks a lane in the air. Everybody on the same number hears everybody
+      else.</p></div>
+    <div class="mini"><h4>&#128172; encode and decode</h4>
+      <p>A radio carries numbers. Letters are a human idea, so words go out as bytes and come back
+      as words.</p></div>
+  </div>
+
+  <div class="cal note"><b>What you are reusing today, and will not be taught again</b>
+  The loop and <code>sleep</code> (<a href="activity-2.html">Activity&nbsp;2</a>),
+  <code>Pin</code> and comments (<a href="activity-1.html">Activity&nbsp;1</a>),
+  <code>print()</code> (<a href="activity-3.html">Activity&nbsp;3</a>),
+  <code>if</code> (<a href="activity-5.html">Activity&nbsp;5</a>),
+  joining text with <code>+</code> and <code>str()</code> (<a href="activity-7.html">Activity&nbsp;7</a>),
+  <code>def</code> (<a href="activity-11.html">Activity&nbsp;11</a>), and turning bytes back into
+  words with <code>decode()</code> (<a href="activity-11.html">Activity&nbsp;11</a>). All of it comes
+  back today, and none of it is explained again.</div>
+</section>
+
+<section id="noserver">
+  <h2>&#128683; Nobody in the middle &mdash; the one new idea</h2>
+  <p class="lede">In <a href="activity-11.html">Activity 11</a> a click on a web page turned on your
+  LED. It worked, and it worked from anywhere &mdash; but count the things that had to be awake for
+  it to happen.</p>
+  <p>A WiFi network. An account. A key. A server in a data centre somewhere, owned by a company you
+  have never met, which had to still be running at that exact moment. Take away any one of them and
+  the light does not move. <strong>Today all of them are gone</strong>, and the message still
+  arrives.</p>
+
+<svg class="dia wide" viewBox="0 0 780 380" role="img" aria-label="Two ways to get a message from one board to another. The top row is Activity 11: the message goes from a board, through a WiFi router, across the internet, into a server, and only then out to the other board. Five things have to be working. The bottom row is today: the message goes straight from one board to the other through the air, and only two things have to be working.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same message, two journeys</text>
+
+  <text x="390" y="58" class="dlbl" text-anchor="middle">Activity 11 &mdash; through somebody else&rsquo;s computer</text>
+
+  <rect x="16" y="76" width="112" height="62" rx="9" class="pane"/>
+  <text x="72" y="104" class="dlbl" text-anchor="middle">a board</text>
+  <text x="72" y="126" class="dsub" text-anchor="middle">or a phone</text>
+
+  <path d="M132 107 L158 107" class="arrow"/>
+
+  <rect x="164" y="76" width="112" height="62" rx="9" class="pane"/>
+  <text x="220" y="104" class="dlbl" text-anchor="middle">WiFi</text>
+  <text x="220" y="126" class="dsub" text-anchor="middle">a password</text>
+
+  <path d="M280 107 L306 107" class="arrow"/>
+
+  <rect x="312" y="76" width="150" height="62" rx="9" class="warnbox"/>
+  <text x="387" y="104" class="dlbl" text-anchor="middle">a server</text>
+  <text x="387" y="126" class="dsub" text-anchor="middle">an account, a key</text>
+
+  <path d="M466 107 L492 107" class="arrow"/>
+
+  <rect x="498" y="76" width="112" height="62" rx="9" class="pane"/>
+  <text x="554" y="104" class="dlbl" text-anchor="middle">WiFi again</text>
+  <text x="554" y="126" class="dsub" text-anchor="middle">at the far end</text>
+
+  <path d="M614 107 L640 107" class="arrow"/>
+
+  <rect x="646" y="76" width="118" height="62" rx="9" class="pane"/>
+  <text x="705" y="104" class="dlbl" text-anchor="middle">your board</text>
+  <text x="705" y="126" class="dsub" text-anchor="middle">listening</text>
+
+  <text x="390" y="168" class="dsub" text-anchor="middle">Five things, and four of them belong to somebody else.</text>
+
+  <path d="M40 196 L740 196" class="axis"/>
+
+  <text x="390" y="234" class="dlbl" text-anchor="middle">Today &mdash; straight through the air</text>
+
+  <rect x="80" y="252" width="200" height="76" rx="10" class="step"/>
+  <text x="180" y="284" class="dlbl" text-anchor="middle">the sending board</text>
+  <text x="180" y="308" class="dsub" text-anchor="middle">with an antenna on it</text>
+
+  <path d="M300 264 Q390 240 480 264" class="wire"/>
+  <path d="M300 290 Q390 266 480 290" class="wire"/>
+  <path d="M300 316 Q390 292 480 316" class="wire"/>
+  <text x="390" y="346" class="dsub" text-anchor="middle">air</text>
+
+  <rect x="500" y="252" width="200" height="76" rx="10" class="namebox"/>
+  <text x="600" y="284" class="dlbl" text-anchor="middle">the listening board</text>
+  <text x="600" y="308" class="dsub" text-anchor="middle">and everyone else&rsquo;s too</text>
+</svg>
+
+  <div class="cal tip"><b>This is why it matters, and it is not a toy</b>
+  A wireless doorbell, a car key, a farm sensor two fields away from the nearest wire, a walkie-talkie,
+  a weather balloon: none of them can assume there is a network. A link like today&rsquo;s keeps working
+  in a power cut, in a field, and in a country whose internet has been switched off.</div>
+
+  <div class="cal warn"><b>What you give up, and you should know it before you start</b>
+  There is <strong>no acknowledgement</strong>: your board never finds out whether anybody heard it.
+  There is <strong>no ordering</strong>: two messages can arrive the wrong way round. There is
+  <strong>no address</strong> today: everybody on your channel gets everything. The server you have just
+  thrown away was doing all three of those jobs for you.</div>
+
+  <label class="chk"><input type="checkbox" data-p="n1"><span>I can name three things Activity 11 needed that today does not</span></label>
+  <label class="chk"><input type="checkbox" data-p="n2"><span>I can say one thing the server was doing for us that nothing does today</span></label>
+</section>
+
+<section id="kit">
+  <h2>&#129514; No simulator today</h2>
+  <p class="lede">Wokwi can pretend to be a Pico, a screen, a button and a sensor. It cannot pretend to
+  be a radio.</p>
+  <p>Every activity so far has had two routes, and you have always started in the simulator. This one
+  has <strong>one route</strong>. There is no project to open and nothing to click play on &mdash;
+  everything today happens on the real boards, in the real room, with real air in between. That is
+  awkward, and it is also the point: the thing you are learning about is the air.</p>
+
+  <div class="cal warn"><b>Check the antenna is screwed on before anybody presses Run</b>
+  A radio with no antenna cannot get its signal out &mdash; and it can damage itself trying to. Look at
+  your board now, and look at your neighbour&rsquo;s.</div>
+
+  <h3>What you need</h3>
+  <div class="grid2">
+    <div class="mini"><h4>&#128268; Your LilEx5 board</h4>
+      <p>Pico&nbsp;W, USB cable, antenna screwed on. The radio is already on the board.</p></div>
+    <div class="mini"><h4>&#128187; Thonny</h4>
+      <p>Where you write the three short programs, exactly as in every activity since
+      <a href="activity-0.html">Activity&nbsp;0</a>.</p></div>
+    <div class="mini"><h4>&#128104;&#8205;&#127979; Your instructor&rsquo;s two boards</h4>
+      <p>One broadcasts on 23. The other listens on 24, on the projector, and is the only proof you
+      get that Part&nbsp;3 worked.</p></div>
+    <div class="mini"><h4>&#128683; Nothing to wire</h4>
+      <p>Not one jumper wire. The wiring was done at the factory, in tracks inside the green
+      plastic.</p></div>
+  </div>
+
+  <label class="chk"><input type="checkbox" data-p="k1"><span>My antenna is screwed on, and so is the antenna of the person next to me</span></label>
+  <label class="chk"><input type="checkbox" data-p="k2"><span>My board is plugged in and Thonny says Raspberry Pi Pico at the bottom right</span></label>
+</section>
+
+<section id="uart">
+  <h2>&#128260; How the Pico talks to the radio</h2>
+  <p class="lede">The Pico cannot make a radio wave. It hands the message to a chip that can &mdash;
+  and the way it hands it over is called <strong>UART</strong>.</p>
+  <p>You have met a bus like this before. In <a href="activity-7.html">Activity 7</a> the screen was on
+  <strong>I&sup2;C</strong>, where several parts share two wires and each one has an address. UART is
+  simpler and older: <strong>two chips, two wires, and no addresses at all</strong>. One wire carries
+  bytes out; the other carries bytes in. Nobody else is on it.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The two wires between the Pico and the radio chip. The Pico's sending pin, GP16, runs to the radio's receiving input. The radio's sending output runs back to the Pico's receiving pin, GP17. The two wires cross over: the sender of one is always joined to the receiver of the other. Both tracks are inside the board already.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Two wires, and they cross over</text>
+
+  <rect x="40" y="70" width="230" height="160" rx="12" class="pcb"/>
+  <text x="155" y="106" class="dboardttl" text-anchor="middle">the Pico</text>
+  <rect x="192" y="126" width="78" height="34" rx="6" class="part"/>
+  <text x="231" y="148" class="dpin" text-anchor="middle">GP16</text>
+  <rect x="192" y="176" width="78" height="34" rx="6" class="part"/>
+  <text x="231" y="198" class="dpin" text-anchor="middle">GP17</text>
+  <text x="116" y="152" class="dchip" text-anchor="middle">sends</text>
+  <text x="116" y="202" class="dchip" text-anchor="middle">receives</text>
+
+  <rect x="510" y="70" width="230" height="160" rx="12" class="pcb"/>
+  <text x="625" y="106" class="dboardttl" text-anchor="middle">the radio chip</text>
+  <rect x="510" y="126" width="78" height="34" rx="6" class="part"/>
+  <text x="549" y="148" class="dpin" text-anchor="middle">in</text>
+  <rect x="510" y="176" width="78" height="34" rx="6" class="part"/>
+  <text x="549" y="198" class="dpin" text-anchor="middle">out</text>
+  <text x="668" y="152" class="dchip" text-anchor="middle">receives</text>
+  <text x="668" y="202" class="dchip" text-anchor="middle">sends</text>
+
+  <path d="M270 143 L510 143" class="trace ink" marker-end="url(#ah)"/>
+  <path d="M510 193 L270 193" class="trace ink" marker-end="url(#ah)"/>
+
+  <text x="390" y="132" class="dsub" text-anchor="middle">your words going out</text>
+  <text x="390" y="222" class="dsub" text-anchor="middle">their words coming in</text>
+
+  <text x="390" y="266" class="dlbl" text-anchor="middle">Both of these are tracks inside the board. There is nothing for you to plug in.</text>
+  <text x="390" y="290" class="dsub" text-anchor="middle">Both ends must agree how fast to talk. Ours agree on 9600 &mdash; that is what the baud rate is.</text>
+</svg>
+
+  <h3>Printed on the board, and what the code calls it</h3>
+  <div class="tablescroll"><table>
+    <thead><tr><th>Printed on the board</th><th>Pico pin</th><th>What it is for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TXD</strong></td><td><span class="gp">GP16</span></td><td>Your words going out</td></tr>
+      <tr><td><strong>RXD</strong></td><td><span class="gp">GP17</span></td><td>Their words coming in</td></tr>
+      <tr><td><strong>M0 (36)</strong></td><td><span class="gp">GP20</span></td><td>Mode pin</td></tr>
+      <tr><td><strong>M1 (38)</strong></td><td><span class="gp">GP19</span></td><td>Mode pin</td></tr>
+      <tr><td><strong>M2 (40)</strong></td><td><span class="gp">GP18</span></td><td>Mode pin</td></tr>
+      <tr><td><strong>AUX</strong></td><td><span class="gp">GP21</span></td><td>Busy line &mdash; not used today</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal tip"><b>Baud rate, in one sentence</b>
+  How many bits go down the wire each second. Both ends have to have agreed beforehand, because nothing
+  in the signal says how fast it is going. Set one end to a different number and you get letters, but
+  the wrong ones &mdash; which is exactly what strange symbols in the Shell mean.</div>
+
+  <label class="chk"><input type="checkbox" data-p="u1"><span>I can say what the two UART wires do, and why they cross over</span></label>
+  <label class="chk"><input type="checkbox" data-p="u2"><span>I know which two GP numbers the radio is on, without looking them up again</span></label>
+</section>
+
+<section id="mode">
+  <h2>&#127899;&#65039; The three mode pins &mdash; do this first or nothing works</h2>
+  <p class="lede">M0, M1 and M2 together tell the radio what job to do. There are eight combinations and
+  you will use two of them.</p>
+  <p>They are ordinary output pins, set exactly the way you set an LED in
+  <a href="activity-1.html">Activity 1</a>. What makes them worth a section of their own is
+  <strong>what happens if you skip them</strong>.</p>
+
+<svg class="dia wide" viewBox="0 0 780 330" role="img" aria-label="Three combinations of the three mode pins. One, one, one is asleep, and that is how the radio starts before any program has run. One, zero, zero means send and receive, which is what the listening and sending programs use. One, one, zero means settings mode, where the radio listens to the Pico instead of to the air, and that is what the channel-changing program uses.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">M0, M1, M2 &mdash; the three you will use</text>
+
+  <text x="150" y="62" class="dlbl" text-anchor="middle">M0</text>
+  <text x="230" y="62" class="dlbl" text-anchor="middle">M1</text>
+  <text x="310" y="62" class="dlbl" text-anchor="middle">M2</text>
+
+  <rect x="40" y="78" width="700" height="70" rx="10" class="warnbox"/>
+  <text x="150" y="120" class="dnumbig" text-anchor="middle">1</text>
+  <text x="230" y="120" class="dnumbig" text-anchor="middle">1</text>
+  <text x="310" y="120" class="dnumbig" text-anchor="middle">1</text>
+  <text x="372" y="106" class="dlbl">ASLEEP</text>
+  <text x="372" y="132" class="dsub">how every board starts. Nothing arrives or is sent.</text>
+
+  <rect x="40" y="160" width="700" height="70" rx="10" class="step"/>
+  <text x="150" y="202" class="dnumbig" text-anchor="middle">1</text>
+  <text x="230" y="202" class="dnumbig" text-anchor="middle">0</text>
+  <text x="310" y="202" class="dnumbig" text-anchor="middle">0</text>
+  <text x="372" y="188" class="dlbl">SEND AND RECEIVE</text>
+  <text x="372" y="214" class="dsub">the normal job. Parts 1 and 3 both use this.</text>
+
+  <rect x="40" y="242" width="700" height="70" rx="10" class="pinbox"/>
+  <text x="150" y="284" class="dnumbig" text-anchor="middle">1</text>
+  <text x="230" y="284" class="dnumbig" text-anchor="middle">1</text>
+  <text x="310" y="284" class="dnumbig" text-anchor="middle">0</text>
+  <text x="372" y="270" class="dlbl">SETTINGS</text>
+  <text x="372" y="296" class="dsub">the radio listens to the Pico, not to the air. Part 2 uses this.</text>
+</svg>
+
+  <div class="cal warn"><b>A radio nobody has spoken to is fast asleep</b>
+  Small resistors on the board pull all three pins up to <strong>1</strong>, and 1,&nbsp;1,&nbsp;1 is
+  sleep. So <strong>every one of today&rsquo;s programs starts the same way</strong>: three
+  <code>Pin</code> lines and three <code>value</code> lines. Miss them and nothing will ever arrive
+  &mdash; and there is <em>no error message</em> to tell you why. The Shell just stays empty and you
+  think the radio is broken.</div>
+
+  <label class="chk"><input type="checkbox" data-p="m1"><span>I know what 1,&nbsp;1,&nbsp;1 does, and why that is the state my board wakes up in</span></label>
+  <label class="chk"><input type="checkbox" data-p="m2"><span>I know which combination is the normal one, and which one is for changing settings</span></label>
+</section>
+
+<section id="listen">
+  <h2>&#128066; Part 1 &mdash; listen on channel 23</h2>
+  <p class="lede">Your radio left the factory on <strong>channel 23</strong>, and so did your
+  instructor&rsquo;s. Nothing to change yet &mdash; just listen.</p>
+
+  <h3>Type the program</h3>
+  <span class="codeimg" data-code="IyBQYXJ0IDEgLSBsaXN0ZW4uIFR3byB0b29sczogVUFSVCBmb3IgdGhlIHJhZGlvLCBQaW4gZm9yIHRoZSBtb2RlIHBpbnMKZnJvbSBtYWNoaW5lIGltcG9ydCBVQVJULCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKbTAgPSBQaW4oMjAsIFBpbi5PVVQpICAgICAgICAjIHRoZSB0aHJlZSBtb2RlIHBpbnMKbTEgPSBQaW4oMTksIFBpbi5PVVQpCm0yID0gUGluKDE4LCBQaW4uT1VUKQoKbTAudmFsdWUoMSkgICAgICAgICAgICAgICAgICAjIDEsIDAsIDAgbWVhbnMgInNlbmQgYW5kIHJlY2VpdmUiCm0xLnZhbHVlKDApCm0yLnZhbHVlKDApCnNsZWVwKDAuMSkKCnJhZGlvID0gVUFSVCgwLCBiYXVkcmF0ZT05NjAwLCB0eD1QaW4oMTYpLCByeD1QaW4oMTcpKQoKcHJpbnQoIkxpc3RlbmluZyBvbiBjaGFubmVsIDIzLi4uIikKCndoaWxlIFRydWU6CiAgICBpZiByYWRpby5hbnkoKTogICAgICAgICAgICAgICAgICAgICAgIyBoYXMgYW55dGhpbmcgYXJyaXZlZD8KICAgICAgICBzbGVlcCgwLjEpICAgICAgICAgICAgICAgICAgICAgICAjIGxldCB0aGUgd2hvbGUgbWVzc2FnZSBsYW5kCiAgICAgICAgbWVzc2FnZSA9IHJhZGlvLnJlYWQoKS5kZWNvZGUoKQogICAgICAgIHByaW50KCJIZWFyZDoiLCBtZXNzYWdlKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 22 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal warn"><b>Type it, don&rsquo;t copy it</b>
+  Capital letters matter. <code>UART</code> is not <code>uart</code>, and <code>Pin</code> is not
+  <code>pin</code>. Save it to your Pico as <strong>listen.py</strong>.</div>
+
+  <h3>Type it here first</h3>
+  <p>Five lines worth getting into your fingers before you open Thonny.</p>
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import UART, Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="m0 = Pin(20, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="radio = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="message = radio.read().decode()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="radio.write(message.encode())" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 3 is the long one &mdash; it is the only line in the whole activity that mentions both radio wires at once, and the two names inside it are the wrong way round more often than not.</p>
+  </div>
+
+  <label class="chk"><input type="checkbox" data-p="l1"><span>I typed the program myself into Thonny and saved it to the Pico as listen.py</span></label>
+
+  <h3>&#128269; Only three things here are new</h3>
+  <div class="tablescroll"><table class="codetable">
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBVQVJULCBQaW4=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Two tools out of the same toolbox.</strong> <code>Pin</code> has been there since
+          Activity 1. <code>UART</code> is the new one: it is the serial link, and like everything else
+          it has to be borrowed by name.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bTAgPSBQaW4oMjAsIFBpbi5PVVQp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>An ordinary output pin.</strong> <span class="gp">GP20</span> runs to the
+          radio&rsquo;s M0 pin. <code>OUT</code> because we are doing the telling, exactly as with an
+          LED. Its two twins are on <span class="gp">GP19</span> and <span class="gp">GP18</span>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bTAudmFsdWUoMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Put a 1 on that pin.</strong> With its two twins set to 0, that is the
+          <em>send and receive</em> combination. Three lines, and without them the radio stays
+          asleep.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cmFkaW8gPSBVQVJUKDAsIGJhdWRyYXRlPTk2MDAsIHR4PVBpbigxNiksIHJ4PVBpbigxNykp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Open the link.</strong> 9600 bits a second, sending on
+          <span class="gp">GP16</span> and receiving on <span class="gp">GP17</span>. The
+          <strong>0</strong> at the front is which of the Pico&rsquo;s two UARTs to use, not a pin
+          number. From here on <code>radio</code> is the name you talk to.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="aWYgcmFkaW8uYW55KCk6" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Has anything arrived?</strong> It answers with how many bytes are waiting. Zero
+          counts as <em>no</em>, so this reads as an ordinary question &mdash; Activity 5&rsquo;s
+          <code>if</code>, with a new thing to ask about.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="c2xlZXAoMC4xKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Not padding.</strong> This one is <em>inside</em> the <code>if</code>. The first
+          byte has arrived; the rest are still coming down the wire. This gives the whole message a
+          tenth of a second to land before you read it.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="bWVzc2FnZSA9IHJhZGlvLnJlYWQoKS5kZWNvZGUoKQ==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Take what is waiting, and turn it back into words.</strong> Two steps in one
+          line: read the bytes, then decode them. Activity 11 did the same thing to a message off the
+          internet, for the same reason.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cHJpbnQoIkhlYXJkOiIsIG1lc3NhZ2Up" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Print with a comma.</strong> A label and then the thing itself, which is
+          Activity 4&rsquo;s trick and has not changed.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>&#9654;&#65039; Run it, and wait</h3>
+  <p>Press the green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd>. One line appears. Then the
+  Shell goes quiet &mdash; until your instructor presses Run.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The Shell after running the listening program. The first line, Listening on channel 23, appears straight away. Then nothing, until the instructor sends. Then three messages appear, one under the other: Hello everyone, Can you all hear me, and Change to channel 24 now. Beside it, a note: every board in the room shows the same message at the same moment.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What you should see &mdash; listening on channel 23</text>
+
+  <rect x="26" y="52" width="380" height="216" rx="8" class="pane"/>
+  <text x="216" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="56" y="118" class="dmono">Listening on channel 23...</text>
+  <text x="56" y="168" class="dmono">Heard: Hello everyone!</text>
+  <text x="56" y="200" class="dmono">Heard: Can you all hear me?</text>
+  <text x="56" y="232" class="dmono">Heard: Change to channel 24 now</text>
+  <text x="216" y="256" class="dsub" text-anchor="middle">the gap is your instructor walking to the front</text>
+
+  <rect x="426" y="52" width="330" height="216" rx="10" class="namebox"/>
+  <text x="591" y="84" class="dlbl" text-anchor="middle">Check yourself</text>
+  <text x="591" y="120" class="dsub" text-anchor="middle">The first line appears straight away.</text>
+  <text x="591" y="144" class="dsub" text-anchor="middle">Nothing else happens until</text>
+  <text x="591" y="168" class="dsub" text-anchor="middle">something is actually sent.</text>
+  <text x="591" y="206" class="dsub" text-anchor="middle">Every board in the room shows the</text>
+  <text x="591" y="230" class="dsub" text-anchor="middle">same message at the same moment.</text>
+  <text x="591" y="256" class="dsub" text-anchor="middle">A quiet Shell is not a broken program.</text>
+</svg>
+
+  <div class="cal tip"><b>Nobody is being sent to individually</b>
+  One board transmits and everybody within range hears it. That is what <strong>broadcast</strong> means,
+  and it is how ordinary radio has always worked &mdash; a transmitter does not know, and cannot know, who
+  is listening.</div>
+
+<svg class="dia wide" viewBox="0 0 780 360" role="img" aria-label="One board transmitting, drawn in the middle with two rings spreading out from it. Eight boards arranged around it all receive the same message at the same moment. The transmitting board has no idea how many of them are there.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One transmits. Everybody hears.</text>
+
+  <circle cx="390" cy="190" r="122" class="ring"/>
+  <circle cx="390" cy="190" r="84" class="ring"/>
+  <circle cx="390" cy="190" r="46" class="chip"/>
+  <text x="390" y="186" class="dlbl" text-anchor="middle">sending</text>
+  <text x="390" y="208" class="dchip" text-anchor="middle">board</text>
+
+  <rect x="20" y="62" width="118" height="48" rx="8" class="pane"/>
+  <text x="79" y="92" class="dsub" text-anchor="middle">a board</text>
+  <rect x="20" y="270" width="118" height="48" rx="8" class="pane"/>
+  <text x="79" y="300" class="dsub" text-anchor="middle">a board</text>
+  <rect x="642" y="62" width="118" height="48" rx="8" class="pane"/>
+  <text x="701" y="92" class="dsub" text-anchor="middle">a board</text>
+  <rect x="642" y="270" width="118" height="48" rx="8" class="pane"/>
+  <text x="701" y="300" class="dsub" text-anchor="middle">a board</text>
+
+  <rect x="180" y="48" width="118" height="44" rx="8" class="pane"/>
+  <text x="239" y="76" class="dsub" text-anchor="middle">a board</text>
+  <rect x="482" y="48" width="118" height="44" rx="8" class="pane"/>
+  <text x="541" y="76" class="dsub" text-anchor="middle">a board</text>
+  <rect x="180" y="288" width="118" height="44" rx="8" class="pane"/>
+  <text x="239" y="316" class="dsub" text-anchor="middle">a board</text>
+  <rect x="482" y="288" width="118" height="44" rx="8" class="pane"/>
+  <text x="541" y="316" class="dsub" text-anchor="middle">a board</text>
+
+  <text x="390" y="352" class="dsub" text-anchor="middle">The sender is told nothing. It does not know how many heard it, or whether anybody did.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="l2"><span>The first line appeared, and then the Shell went quiet</span></label>
+  <label class="chk"><input type="checkbox" data-p="l3"><span>I caught my instructor&rsquo;s broadcast</span></label>
+  <label class="chk"><input type="checkbox" data-p="l4"><span>I looked at somebody else&rsquo;s screen and saw the same words at the same moment</span></label>
+</section>
+
+<section id="channels">
+  <h2>&#128225; Part 2 &mdash; change lane</h2>
+  <p class="lede">If the whole class answered on channel 23, thirty people would be shouting over the
+  instructor. So everybody moves to <strong>24</strong>.</p>
+
+  <h3>A channel is just a number</h3>
+  <p>0 to 31. The frequency is <strong>410 MHz plus the channel number</strong>, so channel 23 is
+  433&nbsp;MHz and channel 24 is 434&nbsp;MHz. That is the whole idea &mdash; a lane in the air, picked
+  by a number.</p>
+
+<svg class="dia wide" viewBox="0 0 780 260" role="img" aria-label="A line of the thirty-two channels, nought to thirty-one. Only channels twenty-three and twenty-four are marked as free to use; the rest are marked as belonging to somebody else. Channel twenty-three is four hundred and thirty-three megahertz and channel twenty-four is four hundred and thirty-four megahertz.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Thirty-two channels. Two of them are yours.</text>
+
+  <rect x="40" y="70" width="400" height="46" rx="8" class="warnbox"/>
+  <text x="240" y="99" class="dsub" text-anchor="middle">channels 0 to 22 &mdash; somebody else&rsquo;s</text>
+
+  <rect x="452" y="70" width="104" height="46" rx="8" class="step"/>
+  <text x="504" y="99" class="dlbl" text-anchor="middle">23</text>
+
+  <rect x="568" y="70" width="104" height="46" rx="8" class="pinbox"/>
+  <text x="620" y="99" class="dlbl" text-anchor="middle">24</text>
+
+  <rect x="684" y="70" width="76" height="46" rx="8" class="warnbox"/>
+  <text x="722" y="99" class="dsub" text-anchor="middle">25&ndash;31</text>
+
+  <text x="504" y="144" class="dmono" text-anchor="middle">433 MHz</text>
+  <text x="620" y="144" class="dmono" text-anchor="middle">434 MHz</text>
+  <text x="504" y="170" class="dsub" text-anchor="middle">the broadcast</text>
+  <text x="620" y="170" class="dsub" text-anchor="middle">your answers</text>
+
+  <text x="390" y="212" class="dlbl" text-anchor="middle">410 + the channel number = the frequency in MHz</text>
+  <text x="390" y="240" class="dsub" text-anchor="middle">Only 23 and 24 sit inside the band anyone may use freely. The other twenty-nine belong to somebody else.</text>
+</svg>
+
+  <div class="cal warn"><b>Radio is regulated, and this is not a detail</b>
+  You may not transmit on any frequency you fancy. The two channels you are using sit in a band that is
+  open to everybody, worldwide, for low-power devices &mdash; the same band as garage-door remotes.
+  Every other channel on this module belongs to somebody who was given it. Do not go looking.</div>
+
+  <h3>The program that moves you</h3>
+  <p>This one <strong>sends no message at all</strong>. It changes one setting inside the radio and
+  stops. Save it as <strong>channel.py</strong> and run it <em>once</em>.</p>
+
+  <span class="codeimg" data-code="IyBQYXJ0IDIgLSBtb3ZlIHRoaXMgcmFkaW8gdG8gY2hhbm5lbCAyNC4gUnVuIGl0IG9uY2UuIEl0IHNlbmRzIG5vIG1lc3NhZ2UuCmZyb20gbWFjaGluZSBpbXBvcnQgVUFSVCwgUGluCmZyb20gdGltZSBpbXBvcnQgc2xlZXAKCm0wID0gUGluKDIwLCBQaW4uT1VUKQptMSA9IFBpbigxOSwgUGluLk9VVCkKbTIgPSBQaW4oMTgsIFBpbi5PVVQpCgpkZWYgbW9kZShhLCBiLCBjKTogICAgICAgICAgICMgc2V0IGFsbCB0aHJlZSBwaW5zIHRvZ2V0aGVyCiAgICBtMC52YWx1ZShhKQogICAgbTEudmFsdWUoYikKICAgIG0yLnZhbHVlKGMpCiAgICBzbGVlcCgwLjEpCgpyYWRpbyA9IFVBUlQoMCwgYmF1ZHJhdGU9OTYwMCwgdHg9UGluKDE2KSwgcng9UGluKDE3KSkKCmNoYW5uZWwgPSAyNCAgICAgICAgICAgICAgICAgIyAyMyBpcyA0MzMgTUh6LCAyNCBpcyA0MzQgTUh6Cgptb2RlKDEsIDEsIDApICAgICAgICAgICAgICAgICMgMSwgMSwgMCBtZWFucyAic2V0dGluZ3MgbW9kZSIKCnJhZGlvLndyaXRlKGJ5dGVzKFsweEMxLCAweEMxLCAweEMxXSkpICAgIyBhc2sgd2hhdCBpdCBpcyBzZXQgdG8Kc2xlZXAoMC41KQpzZXR0aW5ncyA9IHJhZGlvLnJlYWQoNikKcHJpbnQoImJlZm9yZToiLCBzZXR0aW5ncykKCm5ldyA9IGJ5dGVhcnJheShzZXR0aW5ncykgICAgIyBhIGNvcHkgd2UgYXJlIGFsbG93ZWQgdG8gY2hhbmdlCm5ld1swXSA9IDB4QzAgICAgICAgICAgICAgICAgIyBDMCBtZWFucyAia2VlcCB0aGlzLCBldmVuIGFmdGVyIHBvd2VyIG9mZiIKbmV3WzRdID0gY2hhbm5lbCAgICAgICAgICAgICAjIGJ5dGUgNCBpcyB0aGUgY2hhbm5lbAoKcmFkaW8ud3JpdGUobmV3KQpzbGVlcCgwLjUpCnByaW50KCJhZnRlcjogIiwgcmFkaW8ucmVhZCg2KSkKCm1vZGUoMSwgMCwgMCkgICAgICAgICAgICAgICAgIyBiYWNrIHRvIHNlbmQgYW5kIHJlY2VpdmUKcHJpbnQoIkNoYW5uZWwgaXMgbm93IiwgY2hhbm5lbCwgIj0iLCA0MTAgKyBjaGFubmVsLCAiTUh6Iik=" role="img" aria-label="Python code, 34 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <h3>What it is actually doing</h3>
+  <ol>
+    <li>Mode pins to <strong>1,&nbsp;1,&nbsp;0</strong> &mdash; the radio now listens to the Pico
+    instead of to the air.</li>
+    <li>Ask the radio what it is set to. <strong>Six bytes</strong> come back.</li>
+    <li>Copy them, change two of them, hand them back.</li>
+    <li>Mode pins back to <strong>1,&nbsp;0,&nbsp;0</strong>, and stop.</li>
+  </ol>
+
+  <h3>The six bytes</h3>
+  <p>Everything the radio knows about itself is kept in six numbers. Read them, change one, hand them
+  back.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The six settings bytes drawn as six boxes in a row, numbered nought to five. Byte nought is the command. Bytes one and two are the two halves of the address. Byte three is the speed. Byte four is the channel, and it is the only one being changed, from twenty-three to twenty-four. Byte five is the transmit power and some switches. Below, a note explains that reading first is what keeps the other five safe.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Six numbers. You are changing one of them.</text>
+
+  <rect x="26" y="62" width="112" height="86" rx="9" class="pane"/>
+  <text x="82" y="90" class="dlbl" text-anchor="middle">0</text>
+  <text x="82" y="116" class="dsub" text-anchor="middle">the command</text>
+  <text x="82" y="138" class="dsub" text-anchor="middle">ask, or save</text>
+
+  <rect x="146" y="62" width="112" height="86" rx="9" class="pane"/>
+  <text x="202" y="90" class="dlbl" text-anchor="middle">1</text>
+  <text x="202" y="116" class="dsub" text-anchor="middle">address,</text>
+  <text x="202" y="138" class="dsub" text-anchor="middle">first half</text>
+
+  <rect x="266" y="62" width="112" height="86" rx="9" class="pane"/>
+  <text x="322" y="90" class="dlbl" text-anchor="middle">2</text>
+  <text x="322" y="116" class="dsub" text-anchor="middle">address,</text>
+  <text x="322" y="138" class="dsub" text-anchor="middle">second half</text>
+
+  <rect x="386" y="62" width="112" height="86" rx="9" class="pane"/>
+  <text x="442" y="90" class="dlbl" text-anchor="middle">3</text>
+  <text x="442" y="116" class="dsub" text-anchor="middle">how fast to</text>
+  <text x="442" y="138" class="dsub" text-anchor="middle">talk</text>
+
+  <rect x="506" y="62" width="112" height="86" rx="9" class="pinbox"/>
+  <text x="562" y="90" class="dlbl" text-anchor="middle">4</text>
+  <text x="562" y="116" class="dlbl" text-anchor="middle">THE CHANNEL</text>
+  <text x="562" y="138" class="dsub" text-anchor="middle">23 becomes 24</text>
+
+  <rect x="626" y="62" width="128" height="86" rx="9" class="pane"/>
+  <text x="690" y="90" class="dlbl" text-anchor="middle">5</text>
+  <text x="690" y="116" class="dsub" text-anchor="middle">how loud, and</text>
+  <text x="690" y="138" class="dsub" text-anchor="middle">a few switches</text>
+
+  <text x="390" y="192" class="dlbl" text-anchor="middle">Read &mdash; change &mdash; write back</text>
+  <text x="390" y="218" class="dsub" text-anchor="middle">Reading first is what keeps the other five safe. Nothing about the radio drifts,</text>
+  <text x="390" y="242" class="dsub" text-anchor="middle">because only byte 4 is ever touched.</text>
+  <text x="390" y="276" class="dsub" text-anchor="middle">Byte 0 says what to do with the other five: ask what they are, save them for good, or save them until the power goes off.</text>
+</svg>
+
+  <div class="cal tip"><b>Two bits of notation you have not met before</b>
+  <strong>0xC1</strong> is a number written in hexadecimal &mdash; it is 193, in a way that is easier to
+  read a byte in. And the <strong>number in square brackets</strong> picks one item out of the six: box
+  <strong>0</strong> is the first, box <strong>4</strong> is the fifth. Counting from zero is normal
+  everywhere in programming and it does catch people once.</div>
+
+  <div class="cal warn"><b>Run this once, and read the two lines it prints</b>
+  If the first line says <em>None</em>, the radio did not answer, which means it is not in settings mode
+  &mdash; check the mode line before you change anything else. Do not just run it again and hope.</div>
+
+<svg class="dia wide" viewBox="0 0 780 280" role="img" aria-label="The Shell after running the channel program. It prints the six settings bytes before the change and after the change. The fifth of the six numbers goes from backslash x one seven to backslash x one eight. Then the last line reports that the channel is now twenty-four, four hundred and thirty-four megahertz. Beside it a note explains that backslash x one seven is twenty-three written in hexadecimal.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What you should see &mdash; changing the channel</text>
+
+  <rect x="26" y="52" width="416" height="180" rx="8" class="pane"/>
+  <text x="234" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="50" y="122" class="dmono">before: \xc0\x00\x00\x18\x17\x9c</text>
+  <text x="50" y="158" class="dmono">after:  \xc0\x00\x00\x18\x18\x9c</text>
+  <text x="50" y="200" class="dmono">Channel is now 24 = 434 MHz</text>
+
+  <rect x="462" y="52" width="294" height="180" rx="10" class="pinbox"/>
+  <text x="609" y="84" class="dlbl" text-anchor="middle">Look at the fifth number</text>
+  <text x="609" y="122" class="dmono" text-anchor="middle">\x17 = 23 = 433 MHz</text>
+  <text x="609" y="152" class="dmono" text-anchor="middle">\x18 = 24 = 434 MHz</text>
+  <text x="609" y="192" class="dsub" text-anchor="middle">Everything else stayed exactly the</text>
+  <text x="609" y="214" class="dsub" text-anchor="middle">same. You changed one number.</text>
+
+  <text x="390" y="266" class="dlbl" text-anchor="middle">This setting sticks. Unplug the board, plug it back in, and it is still on channel 24.</text>
+</svg>
+
+  <div class="cal note"><b>It survives the power going off, and that is deliberate</b>
+  Byte 0 was set to the <em>save for good</em> command. Your board will still be on channel 24 next
+  week. Your instructor has a one-line change that puts it back on 23 &mdash; ask, do not guess.</div>
+
+  <label class="chk"><input type="checkbox" data-p="c1"><span>I ran it once and got two lines of six numbers, not None</span></label>
+  <label class="chk"><input type="checkbox" data-p="c2"><span>The fifth number changed and the other five did not</span></label>
+  <label class="chk"><input type="checkbox" data-p="c3"><span>The last line said 24 = 434 MHz</span></label>
+</section>
+
+<section id="send">
+  <h2>&#128228; Part 3 &mdash; answer back</h2>
+  <p class="lede">Same setup as the listening program. Only the bottom half is different &mdash; and
+  this time your board does the talking.</p>
+
+  <span class="codeimg" data-code="IyBQYXJ0IDMgLSBzZW5kIHlvdXIgb3duIG1lc3NhZ2UsIG9uIGNoYW5uZWwgMjQKZnJvbSBtYWNoaW5lIGltcG9ydCBVQVJULCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKbTAgPSBQaW4oMjAsIFBpbi5PVVQpCm0xID0gUGluKDE5LCBQaW4uT1VUKQptMiA9IFBpbigxOCwgUGluLk9VVCkKCm0wLnZhbHVlKDEpICAgICAgICAgICAgICAgICAgIyBzZW5kIGFuZCByZWNlaXZlLCBzYW1lIGFzIGJlZm9yZQptMS52YWx1ZSgwKQptMi52YWx1ZSgwKQpzbGVlcCgwLjEpCgpyYWRpbyA9IFVBUlQoMCwgYmF1ZHJhdGU9OTYwMCwgdHg9UGluKDE2KSwgcng9UGluKDE3KSkKCm5hbWUgPSAiQWlzeWFoIiAgICAgICAgICAgICAgIyBwdXQgeW91ciBvd24gbmFtZSBoZXJlCmNvdW50ID0gMQoKd2hpbGUgVHJ1ZToKICAgIG1lc3NhZ2UgPSAiSGVsbG8gZnJvbSAiICsgbmFtZSArICIgIyIgKyBzdHIoY291bnQpCiAgICByYWRpby53cml0ZShtZXNzYWdlLmVuY29kZSgpKSAgICAgICAgIyBzdHJhaWdodCBvdXQgaW50byB0aGUgYWlyCiAgICBwcmludCgiU2VudDoiLCBtZXNzYWdlKQogICAgY291bnQgPSBjb3VudCArIDEKICAgIHNsZWVwKDUp" role="img" aria-label="Python code, 23 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal tip"><b>Put your own name in</b>
+  Change the name to yours before you run it. Your instructor&rsquo;s screen is about to fill up with
+  everybody&rsquo;s messages at once, and yours has to be findable.</div>
+
+  <h3>&#128269; The three lines that are new</h3>
+  <div class="tablescroll"><table class="codetable">
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="bWVzc2FnZSA9ICJIZWxsbyBmcm9tICIgKyBuYW1lICsgIiAjIiArIHN0cihjb3VudCk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Nothing new at all, in fact.</strong> Joining text with <code>+</code> and turning
+          a number into text with <code>str()</code> are both Activity 7. It is here because it is the
+          line you will change.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="cmFkaW8ud3JpdGUobWVzc2FnZS5lbmNvZGUoKSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>Out into the air.</strong> <code>encode</code> turns the words into bytes; the
+          write pushes them down the wire to the radio, which puts them on the air. It is the exact
+          mirror of the <code>decode</code> at the other end.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="Y291bnQgPSBjb3VudCArIDE=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td><strong>A variable that counts.</strong> Take the number in the box, add one, put it back.
+          Remember this line &mdash; the exercise is built on it.</td></tr>
+    </tbody>
+  </table></div>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Two screens side by side. On the left, your own Shell, showing three lines that each say Sent, followed by your message. On the right, the instructor's screen, showing Heard followed by messages from several different students, mixed together and out of order.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What you should see &mdash; sending on channel 24</text>
+
+  <rect x="26" y="56" width="350" height="176" rx="8" class="pane"/>
+  <text x="201" y="84" class="dlbl" text-anchor="middle">your Shell</text>
+  <text x="52" y="126" class="dmono">Sent: Hello from Aisyah #1</text>
+  <text x="52" y="162" class="dmono">Sent: Hello from Aisyah #2</text>
+  <text x="52" y="198" class="dmono">Sent: Hello from Aisyah #3</text>
+
+  <rect x="404" y="56" width="350" height="176" rx="8" class="namebox"/>
+  <text x="579" y="84" class="dlbl" text-anchor="middle">the instructor&rsquo;s screen</text>
+  <text x="430" y="126" class="dmono">Heard: Hello from Aisyah #1</text>
+  <text x="430" y="162" class="dmono">Heard: Hello from Rizal #4</text>
+  <text x="430" y="198" class="dmono">Heard: Hello from Aisyah #2</text>
+
+  <text x="390" y="264" class="dlbl" text-anchor="middle">Your Shell only shows what you sent &mdash; your board is not listening to itself.</text>
+  <text x="390" y="288" class="dsub" text-anchor="middle">The proof is on the instructor&rsquo;s screen. Go and look, and notice that everybody arrives jumbled together.</text>
+</svg>
+
+  <h3>Why it arrives jumbled &mdash; and what a collision is</h3>
+  <p>Thirty boards are sharing one channel, and none of them asks permission. Most of the time the
+  messages simply interleave. Sometimes two boards transmit at the <em>same instant</em>, the two signals
+  land on top of each other, and neither one gets through. That is a
+  <strong>collision</strong>, and nobody is told it happened.</p>
+
+<svg class="dia wide" viewBox="0 0 780 240" role="img" aria-label="A timeline of one channel. Three messages sit side by side and all arrive. Two more overlap in time, and neither of those arrives: that is a collision. Nothing reports it. The senders both believe they succeeded.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One channel, shared by everybody</text>
+
+  <path d="M40 150 L740 150" class="axis"/>
+  <text x="390" y="186" class="dsub" text-anchor="middle">time</text>
+
+  <rect x="60" y="106" width="110" height="36" rx="6" class="step"/>
+  <text x="115" y="130" class="dsub" text-anchor="middle">arrives</text>
+  <rect x="190" y="106" width="110" height="36" rx="6" class="step"/>
+  <text x="245" y="130" class="dsub" text-anchor="middle">arrives</text>
+  <rect x="320" y="106" width="110" height="36" rx="6" class="step"/>
+  <text x="375" y="130" class="dsub" text-anchor="middle">arrives</text>
+
+  <rect x="486" y="82" width="150" height="30" rx="6" class="warnbox"/>
+  <text x="561" y="103" class="dsub" text-anchor="middle">one board sends</text>
+  <rect x="546" y="116" width="150" height="30" rx="6" class="warnbox"/>
+  <text x="621" y="137" class="dsub" text-anchor="middle">another sends</text>
+
+  <text x="591" y="62" class="dlbl" text-anchor="middle">COLLISION</text>
+  <text x="390" y="216" class="dsub" text-anchor="middle">The three on the left arrive. The two on the right overlap, so neither gets through &mdash; and neither sender is told.</text>
+</svg>
+
+  <div class="cal note"><b>A room of people solves this the same way</b>
+  Not by shouting louder. By taking turns, or by somebody saying who speaks next. Real radio systems do
+  exactly that too &mdash; and every one of them had to be invented, because the air itself does not do
+  it for you.</div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>My own name is in the message, not Aisyah</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I went and looked at the instructor&rsquo;s screen and found my own message on it</span></label>
+  <label class="chk"><input type="checkbox" data-p="s3"><span>I can say what a collision is, and why nobody gets told about one</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <p class="lede">Nearly always one of these six.</p>
+  <div class="tablescroll"><table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nothing ever arrives</strong></td><td>Check the three mode-pin lines say 1, 0, 0. Without them the radio is asleep and there is no error to tell you so. This is the first thing to check, every time.</td></tr>
+      <tr><td><strong>Still nothing, and the mode pins are right</strong></td><td>Are you on the same channel as whoever is sending? Listen on 23, answer on 24. Run the channel program again and read what it prints.</td></tr>
+      <tr><td><strong>Strange symbols instead of words</strong></td><td>Both radios must talk at the same speed. Check the baud rate is 9600 at both ends &mdash; the letters arrive, but the wrong ones.</td></tr>
+      <tr><td><code>'NoneType' object has no attribute 'decode'</code></td><td>The read found nothing yet: the first byte had arrived but the rest had not. The tenth-of-a-second wait <em>inside</em> the <code>if</code> is what stops this. Check it is indented under the <code>if</code>, not next to it.</td></tr>
+      <tr><td><strong>The first line printed is</strong> <code>before: None</code></td><td>The radio did not answer, so it is not in settings mode. Check the mode line before that point says 1, 1, 0.</td></tr>
+      <tr><td><strong>Your instructor cannot hear you</strong></td><td>You are still on channel 23. Run the channel program and watch for the line that says 24 = 434 MHz.</td></tr>
+      <tr><td><code>NameError: name 'UART' isn't defined</code></td><td><code>UART</code> is missing from the import line at the top. It has to be borrowed by name, alongside <code>Pin</code>.</td></tr>
+      <tr><td><strong>The messages arrive cut in half</strong></td><td>The wait inside the <code>if</code> is too short or missing. A message takes real time to come down a 9600-bit wire.</td></tr>
+      <tr><td><strong>It worked, then stopped when I unplugged the board</strong></td><td>It did not. The channel setting survives the power going off &mdash; you are still on 24. If the class has gone back to 23 and you have not, you will hear nothing.</td></tr>
+      <tr><td><strong>The program will not stop</strong></td><td>It loops for ever, like every program since Activity 2. Thonny&rsquo;s Stop, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; count what you catch</h2>
+  <p class="lede">Your instructor is going to broadcast a burst of messages on channel 23. How many did
+  you actually get?</p>
+  <p><strong>Task:</strong> change your listening program so that it <strong>counts</strong> the messages
+  and prints the number in front of every one.</p>
+  <ul>
+    <li>Nothing about the radio changes. Not the mode pins, not the link, not the channel. This is a
+    counting problem</li>
+    <li>You have already written the counting line once today &mdash; it is in the sending program</li>
+    <li>Start from your listening program, not from a blank file</li>
+  </ul>
+
+  <h3>What success looks like</h3>
+
+<svg class="dia wide" viewBox="0 0 780 290" role="img" aria-label="The Shell showing the finished exercise. The first line still says Listening on channel 23. Then each message arrives with a number in front of it: Message 1, Message 2, Message 3. Beside it, a note listing the three small changes: a counter set to nought before the loop, one added to it when a message arrives, and the counter printed alongside the message.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The same messages as before, now numbered as they arrive</text>
+
+  <rect x="26" y="52" width="400" height="200" rx="8" class="pane"/>
+  <text x="226" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="50" y="120" class="dmono">Listening on channel 23...</text>
+  <text x="50" y="160" class="dmono">Message 1 : Hello everyone!</text>
+  <text x="50" y="192" class="dmono">Message 2 : Can you all hear me?</text>
+  <text x="50" y="224" class="dmono">Message 3 : Change to channel 24 now</text>
+
+  <rect x="446" y="52" width="310" height="200" rx="10" class="namebox"/>
+  <text x="601" y="84" class="dlbl" text-anchor="middle">Three small changes</text>
+  <text x="601" y="124" class="dsub" text-anchor="middle">a counter, set to 0, before the loop</text>
+  <text x="601" y="160" class="dsub" text-anchor="middle">add 1 to it when a message arrives &mdash;</text>
+  <text x="601" y="182" class="dsub" text-anchor="middle">not every time round the loop</text>
+  <text x="601" y="222" class="dsub" text-anchor="middle">the counter printed with the message</text>
+</svg>
+
+  <details><summary>&#128161; Clue 1 &mdash; where the counter goes</summary>
+    <p>One new line goes <strong>above the loop</strong>, next to where the link is opened. It makes a
+    variable and puts <strong>0</strong> in it. That is Activity 1, unchanged: a name and a value.</p>
+    <p>It has to be above the loop. If it is inside, it is set back to 0 every time round and your count
+    never gets past 1 &mdash; which is a real thing that happens, and it looks like the counting line is
+    broken when it is not.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; when to add one</summary>
+    <p>The loop goes round about ten times a second whether anything arrived or not. If you add one every
+    time round, you will be counting <em>trips round the loop</em>, not messages, and the number will
+    race away while the Shell stays quiet.</p>
+    <p>So the counting line goes <strong>inside the <code>if</code></strong>, at eight spaces, in among
+    the lines that only run when something has actually arrived. The exact line already exists in your
+    sending program &mdash; go and look at it.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Four things to check before you decide it is broken:</p>
+    <ul>
+      <li>Is the counter created <strong>above</strong> the loop, at no indent at all?</li>
+      <li>Is the adding line at <strong>eight spaces</strong>, under the <code>if</code>, and not at
+      four alongside it?</li>
+      <li>Does the printing line mention the counter as well as the message? <code>print()</code> will
+      join a number to text for you if you separate them with commas &mdash; Activity 4&rsquo;s
+      trick.</li>
+      <li>Is the number going up by one per message, or by one per trip round the loop? If it jumps to
+      four hundred while nothing is arriving, the adding line is in the wrong place.</li>
+    </ul>
+    <p>Test it by asking your instructor to send exactly five, and counting them yourself as they land.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; work it out from the clues, and check it by counting
+  the messages yourself as they arrive. Your teacher has the worked answer if the class needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li><strong>Flash the green LED</strong> on <span class="gp">GP13</span> every time a message
+    arrives, so you can count them from across the room.
+    <a href="activity-2.html">Activity 2</a> has everything you need.</li>
+    <li><strong>Put the message on the OLED screen</strong> from
+    <a href="activity-7.html">Activity 7</a>, so the board does not need a computer attached to be
+    useful.</li>
+    <li><strong>Print only the messages with your own name in them.</strong> One <code>if</code>, and a
+    question you have not asked before &mdash; find out how to ask whether one piece of text is inside
+    another.</li>
+    <li><strong>Send a soil reading instead of a greeting</strong>, using
+    <a href="activity-9.html">Activity 9</a>. A moisture sensor in a field with no WiFi is the actual
+    reason this radio is on the board.</li>
+    <li><strong>Make the sending program wait one second instead of five</strong>, then get the whole row
+    to run it at once. Watch what happens to the instructor&rsquo;s screen, and work out why.</li>
+    <li><strong>Give two boards a private line.</strong> Bytes 1 and 2 of the settings are an address, and
+    two radios only hear each other if their addresses match as well as their channels. Your teacher has
+    the details.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> You have now sent a
+  message with nothing in the middle at all &mdash; no server, no account, no internet &mdash; and you
+  know what that costs as well as what it saves. That is the last activity in the module.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <div class="tablescroll"><table>
+    <tbody>
+      <tr><td><strong>Radio</strong></td><td>Sending information as a wave through the air, with no wire between the two ends.</td></tr>
+      <tr><td><strong>UART</strong></td><td>A two-wire serial link between two chips: one wire out, one wire in, one bit at a time. No addresses, and only two ends.</td></tr>
+      <tr><td><strong>Baud rate</strong></td><td>How fast those two wires talk. Both ends must have agreed beforehand &mdash; ours use 9600.</td></tr>
+      <tr><td><strong>Mode pins</strong></td><td>Three ordinary output pins that tell the radio what job to do. 1,&nbsp;1,&nbsp;1 is asleep, and that is where every board starts.</td></tr>
+      <tr><td><strong>Channel</strong></td><td>A number that picks the frequency. Here the frequency is 410 plus the channel, so 23 is 433&nbsp;MHz.</td></tr>
+      <tr><td><strong>Broadcast</strong></td><td>Transmitting to everybody in range at once, without knowing or caring who is listening.</td></tr>
+      <tr><td><strong>Collision</strong></td><td>Two radios transmitting at the same instant, so neither message gets through cleanly &mdash; and nobody is told.</td></tr>
+      <tr><td><strong><code>encode</code> / <code>decode</code></strong></td><td>Turning text into bytes, and bytes back into text. A radio carries numbers; letters are a human idea.</td></tr>
+      <tr><td><strong>Hexadecimal</strong></td><td>Counting in sixteens instead of tens, written with a <code>0x</code> in front. A convenient way to write one byte.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    "from machine import UART, Pin",
+    "m0 = Pin(20, Pin.OUT)",
+    "radio = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))",
+    "message = radio.read().decode()",
+    "radio.write(message.encode())"
+  ],
+  quiz: [
+    { q: 'Your program runs, the Shell is silent, and your neighbour is definitely transmitting. What do you check first?',
+      opts: ['The USB cable', 'The three mode-pin lines', 'The baud rate', 'The antenna'],
+      right: 1,
+      why: 'The pins are pulled up to 1, 1, 1 on the board, and that means asleep. A radio that was never woken up behaves exactly like a broken one — with no error message either way.' },
+    { q: 'What does the channel number actually decide?',
+      opts: ['Who is allowed to hear you', 'How fast the two chips talk', 'The frequency &mdash; 410 MHz plus the channel', 'How far the signal reaches'],
+      right: 2,
+      why: 'It is a lane in the air, picked by a number. Channel 23 is 433 MHz and channel 24 is 434 MHz, and only those two are free for anyone to use.' },
+    { q: 'Why does the message have to be encoded before it is sent, and decoded when it arrives?',
+      opts: ['To keep it secret from other boards', 'To make it shorter', 'Because a radio can only carry numbers &mdash; letters are a human idea', 'Because the channel changed'],
+      right: 2,
+      why: 'Same reason as Activity 11. Bytes go on the air; words are what people read. The two lines are exact mirrors of each other.' },
+    { q: 'Your instructor sends one message and every screen in the room shows it at the same moment. What is that called?',
+      opts: ['A collision', 'A broadcast', 'A subscription', 'A crossover'],
+      right: 1,
+      why: 'A transmitter does not know who is listening and cannot find out. That is how ordinary radio has always worked, and it is the opposite of Activity 11, where a server decided who got what.' },
+    { q: 'Two boards transmit at exactly the same instant. What happens?',
+      opts: ['The first one wins and the second waits', 'Both messages arrive, one after the other', 'Neither gets through, and neither sender is told', 'The radio reports an error'],
+      right: 2,
+      why: 'That is a collision. There is no acknowledgement here at all — the server you threw away was the thing that used to handle this.' },
+    { q: 'You unplug your board at the end of the lesson and plug it in next week. Which channel is it on?',
+      opts: ['23, because that is the factory setting', '24, because the change was saved for good', 'Whichever channel the instructor is on', 'It has to be set again every time'],
+      right: 1,
+      why: 'Byte 0 was set to the save-for-good command, so the setting survives the power going off. That is convenient today and confusing next week, which is why the teacher has a way to put it back.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
+    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

@@ -26,6 +26,7 @@
   <a class="nl" href="activity-9.html">Activity 9</a>
   <a class="nl" href="activity-10.html">Activity 10</a>
   <a class="nl" href="activity-11.html">Activity 11</a>
+  <a class="nl" href="activity-12.html">Activity 12</a>
   <a class="nl" href="pinout.html">Pin reference</a>
 </div></nav>
 
@@ -70,6 +71,9 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
   <table>
     <thead><tr><th>#</th><th>Activity</th><th>The one idea</th><th>Notes</th></tr></thead>
     <tbody>
+      <tr><td><strong>0</strong></td><td><a href="activity-0.html">Getting Started</a></td>
+        <td>The board, the simulator and Thonny. No electronics and no board needed &mdash; the point is that everybody can run something before Activity 1.</td>
+        <td><a href="teacher-0.html">teacher-0</a></td></tr>
       <tr><td><strong>1</strong></td><td><a href="activity-1.html">Light Up an LED</a></td>
         <td>A pin makes a light come on &mdash; variables, comments, GPIO numbers. No <code>print()</code>.</td>
         <td><a href="teacher-1.html">teacher-1</a></td></tr>
@@ -104,8 +108,9 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><strong>11</strong></td><td><a href="activity-11.html">Control from Anywhere</a></td>
         <td>The arrow turns round: the board <strong>subscribes</strong> instead of publishing. Three parts that only work together &mdash; subscribing, the first <code>def</code>, and <code>check_msg()</code> in the loop. Written self-contained, so it teaches WiFi, MQTT and the Adafruit&nbsp;IO account from scratch while 8, 9 and 10 are unbuilt. Needs the <strong>Pico W</strong>.</td>
         <td><a href="teacher-11.html">teacher-11</a></td></tr>
-      <tr><td>0, 3, 12</td><td class="muted">Getting Started, Digital Output &amp; Servo, and Radio</td>
-        <td class="muted">In preparation.</td><td class="muted">&mdash;</td></tr>
+      <tr><td><strong>12</strong></td><td><a href="activity-12.html">Sending Messages by Radio</a></td>
+        <td>The middle is gone: no WiFi, no account, no server, and the message still arrives. <strong>UART</strong> (two chips, two wires, no addresses), the three <strong>mode pins</strong> &mdash; which idle at 1,&nbsp;1,&nbsp;1, meaning <em>asleep</em>, and whose every failure is silent &mdash; and <strong>channels</strong>. The honest cost is taught with the win: no acknowledgement, no ordering, no address. <strong>The only activity with no simulator.</strong></td>
+        <td><a href="teacher-12.html">teacher-12</a></td></tr>
     </tbody>
   </table>
   </div>
@@ -157,12 +162,15 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
       <tr><td><span class="gp">GP13</span></td><td>LED3 green</td><td>Activities 5, 6, 9 and 11 exercises</td></tr>
       <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Going-further only, so far</td></tr>
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only, so far</td></tr>
+      <tr><td><span class="gp">GP16</span> / <span class="gp">GP17</span></td><td>Radio TXD / RXD &mdash; the UART link to the E70 module</td><td>Activity 12 main programs</td></tr>
+      <tr><td><span class="gp">GP18</span> / <span class="gp">GP19</span> / <span class="gp">GP20</span></td><td>Radio M2 / M1 / M0 &mdash; the mode pins. They idle at 1,&nbsp;1,&nbsp;1, which is asleep.</td><td>Activity 12 main programs</td></tr>
+      <tr><td><span class="gp">GP21</span></td><td>Radio AUX &mdash; busy line, high when the radio is free</td><td>Activity 12 going-further only</td></tr>
       <tr><td><span class="gp">GP26</span></td><td>Analogue in &mdash; soil probe. Printed <em>GPIO24</em> on the LilEx5, header pin 18.</td><td>Activity 9 main program</td></tr>
       <tr><td><span class="gp">GP27</span></td><td>Analogue in &mdash; free. Printed <em>GPIO23</em>, header pin 16.</td><td>Activity 9 going-further only &mdash; a second probe</td></tr>
       <tr><td><span class="gp">GP28</span></td><td>Servo motor signal. Printed <em>GPIO18</em> on the LilEx5, header pin&nbsp;12.</td><td>Activity 3 main program and exercise</td></tr>
     </tbody>
   </table>
-  <p class="muted"><strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. <strong>Activity 9 adds <span class="gp">GP26</span></strong>, the module&rsquo;s first analogue pin and its first wire to the 40-pin header; only <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span> can measure a voltage, and the H3 connector&rsquo;s analogue inputs are <em>not</em> these &mdash; they come back over I&sup2;C. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
+  <p class="muted"><strong>Activity 12 adds six pins</strong> &mdash; the whole radio block, and the last block of the board to be used. <strong>Activities 8, 10 and 11 add no pins at all</strong> &mdash; the tilt sensor and the weather sensor both joined the bus, and the Pico W&rsquo;s WiFi radio is inside the chip rather than on a pin. <strong>Activity 9 adds <span class="gp">GP26</span></strong>, the module&rsquo;s first analogue pin and its first wire to the 40-pin header; only <span class="gp">GP26</span>, <span class="gp">GP27</span> and <span class="gp">GP28</span> can measure a voltage, and the H3 connector&rsquo;s analogue inputs are <em>not</em> these &mdash; they come back over I&sup2;C. SW5 is the power switch and is not on a GP pin. <strong>GP0 and GP1 are the
   bus</strong> &mdash; shared by the screen and all eight I&sup2;C sensors, so nothing else may ever be
   wired to them. Full map: <a href="pinout.html">pin reference</a>.</p>
 </section>
@@ -215,6 +223,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
        <a href="activity-9.html">Activity 9</a> &middot;
        <a href="activity-10.html">Activity 10</a> &middot;
        <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="activity-12.html">Activity 12</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
