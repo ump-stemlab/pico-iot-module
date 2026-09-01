@@ -10,11 +10,7 @@
 (function(){
   "use strict";
   var CFG = window.ACTIVITY || {};
-  /* The prefix was bumped from 'lilex5:' when the site was renumbered to the
-   Google Classroom's numbers. Saved ticks are keyed by filename, and the
-   renumber moved every page's filename, so old ticks would have surfaced on
-   the wrong activity. Bumping it once gives everybody a clean slate. Kamil's
-   call — the site is in alpha and nobody had any progress to lose. */
+  /* Saved ticks are keyed by the page's filename. */
   var KEY = 'lilex5v2:' + location.pathname.split('/').pop();
 
   function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }

@@ -207,3 +207,22 @@
     if(to) location.href = to;
   });
 })();
+
+/* ---------- top-bar activity dropdown ----------
+   The menu is a plain <details>, so it already opens and closes without any
+   script. This only adds the two things <details> does not do by itself:
+   close when you click away from it, and close on Escape. */
+(function(){
+  var sel = document.querySelector('nav.sitenav details.navsel');
+  if(!sel) return;
+  document.addEventListener('click', function(e){
+    if(sel.open && !sel.contains(e.target)) sel.open = false;
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && sel.open){
+      sel.open = false;
+      var sum = sel.querySelector('summary');
+      if(sum) sum.focus();
+    }
+  });
+})();
