@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -151,7 +159,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <h2>The Wokwi route &mdash; what was actually verified</h2>
   <ul>
     <li><strong>Starter project:</strong>
-    <a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a>
+    <a href="https://wokwi.com/projects/473933869191840769" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a>
     &mdash; a plain <em>wokwi-pi-pico</em> (not a Pico W) plus the STEM Lab&rsquo;s custom
     <code>chip-soil-moisture</code>, wired gold to GP26, red to 3V3, black to a ground.</li>
     <li><strong><code>main.py</code> is empty on purpose.</strong> If a group opens it and finds code, they
@@ -174,8 +182,43 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; red when dry, green when wet</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA5IGV4ZXJjaXNlIC0gYSBsaWdodCBpbnN0ZWFkIG9mIGEgd29yZApmcm9tIG1hY2hpbmUgaW1wb3J0IEFEQywgUGluCmZyb20gdGltZSBpbXBvcnQgc2xlZXAKCnNvaWwgPSBBREMoUGluKDI2KSkKcmVkID0gUGluKDExLCBQaW4uT1VUKSAgICAgICAgICMgTEVEMQpncmVlbiA9IFBpbigxMywgUGluLk9VVCkgICAgICAgIyBMRUQzCgpkcnkgPSA1MDAwMAp3ZXQgPSAyNTAwMAoKd2hpbGUgVHJ1ZToKICAgIHJlYWRpbmcgPSBzb2lsLnJlYWRfdTE2KCkKICAgIHByaW50KHJlYWRpbmcpCgogICAgcGVyY2VudCA9IChkcnkgLSByZWFkaW5nKSAqIDEwMCAvLyAoZHJ5IC0gd2V0KQogICAgaWYgcGVyY2VudCA8IDA6CiAgICAgICAgcGVyY2VudCA9IDAKICAgIGlmIHBlcmNlbnQgPiAxMDA6CiAgICAgICAgcGVyY2VudCA9IDEwMAogICAgcHJpbnQocGVyY2VudCkKCiAgICBpZiByZWFkaW5nID4gZHJ5OgogICAgICAgIHByaW50KCJEUlkiKQogICAgICAgIHJlZC52YWx1ZSgxKSAgICAgICAgICAgICAgICMgdGhpcnN0eQogICAgICAgIGdyZWVuLnZhbHVlKDApCiAgICBlbGlmIHJlYWRpbmcgPiB3ZXQ6CiAgICAgICAgcHJpbnQoIkpVU1QgUklHSFQiKQogICAgICAgIHJlZC52YWx1ZSgwKSAgICAgICAgICAgICAgICMgbmVpdGhlciBsaWdodAogICAgICAgIGdyZWVuLnZhbHVlKDApCiAgICBlbHNlOgogICAgICAgIHByaW50KCJXRVQiKQogICAgICAgIHJlZC52YWx1ZSgwKQogICAgICAgIGdyZWVuLnZhbHVlKDEpICAgICAgICAgICAgICMgcGxlbnR5CgogICAgc2xlZXAoMSk=" role="img" aria-label="Python code, 38 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Activity 9 exercise - a light instead of a word
+from machine import ADC, Pin
+from time import sleep
+
+soil = ADC(Pin(26))
+red = Pin(11, Pin.OUT)         # LED1
+green = Pin(13, Pin.OUT)       # LED3
+
+dry = 50000
+wet = 25000
+
+while True:
+    reading = soil.read_u16()
+    print(reading)
+
+    percent = (dry - reading) * 100 // (dry - wet)
+    if percent &lt; 0:
+        percent = 0
+    if percent &gt; 100:
+        percent = 100
+    print(percent)
+
+    if reading &gt; dry:
+        print(&quot;DRY&quot;)
+        red.value(1)               # thirsty
+        green.value(0)
+    elif reading &gt; wet:
+        print(&quot;JUST RIGHT&quot;)
+        red.value(0)               # neither light
+        green.value(0)
+    else:
+        print(&quot;WET&quot;)
+        red.value(0)
+        green.value(1)             # plenty
+
+    sleep(1)</code></pre></div>
   <ul>
     <li><strong>Every branch deals with both lights.</strong> That is the whole exercise. A branch that
     only turns its own light on leaves the other one stuck from the previous round.</li>
@@ -195,6 +238,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <div class="cal note"><b>If a group has already calibrated</b>
   Their <code>dry</code> and <code>wet</code> will not be 50000 and 25000, and that is correct. The answer
   above keeps the printed pair only so it reads against the student page.</div>
+
+ &mdash; red when dry, green when wet</h2>
+  <p><a href="https://wokwi.com/projects/473933869191840769" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -295,7 +341,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <table>
     <thead><tr><th>Link</th><th>What it is for</th></tr></thead>
     <tbody>
-      <tr><td><a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a></td>
+      <tr><td><a href="https://wokwi.com/projects/473933869191840769" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a></td>
         <td>Route A &mdash; Pico, custom soil sensor and three wires, ready to run. The program file is empty on purpose.</td></tr>
       <tr><td><a href="https://thonny.org/" target="_blank" rel="noopener">thonny.org</a></td>
         <td>Route B &mdash; writes MicroPython to the real Pico.</td></tr>
@@ -374,5 +420,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

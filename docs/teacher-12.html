@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -157,7 +165,32 @@ fallback route to give them.</div>
   <h2>The exercise answer &mdash; never leave it in the dark</h2>
   <p class="muted">Count the messages, and print the number in front of each one. Three changes to the
   listening program; nothing about the radio moves.</p>
-  <span class="codeimg" data-code="IyBFeGVyY2lzZSBhbnN3ZXIgLSBsaXN0ZW4ucHkgd2l0aCBhIGNvdW50ZXIgYWRkZWQKZnJvbSBtYWNoaW5lIGltcG9ydCBVQVJULCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKbTAgPSBQaW4oMjAsIFBpbi5PVVQpCm0xID0gUGluKDE5LCBQaW4uT1VUKQptMiA9IFBpbigxOCwgUGluLk9VVCkKCm0wLnZhbHVlKDEpCm0xLnZhbHVlKDApCm0yLnZhbHVlKDApCnNsZWVwKDAuMSkKCnJhZGlvID0gVUFSVCgwLCBiYXVkcmF0ZT05NjAwLCB0eD1QaW4oMTYpLCByeD1QaW4oMTcpKQoKY291bnQgPSAwICAgICAgICAgICAgICAgICAgICAjIGFkZCB0aGlzLCBiZWZvcmUgdGhlIGxvb3AKCnByaW50KCJMaXN0ZW5pbmcgb24gY2hhbm5lbCAyMy4uLiIpCgp3aGlsZSBUcnVlOgogICAgaWYgcmFkaW8uYW55KCk6CiAgICAgICAgc2xlZXAoMC4xKQogICAgICAgIG1lc3NhZ2UgPSByYWRpby5yZWFkKCkuZGVjb2RlKCkKICAgICAgICBjb3VudCA9IGNvdW50ICsgMSAgICAgICAgICAgICAgICAgICAgICAgIyBhZGQgdGhpcyBsaW5lCiAgICAgICAgcHJpbnQoIk1lc3NhZ2UiLCBjb3VudCwgIjoiLCBtZXNzYWdlKSAgICMgY2hhbmdlIHRoaXMgbGluZQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 25 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Exercise answer - listen.py with a counter added
+from machine import UART, Pin
+from time import sleep
+
+m0 = Pin(20, Pin.OUT)
+m1 = Pin(19, Pin.OUT)
+m2 = Pin(18, Pin.OUT)
+
+m0.value(1)
+m1.value(0)
+m2.value(0)
+sleep(0.1)
+
+radio = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))
+
+count = 0                    # add this, before the loop
+
+print(&quot;Listening on channel 23...&quot;)
+
+while True:
+    if radio.any():
+        sleep(0.1)
+        message = radio.read().decode()
+        count = count + 1                       # add this line
+        print(&quot;Message&quot;, count, &quot;:&quot;, message)   # change this line
+    sleep(0.1)</code></pre></div>
 
   <div class="tablescroll">
   <table>
@@ -199,7 +232,8 @@ fallback route to give them.</div>
   <p class="muted">Channel changes survive a power cut, so a board left on 24 will still be on 24 next
   term. In the channel program, change 24 to 23 and run it once. Everything else is handed back exactly
   as it was found, because only byte 4 is ever touched.</p>
-  <span class="codeimg" data-code="IyBQdXQgYSBib2FyZCBiYWNrIG9uIGNoYW5uZWwgMjM6IGNoYW5nZSBvbmUgbnVtYmVyIGluIGNoYW5uZWwucHkKY2hhbm5lbCA9IDIz" role="img" aria-label="Python code, 2 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Put a board back on channel 23: change one number in channel.py
+channel = 23</code></pre></div>
   <p class="muted">Worth doing as a five-minute whole-class step at the end of the lesson rather than
   discovering it in the next one. If a board is ever left in an unknown state, run the channel program and
   read the <em>before</em> line &mdash; it reports what the radio actually thinks it is set to.</p>
@@ -343,5 +377,16 @@ fallback route to give them.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -129,7 +137,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <code>0x69</code>; on the LilEx5 it is not.</li>
     <li>If a board misbehaves, scan the bus before believing anything else:</li>
   </ul>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICMgYSB3b3JraW5nIGJvYXJkIGFuc3dlcnMgWzYwLCAxMDRd" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin, I2C
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+print(i2c.scan())        # a working board answers [60, 104]</code></pre></div>
   <p class="muted"><strong>60</strong> is the screen, <strong>104</strong> is the sensor. 104 missing means
   power or wiring, never the program. On a real LilEx5 the list will be longer &mdash; every I&sup2;C part
   on the board answers.</p>
@@ -137,7 +147,29 @@ repository is public &mdash; anyone with the URL can read it.</div>
 
 <section>
   <h2>The main program &mdash; one tilt number, two ways</h2>
-  <span class="codeimg" data-code="IyBGb3VyIHRvb2xzIG5vdzogUGluIGFuZCBJMkMgZm9yIHRoZSBidXMsIE1QVTYwNTAgZm9yIHRoZSBzZW5zb3IsCiMgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gaW11IGltcG9ydCBNUFU2MDUwCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgc2FtZSBidXMgYXMgQWN0aXZpdHkgNiAtIFNEQSBpcyBHUDAgYW5kIFNDTCBpcyBHUDEKaTJjID0gSTJDKDAsIHNkYT1QaW4oMCksIHNjbD1QaW4oMSkpCgojIFR3byBwYXJ0cyBvbiB0aGF0IG9uZSBidXMgbm93OiB0aGUgc2Vuc29yIGFuZCB0aGUgc2NyZWVuCmltdSA9IE1QVTYwNTAoaTJjKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKd2hpbGUgVHJ1ZToKICAgIHRpbHQgPSBpbXUuYWNjZWwueCAgICAgICAgICAgICMgYSBtZWFzdXJlbWVudCwgbm90IGEgMCBvciBhIDEKICAgIHByaW50KHRpbHQpICAgICAgICAgICAgICAgICAgICMgZXZlcnkgZGlnaXQgb2YgaXQsIGluIHRoZSBTaGVsbAoKICAgIG9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZQogICAgb2xlZC50ZXh0KCJUaWx0IiwgMCwgMCkgICAgICAgIyB0aGUgbGFiZWwsIHdoaWNoIG5ldmVyIGNoYW5nZXMKICAgIG9sZWQudGV4dChzdHIocm91bmQodGlsdCwgMSkpLCAwLCAxNikgICAjIHJvdW5kZWQsIHRoZW4gbWFkZSBpbnRvIHdvcmRzCiAgICBvbGVkLnNob3coKSAgICAgICAgICAgICAgICAgICAjIHB1dCB0aGUgcGFnZSBvbiB0aGUgZ2xhc3MKICAgIHNsZWVwKDAuNSk=" role="img" aria-label="Python code, 23 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Four tools now: Pin and I2C for the bus, MPU6050 for the sensor,
+# SSD1306 for the screen
+from machine import Pin, I2C
+from imu import MPU6050
+from ssd1306 import SSD1306_I2C
+from time import sleep
+
+# The same bus as Activity 6 - SDA is GP0 and SCL is GP1
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+
+# Two parts on that one bus now: the sensor and the screen
+imu = MPU6050(i2c)
+oled = SSD1306_I2C(128, 64, i2c)
+
+while True:
+    tilt = imu.accel.x            # a measurement, not a 0 or a 1
+    print(tilt)                   # every digit of it, in the Shell
+
+    oled.fill(0)                  # wipe the page
+    oled.text(&quot;Tilt&quot;, 0, 0)       # the label, which never changes
+    oled.text(str(round(tilt, 1)), 0, 16)   # rounded, then made into words
+    oled.show()                   # put the page on the glass
+    sleep(0.5)</code></pre></div>
   <ul>
     <li><strong>The <code>print</code> is not decoration.</strong> It is the only place the class ever sees
     the untouched reading. Without it the whole decimals lesson is theory. Do not let anyone delete it as
@@ -156,8 +188,32 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; a light that knows it has been tilted</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA3IGV4ZXJjaXNlIC0gYSBsaWdodCB0aGF0IGtub3dzIGl0IGhhcyBiZWVuIHRpbHRlZApmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gaW11IGltcG9ydCBNUFU2MDUwCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgYnVzLCB0aGUgc2Vuc29yIGFuZCB0aGUgc2NyZWVuIC0gYWxsIHVuY2hhbmdlZAppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKaW11ID0gTVBVNjA1MChpMmMpCm9sZWQgPSBTU0QxMzA2X0kyQygxMjgsIDY0LCBpMmMpCnJlZCA9IFBpbigxMSwgUGluLk9VVCkgICAgICAgICAgICAgICAgICAgICAjIHRoZSBvbmUgbmV3IGxpbmUgYWJvdmUgdGhlIGxvb3AKCndoaWxlIFRydWU6CiAgICB0aWx0ID0gaW11LmFjY2VsLnggICAgICAgICAgICAgICAgICAgICAjIHRoZSB3aG9sZSByZWFkaW5nLCB1bnRvdWNoZWQKCiAgICBpZiB0aWx0ID4gMC41OiAgICAgICAgICAgICAgICAgICAgICAgICAjIHdoaWNoIHNpZGUgb2YgdGhlIGxpbmUgZGlkIGl0IGxhbmQgb24/CiAgICAgICAgcmVkLm9uKCkKICAgIGVsc2U6CiAgICAgICAgcmVkLm9mZigpICAgICAgICAgICAgICAgICAgICAgICAgICAjIHRoZSBlbHNlIGlzIHdoYXQgbGV0cyBpdCBnbyBvdXQgYWdhaW4KCiAgICBvbGVkLmZpbGwoMCkKICAgIG9sZWQudGV4dCgiVGlsdCIsIDAsIDApCiAgICBvbGVkLnRleHQoc3RyKHJvdW5kKHRpbHQsIDEpKSwgMCwgMTYpICAjIHJvdW5kaW5nIGlzIGZvciB0aGUgZ2xhc3MsIGFuZCBvbmx5IHRoZSBnbGFzcwogICAgb2xlZC5zaG93KCkKICAgIHNsZWVwKDAuNSk=" role="img" aria-label="Python code, 25 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Activity 7 exercise - a light that knows it has been tilted
+from machine import Pin, I2C
+from imu import MPU6050
+from ssd1306 import SSD1306_I2C
+from time import sleep
+
+# The bus, the sensor and the screen - all unchanged
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+imu = MPU6050(i2c)
+oled = SSD1306_I2C(128, 64, i2c)
+red = Pin(11, Pin.OUT)                     # the one new line above the loop
+
+while True:
+    tilt = imu.accel.x                     # the whole reading, untouched
+
+    if tilt &gt; 0.5:                         # which side of the line did it land on?
+        red.on()
+    else:
+        red.off()                          # the else is what lets it go out again
+
+    oled.fill(0)
+    oled.text(&quot;Tilt&quot;, 0, 0)
+    oled.text(str(round(tilt, 1)), 0, 16)  # rounding is for the glass, and only the glass
+    oled.show()
+    sleep(0.5)</code></pre></div>
   <ul>
     <li><strong>One new line above the loop</strong> and one <code>if</code>/<code>else</code> inside it.
     Everything else is the program they have just typed, untouched. If a student has rewritten the whole
@@ -179,6 +235,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
   The exercise adds a part on the Wokwi route: LED long leg through a 330&nbsp;&Omega; resistor to pin 15
   (GP11), short leg to a ground. The wiring diagram is on the student page. And the sensor still needs
   clicking <em>while the simulation runs</em> to get its sliders.</div>
+
+ &mdash; a light that knows it has been tilted</h2>
+  <p><a href="https://wokwi.com/projects/473933315522465793" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -379,5 +438,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

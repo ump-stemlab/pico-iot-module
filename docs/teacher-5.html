@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -104,13 +112,52 @@ repository is public &mdash; anyone with the URL can read it.</div>
 
 <section>
   <h2>The main program</h2>
-  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgYnV0dG9uIGFuZCB0aGUgbGlnaHQsIHNsZWVwIGZvciB0aGUgcGF1c2UKZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBTVzEgaXMgYSBidXR0b24gb24gR1AyLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyBpdApzdyA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQoKIyBMRUQxIGlzIGEgbGlnaHQgb24gR1AxMQpsZWQgPSBQaW4oMTEsIFBpbi5PVVQpCgojIFJlYWQgdGhlIGJ1dHRvbiwgZGVjaWRlLCBhY3QgLSBvdmVyIGFuZCBvdmVyCndoaWxlIFRydWU6CiAgICBpZiBzdy52YWx1ZSgpID09IDA6ICAgICAgICMgMCBtZWFucyB0aGUgYnV0dG9uIGlzIHByZXNzZWQKICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgIyBzbyBzd2l0Y2ggdGhlIGxpZ2h0IG9uCiAgICAgICAgcHJpbnQoInByZXNzZWQiKQogICAgZWxzZTogICAgICAgICAgICAgICAgICAgICAjIGFueXRoaW5nIGVsc2UgbWVhbnMgaXQgaXMgbm90CiAgICAgICAgbGVkLm9mZigpICAgICAgICAgICAgICMgc28gc3dpdGNoIHRoZSBsaWdodCBvZmYKICAgICAgICBwcmludCgibm90IHByZXNzZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Three tools: Pin for the button and the light, sleep for the pause
+from machine import Pin
+from time import sleep
+
+# SW1 is a button on GP2, held up until you press it
+sw = Pin(2, Pin.IN, Pin.PULL_UP)
+
+# LED1 is a light on GP11
+led = Pin(11, Pin.OUT)
+
+# Read the button, decide, act - over and over
+while True:
+    if sw.value() == 0:       # 0 means the button is pressed
+        led.on()              # so switch the light on
+        print(&quot;pressed&quot;)
+    else:                     # anything else means it is not
+        led.off()             # so switch the light off
+        print(&quot;not pressed&quot;)
+    sleep(0.1)</code></pre></div>
   <p>Nine working lines, five of them shapes they have already typed. Comments optional as always.</p>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; two decisions at once</h2>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUd28gYnV0dG9ucyBhbmQgdHdvIGxpZ2h0cywgZWFjaCB3aXRoIGl0cyBvd24gbmFtZQpzdzEgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCkKc3cyID0gUGluKDMsIFBpbi5JTiwgUGluLlBVTExfVVApCnJlZCA9IFBpbigxMSwgUGluLk9VVCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIFR3byBkZWNpc2lvbnMsIG9uZSBhZnRlciB0aGUgb3RoZXIsIG92ZXIgYW5kIG92ZXIKd2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDA6ICAgICAgIyBpcyBTVzEgZG93bj8KICAgICAgICByZWQub24oKQogICAgZWxzZToKICAgICAgICByZWQub2ZmKCkKCiAgICBpZiBzdzIudmFsdWUoKSA9PSAwOiAgICAgICMgaXMgU1cyIGRvd24/CiAgICAgICAgZ3JlZW4ub24oKQogICAgZWxzZToKICAgICAgICBncmVlbi5vZmYoKQoKICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Python code, 22 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin
+from time import sleep
+
+# Two buttons and two lights, each with its own name
+sw1 = Pin(2, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(3, Pin.IN, Pin.PULL_UP)
+red = Pin(11, Pin.OUT)
+green = Pin(13, Pin.OUT)
+
+# Two decisions, one after the other, over and over
+while True:
+    if sw1.value() == 0:      # is SW1 down?
+        red.on()
+    else:
+        red.off()
+
+    if sw2.value() == 0:      # is SW2 down?
+        green.on()
+    else:
+        green.off()
+
+    sleep(0.1)</code></pre></div>
   <p>One thing from Activity 1 (each part gets its own name) and one from today, used twice. No new
   syntax at all &mdash; the shape scales by repetition, not cleverness. Accept any sensible names; insist
   on three things:</p>
@@ -132,6 +179,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
   Green on GP13 with its own 330&nbsp;&Omega;, and a second pushbutton on GP3: four parts, eight wires.
   Expect the wiring, not the code, to slow the Wokwi route down. Real-board pairs finish much sooner
   &mdash; have the going-further list ready.</div>
+
+ &mdash; two decisions at once</h2>
+  <p><a href="https://wokwi.com/projects/473933180056861697" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -310,5 +360,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

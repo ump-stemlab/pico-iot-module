@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -113,14 +121,29 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <li>If a board ever needs the other one, the alternative is <code>0x3D</code> (<code>0x7A</code> in
     the shifted form), set by a solder link on the module. Run the scan below before believing it.</li>
   </ul>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICAgICAgICAjIGEgd29ya2luZyBzY3JlZW4gYW5zd2VycyBbNjBd" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin, I2C
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+print(i2c.scan())               # a working screen answers [60]</code></pre></div>
   <p class="muted">Prints a list. <strong>60</strong> is <code>0x3C</code>. An empty list means nothing
   answered at all &mdash; that is wiring or power, never the program.</p>
 </section>
 
 <section>
   <h2>The main program &mdash; hello on the glass</h2>
-  <span class="codeimg" data-code="IyBUaHJlZSB0b29sczogUGluIGZvciB0aGUgd2lyZXMsIEkyQyBmb3IgdGhlIGJ1cywgU1NEMTMwNiBmb3IgdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKCiMgVGhlIGJ1czogU0RBIGlzIEdQMCBhbmQgU0NMIGlzIEdQMQppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKCiMgVGhlIHNjcmVlbjogMTI4IHBpeGVscyBhY3Jvc3MsIDY0IGRvd24sIHNpdHRpbmcgb24gdGhhdCBidXMKb2xlZCA9IFNTRDEzMDZfSTJDKDEyOCwgNjQsIGkyYykKCm9sZWQuZmlsbCgwKSAgICAgICAgICAgICAgICAgICMgd2lwZSB0aGUgcGFnZSBjbGVhbgpvbGVkLnRleHQoIkhlbGxvIiwgMCwgMCkgICAgICAjIGZpcnN0IGxpbmUsIHJpZ2h0IGF0IHRoZSB0b3AKb2xlZC50ZXh0KCJTVEVNIExBQiIsIDAsIDE2KSAgIyBzZWNvbmQgbGluZSwgMTYgcGl4ZWxzIGxvd2VyIGRvd24Kb2xlZC5zaG93KCkgICAgICAgICAgICAgICAgICAgIyBub3RoaW5nIGFwcGVhcnMgdW50aWwgeW91IHNheSB0aGlz" role="img" aria-label="Python code, 14 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Three tools: Pin for the wires, I2C for the bus, SSD1306 for the screen
+from machine import Pin, I2C
+from ssd1306 import SSD1306_I2C
+
+# The bus: SDA is GP0 and SCL is GP1
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+
+# The screen: 128 pixels across, 64 down, sitting on that bus
+oled = SSD1306_I2C(128, 64, i2c)
+
+oled.fill(0)                  # wipe the page clean
+oled.text(&quot;Hello&quot;, 0, 0)      # first line, right at the top
+oled.text(&quot;STEM LAB&quot;, 0, 16)  # second line, 16 pixels lower down
+oled.show()                   # nothing appears until you say this</code></pre></div>
   <ul>
     <li>Eight working lines, and <strong>no loop</strong> &mdash; the first program since Activity 1 that
     ends by itself. Worth naming: the words stay because the screen holds what it was last given.</li>
@@ -134,8 +157,34 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; SW1 and SW2 as words</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA2IGV4ZXJjaXNlIC0gU1cxIGFuZCBTVzIgc2hvd24gYXMgd29yZHMgb24gdGhlIHNjcmVlbgpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmZyb20gc3NkMTMwNiBpbXBvcnQgU1NEMTMwNl9JMkMKZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaGUgYnVzIGFuZCB0aGUgc2NyZWVuCmkyYyA9IEkyQygwLCBzZGE9UGluKDApLCBzY2w9UGluKDEpKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKIyBUaGUgdHdvIGJ1dHRvbnMsIGV4YWN0bHkgYXMgaW4gQWN0aXZpdHkgMwpzdzEgPSBQaW4oMiwgUGluLklOLCBQaW4uUFVMTF9VUCkKc3cyID0gUGluKDMsIFBpbi5JTiwgUGluLlBVTExfVVApCgp3aGlsZSBUcnVlOgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAgICAjIHdpcGUgdGhlIHdob2xlIHBhZ2UgZXZlcnkgcm91bmQKICAgIG9sZWQudGV4dCgiU1cxIiwgMCwgMCkgICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBmaXJzdCBidXR0b24KICAgIGlmIHN3MS52YWx1ZSgpID09IDA6CiAgICAgICAgb2xlZC50ZXh0KCJIRUxEIiwgNDgsIDApCiAgICBlbHNlOgogICAgICAgIG9sZWQudGV4dCgiVVAiLCA0OCwgMCkKICAgIG9sZWQudGV4dCgiU1cyIiwgMCwgMTYpICAgICAgICAgIyB0aGUgbGFiZWwgZm9yIHRoZSBzZWNvbmQgYnV0dG9uCiAgICBpZiBzdzIudmFsdWUoKSA9PSAwOgogICAgICAgIG9sZWQudGV4dCgiSEVMRCIsIDQ4LCAxNikKICAgIGVsc2U6CiAgICAgICAgb2xlZC50ZXh0KCJVUCIsIDQ4LCAxNikKICAgIG9sZWQuc2hvdygpICAgICAgICAgICAgICAgICAgICAgIyBub3cgcHV0IHRoZSBwYWdlIG9uIHRoZSBnbGFzcwogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 27 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Activity 6 exercise - SW1 and SW2 shown as words on the screen
+from machine import Pin, I2C
+from ssd1306 import SSD1306_I2C
+from time import sleep
+
+# The bus and the screen
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+oled = SSD1306_I2C(128, 64, i2c)
+
+# The two buttons, exactly as in Activity 3
+sw1 = Pin(2, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(3, Pin.IN, Pin.PULL_UP)
+
+while True:
+    oled.fill(0)                    # wipe the whole page every round
+    oled.text(&quot;SW1&quot;, 0, 0)          # the label for the first button
+    if sw1.value() == 0:
+        oled.text(&quot;HELD&quot;, 48, 0)
+    else:
+        oled.text(&quot;UP&quot;, 48, 0)
+    oled.text(&quot;SW2&quot;, 0, 16)         # the label for the second button
+    if sw2.value() == 0:
+        oled.text(&quot;HELD&quot;, 48, 16)
+    else:
+        oled.text(&quot;UP&quot;, 48, 16)
+    oled.show()                     # now put the page on the glass
+    sleep(0.1)</code></pre></div>
   <ul>
     <li><strong>The order inside the loop is the lesson:</strong> wipe, write, show, wait. Any other
     order fails in a way that is worth looking at.</li>
@@ -152,6 +201,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
   Diagonally opposite legs, no resistor, GP2 and GP3 &mdash; Activity 4&rsquo;s rule, unchanged. That is
   four more wires on top of the screen&rsquo;s four. Real-board pairs have nothing to wire and will
   finish first; have the going-further list ready.</div>
+
+ &mdash; SW1 and SW2 as words</h2>
+  <p><a href="https://wokwi.com/projects/473933237654123521" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -182,7 +234,15 @@ repository is public &mdash; anyone with the URL can read it.</div>
       <tr><td>If anyone asks for a counter</td>
       <td>It needs one thing this module has not taught &mdash; turning a number into words before it can
       be written. Show it only if asked:
-      <span class="codeimg" data-code="Y291bnQgPSAwCndoaWxlIFRydWU6CiAgICBpZiBzdzEudmFsdWUoKSA9PSAwOgogICAgICAgIGNvdW50ID0gY291bnQgKyAxICAgICAgICAgICAjIG9uZSBtb3JlLCBldmVyeSB0ZW50aCBvZiBhIHNlY29uZAogICAgb2xlZC5maWxsKDApCiAgICBvbGVkLnRleHQoImNvdW50IiwgMCwgMCkKICAgIG9sZWQudGV4dChzdHIoY291bnQpLCAwLCAxNikgICAgIyBhIG51bWJlciBoYXMgdG8gYmVjb21lIHdvcmRzIGZpcnN0CiAgICBvbGVkLnNob3coKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 9 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
+      <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>count = 0
+while True:
+    if sw1.value() == 0:
+        count = count + 1           # one more, every tenth of a second
+    oled.fill(0)
+    oled.text(&quot;count&quot;, 0, 0)
+    oled.text(str(count), 0, 16)    # a number has to become words first
+    oled.show()
+    sleep(0.1)</code></pre></div>
       Do not set it as the exercise; it lands better in Activity 8 with a real reading in it.</td></tr>
       <tr><td>Inverting the display</td>
       <td><span class="codeimg inline" data-code="b2xlZC5pbnZlcnQoMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span>
@@ -330,5 +390,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

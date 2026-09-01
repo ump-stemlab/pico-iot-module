@@ -581,3 +581,8 @@ figure.shot figcaption{margin:10px auto 0;max-width:640px;text-align:center;font
 .dia .warnbox{fill:rgba(200,0,0,.12);stroke:var(--red);stroke-width:2}
 .dia .wkwire.gold{stroke:#B8860B}
 @media (prefers-color-scheme: dark){ .dia .wkwire.gold{stroke:#E8B92E} }
+/* PWM timing diagram — activity 3 */
+.dia .dax{fill:none;stroke:var(--muted);stroke-width:2}
+.dia .dmark{fill:none;stroke:var(--ink);stroke-width:2}
+.dia .dfill{fill:var(--teal);opacity:.8}
+.dia .dfill2{fill:var(--orange);opacity:.85}

@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -95,7 +103,26 @@ repository is public &mdash; anyone with the URL can read it.</div>
 
 <section>
   <h2>The main program &mdash; two-key safety switch</h2>
-  <span class="codeimg" data-code="IyBUd28gdG9vbHM6IFBpbiBmb3IgdGhlIGJ1dHRvbnMgYW5kIHRoZSBsaWdodCwgc2xlZXAgZm9yIHRoZSBwYXVzZQpmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbgpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgojIFNXMSBhbmQgU1cyIGFyZSBidXR0b25zLCBoZWxkIHVwIHVudGlsIHlvdSBwcmVzcyB0aGVtCnN3MSA9IFBpbigyLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzIgPSBQaW4oMywgUGluLklOLCBQaW4uUFVMTF9VUCkKCiMgTEVEMSBpcyBhIGxpZ2h0IG9uIEdQMTEKbGVkID0gUGluKDExLCBQaW4uT1VUKQoKIyBPbmUgZGVjaXNpb24sIGFza2luZyBhYm91dCB0d28gdGhpbmdzIGF0IG9uY2UKd2hpbGUgVHJ1ZToKICAgIGlmIHN3MS52YWx1ZSgpID09IDAgYW5kIHN3Mi52YWx1ZSgpID09IDA6ICAgIyBib3RoIGhlbGQgZG93bj8KICAgICAgICBsZWQub24oKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBvbmx5IHRoZW4gZG9lcyBpdCBsaWdodAogICAgICAgIHByaW50KCJib3RoIGtleXMgaGVsZCIpCiAgICBlbHNlOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgb25lIGtleSwgb3Igbm9uZSwgaXMgbm90IGVub3VnaAogICAgICAgIGxlZC5vZmYoKQogICAgICAgIHByaW50KCJsb2NrZWQiKQogICAgc2xlZXAoMC4xKQ==" role="img" aria-label="Python code, 19 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Two tools: Pin for the buttons and the light, sleep for the pause
+from machine import Pin
+from time import sleep
+
+# SW1 and SW2 are buttons, held up until you press them
+sw1 = Pin(2, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(3, Pin.IN, Pin.PULL_UP)
+
+# LED1 is a light on GP11
+led = Pin(11, Pin.OUT)
+
+# One decision, asking about two things at once
+while True:
+    if sw1.value() == 0 and sw2.value() == 0:   # both held down?
+        led.on()                                # only then does it light
+        print(&quot;both keys held&quot;)
+    else:                                       # one key, or none, is not enough
+        led.off()
+        print(&quot;locked&quot;)
+    sleep(0.1)</code></pre></div>
   <ul>
     <li>Ten working lines. Exactly one of them is new.</li>
     <li>The safety-switch story is worth thirty seconds: two buttons far apart means two hands nowhere
@@ -106,10 +133,25 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; two-of-three keypad</h2>
+  <h2>Exercise answer
   <p>Green LED3 (GP13) lights when at least two of SW1, SW2, SW3 are held. Three pairs, joined with
   <code>or</code>:</p>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKIyBUaHJlZSBrZXlzIGFuZCBvbmUgbGlnaHQKc3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVApCnN3MiA9IFBpbigzLCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpzdzMgPSBQaW4oNCwgUGluLklOLCBQaW4uUFVMTF9VUCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIFRocmVlIHBhaXJzLCBqb2luZWQgd2l0aCBvciAtIGFueSBvbmUgcGFpciBpcyBlbm91Z2gKd2hpbGUgVHJ1ZToKICAgIGlmIChzdzEudmFsdWUoKSA9PSAwIGFuZCBzdzIudmFsdWUoKSA9PSAwKSBvciAoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3czLnZhbHVlKCkgPT0gMCkgb3IgKHN3Mi52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApOgogICAgICAgIGdyZWVuLm9uKCkKICAgIGVsc2U6CiAgICAgICAgZ3JlZW4ub2ZmKCkKICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Python code, 17 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin
+from time import sleep
+
+# Three keys and one light
+sw1 = Pin(2, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(3, Pin.IN, Pin.PULL_UP)
+sw3 = Pin(4, Pin.IN, Pin.PULL_UP)
+green = Pin(13, Pin.OUT)
+
+# Three pairs, joined with or - any one pair is enough
+while True:
+    if (sw1.value() == 0 and sw2.value() == 0) or (sw1.value() == 0 and sw3.value() == 0) or (sw2.value() == 0 and sw3.value() == 0):
+        green.on()
+    else:
+        green.off()
+    sleep(0.1)</code></pre></div>
   <ul>
     <li><strong>The thinking happens on paper.</strong> Listing the three pairs is the exercise; typing
     them is not. A class that starts typing immediately will produce two pairs and wonder why SW1+SW3
@@ -125,11 +167,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <summary>The same answer split over three lines, if a student asks</summary>
     <p>Legal, and easier to read, but it needs an extra outer bracket and lines that continue inside it.
     Show it only if asked &mdash; it is not required and it is not examined:</p>
-    <span class="codeimg" data-code="ICAgIGlmICgoc3cxLnZhbHVlKCkgPT0gMCBhbmQgc3cyLnZhbHVlKCkgPT0gMCkKICAgICAgICAgICAgb3IgKHN3MS52YWx1ZSgpID09IDAgYW5kIHN3My52YWx1ZSgpID09IDApCiAgICAgICAgICAgIG9yIChzdzIudmFsdWUoKSA9PSAwIGFuZCBzdzMudmFsdWUoKSA9PSAwKSk6" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+    <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>    if ((sw1.value() == 0 and sw2.value() == 0)
+            or (sw1.value() == 0 and sw3.value() == 0)
+            or (sw2.value() == 0 and sw3.value() == 0)):</code></pre></div>
   </details>
   <div class="cal warn"><b>Wokwi pairs need a third button</b>
   Three pushbuttons, a green LED and its own 330&nbsp;&Omega; resistor &mdash; eight wires. Real-board
   pairs have nothing to wire and will finish much sooner; have the going-further list ready.</div>
+
+ &mdash; two-of-three keypad</h2>
+  <p><a href="https://wokwi.com/projects/473933198067212289" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -144,7 +191,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
       &mdash; and there are three of them. This is the one place <code>not</code> genuinely earns its
       keep.</td></tr>
       <tr><td>Door alarm: SW4 arms it, buzzer sounds when SW1 is pressed</td>
-      <td><span class="codeimg" data-code="IyBTVzQgaXMgdGhlIHNsaWRlIHN3aXRjaCAtIGl0IHN0YXlzIHdoZXJlIHlvdSBwdXQgaXQKc3c0ID0gUGluKDE1LCBQaW4uSU4sIFBpbi5QVUxMX1VQKQpidXp6ID0gUGluKDE0LCBQaW4uT1VUKQoKd2hpbGUgVHJ1ZToKICAgIGlmIHN3NC52YWx1ZSgpID09IDAgYW5kIHN3MS52YWx1ZSgpID09IDA6ICAgIyBhcm1lZCBBTkQgdGhlIGRvb3IgdG91Y2hlZAogICAgICAgIGJ1enoub24oKQogICAgZWxzZToKICAgICAgICBidXp6Lm9mZigpCiAgICBzbGVlcCgwLjEp" role="img" aria-label="Python code, 10 lines, shown as a picture"><span class="codefallback">Code is shown as a picture.</span></span>
+      <td><div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># SW4 is the slide switch - it stays where you put it
+sw4 = Pin(15, Pin.IN, Pin.PULL_UP)
+buzz = Pin(14, Pin.OUT)
+
+while True:
+    if sw4.value() == 0 and sw1.value() == 0:   # armed AND the door touched
+        buzz.on()
+    else:
+        buzz.off()
+    sleep(0.1)</code></pre></div>
       Which slide position gives 0 is worth finding out rather than telling: have them print the value
       and slide it. If it is the other way round, the comparison becomes 1 &mdash; not a
       <code>not</code>.</td></tr>
@@ -296,5 +352,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

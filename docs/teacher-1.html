@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -80,8 +88,18 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; all three LEDs</h2>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4KCiMgRWFjaCBMRUQgbmVlZHMgaXRzIG93biBuaWNrbmFtZQpyZWQgPSBQaW4oMTEsIFBpbi5PVVQpCnllbGxvdyA9IFBpbigxMiwgUGluLk9VVCkKZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpCgojIE5vdyBzd2l0Y2ggYWxsIHRocmVlIG9uCnJlZC5vbigpCnllbGxvdy5vbigpCmdyZWVuLm9uKCk=" role="img" aria-label="Python code, 11 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin
+
+# Each LED needs its own nickname
+red = Pin(11, Pin.OUT)
+yellow = Pin(12, Pin.OUT)
+green = Pin(13, Pin.OUT)
+
+# Now switch all three on
+red.on()
+yellow.on()
+green.on()</code></pre></div>
   <ul>
     <li><strong>The point is the second clue: one nickname can only point at one pin.</strong> Students
     who reuse <code>led</code> three times light only the green LED. Let them hit that before you rescue
@@ -90,6 +108,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <code>red</code>.</li>
     <li>Order does not matter. Name-then-switch-on per LED is equally correct and worth showing.</li>
   </ul>
+
+ &mdash; all three LEDs</h2>
+  <p><a href="https://wokwi.com/projects/473931417949006849" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -114,7 +135,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <ul>
     <li>A board and USB cable per pair; check <strong>SW5</strong> (power) on each.</li>
     <li>Thonny installed, interpreter preset to <em>MicroPython (Raspberry Pi Pico)</em>.</li>
-    <li>The <a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">Wokwi project</a> up on the projector.</li>
+    <li>The <a href="https://wokwi.com/projects/473931417949006849" target="_blank" rel="noopener">Wokwi project</a> up on the projector.</li>
     <li>The <a href="pinout.html">pin reference</a> open on every machine &mdash; needed from here on.</li>
     <li>Decide the route. Most classes do Wokwi first and boards in the second half.</li>
   </ul>
@@ -158,7 +179,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <tbody>
       <tr><td>Student page</td><td><a href="activity-1.html">activity-1.html</a></td></tr>
       <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
-      <tr><td>Wokwi project (Activity 1)</td><td><a href="https://wokwi.com/projects/383509156510287873" target="_blank" rel="noopener">wokwi.com/projects/383509156510287873</a></td></tr>
+      <tr><td>Wokwi project (Activity 1)</td><td><a href="https://wokwi.com/projects/473931417949006849" target="_blank" rel="noopener">wokwi.com/projects/383509156510287873</a></td></tr>
       <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
       <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
       <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
@@ -212,5 +233,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

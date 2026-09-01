@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -143,7 +151,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <thead><tr><th>Phase</th><th>Suggested time</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td>What is a servo / PWM concept</td><td>5&ndash;8 min</td><td>The diagrams on the student page cover this. Keep it brisk &mdash; the payoff is watching it move.</td></tr>
-      <tr><td>The three numbers explanation</td><td>3&ndash;5 min</td><td>Point to the number line. 1638 / 4915 / 8192 do not need deriving &mdash; just state them.</td></tr>
+      <tr><td>The three numbers explanation</td><td>3&ndash;5 min</td><td>Point to the number line. 1638 / 4915 / 8150 do not need deriving &mdash; just state them.</td></tr>
       <tr><td>The pin trap (GPIO18 = GP28 = pin&nbsp;12)</td><td>5 min</td><td>Do this before wiring. Check every group&rsquo;s connection before you let them power on.</td></tr>
       <tr><td>Wiring + first run</td><td>10&ndash;15 min</td><td>Budget extra if it is the first time they have connected anything external. Most problems are wiring.</td></tr>
       <tr><td>Shell + print() discussion</td><td>3&ndash;5 min</td><td>Watch the Shell together. Ask: which line of code produced this word?</td></tr>
@@ -154,13 +162,40 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; four custom stops</h2>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpzZXJ2byA9IFBXTShQaW4oMjgpKQpzZXJ2by5mcmVxKDUwKQoKIyBmb3VyIG5hbWVkIHN0b3BzIC0gY2hhbmdlIHRoZXNlIG51bWJlcnMgdG8gbW92ZSB0aGVtCnN0b3BfYSA9IDE2MzggICAjIGZ1bGwgbGVmdApzdG9wX2IgPSAzMjAwICAgIyBsZWZ0IG9mIGNlbnRyZQpzdG9wX2MgPSA2NTAwICAgIyByaWdodCBvZiBjZW50cmUKc3RvcF9kID0gODE5MiAgICMgZnVsbCByaWdodAoKd2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KHN0b3BfYSkKICAgIHByaW50KCJzdG9wIEEgLSBmdWxsIGxlZnQiKQogICAgc2xlZXAoMikgICAgICAgICAgICAgICAgICAgICMgbG9uZ2VyIGhvbGQgYXQgdGhlIHN0YXJ0CgogICAgc2Vydm8uZHV0eV91MTYoc3RvcF9iKQogICAgcHJpbnQoInN0b3AgQiAtIGxlZnQgb2YgY2VudHJlIikKICAgIHNsZWVwKDEpCgogICAgc2Vydm8uZHV0eV91MTYoc3RvcF9jKQogICAgcHJpbnQoInN0b3AgQyAtIHJpZ2h0IG9mIGNlbnRyZSIpCiAgICBzbGVlcCgxKQoKICAgIHNlcnZvLmR1dHlfdTE2KHN0b3BfZCkKICAgIHByaW50KCJzdG9wIEQgLSBmdWxsIHJpZ2h0IikKICAgIHNsZWVwKDMpICAgICAgICAgICAgICAgICAgICAjIGxvbmdlc3QgaG9sZCBhdCB0aGUgZW5k" role="img" aria-label="Python code, exercise answer for Activity 3: four named stops, different hold times, print at each stop"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin, PWM
+from time import sleep
+
+servo = PWM(Pin(28))
+servo.freq(50)
+
+# four named stops - change these numbers to move them
+stop_a = 1638   # full left
+stop_b = 3200   # left of centre
+stop_c = 6500   # right of centre
+stop_d = 8150   # full right
+
+while True:
+    servo.duty_u16(stop_a)
+    print(&quot;stop A - full left&quot;)
+    sleep(2)                    # longer hold at the start
+
+    servo.duty_u16(stop_b)
+    print(&quot;stop B - left of centre&quot;)
+    sleep(1)
+
+    servo.duty_u16(stop_c)
+    print(&quot;stop C - right of centre&quot;)
+    sleep(1)
+
+    servo.duty_u16(stop_d)
+    print(&quot;stop D - full right&quot;)
+    sleep(3)                    # longest hold at the end</code></pre></div>
 
   <ul>
     <li><strong>The key requirement is four stops.</strong> Students who only rearrange the existing
     three positions without adding a fourth have not met it. Ask them to add one more variable.</li>
-    <li><strong>Accept any four values between 1638 and 8192.</strong> The numbers in the answer above
+    <li><strong>Accept any four values between 1638 and 8150.</strong> The numbers in the answer above
     (3200 and 6500) are one possibility; 2000, 3800, 5500 would be equally correct.</li>
     <li><strong>At least one different hold time.</strong> The exercise says &ldquo;make at least one
     hold time different from the others.&rdquo; Two identical sleeps plus one different one meets this.
@@ -171,6 +206,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
     and adding a fourth call without renaming the variable. Works fine; just confirm they understand
     what each number means.</li>
   </ul>
+
+ &mdash; four custom stops</h2>
+  <p><a href="https://wokwi.com/projects/473932663871909889" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -224,5 +262,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

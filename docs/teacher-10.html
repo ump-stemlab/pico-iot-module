@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -164,7 +172,11 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <li>Verified on the rewired project: <code>i2c.scan()</code> answered <strong>[60, 118]</strong> with
     both parts on <span class="gp">GP0</span>/<span class="gp">GP1</span>, and the sensor returned
     <code>('21.64C', '1010.39hPa', '55.04%')</code>.</li>
-    <li>The exact probe, for anyone who wants to repeat it:<br><span class="codeimg" data-code="IyBXaGF0IHdhcyBhY3R1YWxseSBydW4gaW4gV29rd2kgdG8gcHJvdmUgdGhlIHJvdXRlIHdvcmtzCnByaW50KCJzY2FuOiIsIGkyYy5zY2FuKCkpICAgICAgICAgICAgIyBbNjAsIDExOF0KcHJpbnQoInZhbHVlczoiLCBibWUudmFsdWVzKSAgICAgICAgICAjICgnMjEuNjRDJywgJzEwMTAuMzloUGEnLCAnNTUuMDQlJykKcHJpbnQoIndpZmk6Iiwgd2xhbi5pZmNvbmZpZygpWzBdKSAgICAjIDEwLjEwLjAuMQptcXR0LmNvbm5lY3QoKSAgICAgICAgICAgICAgICAgICAgICAgICMgTVFUVEV4Y2VwdGlvbig1LCkgd2l0aCBhIGZha2Uga2V5" role="img" aria-label="Python code, 5 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span></li>
+    <li>The exact probe, for anyone who wants to repeat it:<br><div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># What was actually run in Wokwi to prove the route works
+print(&quot;scan:&quot;, i2c.scan())            # [60, 118]
+print(&quot;values:&quot;, bme.values)          # (&#x27;21.64C&#x27;, &#x27;1010.39hPa&#x27;, &#x27;55.04%&#x27;)
+print(&quot;wifi:&quot;, wlan.ifconfig()[0])    # 10.10.0.1
+mqtt.connect()                        # MQTTException(5,) with a fake key</code></pre></div></li>
     <li><strong>The chip&rsquo;s sliders are the whole route.</strong> Press play, then click the green
     block: temperature, pressure and humidity sliders appear. Not discoverable. Demonstrate it on the
     projector.</li>
@@ -174,8 +186,47 @@ repository is public &mdash; anyone with the URL can read it.</div>
 </section>
 
 <section>
-  <h2>Exercise answer &mdash; the reading on the screen as well as on the graph</h2>
-  <span class="codeimg" data-code="IyBBY3Rpdml0eSA4IGV4ZXJjaXNlIC0gdGhlIHJlYWRpbmcgb24gdGhlIHNjcmVlbiBhcyB3ZWxsIGFzIG9uIHRoZSBncmFwaApmcm9tIG1hY2hpbmUgaW1wb3J0IFBpbiwgSTJDCmltcG9ydCBibWUyODAKZnJvbSBzc2QxMzA2IGltcG9ydCBTU0QxMzA2X0kyQwpmcm9tIHVtcXR0X3NpbXBsZSBpbXBvcnQgTVFUVENsaWVudAppbXBvcnQgbmV0d29yawpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpXSUZJX05BTUUgPSAiV29rd2ktR1VFU1QiCldJRklfUEFTUyA9ICIiCkFJT19VU0VSID0gInlvdXItdXNlcm5hbWUiCkFJT19LRVkgPSAieW91ci1rZXkiCkZFRUQgPSAieW91ci11c2VybmFtZS9mZWVkcy90ZW1wZXJhdHVyZSIKCiMgT25lIGJ1cywgdHdvIHBhcnRzIG9uIGl0IC0gbm9uZSBvZiB0aGlzIGlzIG5ldwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKYm1lID0gYm1lMjgwLkJNRTI4MChpMmM9aTJjKQpvbGVkID0gU1NEMTMwNl9JMkMoMTI4LCA2NCwgaTJjKQoKd2xhbiA9IG5ldHdvcmsuV0xBTihuZXR3b3JrLlNUQV9JRikKd2xhbi5hY3RpdmUoVHJ1ZSkKd2xhbi5jb25uZWN0KFdJRklfTkFNRSwgV0lGSV9QQVNTKQp3aGlsZSBub3Qgd2xhbi5pc2Nvbm5lY3RlZCgpOgogICAgc2xlZXAoMSkKcHJpbnQoImpvaW5lZCB0aGUgbmV0d29yazoiLCB3bGFuLmlmY29uZmlnKClbMF0pCgptcXR0ID0gTVFUVENsaWVudCgibGlsZXg1IiwgImlvLmFkYWZydWl0LmNvbSIsIHVzZXI9QUlPX1VTRVIsIHBhc3N3b3JkPUFJT19LRVkpCm1xdHQuY29ubmVjdCgpCnByaW50KCJjb25uZWN0ZWQgdG8gQWRhZnJ1aXQgSU8iKQoKd2hpbGUgVHJ1ZToKICAgIHJlYWRpbmcgPSBibWUudmFsdWVzWzBdICAgICAgIyB0YWtlbiBvbmNlLCB1c2VkIHR3aWNlCiAgICB0ZW1wID0gcmVhZGluZ1s6LTFdCiAgICBtcXR0LnB1Ymxpc2goRkVFRCwgdGVtcCkgICAgICMgdGhlIGdyYXBoIGdldHMgdGhlIGJhcmUgbnVtYmVyCgogICAgb2xlZC5maWxsKDApICAgICAgICAgICAgICAgICAjIHRoZSBwZXJzb24gZ2V0cyB0aGUgd2hvbGUgdGhpbmcKICAgIG9sZWQudGV4dCgiVGVtcCIsIDAsIDApCiAgICBvbGVkLnRleHQocmVhZGluZywgMCwgMTYpCiAgICBvbGVkLnNob3coKQogICAgc2xlZXAoNSk=" role="img" aria-label="Python code, 40 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <h2>Exercise answer
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Activity 8 exercise - the reading on the screen as well as on the graph
+from machine import Pin, I2C
+import bme280
+from ssd1306 import SSD1306_I2C
+from umqtt_simple import MQTTClient
+import network
+from time import sleep
+
+WIFI_NAME = &quot;Wokwi-GUEST&quot;
+WIFI_PASS = &quot;&quot;
+AIO_USER = &quot;your-username&quot;
+AIO_KEY = &quot;your-key&quot;
+FEED = &quot;your-username/feeds/temperature&quot;
+
+# One bus, two parts on it - none of this is new
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+bme = bme280.BME280(i2c=i2c)
+oled = SSD1306_I2C(128, 64, i2c)
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(WIFI_NAME, WIFI_PASS)
+while not wlan.isconnected():
+    sleep(1)
+print(&quot;joined the network:&quot;, wlan.ifconfig()[0])
+
+mqtt = MQTTClient(&quot;lilex5&quot;, &quot;io.adafruit.com&quot;, user=AIO_USER, password=AIO_KEY)
+mqtt.connect()
+print(&quot;connected to Adafruit IO&quot;)
+
+while True:
+    reading = bme.values[0]      # taken once, used twice
+    temp = reading[:-1]
+    mqtt.publish(FEED, temp)     # the graph gets the bare number
+
+    oled.fill(0)                 # the person gets the whole thing
+    oled.text(&quot;Temp&quot;, 0, 0)
+    oled.text(reading, 0, 16)
+    oled.show()
+    sleep(5)</code></pre></div>
   <ul>
     <li><strong>The reading is taken once and used twice.</strong> That is the point of the exercise. Taking
     it twice is not wrong enough to fail, but the two will disagree and it looks like a bug.</li>
@@ -194,6 +245,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
   <div class="cal warn"><b>Wokwi pairs: the screen is already in the starter project</b>
   So is <code>ssd1306.py</code>. Nobody needs to add a part or a file for this exercise on either route
   &mdash; if a group is trying to, they have started a new project.</div>
+
+ &mdash; the reading on the screen as well as on the graph</h2>
+  <p><a href="https://wokwi.com/projects/473934007182443521" target="_blank" rel="noopener" class="cta alt">&#9654;&nbsp;Try this answer on Wokwi</a></p>
 </section>
 
 <section>
@@ -255,7 +309,9 @@ repository is public &mdash; anyone with the URL can read it.</div>
     <a href="pinout.html">pin reference</a> open on every machine.</li>
     <li>If a board misbehaves, scan the bus before believing anything else:</li>
   </ul>
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIEkyQwppMmMgPSBJMkMoMCwgc2RhPVBpbigwKSwgc2NsPVBpbigxKSkKcHJpbnQoaTJjLnNjYW4oKSkgICAgICAgICMgMTE4IGlzIHRoZSB3ZWF0aGVyIHNlbnNvciwgNjAgdGhlIHNjcmVlbg==" role="img" aria-label="Python code, 3 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>from machine import Pin, I2C
+i2c = I2C(0, sda=Pin(0), scl=Pin(1))
+print(i2c.scan())        # 118 is the weather sensor, 60 the screen</code></pre></div>
   <p class="muted"><strong>118</strong> is the weather sensor, <strong>60</strong> the screen,
   <strong>104</strong> the tilt sensor. On a real LilEx5 the list is longer &mdash; every I&sup2;C part
   answers.</p>
@@ -323,7 +379,7 @@ repository is public &mdash; anyone with the URL can read it.</div>
       <tr><td>Student page</td><td><a href="activity-10.html">activity-10.html</a></td></tr>
       <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
       <tr><td>Previous activity</td><td><a href="activity-8.html">activity-8.html</a> &middot; <a href="teacher-8.html">teacher-8.html</a></td></tr>
-      <tr><td>Wokwi starter project</td><td><a href="https://wokwi.com/projects/472388087907794945" target="_blank" rel="noopener">wokwi.com/projects/472388087907794945</a> &mdash; Pico W, custom BME280, screen, three library files</td></tr>
+      <tr><td>Wokwi starter project</td><td><a href="https://wokwi.com/projects/473934007182443521" target="_blank" rel="noopener">wokwi.com/projects/472388087907794945</a> &mdash; Pico W, custom BME280, screen, three library files</td></tr>
       <tr><td>Adafruit IO</td><td><a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a> &middot; free account, feeds, dashboards, My Key</td></tr>
       <tr><td>The library files</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a> &mdash; <code>bme280.py</code></td></tr>
       <tr><td>The bus</td><td><a href="activity-7.html#bus">activity-7.html#bus</a></td></tr>
@@ -394,5 +450,16 @@ repository is public &mdash; anyone with the URL can read it.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>

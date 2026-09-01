@@ -33,7 +33,7 @@ window.ACTIVITY = {
     { q: "What does servo.duty_u16(1638) do?",
       opts: ["Moves the arm to the middle position", "Moves the arm to the right position", "Moves the arm to the left position", "Turns the servo off"],
       right: 2,
-      why: "1638 is the duty value that produces the shortest pulse (about 0.5 ms), which tells the servo to swing as far left as it can go. 4915 is middle, 8192 is right." },
+      why: "1638 is the duty value that produces the shortest pulse (about 0.5 ms), which tells the servo to swing as far left as it can go. 4915 is middle, 8150 is right." },
     { q: "Which statement does this activity use for the first time?",
       opts: ["from machine import", "while True:", "sleep()", "print()"],
       right: 3,
@@ -169,7 +169,7 @@ window.ACTIVITY = {
   <p class="lede">The Pico&rsquo;s duty scale runs from&nbsp;0 to&nbsp;65535. You do not use the
   whole scale &mdash; only a small slice near the bottom.</p>
 
-  <svg class="dia wide" viewBox="0 0 780 160" role="img" aria-label="A number line from 0 to 65535. Three markers appear near the left end: 1638 labelled left, 4915 labelled middle, 8192 labelled right. The rest of the line is empty.">
+  <svg class="dia wide" viewBox="0 0 780 160" role="img" aria-label="A number line from 0 to 65535. Three markers appear near the left end: 1638 labelled left, 4915 labelled middle, 8150 labelled right. The rest of the line is empty.">
     <text x="390" y="26" class="dttl" text-anchor="middle">Three positions inside a huge scale</text>
     <line x1="30" y1="80" x2="750" y2="80" class="dax"/>
     <line x1="30" y1="70" x2="30" y2="90" class="dax"/>
@@ -186,14 +186,14 @@ window.ACTIVITY = {
     <text x="86" y="120" class="dlbl" text-anchor="middle">middle</text>
 
     <line x1="120" y1="60" x2="120" y2="100" class="dmark"/>
-    <text x="120" y="54" class="dlbl" text-anchor="middle">8192</text>
+    <text x="120" y="54" class="dlbl" text-anchor="middle">8150</text>
     <text x="120" y="120" class="dlbl" text-anchor="middle">right</text>
 
     <text x="450" y="80" class="dsub" text-anchor="middle" dy="5">not used</text>
   </svg>
 
   <p>These numbers correspond to pulse lengths: 1638 is a very short pulse (about 0.5&thinsp;ms), 4915
-  is a medium one (1.5&thinsp;ms), and 8192 is a long one (2.5&thinsp;ms). The servo motor was
+  is a medium one (1.5&thinsp;ms), and 8150 is a long one (2.5&thinsp;ms). The servo motor was
   built to understand these pulse lengths as positions &mdash; no arithmetic needed on your part.
   You just pass the number and the arm goes there.</p>
 
@@ -641,7 +641,7 @@ window.ACTIVITY = {
   <p class="lede">Open Thonny, create a new file, and type this exactly. Save it as
   <code>main.py</code> on the Pico.</p>
 
-  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpzZXJ2byA9IFBXTShQaW4oMjgpKSAgICAgICAjIHRoZSBzZXJ2byBpcyBvbiBHUDI4CnNlcnZvLmZyZXEoNTApICAgICAgICAgICAgICMgc2Vydm9zIHdhbnQgNTAgcHVsc2VzIGEgc2Vjb25kCgpsZWZ0ICAgPSAxNjM4ICAgICAgICAgICAgICAjIGxlZnQgcG9zaXRpb24KbWlkZGxlID0gNDkxNSAgICAgICAgICAgICAgIyBtaWRkbGUgcG9zaXRpb24KcmlnaHQgID0gODE5MiAgICAgICAgICAgICAgIyByaWdodCBwb3NpdGlvbgoKd2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="Full Activity 3 program: from machine import Pin, PWM; from time import sleep; servo = PWM(Pin(28)); servo.freq(50); left=1638; middle=4915; right=8192; while True move left middle right"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpzZXJ2byA9IFBXTShQaW4oMjgpKSAgICAgICAjIHRoZSBzZXJ2byBpcyBvbiBHUDI4CnNlcnZvLmZyZXEoNTApICAgICAgICAgICAgICMgc2Vydm9zIHdhbnQgNTAgcHVsc2VzIGEgc2Vjb25kCgpsZWZ0ICAgPSAxNjM4ICAgICAgICAgICAgICAjIGxlZnQgcG9zaXRpb24KbWlkZGxlID0gNDkxNSAgICAgICAgICAgICAgIyBtaWRkbGUgcG9zaXRpb24KcmlnaHQgID0gODE1MCAgICAgICAgICAgICAgIyByaWdodCBwb3NpdGlvbgoKd2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="Full Activity 3 program: from machine import Pin, PWM; from time import sleep; servo = PWM(Pin(28)); servo.freq(50); left=1638; middle=4915; right=8150; while True move left middle right"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
 
   <p class="note">The code is shown as a picture so that you practise typing it yourself.</p>
 </section>
@@ -665,8 +665,8 @@ window.ACTIVITY = {
         <td>Creates a PWM object on GP28 and sets it to 50 pulses per second &mdash; the speed all hobby servos expect.</td>
       </tr>
       <tr>
-        <td><span class="codeimg inline" data-code="bGVmdCAgID0gMTYzOCAgICAgICAgICAgICAgIyBsZWZ0IHBvc2l0aW9uCm1pZGRsZSA9IDQ5MTUgICAgICAgICAgICAgICMgbWlkZGxlIHBvc2l0aW9uCnJpZ2h0ICA9IDgxOTIgICAgICAgICAgICAgICMgcmlnaHQgcG9zaXRpb24=" role="img" aria-label="left = 1638  middle = 4915  right = 8192"><span class="codefallback">Code is shown as a picture.</span></span></td>
-        <td>Stores the three duty values as named variables. <strong>1638</strong> = left, <strong>4915</strong> = middle, <strong>8192</strong> = right.</td>
+        <td><span class="codeimg inline" data-code="bGVmdCAgID0gMTYzOCAgICAgICAgICAgICAgIyBsZWZ0IHBvc2l0aW9uCm1pZGRsZSA9IDQ5MTUgICAgICAgICAgICAgICMgbWlkZGxlIHBvc2l0aW9uCnJpZ2h0ICA9IDgxNTAgICAgICAgICAgICAgICMgcmlnaHQgcG9zaXRpb24=" role="img" aria-label="left = 1638  middle = 4915  right = 8150"><span class="codefallback">Code is shown as a picture.</span></span></td>
+        <td>Stores the three duty values as named variables. <strong>1638</strong> = left, <strong>4915</strong> = middle, <strong>8150</strong> = right.</td>
       </tr>
       <tr>
         <td><span class="codeimg inline" data-code="d2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="while True: move left, middle, right loop"><span class="codefallback">Code is shown as a picture.</span></span></td>
@@ -778,7 +778,7 @@ window.ACTIVITY = {
   change what happens inside the <code>while</code> loop. Here is what to figure out:</p>
   <ol>
     <li>Rename (or add) variables to give your four stops useful names. You already know that numbers
-    between 1638 and 8192 land somewhere between left and right.</li>
+    between 1638 and 8150 land somewhere between left and right.</li>
     <li>Call <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobGVmdCk=" role="img" aria-label="servo.duty_u16(left)"><span class="codefallback">Code is shown as a picture.</span></span>, <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobWlkZGxlKQ==" role="img" aria-label="servo.duty_u16(middle)"><span class="codefallback">Code is shown as a picture.</span></span>, or <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span> &mdash; or a mix of them &mdash; four times in a row,
     with a <code>sleep</code> between each.</li>
     <li>Add a <span class="codeimg inline" data-code="cHJpbnQoImxlZnQiKQ==" role="img" aria-label="print("left")"><span class="codefallback">Code is shown as a picture.</span></span> after each movement so the Shell shows where the arm went.</li>
@@ -795,8 +795,8 @@ window.ACTIVITY = {
 <!-- ═══════════════════════════════ GOING FURTHER ═══════════════════════════════ -->
 <section>
   <h2>&#127919; Going further</h2>
-  <p>The numbers 1638, 4915, and 8192 are three points on a continuous scale. Any whole number
-  between 1638 and 8192 is a valid position &mdash; not just three of them. If you choose a number
+  <p>The numbers 1638, 4915, and 8150 are three points on a continuous scale. Any whole number
+  between 1638 and 8150 is a valid position &mdash; not just three of them. If you choose a number
   halfway between left and middle (about 3276) the arm will stop there. Later activities will show
   how to compute positions mathematically and how to sweep smoothly &mdash; but those tools have not
   been introduced yet, so for now explore by experimenting with numbers.</p>
@@ -822,11 +822,11 @@ window.ACTIVITY = {
     <tbody>
       <tr><td><strong>Servo motor</strong></td><td>A motor with a built-in circuit that moves its arm to a precise angle based on the pulse it receives.</td></tr>
       <tr><td><strong>PWM</strong></td><td><em>Pulse Width Modulation.</em> A pin that flickers on and off rapidly. The length of each &ldquo;on&rdquo; burst carries the signal.</td></tr>
-      <tr><td><strong>Duty value</strong></td><td>The number you pass to <code>duty_u16()</code>. It sets how long each pulse lasts. Range 0&ndash;65535; for this servo you use 1638&ndash;8192.</td></tr>
+      <tr><td><strong>Duty value</strong></td><td>The number you pass to <code>duty_u16()</code>. It sets how long each pulse lasts. Range 0&ndash;65535; for this servo you use 1638&ndash;8150.</td></tr>
       <tr><td><strong>VBUS</strong></td><td>The 5&thinsp;V supply drawn straight from the USB cable. Header pin&nbsp;2 on the LilEx5. The servo needs this &mdash; not 3V3.</td></tr>
       <tr><td><strong><code>PWM(Pin(28))</code></strong></td><td>Creates a PWM-controlled connection to GP28. You must call this before you can set a duty value.</td></tr>
       <tr><td><strong><code>freq(50)</code></strong></td><td>Sets 50 pulses per second, which is the standard all hobby servos expect. Call it once, right after creating the PWM object.</td></tr>
-      <tr><td><strong><code>duty_u16()</code></strong></td><td>Sets the pulse length. Pass 1638, 4915, or 8192 (or any number in between) to move the arm.</td></tr>
+      <tr><td><strong><code>duty_u16()</code></strong></td><td>Sets the pulse length. Pass 1638, 4915, or 8150 (or any number in between) to move the arm.</td></tr>
       <tr><td><strong><code>print()</code></strong></td><td>Sends a message to the Shell panel. Useful for seeing what your program is doing while it runs.</td></tr>
     </tbody>
   </table></div>

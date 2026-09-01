@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:4px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
 </head>
 <body>
 
@@ -128,7 +136,18 @@ and can become a set of links to it whenever somebody has half an hour.</div>
   <h2>The exercise answer &mdash; never leave it in the dark</h2>
   <p class="muted">Green LED3 comes on whenever the order is <code>OFF</code>, so exactly one of the two
   is lit at any time. Two dark lights then means the board is not running.</p>
-  <span class="codeimg" data-code="IyBPbmx5IHRocmVlIGxpbmVzIGFyZSBhZGRlZC4gRXZlcnl0aGluZyBlbHNlIGlzIHVuY2hhbmdlZC4KZ3JlZW4gPSBQaW4oMTMsIFBpbi5PVVQpICAgICAgICAgICAgIyBMRUQzLCB0aGUgZ3JlZW4gb25lIC0gR1AxMwoKZGVmIHdoZW5fYV9tZXNzYWdlX2Fycml2ZXModG9waWMsIG1lc3NhZ2UpOgogICAgb3JkZXIgPSBtZXNzYWdlLmRlY29kZSgpCiAgICBwcmludCgiVGhlIG9yZGVyIGlzIiwgb3JkZXIpCiAgICBpZiBvcmRlciA9PSAiT04iOgogICAgICAgIHJlZC5vbigpCiAgICAgICAgZ3JlZW4ub2ZmKCkKICAgIGVsc2U6CiAgICAgICAgcmVkLm9mZigpCiAgICAgICAgZ3JlZW4ub24oKQ==" role="img" aria-label="Python code, 12 lines, shown as a picture"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code># Only three lines are added. Everything else is unchanged.
+green = Pin(13, Pin.OUT)            # LED3, the green one - GP13
+
+def when_a_message_arrives(topic, message):
+    order = message.decode()
+    print(&quot;The order is&quot;, order)
+    if order == &quot;ON&quot;:
+        red.on()
+        green.off()
+    else:
+        red.off()
+        green.on()</code></pre></div>
 
   <table>
     <thead><tr><th>Accepting it</th><th>What to look for</th></tr></thead>
@@ -271,6 +290,7 @@ and can become a set of links to it whenever somebody has half an hour.</div>
       <tr><td>Previous activity</td><td><a href="activity-8.html">activity-8.html</a> &middot; <a href="teacher-8.html">teacher-8.html</a></td></tr>
       <tr><td>The MQTT library</td><td><a href="https://github.com/ump-stemlab/stemcube" target="_blank" rel="noopener">github.com/ump-stemlab/stemcube</a> &mdash; <code>umqtt_simple.py</code> for Wokwi</td></tr>
       <tr><td>Adafruit IO</td><td><a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a></td></tr>
+            <tr><td>Wokwi (exercise answer, Activity 11)</td><td><a href="https://wokwi.com/projects/473934121587430401" target="_blank" rel="noopener">wokwi.com/projects/473934121587430401</a></td></tr>
       <tr><td>Wokwi &middot; Thonny</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a> &middot; <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a></td></tr>
       <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
       <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
@@ -333,5 +353,16 @@ and can become a set of links to it whenever somebody has half an hour.</div>
   </div>
 </footer>
 <script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
 </body>
 </html>
