@@ -13,3 +13,4 @@ Disallow: /pico-iot-module/teacher-9.html
 Disallow: /pico-iot-module/teacher-10.html
 Disallow: /pico-iot-module/teacher-11.html
 Disallow: /pico-iot-module/teacher-12.html
+Disallow: /pico-iot-module/teacher-13.html

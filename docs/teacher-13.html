@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher notes &mdash; Activity 13 | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Instructor notes for Activity 13.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<style>
+.codebox{position:relative;margin:1em 0}
+.codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:10px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
+.codebox code{font-family:'Cascadia Code','Fira Mono',monospace;white-space:pre}
+.copybtn{position:absolute;top:.45em;right:.45em;padding:.22em .6em;font-size:.78em;font-weight:600;background:#02ADA5;color:#fff;border:none;border-radius:6px;cursor:pointer;opacity:.82;transition:opacity .15s}
+.copybtn:hover{opacity:1}
+.copybtn.copied{background:#4caf50}
+</style>
+</head>
+<body data-accent="red">
+
+<a class="skip" href="#main">Skip to the activity</a>
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<header class="sitehead">
+  <div class="sitehead-in">
+    <a class="brand" href="index.html">
+      <img class="brandmark" src="img/stemlab-mark.svg" alt="" width="32" height="33" aria-hidden="true">
+      <span class="brandtxt"><b>LilEx5</b><small>UMPSA STEM LAB</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site">
+      <a class="nl" href="index.html">Home</a>
+      <details class="navsel">
+        <summary>Activity 13: Your Own Live Dashboard</summary>
+        <div class="navmenu" role="menu">
+      <a href="teacher-0.html"><b>Activity 0</b>: Getting Started</a>
+      <a href="teacher-1.html"><b>Activity 1</b>: Light Up an LED</a>
+      <a href="teacher-2.html"><b>Activity 2</b>: Make an LED Blink</a>
+      <a href="teacher-3.html"><b>Activity 3</b>: Digital Output &amp; Servo</a>
+      <a href="teacher-4.html"><b>Activity 4</b>: Digital Input</a>
+      <a href="teacher-5.html"><b>Activity 5</b>: Making Decisions</a>
+      <a href="teacher-6.html"><b>Activity 6</b>: And, Or, Not</a>
+      <a href="teacher-7.html"><b>Activity 7</b>: Words on a Screen</a>
+      <a href="teacher-8.html"><b>Activity 8</b>: Sensors and Numbers</a>
+      <a href="teacher-9.html"><b>Activity 9</b>: Soil Moisture</a>
+      <a href="teacher-10.html"><b>Activity 10</b>: Internet and Data</a>
+      <a href="teacher-11.html"><b>Activity 11</b>: Control from Anywhere</a>
+      <a href="teacher-12.html"><b>Activity 12</b>: Sending Messages by Radio</a>
+      <a href="teacher-13.html" aria-current="page"><b>Activity 13</b>: Your Own Live Dashboard</a>
+        </div>
+      </details>
+      <a class="nl" href="pinout.html">Pin reference</a>
+    </nav>
+  </div>
+</header>
+
+<div class="gate" id="gate">
+  <h2>&#128274; Teacher notes</h2>
+  <p>This page holds the exercise answer for <strong>Activity 13 &mdash; Your Own Live Dashboard</strong>.
+  It is not linked from the student pages.</p>
+  <p><strong>Students: please go back and try the exercise first.</strong></p>
+  <button class="cta" id="gatebtn" type="button">I'm a teacher &mdash; show the notes</button>
+  <p style="margin-top:16px"><a href="activity-13.html">&larr; Back to the student page</a></p>
+</div>
+
+<div id="tcontent" hidden>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Instructor notes</p>
+    <h1>Activity 13 &mdash; teacher notes</h1>
+    <p class="sub">Your Own Live Dashboard. The class deploys the middle instead of borrowing it,
+    and finds out what owning your own data costs as well as what it buys.</p>
+    <div class="hero-cta">
+      <a class="cta alt" href="activity-13.html">&#9654; Student page</a>
+      <a class="cta alt" href="teacher.html">&#128218; All teacher notes</a>
+      <a class="cta alt" href="teacher-12.html">&#8592; Activity 12 notes</a>
+      <a class="cta alt" href="pinout.html">&#128204; Pin reference</a>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+<aside class="rail" aria-label="Module map">
+  <div class="railbox">
+    <p class="railttl">Module map</p>
+    <ol class="raillist">
+      <li class="railphase"><span>Start here</span></li>
+      <li><a href="teacher-0.html" data-act="0"><i><b>0</b></i><span>Getting Started</span></a></li>
+      <li><a href="teacher-1.html" data-act="1"><i><b>1</b></i><span>Light Up an LED</span></a></li>
+      <li><a href="teacher-2.html" data-act="2"><i><b>2</b></i><span>Make an LED Blink</span></a></li>
+      <li class="railphase"><span>Make things happen</span></li>
+      <li><a href="teacher-3.html" data-act="3"><i><b>3</b></i><span>Digital Output &amp; Servo</span></a></li>
+      <li><a href="teacher-4.html" data-act="4"><i><b>4</b></i><span>Digital Input</span></a></li>
+      <li><a href="teacher-5.html" data-act="5"><i><b>5</b></i><span>Making Decisions</span></a></li>
+      <li><a href="teacher-6.html" data-act="6"><i><b>6</b></i><span>And, Or, Not</span></a></li>
+      <li class="railphase"><span>Sense the world</span></li>
+      <li><a href="teacher-7.html" data-act="7"><i><b>7</b></i><span>Words on a Screen</span></a></li>
+      <li><a href="teacher-8.html" data-act="8"><i><b>8</b></i><span>Sensors and Numbers</span></a></li>
+      <li><a href="teacher-9.html" data-act="9"><i><b>9</b></i><span>Soil Moisture</span></a></li>
+      <li class="railphase"><span>Get online</span></li>
+      <li><a href="teacher-10.html" data-act="10"><i><b>10</b></i><span>Internet and Data</span></a></li>
+      <li><a href="teacher-11.html" data-act="11"><i><b>11</b></i><span>Control from Anywhere</span></a></li>
+      <li class="railphase"><span>Go further</span></li>
+      <li><a href="teacher-12.html" data-act="12"><i><b>12</b></i><span>Sending Messages by Radio</span></a></li>
+      <li><a href="teacher-13.html" data-act="13" aria-current="page"><i><b>13</b></i><span>Your Own Live Dashboard</span></a></li>
+    </ol>
+    <p class="railprog" id="railprog" hidden></p>
+    <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+  </div>
+</aside>
+<main class="wrap" id="main">
+
+<div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
+repository is public &mdash; anyone with the URL can read it.</div>
+
+<div class="tbanner"><b>This activity ships finished code, and that is a deliberate exception.</b>
+Every other activity in the module has students type the program, because typing is how it lands. Here
+the program is three files of sensor plumbing they have already met, and the new learning is entirely
+in the cloud half. The one thing they type is <code>config.py</code>. Do not let the pack become an
+excuse to skip reading <code>main_dashboard.py</code> &mdash; the going-further tasks assume they have
+opened it.</div>
+
+<div class="tbanner"><b>No Wokwi route, for the second activity running.</b> The program reads the whole
+LilEx5 sensor set and the simulator has none of it. A student with no board can still do the entire
+cloud half on their own laptop &mdash; deploy a script, make a sheet, and point the dashboard at a
+classmate&rsquo;s address. Plan for that rather than leaving them watching.</div>
+
+<section>
+  <h2>What is being taught</h2>
+  <ul>
+    <li><strong>One idea: the middle is yours.</strong> Activities 10 and 11 borrowed somebody
+    else&rsquo;s service. Activity 12 removed the middle entirely. Today the class <em>builds</em> one.
+    That three-step arc is the shape of the last three lessons and it is worth naming out loud.</li>
+    <li><strong>The honest cost is taught alongside the win</strong>, exactly as in Activity 12: you need
+    an account, the address is a password, Apps Script is slower than MQTT, and a deleted deployment
+    fails silently. A student should be able to name one thing that got harder.</li>
+    <li><strong>POST, contrasted with publish.</strong> Activity 10 handed a message over and never found
+    out what happened. Today the board waits for an answer, so failures are loud. Both shapes are real;
+    the class has now written one of each.</li>
+    <li><strong>Named readings (JSON).</strong> One message, many values, each labelled &mdash; and the
+    name is the <em>only</em> agreement between the board and the sheet. A misspelled name creates a new
+    column in silence. This is the commonest bug in every system built this way and it is worth
+    demonstrating live.</li>
+    <li><strong>History is the payoff.</strong> A gauge answers &ldquo;what is it now&rdquo;; a sheet
+    answers &ldquo;what has it been doing&rdquo;. Nothing earlier in the module could do the second.</li>
+    <li><strong>Sampling interval as a design decision.</strong> One number in <code>config.py</code>
+    decides how much detail survives and how fast the sheet fills. That is the exercise.</li>
+    <li><strong>Reused, not re-taught:</strong> joining WiFi and the wait that ends by itself (Activity
+    10), the I&sup2;C sensor bus (Activities 7 and 8), the OLED (Activity 7), and the idea of a service
+    in the middle (Activities 10 and 11).</li>
+    <li><strong>Almost no new syntax</strong>, on purpose. The new difficulty is operational: deploying,
+    authorising, keeping an address safe, and choosing a rate.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The cloud half, and what will actually go wrong</h2>
+  <ul>
+    <li><strong>Apps Script must be opened from inside the sheet</strong> (Extensions &rarr; Apps Script).
+    A script created from the Apps Script home page has no bound spreadsheet, and
+    <code>SpreadsheetApp.getActiveSpreadsheet()</code> returns nothing. The symptom is a deployment that
+    works, a board that reports OK, and an empty sheet. Expect this one every time.</li>
+    <li><strong>Saving is not deploying.</strong> Editing the script changes nothing that the
+    <code>/exec</code> address serves until <em>Deploy &rarr; Manage deployments &rarr; edit &rarr;
+    Version: New version</em>. Editing the live deployment in place keeps the same address; a brand new
+    deployment issues a <strong>different</strong> address, which is how half the class ends up with the
+    board writing to one place and the dashboard reading another.</li>
+    <li><strong>Who has access must be &ldquo;Anyone&rdquo;.</strong> A Pico cannot sign in to Google.
+    That makes the long code in the middle of the address the only protection the sheet has, and the
+    student page says so in a red callout. Say it again out loud.</li>
+    <li><strong>The first visit has to be a human one.</strong> Open the <code>/exec</code> address in a
+    browser once and clear Google&rsquo;s &ldquo;unverified app&rdquo; warning before the board tries.</li>
+    <li><strong>School Google accounts sometimes block Apps Script deployment entirely.</strong> Test this
+    yourself, on a student account, before the lesson &mdash; not on your own staff account, which may
+    have different rules. If it is blocked, deploy one script yourself and give the class the address;
+    they lose ownership of the sheet but keep everything else.</li>
+    <li><strong>Quotas.</strong> A consumer Google account allows roughly 20,000 URL-fetch-triggered
+    script executions a day and about 90 minutes of total script runtime; a Workspace account gets more.
+    At one reading every five seconds a single board uses about 17,000 executions in a 24-hour day, so
+    <strong>a board left running overnight will hit the ceiling.</strong> One reading a minute &mdash;
+    which is what the exercise asks for &mdash; is about 1,400 and is comfortable. Say so if a class is
+    tempted to leave boards running.</li>
+    <li><strong>A spreadsheet holds 10 million cells.</strong> With about 20 columns that is roughly
+    500,000 rows &mdash; a month at five seconds, four years at a minute.</li>
+  </ul>
+
+  <div class="cal warn"><b>Check the address inside the dashboard files before you hand them out</b>
+  <code>LilEx5_Dashboard.html</code> and <code>LilEx5_Dashboard_History.html</code> ship with a working
+  <code>/exec</code> address already typed into <code>API_URL</code>. Whoever deployed that script owns
+  the sheet it writes to, and anybody holding the file can add rows to it. Replace it with a placeholder
+  before the pack goes out, or deploy a fresh throwaway script for the class and accept that the address
+  is public. This is the same lesson the student page teaches, so it is worth being seen to follow it.</div>
+</section>
+
+<section>
+  <h2>Before the lesson</h2>
+  <ul>
+    <li><strong>Test the network with a board, not with a phone.</strong> 2.4&nbsp;GHz, no sign-in page.
+    A phone hotspot is a first-class fallback and should be presented as one, not as a rescue.</li>
+    <li><strong>Deploy one script yourself</strong> and have the address ready. Students who lose twenty
+    minutes on Google can use yours and come back to the deploying afterwards.</li>
+    <li><strong>Try a student Google account</strong> end to end: make a sheet, open Apps Script, deploy,
+    authorise. If any step is blocked you need the fallback above.</li>
+    <li><strong>Decide whether history is in scope.</strong> The history view needs
+    <code>apps-script-history.gs</code> pasted onto the end of the script and one line added to
+    <code>doGet</code>. If the lesson is tight, skip it and demonstrate it yourself on the projector
+    &mdash; the point lands just as well from a demonstration.</li>
+    <li><strong>Put a sheet on the projector</strong> with a board already feeding it, so the class sees
+    rows arriving before they start. This is the thing that makes them want to finish.</li>
+    <li><strong>Have the pack on a shared drive</strong>, not on a memory stick going round the room.</li>
+  </ul>
+
+  <h3>The one line that turns on history</h3>
+  <p>Paste <code>apps-script-history.gs</code> at the bottom of the existing <code>Code.gs</code>, then
+  make this the first line inside the existing <code>doGet(e)</code>:</p>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>if (e &amp;&amp; e.parameter &amp;&amp; e.parameter.action === "history") { return getHistory(e); }</code></pre></div>
+  <p>Then deploy a <strong>new version of the existing deployment</strong> so the address does not change.
+  Test it in a browser tab with <code>?action=history&amp;limit=5</code> on the end of your
+  <code>/exec</code> address &mdash; you should get JSON with a <code>rows</code> array.</p>
+</section>
+
+<section>
+  <h2>How to run the room</h2>
+  <ul>
+    <li><strong>Do Part 1 together, on the projector, step by step.</strong> Deploying is four clicks and
+    two of them are easy to get wrong. Going at one pace here saves the whole lesson.</li>
+    <li><strong>Make them open the sheet before the dashboard.</strong> The rows are the lesson; the
+    graphs are decoration. A class that goes straight to the pretty page thinks the dashboard is the
+    thing they built, and it is not.</li>
+    <li><strong>Break a name live.</strong> Change <code>temperature</code> to <code>temprature</code> in
+    <code>main_dashboard.py</code>, run it, and let them watch a new column appear with no error anywhere.
+    Thirty seconds, and it is the single most useful demonstration on the page.</li>
+    <li><strong>Breathing on the sensor</strong> is the moment the abstraction becomes real &mdash; their
+    breath, in a spreadsheet. Make sure everybody does it.</li>
+    <li><strong>Ask who else can write to their sheet.</strong> The answer is &ldquo;anybody with the
+    address&rdquo;, and it should come from them rather than from you.</li>
+    <li><strong>Finish on history</strong>, even if it is only your own projected sheet. The arc of the
+    whole module ends there: a light, then a loop, then a decision, then a screen, then a sensor, then
+    the internet, then no internet at all, and now a record that outlives the lesson.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Mistakes students actually make</h2>
+  <div class="tablescroll"><table>
+    <thead><tr><th>What they did</th><th>What it looks like</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Made the script from the Apps Script home page</td><td>Deployment works, board says OK, sheet stays empty</td><td>Start again from <strong>Extensions &rarr; Apps Script</strong> inside the sheet</td></tr>
+      <tr><td>Saved the script but did not deploy</td><td>Old behaviour, no error</td><td>Deploy &rarr; Manage deployments &rarr; edit &rarr; New version</td></tr>
+      <tr><td>Deployed fresh instead of editing the deployment</td><td>Board writes, dashboard reads nothing</td><td>Both ends must hold the <em>same</em> address</td></tr>
+      <tr><td>Left <code>"YourNetworkName"</code> in <code>config.py</code></td><td><code>[WiFi] Connection timeout</code></td><td>Their own SSID, spelled exactly, capitals included</td></tr>
+      <tr><td>Put <code>5</code> in <code>REPORT_INTERVAL_MS</code></td><td>Floods, then errors that look like a broken network</td><td>Milliseconds. 5000, not 5</td></tr>
+      <tr><td>Edited <code>config.py</code> on the computer only</td><td>Nothing changes at all</td><td>Upload it to the Pico again, then stop and run</td></tr>
+      <tr><td>Pasted the address with a trailing space or a line break</td><td>Silent failure, or a 404</td><td>It must end in <code>/exec</code> with nothing after it</td></tr>
+      <tr><td>Used the <code>/dev</code> address instead of <code>/exec</code></td><td>Works for them, fails for the board</td><td><code>/dev</code> requires being signed in; only <code>/exec</code> is public</td></tr>
+      <tr><td>Opened the dashboard before saving it</td><td>Still the placeholder address</td><td>Save, then hard-refresh the browser</td></tr>
+      <tr><td>Shared their <code>/exec</code> address in the class chat</td><td>Other people&rsquo;s readings in their sheet</td><td>Re-deploy to get a new address &mdash; and treat this as the lesson, not a telling-off</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>The exercise answer</h2>
+  <p><strong>Task:</strong> record one reading a minute, and make the dashboard open showing a whole
+  school day of them.</p>
+
+  <h3>Number one &mdash; the board</h3>
+  <p>In <code>config.py</code>. A minute is 60 seconds, and the setting is in milliseconds:</p>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>REPORT_INTERVAL_MS = 60000</code></pre></div>
+  <p>Upload <code>config.py</code> to the Pico again, then stop and run <code>main_dashboard.py</code>.
+  The Shell should print one line a minute. That is the check &mdash; it needs no marking.</p>
+
+  <h3>Number two &mdash; the dashboard</h3>
+  <p>At the top of <code>LilEx5_Dashboard_History.html</code>. One reading a minute means one row a
+  minute, and a seven-hour school day is 7 &times; 60 = <strong>420</strong> minutes:</p>
+  <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>const HISTORY_ON_OPEN = 420;</code></pre></div>
+  <p>Any sensible school day is fine &mdash; 6 hours gives 360, 8 gives 480. <strong>What is being marked
+  is the joining up</strong>: that the second number is <em>derived</em> from the first, and that the
+  student can say what happens to it if the interval changes again.</p>
+
+  <div class="cal tip"><b>The question to ask anyone who finishes early</b>
+  &ldquo;You have just gone back to a reading every five seconds and left the dashboard alone. How much
+  of the day is it showing now?&rdquo; The answer is 420 rows &times; 5 seconds = 35 minutes. A student
+  who can do that has the idea; a student who re-reads the file has not.</div>
+
+  <h3>Common wrong answers</h3>
+  <ul>
+    <li><code>REPORT_INTERVAL_MS = 60</code> &mdash; seconds instead of milliseconds. Sixteen readings a
+    second, and it looks like a network fault.</li>
+    <li><code>HISTORY_ON_OPEN = 7</code> or <code>= 420000</code> &mdash; confusing rows with hours, or
+    with milliseconds. It is a count of rows and nothing else.</li>
+    <li>Both numbers changed but <code>config.py</code> never uploaded &mdash; the commonest of the three,
+    and invisible until you ask them to watch the Shell.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Going further &mdash; answers</h2>
+  <div class="tablescroll"><table>
+    <thead><tr><th>Task</th><th>Answer / what to look for</th></tr></thead>
+    <tbody>
+      <tr><td>1. Chart inside the spreadsheet</td><td>Select the column, Insert &rarr; Chart. The point is that the dashboard was never <em>necessary</em> &mdash; owning the data means any tool will do. Worth saying out loud.</td></tr>
+      <tr><td>2. When does the sheet fill up?</td><td>10,000,000 cells &divide; about 20 columns = roughly 500,000 rows. At one a minute that is about 347 days; at one every five seconds, about 29 days. The real answer to &ldquo;what would you do about it&rdquo; is: start a new sheet each month, or write only what you need.</td></tr>
+      <tr><td>3. Put the dashboard on GitHub Pages</td><td>It is a single self-contained file, so it works. <strong>And the <code>/exec</code> address inside it becomes public the moment it is pushed.</strong> The right answer is not to publish it as it stands &mdash; this task is a trap on purpose, and the discussion is the point.</td></tr>
+      <tr><td>4. Send a reading of your own</td><td>One more key in the dictionary that <code>main_dashboard.py</code> hands to the reporter, with the Activity 9 soil percentage as its value. A new column appears in the sheet with no change to the Apps Script at all. The dashboard will not show a card for it &mdash; that needs a card added to the HTML, which is a good follow-on.</td></tr>
+      <tr><td>5. Two boards, one sheet</td><td>Add a <code>"board"</code> name to each message. It becomes a column, and the sheet can then be filtered or pivoted by it. The interesting difficulty is that the dashboard as written shows the latest row regardless of which board sent it.</td></tr>
+      <tr><td>6. Survive the WiFi going away</td><td>Keep unsent readings in a list, or append them to a file on the Pico, and post them when the connection returns. Raises ordering, duplicates and how much to keep &mdash; which is most of what makes real IoT hard, and is a genuinely open-ended task.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Pins used so far</h2>
+  <p>Activity 13 introduces <strong>no new pins</strong>. It uses the sensor bus and the screen that are
+  already there, and the WiFi radio inside the Pico&nbsp;W.</p>
+  <div class="tablescroll"><table>
+    <thead><tr><th>Part</th><th>GP</th><th>First used</th></tr></thead>
+    <tbody>
+      <tr><td>LED1 red</td><td><span class="gp">GP11</span></td><td>Activity 1</td></tr>
+      <tr><td>LED2 yellow</td><td><span class="gp">GP12</span></td><td>Activity 1 (exercise)</td></tr>
+      <tr><td>LED3 green</td><td><span class="gp">GP13</span></td><td>Activity 1 (exercise)</td></tr>
+      <tr><td>Servo</td><td><span class="gp">GP28</span></td><td>Activity 3</td></tr>
+      <tr><td>SW1 / SW2 / SW3</td><td><span class="gp">GP2</span> / <span class="gp">GP3</span> / <span class="gp">GP4</span></td><td>Activities 4, 5, 6</td></tr>
+      <tr><td>I&sup2;C bus &mdash; SDA / SCL</td><td><span class="gp">GP0</span> / <span class="gp">GP1</span></td><td>Activity 7, and every sensor since</td></tr>
+      <tr><td>Soil probe</td><td><span class="gp">GP26</span></td><td>Activity 9</td></tr>
+      <tr><td>WiFi</td><td>inside the Pico&nbsp;W</td><td>Activity 10, and again today</td></tr>
+      <tr><td>Radio TX / RX</td><td><span class="gp">GP16</span> / <span class="gp">GP17</span></td><td>Activity 12</td></tr>
+      <tr><td>Radio M2 / M1 / M0</td><td><span class="gp">GP18</span> / <span class="gp">GP19</span> / <span class="gp">GP20</span></td><td>Activity 12</td></tr>
+      <tr><td>Radio AUX</td><td><span class="gp">GP21</span></td><td>not used yet</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Links used</h2>
+  <ul>
+    <li><a href="https://sheets.new" target="_blank" rel="noopener">sheets.new</a> &mdash; a new spreadsheet in one click</li>
+    <li><a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> &mdash; only for finding an existing project; always <em>create</em> from inside the sheet</li>
+    <li><a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener">Apps Script quotas</a> &mdash; the current limits, which do change</li>
+    <li><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a></li>
+    <li><a href="activity-13.html">The student page</a> &middot; <a href="teacher-12.html">Activity 12 notes</a> &middot; <a href="teacher.html">All teacher notes</a></li>
+  </ul>
+</section>
+
+</main>
+</div>
+</div><!-- /#tcontent -->
+
+<script>
+(function(){
+  var b = document.getElementById('gatebtn');
+  b.addEventListener('click', function(){
+    document.getElementById('gate').hidden = true;
+    document.getElementById('tcontent').hidden = false;
+  });
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <div class="footgrid">
+      <div class="footlogo">
+        <img src="img/stemlab-logo-light.svg" alt="UMPSA STEM LAB &mdash; See, Think, Explore, Marvel" width="200" height="62" loading="lazy">
+      </div>
+      <div>
+        <p class="motto">Pico IoT Module</p>
+        <p>A MicroPython teaching module for the LilEx5 board.<br>
+        Built and maintained by <strong>UMPSA STEM LAB</strong>.</p>
+      </div>
+    </div>
+    <p class="footlinks"><a href="index.html">Home</a> &middot;
+       <a href="activity-0.html">Activity 0</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="activity-13.html">Activity 13</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+<script>
+document.querySelectorAll('.copybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.parentElement.querySelector('code').textContent;
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied!';b.classList.add('copied');
+      setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},2000);
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Activity 6 &mdash; And, Or, Not | LilEx5 Pico IoT Module</title>
 <meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 6: joining two questions into one with and, or and not.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 </head>
-<body>
+<body data-accent="orange">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -25,13 +28,19 @@
   </linearGradient>
 </defs></svg>
 
+<a class="skip" href="#main">Skip to the activity</a>
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
-<nav class="sitenav"><div class="wrap">
-  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
-  <a class="nl" href="index.html">Home</a>
-  <details class="navsel">
-    <summary>Activity 6: And, Or, Not</summary>
-    <div class="navmenu" role="menu">
+<header class="sitehead">
+  <div class="sitehead-in">
+    <a class="brand" href="index.html">
+      <img class="brandmark" src="img/stemlab-mark.svg" alt="" width="32" height="33" aria-hidden="true">
+      <span class="brandtxt"><b>LilEx5</b><small>UMPSA STEM LAB</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site">
+      <a class="nl" href="index.html">Home</a>
+      <details class="navsel">
+        <summary>Activity 6: And, Or, Not</summary>
+        <div class="navmenu" role="menu">
       <a href="activity-0.html"><b>Activity 0</b>: Getting Started</a>
       <a href="activity-1.html"><b>Activity 1</b>: Light Up an LED</a>
       <a href="activity-2.html"><b>Activity 2</b>: Make an LED Blink</a>
@@ -45,10 +54,13 @@
       <a href="activity-10.html"><b>Activity 10</b>: Internet and Data</a>
       <a href="activity-11.html"><b>Activity 11</b>: Control from Anywhere</a>
       <a href="activity-12.html"><b>Activity 12</b>: Sending Messages by Radio</a>
-    </div>
-  </details>
-  <a class="nl" href="pinout.html">Pin reference</a>
-</div></nav>
+      <a href="activity-13.html"><b>Activity 13</b>: Your Own Live Dashboard</a>
+        </div>
+      </details>
+      <a class="nl" href="pinout.html">Pin reference</a>
+    </nav>
+  </div>
+</header>
 
 <header class="hero">
   <div class="wrap">
@@ -86,7 +98,36 @@
   </div>
 </div>
 
-<div class="wrap">
+<div class="shell">
+<aside class="rail" aria-label="Module map">
+  <div class="railbox">
+    <p class="railttl">Module map</p>
+    <ol class="raillist">
+      <li class="railphase"><span>Start here</span></li>
+      <li><a href="activity-0.html" data-act="0"><i><b>0</b></i><span>Getting Started</span></a></li>
+      <li><a href="activity-1.html" data-act="1"><i><b>1</b></i><span>Light Up an LED</span></a></li>
+      <li><a href="activity-2.html" data-act="2"><i><b>2</b></i><span>Make an LED Blink</span></a></li>
+      <li class="railphase"><span>Make things happen</span></li>
+      <li><a href="activity-3.html" data-act="3"><i><b>3</b></i><span>Digital Output &amp; Servo</span></a></li>
+      <li><a href="activity-4.html" data-act="4"><i><b>4</b></i><span>Digital Input</span></a></li>
+      <li><a href="activity-5.html" data-act="5"><i><b>5</b></i><span>Making Decisions</span></a></li>
+      <li><a href="activity-6.html" data-act="6" aria-current="page"><i><b>6</b></i><span>And, Or, Not</span></a></li>
+      <li class="railphase"><span>Sense the world</span></li>
+      <li><a href="activity-7.html" data-act="7"><i><b>7</b></i><span>Words on a Screen</span></a></li>
+      <li><a href="activity-8.html" data-act="8"><i><b>8</b></i><span>Sensors and Numbers</span></a></li>
+      <li><a href="activity-9.html" data-act="9"><i><b>9</b></i><span>Soil Moisture</span></a></li>
+      <li class="railphase"><span>Get online</span></li>
+      <li><a href="activity-10.html" data-act="10"><i><b>10</b></i><span>Internet and Data</span></a></li>
+      <li><a href="activity-11.html" data-act="11"><i><b>11</b></i><span>Control from Anywhere</span></a></li>
+      <li class="railphase"><span>Go further</span></li>
+      <li><a href="activity-12.html" data-act="12"><i><b>12</b></i><span>Sending Messages by Radio</span></a></li>
+      <li><a href="activity-13.html" data-act="13"><i><b>13</b></i><span>Your Own Live Dashboard</span></a></li>
+    </ol>
+    <p class="railprog" id="railprog" hidden></p>
+    <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+  </div>
+</aside>
+<main class="wrap" id="main">
 
 <section>
   <h2>&#127919; Your mission</h2>
@@ -138,13 +179,13 @@
   <a href="activity-5.html#trap">Activity 5</a> before you start.</div>
 
   <h3>Which route are you taking?</h3>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
     <tbody>
       <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. Activity 5&rsquo;s circuit with a <em>second</em> button added.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
       <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="cal tip"><b>No new hardware today either</b>
   SW1, SW2 and LED1 are all parts you have already used. Everything new is in one line of the program
   &mdash; which is why the thinking sections come first and the wiring section is short.</div>
@@ -185,14 +226,14 @@
 </svg>
 
   <p>There are three of these words in Python, and they are the three words this activity is about:</p>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Word</th><th>What it does</th><th>How strict it is</th></tr></thead>
     <tbody>
       <tr><td><strong>and</strong></td><td>Joins two questions. The answer is yes only when <em>both</em> are yes.</td><td>The strictest</td></tr>
       <tr><td><strong>or</strong></td><td>Joins two questions. The answer is yes when <em>at least one</em> is yes.</td><td>The most generous</td></tr>
       <tr><td><strong>not</strong></td><td>Sits in front of <em>one</em> question and turns its answer round.</td><td>Neither &mdash; it flips</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <div class="cal warn"><b>English is not Python, and this is where people come unstuck</b>
   In the corridor, &ldquo;press SW1 and SW2&rdquo; is a perfectly good sentence. In a program it is not
@@ -783,7 +824,7 @@
       <p><strong>In words:</strong> six wires, six pads. The two green wires are the ones your program
       reads; the three black ones are grounds; the red pair is the light.</p>
 
-      <table>
+      <div class="tablescroll"><table>
         <thead><tr><th>Physical pin</th><th>Name on the board</th><th>What goes there</th></tr></thead>
         <tbody>
           <tr><td><strong>4</strong></td><td><span class="gp">GP2</span></td><td>SW1 &mdash; one leg</td></tr>
@@ -793,7 +834,7 @@
           <tr><td><strong>15</strong></td><td><span class="gp">GP11</span></td><td>LED1 &mdash; long leg (A), through the 330 &Omega; resistor</td></tr>
           <tr><td><strong>18</strong></td><td>GND</td><td>LED1 &mdash; short leg (C)</td></tr>
         </tbody>
-      </table>
+      </table></div>
 
       <div class="cal note"><b>Two sets of numbers, and only one of them goes in your code</b>
       The big white numbers are the <strong>physical pins</strong> &mdash; where a wire physically goes.
@@ -874,7 +915,7 @@
   <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Code</th><th>What it means</th></tr></thead>
     <tbody>
       <tr><td><span class="codeimg inline" data-code="c3cxID0gUGluKDIsIFBpbi5JTiwgUGluLlBVTExfVVAp" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
@@ -896,7 +937,7 @@
       <tr><td><span class="codeimg inline" data-code="ICAgIHNsZWVwKDAuMSk=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
           <td>Back out to four spaces. Ten decisions a second, whichever road was taken.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <div class="cal info"><b>Still one <code>if</code>, still one <code>else</code></b>
   Nothing about the shape of a decision has changed today. The question got longer; the two roads out of
@@ -924,13 +965,13 @@
 
 <section id="run">
   <h2>&#9654;&#65039; Save it and run it</h2>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th></th><th>Save</th><th>Run</th><th>Where to look</th></tr></thead>
     <tbody>
       <tr><td><strong>Wokwi</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>The green <strong>&#9654; Play</strong> button</td><td>The LED on the diagram, and the <strong>Serial Monitor</strong></td></tr>
       <tr><td><strong>Real board</strong></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd>, choose <strong>Raspberry Pi Pico</strong>, name it <code>twokey.py</code></td><td>The green <strong>&#9654; Run</strong> arrow, or <kbd>F5</kbd></td><td>LED1 on the board, and the <strong>Shell</strong></td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="cal tip"><b>Stopping it works exactly as before</b>
   This program never ends either. Wokwi&rsquo;s red <strong>&#9632; Stop</strong>, Thonny&rsquo;s red
   <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</div>
@@ -980,7 +1021,7 @@
 
 <section id="fix">
   <h2>&#128736;&#65039; If it is not working</h2>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
     <tbody>
       <tr><td><strong>The light comes on with one key</strong></td><td>You wrote <code>or</code> where you meant <code>and</code>. One word, one edit.</td></tr>
@@ -996,7 +1037,7 @@
       <tr><td><strong>I cannot save, or the Shell will not respond</strong></td><td>The previous forever-loop is still running. Press the red <strong>&#9632; Stop</strong>, or <kbd>Ctrl</kbd>+<kbd>C</kbd>.</td></tr>
       <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. That is the power switch, not a button.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <section id="exercise">
@@ -1124,7 +1165,7 @@
 
 <section>
   <h2>&#128214; Words to remember</h2>
-  <table>
+  <div class="tablescroll"><table>
     <tbody>
       <tr><td><strong>and</strong></td><td>Joins two whole questions. Yes only when both halves are yes.</td></tr>
       <tr><td><strong>or</strong></td><td>Joins two whole questions. Yes when at least one half is yes &mdash; both included.</td></tr>
@@ -1133,7 +1174,7 @@
       <tr><td><strong>Boolean</strong></td><td>The proper name for a value that can only be yes or no &mdash; true or false. Everything on this page is boolean logic.</td></tr>
       <tr><td><strong>Brackets</strong></td><td>Put round a half to show where it starts and ends. Rarely compulsory, always kind to the next person reading it.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <nav class="stepnav" aria-label="Move between activities">
@@ -1142,6 +1183,7 @@
 </nav>
 
 
+</main>
 </div>
 
 <script>
@@ -1181,8 +1223,19 @@ window.ACTIVITY = {
 
 <footer>
   <div class="wrap">
-    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
-    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+    <div class="footgrid">
+      <div class="footlogo">
+        <img src="img/stemlab-logo-light.svg" alt="UMPSA STEM LAB &mdash; See, Think, Explore, Marvel" width="200" height="62" loading="lazy">
+      </div>
+      <div>
+        <p class="motto">Pico IoT Module</p>
+        <p>A MicroPython teaching module for the LilEx5 board.<br>
+        Built and maintained by <strong>UMPSA STEM LAB</strong>.</p>
+      </div>
+    </div>
+    <p class="footlinks"><a href="index.html">Home</a> &middot;
+       <a href="activity-0.html">Activity 0</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
        <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
@@ -1194,6 +1247,7 @@ window.ACTIVITY = {
        <a href="activity-10.html">Activity 10</a> &middot;
        <a href="activity-11.html">Activity 11</a> &middot;
        <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="activity-13.html">Activity 13</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

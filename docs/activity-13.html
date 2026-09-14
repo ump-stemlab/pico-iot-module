@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 13 &mdash; Your Own Live Dashboard | LilEx5 Pico IoT Module</title>
+<meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico W IoT board. Activity 13: an HTTP POST to a web address you deployed yourself, a Google Sheet of your own, a dashboard you can keep, and the history that comes with owning your data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body data-accent="red">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+  </marker>
+</defs></svg>
+
+<a class="skip" href="#main">Skip to the activity</a>
+<div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
+<header class="sitehead">
+  <div class="sitehead-in">
+    <a class="brand" href="index.html">
+      <img class="brandmark" src="img/stemlab-mark.svg" alt="" width="32" height="33" aria-hidden="true">
+      <span class="brandtxt"><b>LilEx5</b><small>UMPSA STEM LAB</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site">
+      <a class="nl" href="index.html">Home</a>
+      <details class="navsel">
+        <summary>Activity 13: Your Own Live Dashboard</summary>
+        <div class="navmenu" role="menu">
+      <a href="activity-0.html"><b>Activity 0</b>: Getting Started</a>
+      <a href="activity-1.html"><b>Activity 1</b>: Light Up an LED</a>
+      <a href="activity-2.html"><b>Activity 2</b>: Make an LED Blink</a>
+      <a href="activity-3.html"><b>Activity 3</b>: Digital Output &amp; Servo</a>
+      <a href="activity-4.html"><b>Activity 4</b>: Digital Input</a>
+      <a href="activity-5.html"><b>Activity 5</b>: Making Decisions</a>
+      <a href="activity-6.html"><b>Activity 6</b>: And, Or, Not</a>
+      <a href="activity-7.html"><b>Activity 7</b>: Words on a Screen</a>
+      <a href="activity-8.html"><b>Activity 8</b>: Sensors and Numbers</a>
+      <a href="activity-9.html"><b>Activity 9</b>: Soil Moisture</a>
+      <a href="activity-10.html"><b>Activity 10</b>: Internet and Data</a>
+      <a href="activity-11.html"><b>Activity 11</b>: Control from Anywhere</a>
+      <a href="activity-12.html"><b>Activity 12</b>: Sending Messages by Radio</a>
+      <a href="activity-13.html" aria-current="page"><b>Activity 13</b>: Your Own Live Dashboard</a>
+        </div>
+      </details>
+      <a class="nl" href="pinout.html">Pin reference</a>
+    </nav>
+  </div>
+</header>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 13</p>
+    <h1>Your Own Live Dashboard</h1>
+    <p class="sub">Activity&nbsp;12 threw the middle away. Today you <em>build the middle yourself</em>.
+    Your board posts every reading to a web address you deployed, the rows land in a spreadsheet you
+    own, and the dashboard drawing the graphs is a file you can keep, change and hand to somebody
+    else.</p>
+    <div class="pills">
+      <span class="pill">&#128013; MicroPython</span>
+      <span class="pill">&#9201; About 70 minutes</span>
+      <span class="pill">&#127760; Needs WiFi and a Google account</span>
+      <span class="pill">&#128202; The whole sensor set at once</span>
+    </div>
+    <div class="toc">
+      <a href="#yours">The middle is yours</a>
+      <a href="#round">How the data goes round</a>
+      <a href="#json">A reading with its name on it</a>
+      <a href="#kit">What you need</a>
+      <a href="#deploy">Part 1 &mdash; deploy</a>
+      <a href="#config">Part 2 &mdash; tell the board</a>
+      <a href="#run">Part 3 &mdash; run it</a>
+      <a href="#see">Part 4 &mdash; the dashboard</a>
+      <a href="#history">Part 5 &mdash; yesterday</a>
+      <a href="#fix">If it breaks</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <b id="pcount">0 / 0 done</b>
+    <div class="track"><i id="pfill"></i></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="shell">
+<aside class="rail" aria-label="Module map">
+  <div class="railbox">
+    <p class="railttl">Module map</p>
+    <ol class="raillist">
+      <li class="railphase"><span>Start here</span></li>
+      <li><a href="activity-0.html" data-act="0"><i><b>0</b></i><span>Getting Started</span></a></li>
+      <li><a href="activity-1.html" data-act="1"><i><b>1</b></i><span>Light Up an LED</span></a></li>
+      <li><a href="activity-2.html" data-act="2"><i><b>2</b></i><span>Make an LED Blink</span></a></li>
+      <li class="railphase"><span>Make things happen</span></li>
+      <li><a href="activity-3.html" data-act="3"><i><b>3</b></i><span>Digital Output &amp; Servo</span></a></li>
+      <li><a href="activity-4.html" data-act="4"><i><b>4</b></i><span>Digital Input</span></a></li>
+      <li><a href="activity-5.html" data-act="5"><i><b>5</b></i><span>Making Decisions</span></a></li>
+      <li><a href="activity-6.html" data-act="6"><i><b>6</b></i><span>And, Or, Not</span></a></li>
+      <li class="railphase"><span>Sense the world</span></li>
+      <li><a href="activity-7.html" data-act="7"><i><b>7</b></i><span>Words on a Screen</span></a></li>
+      <li><a href="activity-8.html" data-act="8"><i><b>8</b></i><span>Sensors and Numbers</span></a></li>
+      <li><a href="activity-9.html" data-act="9"><i><b>9</b></i><span>Soil Moisture</span></a></li>
+      <li class="railphase"><span>Get online</span></li>
+      <li><a href="activity-10.html" data-act="10"><i><b>10</b></i><span>Internet and Data</span></a></li>
+      <li><a href="activity-11.html" data-act="11"><i><b>11</b></i><span>Control from Anywhere</span></a></li>
+      <li class="railphase"><span>Go further</span></li>
+      <li><a href="activity-12.html" data-act="12"><i><b>12</b></i><span>Sending Messages by Radio</span></a></li>
+      <li><a href="activity-13.html" data-act="13" aria-current="page"><i><b>13</b></i><span>Your Own Live Dashboard</span></a></li>
+    </ol>
+    <p class="railprog" id="railprog" hidden></p>
+    <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+  </div>
+</aside>
+<main class="wrap" id="main">
+
+<section>
+  <h2>&#127919; Your mission</h2>
+  <p class="lede">Get every sensor on your LilEx5 onto one live web page &mdash; through a cloud
+  program you deployed, into a spreadsheet with your name on it.</p>
+  <p>Five parts, and only one of them is Python. You will put a small program in the cloud, tell your
+  board where it lives, run it, open the dashboard, and then &mdash; the part none of the earlier
+  activities could do &mdash; scroll back and look at what the board recorded <strong>before you got
+  there</strong>.</p>
+
+<svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="The round trip today's data makes. The board joins WiFi and posts its readings to a Google Apps Script that you deployed. The script writes one row into your Google Sheet. Separately, the dashboard page in a browser asks the same script for the rows, the script reads them out of the sheet, and the dashboard draws them. Everything in the middle belongs to you.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">One round trip, and every stop on it is yours</text>
+
+  <rect x="20" y="58" width="150" height="86" rx="12" class="pinbox"/>
+  <text x="95" y="90" class="dlbl" text-anchor="middle">Your LilEx5</text>
+  <text x="95" y="112" class="dsub" text-anchor="middle">reads every sensor</text>
+  <text x="95" y="132" class="dsub" text-anchor="middle">every 5 seconds</text>
+
+  <path d="M176 101 L300 101" class="arrow"/>
+  <text x="238" y="88" class="dsub" text-anchor="middle">POST over WiFi</text>
+
+  <rect x="306" y="58" width="168" height="86" rx="12" class="step"/>
+  <text x="390" y="90" class="dlbl" text-anchor="middle">Your Apps Script</text>
+  <text x="390" y="112" class="dsub" text-anchor="middle">a web address you</text>
+  <text x="390" y="132" class="dsub" text-anchor="middle">deployed yourself</text>
+
+  <path d="M480 101 L604 101" class="arrow"/>
+  <text x="542" y="88" class="dsub" text-anchor="middle">adds one row</text>
+
+  <rect x="610" y="58" width="150" height="86" rx="12" class="namebox"/>
+  <text x="685" y="90" class="dlbl" text-anchor="middle">Your Sheet</text>
+  <text x="685" y="112" class="dsub" text-anchor="middle">one row per reading,</text>
+  <text x="685" y="132" class="dsub" text-anchor="middle">kept for good</text>
+
+  <path d="M604 232 L480 232" class="arrow"/>
+  <text x="542" y="219" class="dsub" text-anchor="middle">reads them back</text>
+
+  <rect x="306" y="189" width="168" height="86" rx="12" class="step"/>
+  <text x="390" y="221" class="dlbl" text-anchor="middle">The same script</text>
+  <text x="390" y="243" class="dsub" text-anchor="middle">hands the rows over</text>
+  <text x="390" y="263" class="dsub" text-anchor="middle">as plain data</text>
+
+  <path d="M300 232 L176 232" class="arrow"/>
+  <text x="238" y="219" class="dsub" text-anchor="middle">every 5 seconds</text>
+
+  <rect x="20" y="189" width="150" height="86" rx="12" class="pinbox"/>
+  <text x="95" y="221" class="dlbl" text-anchor="middle">The dashboard</text>
+  <text x="95" y="243" class="dsub" text-anchor="middle">a page in any</text>
+  <text x="95" y="263" class="dsub" text-anchor="middle">browser, anywhere</text>
+
+  <path d="M685 150 L685 232 L604 232" class="lead" stroke-dasharray="5 5"/>
+
+  <text x="390" y="312" class="dsub" text-anchor="middle">Nothing here belongs to a company you signed up with. The address, the script and the sheet are</text>
+  <text x="390" y="332" class="dsub" text-anchor="middle">all in your own account &mdash; which is the whole point of today, and also the whole cost of it.</text>
+</svg>
+
+  <h3>What you will learn</h3>
+  <div class="grid2">
+    <div class="mini"><h4>&#128228; POST</h4>
+      <p>The other way to send. The board knocks on a web address, hands over its readings and waits
+      to be told they arrived.</p></div>
+    <div class="mini"><h4>&#127991;&#65039; Readings with names</h4>
+      <p>One message carrying many values, each labelled. The label is what decides which column it
+      lands in.</p></div>
+    <div class="mini"><h4>&#128203; A store of your own</h4>
+      <p>Every reading becomes a row in a spreadsheet you can open, sort, chart and download.</p></div>
+    <div class="mini"><h4>&#128336; History</h4>
+      <p>A gauge shows you now. A sheet shows you last Tuesday &mdash; and that is the difference
+      between a display and data.</p></div>
+  </div>
+
+  <div class="cal note"><b>Today you write almost no Python, and that is the lesson</b>
+  Every activity so far put the difficulty in the program. Today the program is handed to you and the
+  work moves somewhere else entirely: deploying a service, keeping an address safe, and deciding how
+  often to measure. That is what building an IoT system actually feels like once the board works.</div>
+
+  <div class="cal tip"><b>What you are reusing today, and will not be taught again</b>
+  Joining WiFi and the wait that ends by itself (<a href="activity-10.html">Activity&nbsp;10</a>),
+  the I&sup2;C sensor bus (<a href="activity-7.html">Activity&nbsp;7</a> and
+  <a href="activity-8.html">Activity&nbsp;8</a>), the OLED screen
+  (<a href="activity-7.html">Activity&nbsp;7</a>), and the idea of a service in the middle
+  (<a href="activity-10.html">Activity&nbsp;10</a> and
+  <a href="activity-11.html">Activity&nbsp;11</a>).</div>
+</section>
+
+<section id="yours">
+  <h2>&#127968; The middle is yours this time &mdash; the one new idea</h2>
+  <p class="lede">Activity 10 sent a reading to Adafruit IO. Activity 11 took an order back from it.
+  Both times the middle belonged to <strong>somebody else</strong>.</p>
+  <p>Adafruit IO is a good service and it is free, and none of that is the problem. The problem is
+  everything you could not do with it: you could not keep more than a few days of readings, you could
+  not add a reading it had no box for, you could not open the raw numbers in a spreadsheet, and if the
+  account went away so did everything in it. You were a guest.</p>
+
+<svg class="dia wide" viewBox="0 0 780 380" role="img" aria-label="Two arrangements compared. On top, Activities 10 and 11: the board sends to Adafruit IO, a service belonging to somebody else, which decides what is stored, for how long and in what shape. Underneath, today: the board sends to an Apps Script you deployed, which writes into a sheet in your own account, and a dashboard file you keep reads it back. The boxes that belong to you are outlined in teal.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Whose computer is in the middle?</text>
+
+  <text x="30" y="66" class="dsub">Activities 10 and 11</text>
+  <rect x="26" y="78" width="130" height="72" rx="10" class="pane"/>
+  <text x="91" y="112" class="dlbl" text-anchor="middle">your board</text>
+  <text x="91" y="132" class="dsub" text-anchor="middle">LilEx5</text>
+
+  <path d="M162 114 L246 114" class="arrow"/>
+
+  <rect x="252" y="78" width="240" height="72" rx="10" class="warnbox"/>
+  <text x="372" y="106" class="dlbl" text-anchor="middle">somebody else&rsquo;s service</text>
+  <text x="372" y="130" class="dsub" text-anchor="middle">their rules, their limits, their storage</text>
+
+  <path d="M498 114 L582 114" class="arrow"/>
+
+  <rect x="588" y="78" width="166" height="72" rx="10" class="pane"/>
+  <text x="671" y="106" class="dlbl" text-anchor="middle">a graph they drew</text>
+  <text x="671" y="130" class="dsub" text-anchor="middle">for as long as they keep it</text>
+
+  <path d="M26 186 L754 186" class="lead"/>
+
+  <text x="30" y="222" class="dsub">Today</text>
+  <rect x="26" y="234" width="130" height="76" rx="10" class="pane"/>
+  <text x="91" y="268" class="dlbl" text-anchor="middle">your board</text>
+  <text x="91" y="288" class="dsub" text-anchor="middle">the same LilEx5</text>
+
+  <path d="M162 272 L246 272" class="arrow"/>
+
+  <rect x="252" y="234" width="240" height="76" rx="10" class="pinbox"/>
+  <text x="372" y="264" class="dlbl" text-anchor="middle">your script, your sheet</text>
+  <text x="372" y="288" class="dsub" text-anchor="middle">in an account with your name on it</text>
+
+  <path d="M498 272 L582 272" class="arrow"/>
+
+  <rect x="588" y="234" width="166" height="76" rx="10" class="pinbox"/>
+  <text x="671" y="264" class="dlbl" text-anchor="middle">a page you keep</text>
+  <text x="671" y="288" class="dsub" text-anchor="middle">one file, yours to change</text>
+
+  <text x="390" y="352" class="dsub" text-anchor="middle">Same board, same sensors, same WiFi. The only thing that moved is who owns the middle.</text>
+</svg>
+
+  <div class="cal warn"><b>Owning it costs something, and the page is not going to pretend otherwise</b>
+  A service you run is a service you have to look after. You need a Google account. You have to keep
+  the address safe. If the deployment is deleted the board keeps sending into nothing and nobody tells
+  it. And Apps Script is slower than the broker in Activity&nbsp;10 &mdash; a few hundred milliseconds
+  per reading rather than a few. You are trading convenience for control, deliberately.</div>
+
+  <label class="chk"><input type="checkbox" data-p="y1"><span>I can say one thing I could not do with Adafruit IO that I can do with a sheet of my own</span></label>
+  <label class="chk"><input type="checkbox" data-p="y2"><span>I can name one thing that is harder today than it was in Activity 10</span></label>
+</section>
+
+<section id="round">
+  <h2>&#128260; How the data goes round</h2>
+  <p class="lede">Activity 10 <em>published</em> and walked away. Today the board <strong>asks</strong>,
+  and something answers.</p>
+  <p>In Activity 10 the board handed a message to a broker and carried on without ever finding out
+  what happened to it. That is publishing: fast, cheap, and completely silent about whether anybody
+  was listening. Today is the other shape. The board opens a connection to a web address, sends its
+  readings, and <strong>waits for a reply</strong>. The reply is short &mdash; it is basically the word
+  <em>yes</em> &mdash; but it is there, and it means the board finds out immediately when something
+  is wrong.</p>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="Publishing compared with posting. On the left, publishing: the board sends a message to a broker and there is no arrow coming back, so it never learns whether the message arrived. On the right, posting: the board sends its readings to a web address and an answer comes back saying the row was added, so a failure is noticed straight away.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Publishing tells you nothing. Posting answers you back.</text>
+
+  <rect x="26" y="54" width="340" height="210" rx="12" class="pane"/>
+  <text x="196" y="82" class="dlbl" text-anchor="middle">Activity 10 &mdash; publish</text>
+  <rect x="56" y="106" width="110" height="54" rx="9" class="step"/>
+  <text x="111" y="139" class="dsub" text-anchor="middle">the board</text>
+  <path d="M172 133 L280 133" class="arrow"/>
+  <rect x="286" y="106" width="56" height="54" rx="9" class="namebox"/>
+  <text x="314" y="139" class="dsub" text-anchor="middle">broker</text>
+  <text x="196" y="196" class="dwarn" text-anchor="middle">no arrow comes back</text>
+  <text x="196" y="224" class="dsub" text-anchor="middle">A board with a wrong key and a board with</text>
+  <text x="196" y="244" class="dsub" text-anchor="middle">a perfect one behave exactly the same.</text>
+
+  <rect x="414" y="54" width="340" height="210" rx="12" class="pane"/>
+  <text x="584" y="82" class="dlbl" text-anchor="middle">Today &mdash; post</text>
+  <rect x="444" y="106" width="110" height="54" rx="9" class="step"/>
+  <text x="499" y="139" class="dsub" text-anchor="middle">the board</text>
+  <path d="M560 122 L668 122" class="arrow"/>
+  <path d="M668 148 L560 148" class="arrow"/>
+  <rect x="674" y="106" width="56" height="54" rx="9" class="pinbox"/>
+  <text x="702" y="139" class="dsub" text-anchor="middle">script</text>
+  <text x="614" y="112" class="dsub" text-anchor="middle">readings</text>
+  <text x="614" y="170" class="dsub" text-anchor="middle">&ldquo;row added&rdquo;</text>
+  <text x="584" y="224" class="dsub" text-anchor="middle">The board knows. The Shell prints an error the</text>
+  <text x="584" y="244" class="dsub" text-anchor="middle">moment anything is wrong, instead of going quiet.</text>
+</svg>
+
+  <div class="cal info"><b>Both shapes are real and both are used</b>
+  Publishing suits a sensor that reports constantly and does not care &mdash; thousands of readings a
+  minute, losing one is fine. Posting suits anything that has to be recorded properly. Most real
+  systems do both, for different jobs, and now you have written one of each.</div>
+</section>
+
+<section id="json">
+  <h2>&#127991;&#65039; A reading with its name on it</h2>
+  <p class="lede">Activity 10 sent one bare number to a feed that already knew what it meant. Today one
+  message carries a dozen readings at once, so every one of them has to say what it is.</p>
+  <p>The board packs them into a shape called <strong>JSON</strong>: a list of
+  <em>name&nbsp;&rarr;&nbsp;value</em> pairs, wrapped in curly brackets. You will see this shape for
+  the rest of your life &mdash; it is how nearly everything on the internet hands data to
+  everything else.</p>
+
+  <span class="codeimg" data-code="eyJ0ZW1wZXJhdHVyZSI6IDI4LjQsCiAiaHVtaWRpdHkiOiA2NS4xLAogInByZXNzdXJlIjogMTAxMy4yLAogInR2b2MiOiA0MSwKICJoZWFkaW5nIjogMTcyLjUsCiAiYWNjZWxYIjogMC4wMn0=" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+<svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="How a named reading becomes a column. The message leaving the board carries the names temperature, humidity, pressure and tvoc with their values. In the sheet, the header row carries the same four names, and each value drops into the column with the matching name. The name is the only thing joining the two ends.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The name is the whole agreement between the two ends</text>
+
+  <rect x="26" y="52" width="300" height="150" rx="12" class="pinbox"/>
+  <text x="176" y="80" class="dlbl" text-anchor="middle">what leaves the board</text>
+  <text x="60" y="112" class="dmono">temperature</text>
+  <text x="250" y="112" class="dmono2" text-anchor="end">28.4</text>
+  <text x="60" y="140" class="dmono">humidity</text>
+  <text x="250" y="140" class="dmono2" text-anchor="end">65.1</text>
+  <text x="60" y="168" class="dmono">pressure</text>
+  <text x="250" y="168" class="dmono2" text-anchor="end">1013.2</text>
+  <text x="60" y="192" class="dmono">tvoc</text>
+  <text x="250" y="192" class="dmono2" text-anchor="end">41</text>
+
+  <path d="M334 128 L420 128" class="arrow"/>
+  <text x="377" y="114" class="dsub" text-anchor="middle">matched</text>
+  <text x="377" y="152" class="dsub" text-anchor="middle">by name</text>
+
+  <rect x="428" y="52" width="326" height="150" rx="12" class="namebox"/>
+  <text x="591" y="80" class="dlbl" text-anchor="middle">what the sheet keeps</text>
+  <rect x="446" y="94" width="292" height="28" rx="5" class="note"/>
+  <text x="458" y="113" class="dchip" style="fill:var(--ink)">temperature</text>
+  <text x="562" y="113" class="dchip" style="fill:var(--ink)">humidity</text>
+  <text x="650" y="113" class="dchip" style="fill:var(--ink)">pressure</text>
+  <text x="458" y="146" class="dmono2">28.4</text>
+  <text x="562" y="146" class="dmono2">65.1</text>
+  <text x="650" y="146" class="dmono2">1013.2</text>
+  <text x="458" y="176" class="dmono2">28.6</text>
+  <text x="562" y="176" class="dmono2">64.8</text>
+  <text x="650" y="176" class="dmono2">1013.1</text>
+
+  <text x="390" y="246" class="dlbl" text-anchor="middle">Spell a name differently at one end and the reading does not go anywhere else.</text>
+  <text x="390" y="274" class="dsub" text-anchor="middle">It gets a new column of its own, the old column stops filling, and there is no error at all &mdash;</text>
+  <text x="390" y="296" class="dsub" text-anchor="middle">which is exactly what a spelling mistake looks like in every system built this way.</text>
+  <text x="390" y="326" class="dsub" text-anchor="middle">The board decides the names. The script writes the header row the first time it sees them.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="j1"><span>I can say what happens to a reading whose name is spelled differently at the two ends</span></label>
+</section>
+
+<section id="kit">
+  <h2>&#129513; What you need</h2>
+  <p class="lede">This activity has two halves, and they need different things. Read both lists before
+  you start &mdash; you can do the second half with nothing but a browser.</p>
+
+  <h3>The board half</h3>
+  <p><strong>A real LilEx5 and a network.</strong> There is no Wokwi route for this one: the program
+  reads the whole sensor set that is soldered to this board, and the simulator has none of it. If you
+  do not have a board today, pair up with somebody who does &mdash; then do the cloud half on your own
+  machine, because that half is yours to keep.</p>
+  <ul>
+    <li>The LilEx5, a USB cable, and Thonny &mdash; as in every activity since
+    <a href="activity-0.html">Activity 0</a></li>
+    <li><strong>2.4&nbsp;GHz WiFi that actually lets new devices on.</strong> A Pico&nbsp;W cannot
+    join 5&nbsp;GHz at all, and a school network with a sign-in page defeats it completely. A phone
+    hotspot on 2.4&nbsp;GHz is a perfectly good answer and not a workaround &mdash; the same warning as
+    <a href="activity-10.html">Activity 10</a></li>
+    <li>The <strong>Activity 13 file pack</strong> from your teacher</li>
+  </ul>
+
+  <h3>The cloud half</h3>
+  <ul>
+    <li>A <strong>Google account</strong>. Your school one is fine if it can reach Apps Script &mdash;
+    some cannot, and your teacher will have checked</li>
+    <li>A browser. That is all</li>
+  </ul>
+
+  <h3>What is in the file pack</h3>
+  <div class="tablescroll"><table>
+    <thead><tr><th>File</th><th>Where it goes</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>LilEx5_AppsScript.js</code></td><td>pasted into Apps Script</td><td>The program that receives a reading and writes the row. Part 1.</td></tr>
+      <tr><td><code>config.py</code></td><td>onto the Pico</td><td><strong>The only file you edit.</strong> Part 2.</td></tr>
+      <tr><td><code>wifi_reporter.py</code></td><td>onto the Pico</td><td>Joins the WiFi and does the posting.</td></tr>
+      <tr><td><code>main_dashboard.py</code></td><td>onto the Pico</td><td>The program you actually run. Reads the sensors, hands them to the reporter, keeps the OLED going.</td></tr>
+      <tr><td><code>adapter.py</code>, <code>display_core.py</code>, sensor libraries</td><td>onto the Pico</td><td>Already on your board from the earlier activities.</td></tr>
+      <tr><td><code>LilEx5_Dashboard.html</code></td><td>stays on your computer</td><td>The dashboard. Part 4.</td></tr>
+      <tr><td><code>LilEx5_Dashboard_History.html</code></td><td>stays on your computer</td><td>The same dashboard that can also look backwards. Part 5.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal note"><b>You are given the program today, and you should still read it</b>
+  Every other activity in this module has you type the code, because typing is how it gets into your
+  head. Today&rsquo;s program is three files long and most of it is sensors you have already met, so it
+  arrives finished. Open <code>main_dashboard.py</code> in Thonny anyway and find the loop &mdash; you
+  will recognise nearly every line in it, and the exercise at the end assumes you have looked.</div>
+
+  <label class="chk"><input type="checkbox" data-p="k1"><span>My board is plugged in and Thonny says Raspberry Pi Pico at the bottom right</span></label>
+  <label class="chk"><input type="checkbox" data-p="k2"><span>I know which WiFi I am joining, and it is 2.4&nbsp;GHz with no sign-in page</span></label>
+  <label class="chk"><input type="checkbox" data-p="k3"><span>I can sign in to a Google account in this room</span></label>
+</section>
+
+<section id="deploy">
+  <h2>&#9729;&#65039; Part 1 &mdash; put the script in the cloud</h2>
+  <p class="lede">This is the part that makes the middle exist. Doing it once gives you a web address
+  that anything, anywhere, can send readings to.</p>
+
+  <div class="cal tip"><b>Your teacher may have done this already</b>
+  If you have been handed a <code>/exec</code> address, skip to Part 2 and use it. Come back and do
+  this yourself afterwards if you want a sheet that is yours rather than the class&rsquo;s.</div>
+
+  <div class="step"><div class="idx">1</div><div class="body">
+    <h4>Make the spreadsheet first</h4>
+    <p>Go to <a href="https://sheets.new" target="_blank" rel="noopener">sheets.new</a> and give it a
+    name you will recognise &mdash; <strong>LilEx5 readings</strong> will do. Leave it empty. The
+    script writes the header row itself the first time a reading arrives.</p>
+  </div></div>
+
+  <div class="step"><div class="idx">2</div><div class="body">
+    <h4>Open the script editor from inside the sheet</h4>
+    <p><strong>Extensions &rarr; Apps Script.</strong> Starting from inside the sheet is what joins the
+    two together &mdash; a script made any other way has no idea which spreadsheet you mean.</p>
+  </div></div>
+
+  <div class="step"><div class="idx">3</div><div class="body">
+    <h4>Paste the program in</h4>
+    <p>Delete the few starter lines that are already there, and paste in the whole of
+    <strong>LilEx5_AppsScript.js</strong> from your file pack. Save.</p>
+  </div></div>
+
+  <div class="step"><div class="idx">4</div><div class="body">
+    <h4>Deploy it as a web app</h4>
+    <p><strong>Deploy &rarr; New deployment</strong>, then set the three things in the picture below.
+    All three matter, and two of them are the ones people get wrong.</p>
+  </div></div>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="A drawing of the deployment settings. Type is set to Web app. Execute as is set to Me, which means the script uses your permission to write to your own sheet. Who has access is set to Anyone, which is required because the Pico cannot sign in to a Google account.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">The three settings, and why each one has to be that way</text>
+
+  <rect x="40" y="46" width="700" height="220" rx="12" class="win"/>
+  <rect x="40" y="46" width="700" height="30" rx="12" class="wintop"/>
+  <text x="60" y="67" class="dchip" style="fill:var(--ink)">New deployment</text>
+
+  <text x="70" y="112" class="dsub">Type</text>
+  <rect x="180" y="94" width="150" height="26" rx="6" class="pinbox"/>
+  <text x="255" y="112" class="dchip" style="fill:var(--ink)" text-anchor="middle">Web app</text>
+  <text x="350" y="112" class="dsub">not an add-on, not a library</text>
+
+  <text x="70" y="164" class="dsub">Execute as</text>
+  <rect x="180" y="146" width="150" height="26" rx="6" class="pinbox"/>
+  <text x="255" y="164" class="dchip" style="fill:var(--ink)" text-anchor="middle">Me</text>
+  <text x="350" y="158" class="dsub">the script writes with your permission,</text>
+  <text x="350" y="178" class="dsub">which is how it can reach your sheet</text>
+
+  <text x="70" y="220" class="dsub">Who has access</text>
+  <rect x="180" y="202" width="150" height="26" rx="6" class="warnbox"/>
+  <text x="255" y="220" class="dchip" style="fill:var(--ink)" text-anchor="middle">Anyone</text>
+  <text x="350" y="214" class="dsub">your board cannot sign in to Google, so</text>
+  <text x="350" y="234" class="dsub">the door has to be open. Read the warning below.</text>
+
+  <text x="390" y="290" class="dsub" text-anchor="middle">Google will ask you to authorise it, and will warn you about an unverified app. It is your own script.</text>
+</svg>
+
+  <div class="step"><div class="idx">5</div><div class="body">
+    <h4>Copy the address it gives you</h4>
+    <p>The last screen shows a <strong>Web app URL</strong>. Copy it somewhere you can get at it
+    twice &mdash; it goes into your board in Part 2 and into your dashboard in Part 4, and it must be
+    exactly the same in both.</p>
+  </div></div>
+
+<svg class="dia wide" viewBox="0 0 780 250" role="img" aria-label="The shape of the web app address. It starts with https, then script dot google dot com, then macros slash s, then a long random-looking code, and ends in slash exec. The long code is the part that is secret: anyone who has it can add rows to your sheet.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What that address actually is</text>
+
+  <rect x="40" y="52" width="700" height="60" rx="10" class="pane"/>
+  <text x="60" y="90" class="dmono2">https://script.google.com/macros/s/</text>
+  <text x="392" y="90" class="dmono">AKfycb&#8230;a long code&#8230;</text>
+  <text x="640" y="90" class="dmono2">/exec</text>
+
+  <path d="M500 118 L500 152" class="lead"/>
+  <rect x="320" y="156" width="380" height="64" rx="10" class="warnbox"/>
+  <text x="510" y="182" class="dlbl" text-anchor="middle">this middle part is the key</text>
+  <text x="510" y="204" class="dsub" text-anchor="middle">anybody holding it can add rows to your sheet</text>
+
+  <path d="M120 118 L120 152" class="lead"/>
+  <rect x="40" y="156" width="250" height="64" rx="10" class="pinbox"/>
+  <text x="165" y="182" class="dlbl" text-anchor="middle">nothing secret here</text>
+  <text x="165" y="204" class="dsub" text-anchor="middle">everybody&rsquo;s starts like this</text>
+</svg>
+
+  <div class="cal warn"><b>Treat that address like a password, because it is one</b>
+  You just set <em>Who has access</em> to <strong>Anyone</strong>, and you had to &mdash; the board has
+  no way to sign in. So the address is the only thing standing between your sheet and the rest of the
+  internet. Do not post it in a group chat, do not put it in a file you upload anywhere, and do not
+  paste it into a screenshot. If it does get out, deploy again: a new deployment gets a new address
+  and the old one stops being useful.</div>
+
+  <label class="chk"><input type="checkbox" data-p="d1"><span>My sheet exists and I opened Apps Script from inside it</span></label>
+  <label class="chk"><input type="checkbox" data-p="d2"><span>I deployed it as a Web app, Execute as Me, Who has access Anyone</span></label>
+  <label class="chk"><input type="checkbox" data-p="d3"><span>I have the <code>/exec</code> address saved somewhere I can copy it from twice</span></label>
+</section>
+
+<section id="config">
+  <h2>&#9881;&#65039; Part 2 &mdash; tell the board where to send</h2>
+  <p class="lede">Four lines at the bottom of <strong>config.py</strong>. This is the only file you
+  edit today, and everybody&rsquo;s is different.</p>
+
+  <div class="cal warn"><b>Your WiFi, your password, your address</b>
+  The network name and password are <strong>yours</strong> &mdash; whatever your own phone or laptop is
+  on. The <code>/exec</code> address is the one from Part 1. Keep the quotation marks: everything
+  between them is text, and the board will try to join a network literally called
+  <code>YourNetworkName</code> if you leave it there.</div>
+
+  <span class="codeimg" data-code="IyAtLS0tIGV4aXN0aW5nIGxpbmVzIGluIHlvdXIgY29uZmlnLnB5IChsZWF2ZSB0aGVtIGFsb25lKSAtLS0tCkkyQ19DSCAgPSAwCkkyQ19TQ0wgPSAxCkkyQ19TREEgPSAwCiMgLi4uIHRoZSByZXN0IG9mIHlvdXIgcGluIHNldHRpbmdzCgojIC0tLS0gQUREIFRIRVNFIEZPVVIgTElORVMgQVQgVEhFIEJPVFRPTSAtLS0tCldJRklfU1NJRCAgICAgICAgICA9ICJZb3VyTmV0d29ya05hbWUiICAgICAjIHlvdXIgb3duIFdpRmkKV0lGSV9QQVNTICAgICAgICAgID0gIllvdXJQYXNzd29yZCIgICAgICAgICMgeW91ciBvd24gcGFzc3dvcmQKQVBQU19TQ1JJUFRfVVJMICAgID0gImh0dHBzOi8vc2NyaXB0Lmdvb2dsZS5jb20vbWFjcm9zL3MvQUtmeS4uLi4vZXhlYyIKUkVQT1JUX0lOVEVSVkFMX01TID0gNTAwMCAgICAgICAgICAgICAgICAgICMgc2VuZCBldmVyeSA1IHNlY29uZHM=" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <h3>Type the four lines here first</h3>
+  <p>Get the shape into your fingers before you open Thonny. Use the example values below &mdash; then
+  put your own in for real.</p>
+  <div class="typer" id="typer">
+    <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder='WIFI_SSID = "ClassroomWiFi"' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder='WIFI_PASS = "letmein123"' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="REPORT_INTERVAL_MS = 5000" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder='readings = {"temperature": 28.4}' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
+    <p class="typer-msg" id="typermsg">Four boxes. Line 4 is not going in your config file &mdash; it is the JSON shape from earlier, here so your fingers meet the curly brackets and the colon once before you see them in the sheet.</p>
+  </div>
+
+  <h3>&#128269; What each line is for</h3>
+  <div class="tablescroll"><table class="codetable">
+    <tbody>
+      <tr><td><span class="codeimg inline" data-code="V0lGSV9TU0lEID0gIllvdXJOZXR3b3JrTmFtZSI=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>The name of the network, spelled exactly as it appears on your phone. Capital letters count.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="V0lGSV9QQVNTID0gIllvdXJQYXNzd29yZCI=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Its password. If the network has none, leave the quotes empty: <code>""</code>.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="QVBQU19TQ1JJUFRfVVJMID0gImh0dHBzOi8vLi4uL2V4ZWMi" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>Where to send. The whole address, ending in <code>/exec</code>, between quotes.</td></tr>
+      <tr><td><span class="codeimg inline" data-code="UkVQT1JUX0lOVEVSVkFMX01TID0gNTAwMA==" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
+          <td>How long to wait between readings, <strong>in milliseconds</strong>. 5000 is five seconds. This one number decides how much of your day ends up in the sheet.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal tip"><b>Milliseconds, not seconds</b>
+  <code>sleep(5)</code> in <a href="activity-2.html">Activity 2</a> meant five seconds.
+  <code>REPORT_INTERVAL_MS</code> set to <strong>5000</strong> means the same five seconds, counted a
+  thousand times finer.
+  Put <code>5</code> in there by mistake and the board will try to send two hundred readings a second,
+  which will fail in a way that looks like a broken network.</div>
+
+  <label class="chk"><input type="checkbox" data-p="c1"><span>My config.py has all four lines and my own WiFi details in them</span></label>
+  <label class="chk"><input type="checkbox" data-p="c2"><span>The address in config.py ends in <code>/exec</code></span></label>
+</section>
+
+<section id="run">
+  <h2>&#9654;&#65039; Part 3 &mdash; upload the pack and run it</h2>
+  <p>In Thonny, open the Files panel (<kbd>View &rarr; Files</kbd>). Right-click each file on your
+  computer&rsquo;s side and choose <kbd>Upload to /</kbd>. Then open
+  <strong>main_dashboard.py</strong> and press <kbd>F5</kbd>.</p>
+
+  <div class="cal tip"><b>Your old main.py can stay</b>
+  <code>main_dashboard.py</code> is a separate program you start by hand. Nothing you built in the
+  earlier activities is overwritten, and the board still does what it did before when you unplug it
+  and plug it back in.</div>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="The Shell after running the program. It says connecting to the network, then connected with an IP address, then a line for each reading that was sent. Beside it, a note saying the first line to wait for is the IP address, because everything after it depends on the network being joined.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">What the Shell should say</text>
+
+  <rect x="26" y="52" width="440" height="234" rx="8" class="pane"/>
+  <text x="246" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="46" y="116" class="dmono">[WiFi] Connecting to 'ClassroomWiFi'...</text>
+  <text x="46" y="146" class="dmono">[WiFi] Connected - IP: 192.168.1.42</text>
+  <text x="46" y="184" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
+  <text x="46" y="214" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
+  <text x="46" y="244" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
+  <text x="46" y="272" class="dsub">one line every five seconds, for ever</text>
+
+  <rect x="486" y="52" width="268" height="234" rx="10" class="namebox"/>
+  <text x="620" y="84" class="dlbl" text-anchor="middle">Wait for the IP address</text>
+  <text x="620" y="118" class="dsub" text-anchor="middle">Everything after it depends on</text>
+  <text x="620" y="140" class="dsub" text-anchor="middle">the network being joined.</text>
+  <text x="620" y="180" class="dsub" text-anchor="middle">No IP address means the</text>
+  <text x="620" y="202" class="dsub" text-anchor="middle">problem is WiFi, not Google,</text>
+  <text x="620" y="224" class="dsub" text-anchor="middle">and not your address.</text>
+  <text x="620" y="262" class="dsub" text-anchor="middle">It can take twenty seconds.</text>
+</svg>
+
+  <p>The OLED screen carries on working while this happens &mdash; press the buttons and browse the
+  sensor pages exactly as in <a href="activity-8.html">Activity 8</a>. The board is now showing you the
+  readings <em>and</em> sending them at the same time, which is the first time in this module that it
+  has done two useful jobs at once.</p>
+
+  <div class="cal info"><b>Go and look at the sheet</b>
+  Open your spreadsheet in a browser tab. The first reading created a header row out of the names in
+  the message; every one after it is another line underneath. Watch it grow. This is the moment the
+  activity is actually about &mdash; the graphs later are just a nicer way of looking at these rows.</div>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The spreadsheet filling up. Row one is the header, carrying the names timestamp, temperature, humidity and pressure. Underneath, each new reading adds a row with the time it arrived and the values. An arrow shows new rows arriving at the bottom every five seconds.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Your sheet, about a minute in</text>
+
+  <rect x="60" y="48" width="660" height="200" rx="8" class="pane"/>
+  <rect x="60" y="48" width="660" height="34" rx="8" class="note"/>
+  <text x="86" y="70" class="dchip" style="fill:var(--ink)">timestamp</text>
+  <text x="286" y="70" class="dchip" style="fill:var(--ink)">temperature</text>
+  <text x="446" y="70" class="dchip" style="fill:var(--ink)">humidity</text>
+  <text x="596" y="70" class="dchip" style="fill:var(--ink)">pressure</text>
+
+  <text x="86" y="108" class="dmono2">09:14:05</text>
+  <text x="286" y="108" class="dmono2">28.4</text>
+  <text x="446" y="108" class="dmono2">65.1</text>
+  <text x="596" y="108" class="dmono2">1013.2</text>
+  <text x="86" y="140" class="dmono2">09:14:10</text>
+  <text x="286" y="140" class="dmono2">28.4</text>
+  <text x="446" y="140" class="dmono2">65.3</text>
+  <text x="596" y="140" class="dmono2">1013.2</text>
+  <text x="86" y="172" class="dmono2">09:14:15</text>
+  <text x="286" y="172" class="dmono2">28.6</text>
+  <text x="446" y="172" class="dmono2">66.0</text>
+  <text x="596" y="172" class="dmono2">1013.1</text>
+  <text x="86" y="204" class="dmono">09:14:20</text>
+  <text x="286" y="204" class="dmono">28.9</text>
+  <text x="446" y="204" class="dmono">71.4</text>
+  <text x="596" y="204" class="dmono">1013.1</text>
+  <text x="86" y="232" class="dsub">&#8230; and another one every five seconds</text>
+
+  <path d="M742 70 L742 204" class="arrow"/>
+  <text x="390" y="276" class="dsub" text-anchor="middle">Breathe on the sensor and watch the humidity column jump. That is your breath, in a spreadsheet,</text>
+  <text x="390" y="296" class="dsub" text-anchor="middle">in a file that will still be there next term.</text>
+</svg>
+
+  <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell printed an IP address</span></label>
+  <label class="chk"><input type="checkbox" data-p="r2"><span>New rows are appearing in my sheet while I watch</span></label>
+  <label class="chk"><input type="checkbox" data-p="r3"><span>I breathed on the sensor and saw the humidity column change</span></label>
+</section>
+
+<section id="see">
+  <h2>&#128202; Part 4 &mdash; open the dashboard</h2>
+  <p class="lede">The rows are the data. The dashboard is a nicer way of looking at them &mdash; and it
+  is a single file that lives on your computer, not a website you log in to.</p>
+
+  <div class="step"><div class="idx">1</div><div class="body">
+    <h4>Open <code>LilEx5_Dashboard.html</code> in a text editor</h4>
+    <p>Thonny will do, so will Notepad. Not a browser yet.</p>
+  </div></div>
+  <div class="step"><div class="idx">2</div><div class="body">
+    <h4>Paste your address into the top of the file</h4>
+    <p>The first thing in the file is a short block of settings. Put your <code>/exec</code> address
+    between the quotes after <code>API_URL</code>, and save.</p>
+  </div></div>
+  <div class="step"><div class="idx">3</div><div class="body">
+    <h4>Now open the same file in a browser</h4>
+    <p>Double-click it. Within a few seconds the status turns green and the cards start filling.</p>
+  </div></div>
+
+  <span class="codeimg" data-code="Ly8gLS0tLSB0aGUgdG9wIG9mIExpbEV4NV9EYXNoYm9hcmQuaHRtbCAtLS0tCmNvbnN0IEFQSV9VUkwgPQogICAgImh0dHBzOi8vc2NyaXB0Lmdvb2dsZS5jb20vbWFjcm9zL3MvQUtmeS4uLi4vZXhlYyI7Cgpjb25zdCBSRUZSRVNIX0lOVEVSVkFMID0gNTAwMDsgICAgLy8gcmVhZCBldmVyeSA1IHNlY29uZHMKY29uc3QgSElTVE9SWV9PTl9PUEVOICA9IDIwMDsgICAgIC8vIHJvd3MgdG8gbG9hZCB3aGVuIHRoZSBwYWdlIG9wZW5z" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+  <div class="cal tip"><b>Three settings, and you only have to change the first</b>
+  <code>REFRESH_INTERVAL</code> is how often the <em>page</em> asks for new rows, and it has nothing to
+  do with how often the <em>board</em> sends them &mdash; those are two separate clocks and they do not
+  have to agree. <code>HISTORY_ON_OPEN</code> is how many past rows to load when the page opens, and it
+  is the one the exercise is about.</div>
+
+  <p>What you should see: a card for every reading the board sends &mdash; temperature, humidity,
+  pressure, air quality, proximity, compass heading, the accelerometer and gyroscope in three axes
+  each, the magnetometer, and the four analogue channels &mdash; and underneath them, graphs of the
+  ones that are worth watching move.</p>
+
+  <div class="win">&#127881; <strong>That is a complete IoT system, and every piece of it is yours.</strong>
+  A sensor, a network, a service, a store and a display &mdash; the same five pieces a weather station
+  or a factory monitor is built from. Open the dashboard on your phone, on the same WiFi or not: the
+  readings are coming from Google, not from your board, so it works from anywhere.</div>
+
+  <label class="chk"><input type="checkbox" data-p="s1"><span>My dashboard is showing live readings from my own board</span></label>
+  <label class="chk"><input type="checkbox" data-p="s2"><span>I opened it on a second device and it worked there too</span></label>
+</section>
+
+<section id="history">
+  <h2>&#128336; Part 5 &mdash; look at yesterday</h2>
+  <p class="lede">Here is the thing none of the earlier activities could do.</p>
+  <p>Stop the program on the board. Close the dashboard. Go away. Come back tomorrow, open
+  <strong>LilEx5_Dashboard_History.html</strong> instead, and the graphs are already full &mdash; of
+  readings taken while nobody was watching.</p>
+
+<svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="Live compared with history. On the left, a live gauge showing a single present value and nothing else. On the right, a graph running across three days, with a night-time dip visible each night. The caption says a gauge answers what is it now, and history answers what has it been doing.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">A gauge answers one question. History answers the interesting one.</text>
+
+  <rect x="26" y="52" width="300" height="212" rx="12" class="pane"/>
+  <text x="176" y="80" class="dlbl" text-anchor="middle">live only</text>
+  <circle cx="176" cy="150" r="46" class="note"/>
+  <text x="176" y="160" class="dmono" text-anchor="middle" style="font-size:20px">28.4</text>
+  <text x="176" y="232" class="dsub" text-anchor="middle">&ldquo;What is it now?&rdquo;</text>
+
+  <rect x="354" y="52" width="400" height="212" rx="12" class="pane"/>
+  <text x="554" y="80" class="dlbl" text-anchor="middle">with history</text>
+  <path d="M384 200 L724 200" class="axis"/>
+  <path d="M384 104 L384 200" class="axis"/>
+  <path d="M384 150 C414 128 434 176 464 182 C494 188 514 120 544 116 C574 112 594 172 624 180 C654 188 674 126 724 120" class="trace"/>
+  <text x="420" y="220" class="dsub" text-anchor="middle">Mon</text>
+  <text x="554" y="220" class="dsub" text-anchor="middle">Tue</text>
+  <text x="690" y="220" class="dsub" text-anchor="middle">Wed</text>
+  <text x="554" y="252" class="dsub" text-anchor="middle">&ldquo;It gets cold every night at about eleven.&rdquo;</text>
+
+  <text x="390" y="302" class="dsub" text-anchor="middle">Nobody learns anything from a number that keeps changing. They learn from the shape it makes.</text>
+</svg>
+
+  <p>The history view needs one extra piece in your Apps Script &mdash; the file
+  <code>apps-script-history.gs</code> in your pack, pasted onto the end of what is already there and
+  deployed again. Your teacher has the two-line instruction that goes with it. Without it the page
+  still works; it just starts with empty graphs and fills them as it goes.</p>
+
+  <div class="cal info"><b>How much history is there?</b>
+  As much as the board has sent. At one reading every five seconds a single school day is about six
+  thousand rows, and a spreadsheet holds ten million cells &mdash; so the sheet fills up eventually,
+  and how fast is entirely decided by that one number in <code>config.py</code>. That is the
+  exercise.</div>
+
+  <label class="chk"><input type="checkbox" data-p="h1"><span>I closed the dashboard, reopened it, and the earlier readings were still on the graph</span></label>
+</section>
+
+<section id="fix">
+  <h2>&#128736;&#65039; If it is not working</h2>
+  <p class="lede">Almost always one of these, and almost always in this order.</p>
+  <div class="tablescroll"><table>
+    <thead><tr><th>What you see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td><code>[WiFi] Connection timeout</code></td><td>Check <code>WIFI_SSID</code> and <code>WIFI_PASS</code> for a capital letter in the wrong place. If they are right, the network is the problem: a Pico&nbsp;W cannot join 5&nbsp;GHz, and it cannot get past a sign-in page. Use a phone hotspot on 2.4&nbsp;GHz.</td></tr>
+      <tr><td><strong>An IP address appears, then nothing else</strong></td><td>The network is fine and the posting is failing. Open your <code>/exec</code> address in a browser tab on the same network &mdash; if the page does not load there, the board cannot reach it either.</td></tr>
+      <tr><td><strong>Google says &ldquo;authorisation required&rdquo;</strong></td><td>You have not run the deployment yourself yet. Open the <code>/exec</code> address in your own browser once and authorise it. The board can post to it from then on.</td></tr>
+      <tr><td><strong>The sheet stays empty</strong></td><td>Is it the right sheet? A script made from <strong>File &rarr; New</strong> instead of <strong>Extensions &rarr; Apps Script</strong> writes into a different spreadsheet, or none at all. Start again from inside the sheet.</td></tr>
+      <tr><td><strong>The dashboard says no data</strong></td><td>Normal for the first ten seconds &mdash; the sheet has a header row and nothing under it yet. If it lasts longer, the address in the dashboard and the address in <code>config.py</code> are not the same one. Compare them character by character; <strong>re-deploying makes a new address</strong> and the old one keeps working for the board while the page reads nothing.</td></tr>
+      <tr><td><strong>Rows arrive but the dashboard cards stay empty</strong></td><td>A name is spelled differently at the two ends. Look at the header row: an unexpected extra column is the giveaway.</td></tr>
+      <tr><td><strong>It worked, and now it has stopped</strong></td><td>Did you edit the Apps Script and forget to deploy again? Saving changes the code; only deploying changes what the address serves.</td></tr>
+      <tr><td><code>OSError: -2</code> <strong>or</strong> <code>ECONNABORTED</code></td><td>The board lost the network mid-send. It will usually pick itself up on the next reading. If it does not, stop and run again.</td></tr>
+      <tr><td><strong>The program will not stop</strong></td><td>It loops for ever, like every program since <a href="activity-2.html">Activity 2</a>. Thonny&rsquo;s Stop, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</td></tr>
+      <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="exercise">
+  <h2>&#128640; Exercise &mdash; a whole day on one screen</h2>
+  <p class="lede">Five seconds is far too often for something you want to look back at. Fix that, at
+  both ends.</p>
+  <p><strong>Task:</strong> make the board record <strong>one reading a minute</strong> instead of one
+  every five seconds, and make the dashboard open showing <strong>a whole school day</strong> of them.</p>
+  <ul>
+    <li>Two numbers change, in two different files. Neither is Python you have to work out &mdash;
+    both are lines you have already edited today</li>
+    <li>Work out the second number rather than guessing it. A school day is about seven hours</li>
+    <li>Nothing about the board, the sensors or the script changes at all</li>
+  </ul>
+
+  <h3>What success looks like</h3>
+
+<svg class="dia wide" viewBox="0 0 780 300" role="img" aria-label="The finished exercise. The Shell now prints one line a minute instead of one every five seconds. Beside it, a note listing the two changes: the reporting interval in config dot py, and the number of rows the dashboard loads when it opens, which has to match how many readings a school day now contains.">
+  <text x="390" y="26" class="dttl" text-anchor="middle">Same readings, far fewer of them, and a day that fits on one screen</text>
+
+  <rect x="26" y="52" width="400" height="200" rx="8" class="pane"/>
+  <text x="226" y="80" class="dlbl" text-anchor="middle">the Shell</text>
+  <text x="46" y="118" class="dmono">09:14:00  Sent 12 readings - OK</text>
+  <text x="46" y="150" class="dmono">09:15:00  Sent 12 readings - OK</text>
+  <text x="46" y="182" class="dmono">09:16:00  Sent 12 readings - OK</text>
+  <text x="46" y="222" class="dsub">one a minute, not twelve a minute</text>
+
+  <rect x="446" y="52" width="308" height="200" rx="10" class="namebox"/>
+  <text x="600" y="84" class="dlbl" text-anchor="middle">Two numbers</text>
+  <text x="600" y="120" class="dsub" text-anchor="middle">one in <tspan style="font-family:monospace">config.py</tspan>, in milliseconds</text>
+  <text x="600" y="158" class="dsub" text-anchor="middle">one in the dashboard, counted in rows</text>
+  <text x="600" y="200" class="dsub" text-anchor="middle">and the second one depends</text>
+  <text x="600" y="222" class="dsub" text-anchor="middle">on the first</text>
+
+  <text x="390" y="288" class="dsub" text-anchor="middle">How often you measure decides what you can see later. That is the whole exercise.</text>
+</svg>
+
+  <details><summary>&#128161; Clue 1 &mdash; the board&rsquo;s number</summary>
+    <p>It is <code>REPORT_INTERVAL_MS</code> in <code>config.py</code>, and the trap is the unit.
+    That <code>MS</code> is not decoration: the number is in <strong>milliseconds</strong>, so a
+    second is a thousand of them.</p>
+    <p>You want one reading a minute. Work out how many milliseconds a minute is, and put that number
+    in. Save the file, upload it to the Pico again, and run. The Shell tells you straight away whether
+    you got it right &mdash; count how long you wait between lines.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 2 &mdash; the dashboard&rsquo;s number</summary>
+    <p><code>HISTORY_ON_OPEN</code> is a count of <strong>rows</strong>, not a length of time. The page
+    has no idea how far apart your readings are; it just asks for the last <em>n</em> of them.</p>
+    <p>So you have to do the joining up yourself. One reading a minute means one row a minute. How many
+    minutes are there in a seven-hour school day? That is your number.</p>
+    <p>Notice what this means: if you later go back to a reading every five seconds without touching the
+    dashboard, the same number stops being a day and becomes about thirty-five minutes. The two
+    settings are tied together by arithmetic and by nothing else.</p>
+  </details>
+
+  <details><summary>&#128161; Clue 3 &mdash; nearly there</summary>
+    <p>Five things to check before you decide it is broken:</p>
+    <ul>
+      <li>Is the interval in <strong>milliseconds</strong>? 60 is not a minute; it is sixteen readings a second.</li>
+      <li>Did you <strong>upload the edited config.py to the Pico</strong>? Editing it on your computer changes nothing until it goes across.</li>
+      <li>Did you <strong>stop and run the program again</strong>? It reads the settings once, at the start.</li>
+      <li>Did you <strong>save the dashboard file</strong> before reopening it in the browser? And did the browser reload rather than show you the old page &mdash; try a hard refresh.</li>
+      <li>Does your sheet actually <em>have</em> a day of rows yet? Asking for four hundred when there are nine gives you nine, and that is not a fault.</li>
+    </ul>
+    <p>Check it by leaving the board running while you do something else for ten minutes, then counting
+    the rows. Ten minutes should be ten rows.</p>
+  </details>
+
+  <div class="cal info"><b>No answer on this page</b>
+  There is no answer block here on purpose &mdash; the arithmetic is the exercise, and the Shell will
+  tell you within two minutes whether you have it. Your teacher has the worked answer if the class
+  needs it.</div>
+
+  <h3>&#127775; Going further</h3>
+  <p>Finished early? Try these &mdash; no answers given.</p>
+  <ol>
+    <li><strong>Make a chart inside the spreadsheet itself.</strong> Select the temperature column and
+    insert a chart. You did not need the dashboard for that at all &mdash; which is worth thinking
+    about.</li>
+    <li><strong>Work out when your sheet will fill up.</strong> A spreadsheet holds ten million cells.
+    Count your columns, count your rows per day, and find the date. Then decide what you would do about
+    it in a system that has to run for a year.</li>
+    <li><strong>Put the dashboard somewhere other people can open it.</strong> It is one HTML file with
+    nothing else attached &mdash; the same GitHub Pages that serves this website will serve it. Then
+    think hard about the address inside it before you do.</li>
+    <li><strong>Send a reading of your own.</strong> Add the soil percentage from
+    <a href="activity-9.html">Activity 9</a> to the message in <code>main_dashboard.py</code> and watch
+    a new column appear in the sheet with no other change anywhere.</li>
+    <li><strong>Compare two boards.</strong> Point a second board at the same address, add a name to
+    each message, and you have a class weather network. Working out how to tell the two apart in one
+    sheet is the real task.</li>
+    <li><strong>Make the board survive the WiFi going away</strong> &mdash; keep the readings it could
+    not send and post them when the network comes back. That one line of thinking is most of what makes
+    real IoT hard.</li>
+  </ol>
+</section>
+
+<section id="quiz">
+  <h2>&#129504; Quick quiz</h2>
+  <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> You have built every
+  piece of an IoT system from the sensor to the screen, and you own all of it. That is the end of the
+  module.</div>
+</section>
+
+<section>
+  <h2>&#128214; Words to remember</h2>
+  <div class="tablescroll"><table>
+    <tbody>
+      <tr><td><strong>HTTP</strong></td><td>The rules browsers and web addresses talk by. Your board used them today, exactly as a browser does.</td></tr>
+      <tr><td><strong>POST</strong></td><td>Sending data to a web address and waiting to be told what happened to it. The opposite of publishing and walking away.</td></tr>
+      <tr><td><strong>Endpoint</strong></td><td>A web address that a program, rather than a person, is meant to visit. Yours ends in <code>/exec</code>.</td></tr>
+      <tr><td><strong>Deploy</strong></td><td>Putting a program somewhere it can be reached, and getting an address for it. Saving is not deploying.</td></tr>
+      <tr><td><strong>JSON</strong></td><td>A message made of name-and-value pairs in curly brackets. The commonest way data moves on the internet.</td></tr>
+      <tr><td><strong>Header row</strong></td><td>The first row of the sheet, holding the names. It is written once, from the first message that arrives, and everything after it lines up underneath.</td></tr>
+      <tr><td><strong>History</strong></td><td>Readings from before you were looking. The reason a store is worth more than a display.</td></tr>
+      <tr><td><strong>Sampling interval</strong></td><td>How long the board waits between readings. It decides how much detail you keep and how fast the sheet fills.</td></tr>
+      <tr><td><strong>Quota</strong></td><td>A limit the service you are using puts on how much you may do. Everybody has one &mdash; Adafruit IO&rsquo;s was 30 a minute, Google&rsquo;s is generous but real.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<nav class="stepnav" aria-label="Move between activities">
+  <a class="prev" href="activity-12.html"><small>&larr; Previous</small><b>Activity 12: Sending Messages by Radio</b></a>
+  <a class="next" href="index.html#activities"><small>You have finished &rarr;</small><b>All activities</b></a>
+</nav>
+
+</main>
+</div>
+
+<script>
+window.ACTIVITY = {
+  typer: [
+    'WIFI_SSID = "ClassroomWiFi"',
+    'WIFI_PASS = "letmein123"',
+    'REPORT_INTERVAL_MS = 5000',
+    'readings = {"temperature": 28.4}'
+  ],
+  quiz: [
+    { q: 'Your board posts to a web address you deployed, and the rows land in your own spreadsheet. What did that get you that Adafruit IO could not?',
+      opts: ['Faster sending', 'Readings you keep, in a file you own and can open any way you like', 'A stronger WiFi signal', 'Fewer wires'],
+      right: 1,
+      why: 'Speed actually went the other way &mdash; Apps Script is slower than the broker was. What you bought is ownership: the rows are yours, they stay, and nothing stops you charting them, downloading them or feeding them to something else.' },
+    { q: 'Why does the deployment have to be set to "Who has access: Anyone"?',
+      opts: ['So the graphs look better', 'So other students can help you', 'Because the Pico has no way to sign in to a Google account', 'Because Apps Script does not support passwords'],
+      right: 2,
+      why: 'A browser can sign in; a microcontroller cannot. That is why the long code in the middle of the address has to be treated as a password &mdash; it is the only thing protecting the sheet.' },
+    { q: 'You post a reading called <code>temprature</code> by mistake. What happens?',
+      opts: ['The script rejects it and the Shell prints an error', 'A new column appears with that name, the old one stops filling, and nothing complains', 'The whole sheet is wiped', 'It lands in the temperature column anyway'],
+      right: 1,
+      why: 'The name is the entire agreement between the two ends, and nothing is checking your spelling. This silent failure is the commonest bug in every system built on named data.' },
+    { q: 'The dashboard shows nothing, but rows really are arriving in the sheet. What is the first thing to check?',
+      opts: ['The WiFi password', 'Whether the sensors are plugged in', 'That the address in the dashboard is the same one as in config.py', 'The board\'s battery'],
+      right: 2,
+      why: 'The board and the page are two separate clients of the same address. If you re-deployed at some point, the board kept working with the old address while the page was pointed at nothing.' },
+    { q: 'What does <code>REPORT_INTERVAL_MS</code> actually decide?',
+      opts: ['How fast the dashboard redraws', 'How many readings the sheet keeps', 'How long the board waits between readings &mdash; five seconds', 'How long the WiFi takes to join'],
+      right: 2,
+      why: 'It is the board&rsquo;s clock and nothing else&rsquo;s. The page has its own refresh setting, and the two do not have to agree &mdash; which is exactly what the exercise makes you work out.' },
+    { q: 'What is the real difference between a live gauge and a sheet of history?',
+      opts: ['The gauge is more accurate', 'History lets you see the shape a reading makes over time, not just its value now', 'History uses less WiFi', 'There is no difference, only the colours'],
+      right: 1,
+      why: 'A number that keeps changing teaches nobody anything. The pattern &mdash; colder every night, wetter every Monday &mdash; only exists once you have kept the readings, and keeping them is what today was for.' }
+  ]
+};
+</script>
+<script src="activity.js"></script>
+
+<footer>
+  <div class="wrap">
+    <div class="footgrid">
+      <div class="footlogo">
+        <img src="img/stemlab-logo-light.svg" alt="UMPSA STEM LAB &mdash; See, Think, Explore, Marvel" width="200" height="62" loading="lazy">
+      </div>
+      <div>
+        <p class="motto">Pico IoT Module</p>
+        <p>A MicroPython teaching module for the LilEx5 board.<br>
+        Built and maintained by <strong>UMPSA STEM LAB</strong>.</p>
+      </div>
+    </div>
+    <p class="footlinks"><a href="index.html">Home</a> &middot;
+       <a href="activity-0.html">Activity 0</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
+       <a href="activity-2.html">Activity 2</a> &middot;
+       <a href="activity-3.html">Activity 3</a> &middot;
+       <a href="activity-4.html">Activity 4</a> &middot;
+       <a href="activity-5.html">Activity 5</a> &middot;
+       <a href="activity-6.html">Activity 6</a> &middot;
+       <a href="activity-7.html">Activity 7</a> &middot;
+       <a href="activity-8.html">Activity 8</a> &middot;
+       <a href="activity-9.html">Activity 9</a> &middot;
+       <a href="activity-10.html">Activity 10</a> &middot;
+       <a href="activity-11.html">Activity 11</a> &middot;
+       <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="activity-13.html">Activity 13</a> &middot;
+       <a href="pinout.html">Pin reference</a> &middot;
+       <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
+  </div>
+</footer>
+<script src="code.js"></script>
+</body>
+</html>

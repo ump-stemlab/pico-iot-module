@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Activity 0 &mdash; Getting Started | LilEx5 Pico IoT Module</title>
 <meta name="description" content="Interactive MicroPython tutorial for the LilEx5 Raspberry Pi Pico IoT board. Activity 0: the board, the simulator, and the program that talks to it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 </head>
-<body>
+<body data-accent="teal">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -16,13 +19,19 @@
   </marker>
 </defs></svg>
 
+<a class="skip" href="#main">Skip to the activity</a>
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
-<nav class="sitenav"><div class="wrap">
-  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
-  <a class="nl" href="index.html">Home</a>
-  <details class="navsel">
-    <summary>Activity 0: Getting Started</summary>
-    <div class="navmenu" role="menu">
+<header class="sitehead">
+  <div class="sitehead-in">
+    <a class="brand" href="index.html">
+      <img class="brandmark" src="img/stemlab-mark.svg" alt="" width="32" height="33" aria-hidden="true">
+      <span class="brandtxt"><b>LilEx5</b><small>UMPSA STEM LAB</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site">
+      <a class="nl" href="index.html">Home</a>
+      <details class="navsel">
+        <summary>Activity 0: Getting Started</summary>
+        <div class="navmenu" role="menu">
       <a href="activity-0.html" aria-current="page"><b>Activity 0</b>: Getting Started</a>
       <a href="activity-1.html"><b>Activity 1</b>: Light Up an LED</a>
       <a href="activity-2.html"><b>Activity 2</b>: Make an LED Blink</a>
@@ -36,10 +45,13 @@
       <a href="activity-10.html"><b>Activity 10</b>: Internet and Data</a>
       <a href="activity-11.html"><b>Activity 11</b>: Control from Anywhere</a>
       <a href="activity-12.html"><b>Activity 12</b>: Sending Messages by Radio</a>
-    </div>
-  </details>
-  <a class="nl" href="pinout.html">Pin reference</a>
-</div></nav>
+      <a href="activity-13.html"><b>Activity 13</b>: Your Own Live Dashboard</a>
+        </div>
+      </details>
+      <a class="nl" href="pinout.html">Pin reference</a>
+    </nav>
+  </div>
+</header>
 
 <header class="hero">
   <div class="wrap">
@@ -75,7 +87,36 @@
   </div>
 </div>
 
-<div class="wrap">
+<div class="shell">
+<aside class="rail" aria-label="Module map">
+  <div class="railbox">
+    <p class="railttl">Module map</p>
+    <ol class="raillist">
+      <li class="railphase"><span>Start here</span></li>
+      <li><a href="activity-0.html" data-act="0" aria-current="page"><i><b>0</b></i><span>Getting Started</span></a></li>
+      <li><a href="activity-1.html" data-act="1"><i><b>1</b></i><span>Light Up an LED</span></a></li>
+      <li><a href="activity-2.html" data-act="2"><i><b>2</b></i><span>Make an LED Blink</span></a></li>
+      <li class="railphase"><span>Make things happen</span></li>
+      <li><a href="activity-3.html" data-act="3"><i><b>3</b></i><span>Digital Output &amp; Servo</span></a></li>
+      <li><a href="activity-4.html" data-act="4"><i><b>4</b></i><span>Digital Input</span></a></li>
+      <li><a href="activity-5.html" data-act="5"><i><b>5</b></i><span>Making Decisions</span></a></li>
+      <li><a href="activity-6.html" data-act="6"><i><b>6</b></i><span>And, Or, Not</span></a></li>
+      <li class="railphase"><span>Sense the world</span></li>
+      <li><a href="activity-7.html" data-act="7"><i><b>7</b></i><span>Words on a Screen</span></a></li>
+      <li><a href="activity-8.html" data-act="8"><i><b>8</b></i><span>Sensors and Numbers</span></a></li>
+      <li><a href="activity-9.html" data-act="9"><i><b>9</b></i><span>Soil Moisture</span></a></li>
+      <li class="railphase"><span>Get online</span></li>
+      <li><a href="activity-10.html" data-act="10"><i><b>10</b></i><span>Internet and Data</span></a></li>
+      <li><a href="activity-11.html" data-act="11"><i><b>11</b></i><span>Control from Anywhere</span></a></li>
+      <li class="railphase"><span>Go further</span></li>
+      <li><a href="activity-12.html" data-act="12"><i><b>12</b></i><span>Sending Messages by Radio</span></a></li>
+      <li><a href="activity-13.html" data-act="13"><i><b>13</b></i><span>Your Own Live Dashboard</span></a></li>
+    </ol>
+    <p class="railprog" id="railprog" hidden></p>
+    <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+  </div>
+</aside>
+<main class="wrap" id="main">
 
 <section id="rule">
   <h2>&#128220; The one rule</h2>
@@ -136,14 +177,14 @@
 <section id="language">
   <h2>&#128172; The language: MicroPython</h2>
   <p>Python, cut down to fit on a chip the size of a fingernail.</p>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th></th><th>What it is</th></tr></thead>
     <tbody>
       <tr><td><strong>Python</strong></td><td>The same language used for data science, websites and machine learning. What you learn here is not a toy dialect.</td></tr>
       <tr><td><strong>Micro</strong></td><td>A smaller version that fits in the Pico's memory. Same rules, same words, fewer libraries.</td></tr>
       <tr><td><strong>Why it suits you</strong></td><td>It reads close to English, indentation does the work that brackets do elsewhere, and errors are written in plain sentences.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <h3>Two ways to run it</h3>
   <div class="grid2">
@@ -158,13 +199,13 @@
 <section id="routes">
   <h2>&#129514; Two routes through every activity</h2>
   <p>Same code. Same pin numbers. One of them cannot catch fire.</p>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Route</th><th>What you need</th><th>Where you write the code</th></tr></thead>
     <tbody>
       <tr><td><strong>A &mdash; Wokwi</strong> (online)</td><td>A web browser only. Nothing to plug in.</td><td><a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a></td></tr>
       <tr><td><strong>B &mdash; the real board</strong></td><td>LilEx5 board + Pico + USB cable</td><td><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>, on the computer</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="cal tip"><b>Wokwi first, always</b>
   Build it where mistakes are free, then build the same thing for real.</div>
 
@@ -210,7 +251,7 @@
     <h3>Step 3 &mdash; Type this. Do not paste it.</h3>
     <p>Five lines. It is the same five lines you will run on the real board later.</p>
     <span class="codeimg" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKd2hpbGUgVHJ1ZToKICAgIHByaW50KCJIZWxsbyBQaWNvIikKICAgIHNsZWVwKDEp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
-    <table>
+    <div class="tablescroll"><table>
       <thead><tr><th>Line</th><th>What it does</th></tr></thead>
       <tbody>
         <tr><td><span class="codeimg inline" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcA==" role="img" aria-label="from time import sleep"><span class="codefallback">Code</span></span></td><td>Fetch the <code>sleep</code> tool from Python's <code>time</code> toolbox.</td></tr>
@@ -218,7 +259,7 @@
         <tr><td><span class="codeimg inline" data-code="cHJpbnQoIkhlbGxvIFBpY28iKQ==" role="img" aria-label="print Hello Pico"><span class="codefallback">Code</span></span></td><td>Say something. (Four spaces in!)</td></tr>
         <tr><td><span class="codeimg inline" data-code="c2xlZXAoMSk=" role="img" aria-label="sleep(1)"><span class="codefallback">Code</span></span></td><td>Wait one second, then go round again.</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="cal warn"><b>Watch these three things</b>
     The colon at the end of the <code>while True:</code> line; the two indented lines must be indented by the same amount; and <code>True</code> has a capital T.</div>
     <label class="chk"><input type="checkbox" data-p="w3"><span>I typed the five lines myself, with the colon and indentation</span></label>
@@ -308,7 +349,7 @@
   The last line says what kind of mistake. The line above it says where. Then go and look &mdash; not at the whole program, at that line and the one above it.</div>
 
   <h3>Six first-day problems</h3>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>What you see</th><th>Why it happens</th><th>Fix</th></tr></thead>
     <tbody>
       <tr><td><code>NameError</code></td><td>Python does not recognise a word. Usually a lowercase <code>pin</code> instead of <code>Pin</code>, or <code>true</code> instead of <code>True</code>.</td><td>Check capital letters.</td></tr>
@@ -318,7 +359,7 @@
       <tr><td>Thonny cannot find the Pico</td><td>The cable only carries power, or SW5 is off.</td><td>Try a different cable; check the power switch.</td></tr>
       <tr><td>The program stops when you unplug the board</td><td>You ran it from Thonny but did not save it onto the Pico.</td><td>Save as <code>main.py</code> on the Pico, not on the computer.</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="cal note"><b>None of these are your fault</b>
   And none of them break anything. They are the normal texture of writing code.</div>
 </section>
@@ -353,7 +394,7 @@
 
 <section>
   <h2>&#128214; Words to remember</h2>
-  <table>
+  <div class="tablescroll"><table>
     <tbody>
       <tr><td><strong>Pico</strong></td><td>The Raspberry Pi Pico: a tiny computer that runs one program and talks to the world through pins.</td></tr>
       <tr><td><strong>GPIO / GP number</strong></td><td>General Purpose Input/Output. The number your code uses for a pin.</td></tr>
@@ -364,7 +405,7 @@
       <tr><td><strong>Indentation</strong></td><td>Spaces at the start of a line that show which lines belong inside a loop or decision.</td></tr>
       <tr><td><strong>Syntax error</strong></td><td>A mistake in the grammar of the code, like a missing colon or bracket.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <nav class="stepnav" aria-label="Move between activities">
@@ -373,6 +414,7 @@
 </nav>
 
 
+</main>
 </div>
 
 <script>
@@ -407,8 +449,18 @@ window.ACTIVITY = {
 
 <footer>
   <div class="wrap">
-    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
-    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot;
+    <div class="footgrid">
+      <div class="footlogo">
+        <img src="img/stemlab-logo-light.svg" alt="UMPSA STEM LAB &mdash; See, Think, Explore, Marvel" width="200" height="62" loading="lazy">
+      </div>
+      <div>
+        <p class="motto">Pico IoT Module</p>
+        <p>A MicroPython teaching module for the LilEx5 board.<br>
+        Built and maintained by <strong>UMPSA STEM LAB</strong>.</p>
+      </div>
+    </div>
+    <p class="footlinks"><a href="index.html">Home</a> &middot;
+       <a href="activity-0.html">Activity 0</a> &middot;
        <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
        <a href="activity-3.html">Activity 3</a> &middot;
@@ -421,6 +473,7 @@ window.ACTIVITY = {
        <a href="activity-10.html">Activity 10</a> &middot;
        <a href="activity-11.html">Activity 11</a> &middot;
        <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="activity-13.html">Activity 13</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

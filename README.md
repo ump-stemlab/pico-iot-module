@@ -30,6 +30,7 @@ type-the-code checker, progress tracking and a quiz.
 | 📡 **Activity 10 — Internet and Data** | https://ump-stemlab.github.io/pico-iot-module/activity-10.html |
 | 🎛️ **Activity 11 — Control from Anywhere** | https://ump-stemlab.github.io/pico-iot-module/activity-11.html |
 | 📻 **Activity 12 — Sending Messages by Radio** | https://ump-stemlab.github.io/pico-iot-module/activity-12.html |
+| 📊 **Activity 13 — Your Own Live Dashboard** | https://ump-stemlab.github.io/pico-iot-module/activity-13.html |
 | 📌 **LilEx5 pin reference** | https://ump-stemlab.github.io/pico-iot-module/pinout.html |
 
 ## What the module covers
@@ -56,6 +57,7 @@ with [Thonny](https://thonny.org).
 | 10 | [Internet and Data](https://ump-stemlab.github.io/pico-iot-module/activity-10.html) | joining WiFi, MQTT, a live graph on the internet | ✅ live |
 | 11 | [Control from Anywhere](https://ump-stemlab.github.io/pico-iot-module/activity-11.html) | subscribing, `def`, callbacks, a switch on the web | ✅ live |
 | 12 | [Sending Messages by Radio](https://ump-stemlab.github.io/pico-iot-module/activity-12.html) | UART, mode pins, channels, and no server at all | ✅ live |
+| 13 | [Your Own Live Dashboard](https://ump-stemlab.github.io/pico-iot-module/activity-13.html) | HTTP POST, JSON, a Google Sheet of your own, and history | ✅ live |
 
 ## Pins used so far
 
@@ -84,6 +86,9 @@ weather sensor both join GP0 and GP1 alongside the screen — which is the whole
 having built a bus. Activity 11 reuses the red LED1 on **GP11** and, for its exercise, the
 green LED3 on **GP13**. Activities 10 and 11 need the Pico **W**: its WiFi radio is inside
 the chip, not on a pin.
+
+**Activity 13 adds no pins at all** — it reuses the I²C sensor bus, the OLED and the
+Pico W's WiFi radio, and everything new about it happens in the cloud.
 
 **Activity 12 adds six pins in one go** — **GP16** and **GP17** for the UART link to the
 radio, **GP18, GP19 and GP20** for its three mode pins, and **GP21** for the busy line
@@ -128,6 +133,8 @@ docs/
   teacher-11.html   Activity 11 teacher notes (unlisted — see below)
   activity-12.html  Activity 12 — Sending Messages by Radio
   teacher-12.html   Activity 12 teacher notes (unlisted — see below)
+  activity-13.html  Activity 13 — Your Own Live Dashboard
+  teacher-13.html   Activity 13 teacher notes (unlisted — see below)
   teacher.html      index of every teacher notes page (unlisted — see below)
   pinout.html       LilEx5 pin reference, searchable
   style.css         shared stylesheet
@@ -138,7 +145,8 @@ docs/
                     quiz
   board.js          the board explorer on pinout.html
   robots.txt        keeps teacher pages out of search engines
-  img/              LilEx5 board photos, and the Adafruit IO / Thonny screenshots
+  img/              LilEx5 board photos, the Adafruit IO / Thonny screenshots, and the
+                    UMPSA STEM LAB logo set (stemlab-*.svg / .png, favicon.svg)
 CONTEXT.md          how this site is built — read before changing it
 PROMPT-activity-3.md  a leftover brief; Activity 3 is built, so it can go
 ```

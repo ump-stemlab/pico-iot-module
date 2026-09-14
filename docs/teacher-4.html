@@ -6,8 +6,11 @@
 <title>Teacher notes &mdash; Activity 4 | LilEx5 Pico IoT Module</title>
 <meta name="description" content="Instructor notes for Activity 4.">
 <meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2302ADA5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <style>
 .codebox{position:relative;margin:1em 0}
 .codebox pre{margin:0;padding:1.1em 1em 1em;background:var(--code-bg,#1e1e2e);color:var(--code-fg,#cdd6f4);border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.5;tab-size:4}
@@ -17,15 +20,21 @@
 .copybtn.copied{background:#4caf50}
 </style>
 </head>
-<body>
+<body data-accent="orange">
 
+<a class="skip" href="#main">Skip to the activity</a>
 <div class="chev"><span>See</span><span>Think</span><span>Explore</span><span>Marvel</span></div>
-<nav class="sitenav"><div class="wrap">
-  <a class="brand" href="index.html">LilEx5 <span>Pico IoT Module</span></a>
-  <a class="nl" href="index.html">Home</a>
-  <details class="navsel">
-    <summary>Activity 4: Digital Input</summary>
-    <div class="navmenu" role="menu">
+<header class="sitehead">
+  <div class="sitehead-in">
+    <a class="brand" href="index.html">
+      <img class="brandmark" src="img/stemlab-mark.svg" alt="" width="32" height="33" aria-hidden="true">
+      <span class="brandtxt"><b>LilEx5</b><small>UMPSA STEM LAB</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site">
+      <a class="nl" href="index.html">Home</a>
+      <details class="navsel">
+        <summary>Activity 4: Digital Input</summary>
+        <div class="navmenu" role="menu">
       <a href="teacher-0.html"><b>Activity 0</b>: Getting Started</a>
       <a href="teacher-1.html"><b>Activity 1</b>: Light Up an LED</a>
       <a href="teacher-2.html"><b>Activity 2</b>: Make an LED Blink</a>
@@ -39,10 +48,13 @@
       <a href="teacher-10.html"><b>Activity 10</b>: Internet and Data</a>
       <a href="teacher-11.html"><b>Activity 11</b>: Control from Anywhere</a>
       <a href="teacher-12.html"><b>Activity 12</b>: Sending Messages by Radio</a>
-    </div>
-  </details>
-  <a class="nl" href="pinout.html">Pin reference</a>
-</div></nav>
+      <a href="teacher-13.html"><b>Activity 13</b>: Your Own Live Dashboard</a>
+        </div>
+      </details>
+      <a class="nl" href="pinout.html">Pin reference</a>
+    </nav>
+  </div>
+</header>
 
 <div class="gate" id="gate">
   <h2>&#128274; Teacher notes</h2>
@@ -68,7 +80,36 @@
   </div>
 </header>
 
-<div class="wrap">
+<div class="shell">
+<aside class="rail" aria-label="Module map">
+  <div class="railbox">
+    <p class="railttl">Module map</p>
+    <ol class="raillist">
+      <li class="railphase"><span>Start here</span></li>
+      <li><a href="teacher-0.html" data-act="0"><i><b>0</b></i><span>Getting Started</span></a></li>
+      <li><a href="teacher-1.html" data-act="1"><i><b>1</b></i><span>Light Up an LED</span></a></li>
+      <li><a href="teacher-2.html" data-act="2"><i><b>2</b></i><span>Make an LED Blink</span></a></li>
+      <li class="railphase"><span>Make things happen</span></li>
+      <li><a href="teacher-3.html" data-act="3"><i><b>3</b></i><span>Digital Output &amp; Servo</span></a></li>
+      <li><a href="teacher-4.html" data-act="4" aria-current="page"><i><b>4</b></i><span>Digital Input</span></a></li>
+      <li><a href="teacher-5.html" data-act="5"><i><b>5</b></i><span>Making Decisions</span></a></li>
+      <li><a href="teacher-6.html" data-act="6"><i><b>6</b></i><span>And, Or, Not</span></a></li>
+      <li class="railphase"><span>Sense the world</span></li>
+      <li><a href="teacher-7.html" data-act="7"><i><b>7</b></i><span>Words on a Screen</span></a></li>
+      <li><a href="teacher-8.html" data-act="8"><i><b>8</b></i><span>Sensors and Numbers</span></a></li>
+      <li><a href="teacher-9.html" data-act="9"><i><b>9</b></i><span>Soil Moisture</span></a></li>
+      <li class="railphase"><span>Get online</span></li>
+      <li><a href="teacher-10.html" data-act="10"><i><b>10</b></i><span>Internet and Data</span></a></li>
+      <li><a href="teacher-11.html" data-act="11"><i><b>11</b></i><span>Control from Anywhere</span></a></li>
+      <li class="railphase"><span>Go further</span></li>
+      <li><a href="teacher-12.html" data-act="12"><i><b>12</b></i><span>Sending Messages by Radio</span></a></li>
+      <li><a href="teacher-13.html" data-act="13"><i><b>13</b></i><span>Your Own Live Dashboard</span></a></li>
+    </ol>
+    <p class="railprog" id="railprog" hidden></p>
+    <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+  </div>
+</aside>
+<main class="wrap" id="main">
 
 <div class="tbanner"><b>Keep this link to yourself.</b> Unlisted and hidden from search engines, but the
 repository is public &mdash; anyone with the URL can read it.</div>
@@ -157,7 +198,7 @@ while True:
 
 <section>
   <h2>Going-further answers</h2>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Task</th><th>Answer / what to say</th></tr></thead>
     <tbody>
       <tr><td>Add SW3 on <span class="gp">4</span></td><td>A third name and two more commas. Nothing new
@@ -175,7 +216,7 @@ while True:
       wander. On the real board the effect is muted because the board holds the line &mdash; itself worth
       pointing out. Do not encourage poking at wires on a powered board.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <section>
@@ -254,7 +295,7 @@ while True:
 
 <section>
   <h2>Links</h2>
-  <table>
+  <div class="tablescroll"><table>
     <tbody>
       <tr><td>Student page</td><td><a href="activity-4.html">activity-4.html</a></td></tr>
       <tr><td>All teacher notes</td><td><a href="teacher.html">teacher.html</a></td></tr>
@@ -264,12 +305,12 @@ while True:
       <tr><td>Pin reference</td><td><a href="pinout.html">pinout.html</a></td></tr>
       <tr><td>Repository</td><td><a href="https://github.com/ump-stemlab/pico-iot-module">github.com/ump-stemlab/pico-iot-module</a></td></tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <section>
   <h2>Pins used so far</h2>
-  <table>
+  <div class="tablescroll"><table>
     <thead><tr><th>Pin</th><th>Used for</th><th>First seen</th></tr></thead>
     <tbody>
       <tr><td><span class="gp">GP2</span></td><td>Button SW1</td><td><strong>Activity 4</strong> &mdash; new</td></tr>
@@ -281,11 +322,12 @@ while True:
       <tr><td><span class="gp">GP14</span></td><td>Buzzer BZ1</td><td>Going-further only</td></tr>
       <tr><td><span class="gp">GP15</span></td><td>Slide switch SW4</td><td>Going-further only</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p class="muted">Activity 4 adds the buttons. Nothing on this board needs wiring &mdash; the parts are
   joined inside the PCB.</p>
 </section>
 
+</main>
 </div>
 </div>
 
@@ -301,8 +343,19 @@ while True:
 
 <footer>
   <div class="wrap">
-    <p><strong>See &middot; Think &middot; Explore &middot; Marvel</strong><br>UMPSA STEM LAB</p>
-    <p><a href="index.html">Home</a> &middot; <a href="activity-0.html">Activity 0</a> &middot; <a href="activity-1.html">Activity 1</a> &middot;
+    <div class="footgrid">
+      <div class="footlogo">
+        <img src="img/stemlab-logo-light.svg" alt="UMPSA STEM LAB &mdash; See, Think, Explore, Marvel" width="200" height="62" loading="lazy">
+      </div>
+      <div>
+        <p class="motto">Pico IoT Module</p>
+        <p>A MicroPython teaching module for the LilEx5 board.<br>
+        Built and maintained by <strong>UMPSA STEM LAB</strong>.</p>
+      </div>
+    </div>
+    <p class="footlinks"><a href="index.html">Home</a> &middot;
+       <a href="activity-0.html">Activity 0</a> &middot;
+       <a href="activity-1.html">Activity 1</a> &middot;
        <a href="activity-2.html">Activity 2</a> &middot;
        <a href="activity-3.html">Activity 3</a> &middot;
        <a href="activity-4.html">Activity 4</a> &middot;
@@ -314,6 +367,7 @@ while True:
        <a href="activity-10.html">Activity 10</a> &middot;
        <a href="activity-11.html">Activity 11</a> &middot;
        <a href="activity-12.html">Activity 12</a> &middot;
+       <a href="activity-13.html">Activity 13</a> &middot;
        <a href="pinout.html">Pin reference</a> &middot;
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>

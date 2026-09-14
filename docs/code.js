@@ -213,7 +213,7 @@
    script. This only adds the two things <details> does not do by itself:
    close when you click away from it, and close on Escape. */
 (function(){
-  var sel = document.querySelector('nav.sitenav details.navsel');
+  var sel = document.querySelector('details.navsel');
   if(!sel) return;
   document.addEventListener('click', function(e){
     if(sel.open && !sel.contains(e.target)) sel.open = false;
@@ -225,4 +225,52 @@
       if(sum) sum.focus();
     }
   });
+})();
+
+
+/* ---------- the module rail ----------
+   The rail on the left of every page lists all fourteen activities. This
+   marks the ones a student has already ticked something on, so the map shows
+   how far through the module they are. Progress itself is written by
+   activity.js, one localStorage entry per page, keyed 'lilex5v2:<filename>';
+   this only reads those entries and never writes one.
+
+   It is decoration. A page with no rail, a browser with no localStorage and a
+   student who has ticked nothing all end up with the rail exactly as the HTML
+   left it. */
+(function(){
+  "use strict";
+  var list = document.querySelector('.raillist');
+  if(!list) return;
+
+  function ticked(n){
+    try {
+      var raw = localStorage.getItem('lilex5v2:activity-' + n + '.html');
+      if(!raw) return false;
+      var o = JSON.parse(raw), k;
+      for(k in o){ if(o[k]) return true; }
+      return false;
+    } catch(e){ return false; }
+  }
+
+  var done = 0, total = 0;
+  [].slice.call(list.querySelectorAll('a[data-act]')).forEach(function(a){
+    total++;
+    if(ticked(a.getAttribute('data-act'))){ a.classList.add('done'); done++; }
+  });
+
+  var out = document.getElementById('railprog');
+  if(out && done){
+    out.textContent = done + ' of ' + total + ' started';
+    out.hidden = false;
+  }
+
+  /* the same marks on the home page's activity cards, and its progress strip */
+  [].slice.call(document.querySelectorAll('.act[data-act]')).forEach(function(a){
+    if(ticked(a.getAttribute('data-act'))) a.classList.add('done');
+  });
+  var fill = document.getElementById('yourfill'), cnt = document.getElementById('yourcount');
+  if(fill && total){ fill.style.width = Math.round(done/total*100) + '%'; }
+  if(cnt){ cnt.textContent = done ? (done + ' of ' + total + ' activities started')
+                                  : 'Nothing started yet \u2014 Activity 0 is the door in'; }
 })();
