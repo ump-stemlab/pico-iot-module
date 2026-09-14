@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-cheer.png" alt="" width="360" height="411" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 13</p>
     <h1>Your Own Live Dashboard</h1>
@@ -66,6 +67,7 @@
       <span class="pill">&#9201; About 70 minutes</span>
       <span class="pill">&#127760; Needs WiFi and a Google account</span>
       <span class="pill">&#128202; The whole sensor set at once</span>
+      <span class="pill">&#129514; Wokwi route, with three readings</span>
     </div>
     <div class="toc">
       <a href="#yours">The middle is yours</a>
@@ -80,14 +82,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -119,6 +123,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -131,6 +141,10 @@
   board where it lives, run it, open the dashboard, and then &mdash; the part none of the earlier
   activities could do &mdash; scroll back and look at what the board recorded <strong>before you got
   there</strong>.</p>
+  <p><strong>There is a Wokwi route.</strong> The simulator cannot copy the LilEx5&rsquo;s twelve
+  sensors, but it has the same weather sensor you used in
+  <a href="activity-10.html">Activity&nbsp;10</a> and a Pico&nbsp;W that reaches the real internet
+  &mdash; which is everything today actually needs. Parts 1, 4 and 5 are identical either way.</p>
 
 <svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="The round trip today's data makes. The board joins WiFi and posts its readings to a Google Apps Script that you deployed. The script writes one row into your Google Sheet. Separately, the dashboard page in a browser asks the same script for the rows, the script reads them out of the sheet, and the dashboard draws them. Everything in the middle belongs to you.">
   <text x="390" y="26" class="dttl" text-anchor="middle">One round trip, and every stop on it is yours</text>
@@ -264,8 +278,8 @@
   it. And Apps Script is slower than the broker in Activity&nbsp;10 &mdash; a few hundred milliseconds
   per reading rather than a few. You are trading convenience for control, deliberately.</div>
 
-  <label class="chk"><input type="checkbox" data-p="y1"><span>I can say one thing I could not do with Adafruit IO that I can do with a sheet of my own</span></label>
-  <label class="chk"><input type="checkbox" data-p="y2"><span>I can name one thing that is harder today than it was in Activity 10</span></label>
+
+<div class="ckpt ask" data-gate="yours" data-label="The middle is yours"></div>
 </section>
 
 <section id="round">
@@ -316,7 +330,8 @@
 <section id="json">
   <h2>&#127991;&#65039; A reading with its name on it</h2>
   <p class="lede">Activity 10 sent one bare number to a feed that already knew what it meant. Today one
-  message carries a dozen readings at once, so every one of them has to say what it is.</p>
+  message carries a dozen readings at once &mdash; three, if you are in Wokwi &mdash; so every one of
+  them has to say what it is.</p>
   <p>The board packs them into a shape called <strong>JSON</strong>: a list of
   <em>name&nbsp;&rarr;&nbsp;value</em> pairs, wrapped in curly brackets. You will see this shape for
   the rest of your life &mdash; it is how nearly everything on the internet hands data to
@@ -324,7 +339,7 @@
 
   <span class="codeimg" data-code="eyJ0ZW1wZXJhdHVyZSI6IDI4LjQsCiAiaHVtaWRpdHkiOiA2NS4xLAogInByZXNzdXJlIjogMTAxMy4yLAogInR2b2MiOiA0MSwKICJoZWFkaW5nIjogMTcyLjUsCiAiYWNjZWxYIjogMC4wMn0=" role="img" aria-label="Python code, 6 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
 
-<svg class="dia wide" viewBox="0 0 780 340" role="img" aria-label="How a named reading becomes a column. The message leaving the board carries the names temperature, humidity, pressure and tvoc with their values. In the sheet, the header row carries the same four names, and each value drops into the column with the matching name. The name is the only thing joining the two ends.">
+<svg class="dia wide" viewBox="0 0 780 366" role="img" aria-label="How a named reading becomes a column. The message leaving the board carries the names temperature, humidity, pressure and tvoc with their values. In the sheet, the header row carries the same four names, and each value drops into the column with the matching name. The name is the only thing joining the two ends.">
   <text x="390" y="26" class="dttl" text-anchor="middle">The name is the whole agreement between the two ends</text>
 
   <rect x="26" y="52" width="300" height="150" rx="12" class="pinbox"/>
@@ -359,21 +374,54 @@
   <text x="390" y="274" class="dsub" text-anchor="middle">It gets a new column of its own, the old column stops filling, and there is no error at all &mdash;</text>
   <text x="390" y="296" class="dsub" text-anchor="middle">which is exactly what a spelling mistake looks like in every system built this way.</text>
   <text x="390" y="326" class="dsub" text-anchor="middle">The board decides the names. The script writes the header row the first time it sees them.</text>
+  <text x="390" y="352" class="dsub" text-anchor="middle">A Wokwi sheet ends up three columns wide and a LilEx5 sheet twelve, from the same script. Nothing else changed.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="j1"><span>I can say what happens to a reading whose name is spelled differently at the two ends</span></label>
+
+<div class="ckpt ask" data-gate="json" data-label="A reading with its name on it"></div>
 </section>
 
 <section id="kit">
   <h2>&#129513; What you need</h2>
-  <p class="lede">This activity has two halves, and they need different things. Read both lists before
-  you start &mdash; you can do the second half with nothing but a browser.</p>
+  <p class="lede">Both routes do the whole activity. The cloud half &mdash; the script, the sheet, the
+  dashboard and the history &mdash; is <strong>identical</strong> on either, and needs nothing but a
+  browser.</p>
 
-  <h3>The board half</h3>
-  <p><strong>A real LilEx5 and a network.</strong> There is no Wokwi route for this one: the program
-  reads the whole sensor set that is soldered to this board, and the simulator has none of it. If you
-  do not have a board today, pair up with somebody who does &mdash; then do the cloud half on your own
-  machine, because that half is yours to keep.</p>
+  <h3>Which route</h3>
+  <div class="tablescroll"><table>
+    <thead><tr><th></th><th>&#129514; Route A &mdash; Wokwi</th><th>&#128268; Route B &mdash; the real LilEx5</th></tr></thead>
+    <tbody>
+      <tr><td><strong>What you need</strong></td>
+          <td>A browser and a Google account. Nothing to plug in.</td>
+          <td>The board, a USB cable, Thonny, and <strong>2.4&nbsp;GHz WiFi</strong>.</td></tr>
+      <tr><td><strong>The sensor</strong></td>
+          <td>One simulated weather sensor &mdash; temperature, pressure, humidity. The same one as
+          <a href="activity-10.html">Activity 10</a>.</td>
+          <td>The whole LilEx5 set. Twelve readings in every message.</td></tr>
+      <tr><td><strong>Where the four settings live</strong></td>
+          <td>At the top of <code>main.py</code>.</td>
+          <td>In <code>config.py</code>.</td></tr>
+      <tr><td><strong>Parts 1, 4 and 5</strong></td>
+          <td colspan="2">Identical. Deploying the script, the sheet, the dashboard and the history do
+          not know or care which route sent the readings.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal tip"><b>No board today? You lose almost nothing</b>
+  Wokwi&rsquo;s Pico&nbsp;W joins a network called <strong>Wokwi-GUEST</strong> and reaches the real
+  internet from it, so a simulated board really does write rows into a real spreadsheet of yours. Three
+  columns instead of twelve is the only difference you will see &mdash; and why that is so is the point
+  of the section above.</div>
+
+  <h3>&#129514; Route A &mdash; what you need</h3>
+  <ul>
+    <li>The <strong>Activity 13 starter project</strong>:
+    <a href="WOKWI-PROJECT-URL" target="_blank" rel="noopener">open it in Wokwi</a>. The sensor, the
+    Pico&nbsp;W, <code>bme280.py</code> and <code>urequests.py</code> are all in it already.</li>
+    <li>A <strong>Google account</strong>, for Part 1.</li>
+  </ul>
+
+  <h3>&#128268; Route B &mdash; what you need</h3>
   <ul>
     <li>The LilEx5, a USB cable, and Thonny &mdash; as in every activity since
     <a href="activity-0.html">Activity 0</a></li>
@@ -382,16 +430,11 @@
     hotspot on 2.4&nbsp;GHz is a perfectly good answer and not a workaround &mdash; the same warning as
     <a href="activity-10.html">Activity 10</a></li>
     <li>The <strong>Activity 13 file pack</strong> from your teacher</li>
-  </ul>
-
-  <h3>The cloud half</h3>
-  <ul>
     <li>A <strong>Google account</strong>. Your school one is fine if it can reach Apps Script &mdash;
     some cannot, and your teacher will have checked</li>
-    <li>A browser. That is all</li>
   </ul>
 
-  <h3>What is in the file pack</h3>
+  <h3>What is in the file pack (Route B)</h3>
   <div class="tablescroll"><table>
     <thead><tr><th>File</th><th>Where it goes</th><th>What it is</th></tr></thead>
     <tbody>
@@ -409,11 +452,11 @@
   Every other activity in this module has you type the code, because typing is how it gets into your
   head. Today&rsquo;s program is three files long and most of it is sensors you have already met, so it
   arrives finished. Open <code>main_dashboard.py</code> in Thonny anyway and find the loop &mdash; you
-  will recognise nearly every line in it, and the exercise at the end assumes you have looked.</div>
+  will recognise nearly every line in it, and the exercise at the end assumes you have looked.
+  <br><br>In Wokwi the whole program is <code>main.py</code> and it is about thirty lines. Read that
+  one properly: every single line in it comes from an activity you have already done, except the one
+  that posts.</div>
 
-  <label class="chk"><input type="checkbox" data-p="k1"><span>My board is plugged in and Thonny says Raspberry Pi Pico at the bottom right</span></label>
-  <label class="chk"><input type="checkbox" data-p="k2"><span>I know which WiFi I am joining, and it is 2.4&nbsp;GHz with no sign-in page</span></label>
-  <label class="chk"><input type="checkbox" data-p="k3"><span>I can sign in to a Google account in this room</span></label>
 </section>
 
 <section id="deploy">
@@ -510,36 +553,73 @@
   paste it into a screenshot. If it does get out, deploy again: a new deployment gets a new address
   and the old one stops being useful.</div>
 
-  <label class="chk"><input type="checkbox" data-p="d1"><span>My sheet exists and I opened Apps Script from inside it</span></label>
-  <label class="chk"><input type="checkbox" data-p="d2"><span>I deployed it as a Web app, Execute as Me, Who has access Anyone</span></label>
-  <label class="chk"><input type="checkbox" data-p="d3"><span>I have the <code>/exec</code> address saved somewhere I can copy it from twice</span></label>
+
+<div class="ckpt" data-gate="deploy" data-label="The script is live">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the script is live</b>My sheet exists, I opened Apps Script <strong>from inside it</strong>, deployed it as a Web app (Execute as&nbsp;Me, Who has access&nbsp;Anyone), and saved the <code>/exec</code> address somewhere I can copy it from twice.</span>
+  </label>
+</div>
 </section>
 
 <section id="config">
   <h2>&#9881;&#65039; Part 2 &mdash; tell the board where to send</h2>
-  <p class="lede">Four lines at the bottom of <strong>config.py</strong>. This is the only file you
-  edit today, and everybody&rsquo;s is different.</p>
+  <p class="lede">Four settings, and they are the same four on both routes. Only the file they live in
+  changes.</p>
 
-  <div class="cal warn"><b>Your WiFi, your password, your address</b>
-  The network name and password are <strong>yours</strong> &mdash; whatever your own phone or laptop is
-  on. The <code>/exec</code> address is the one from Part 1. Keep the quotation marks: everything
-  between them is text, and the board will try to join a network literally called
-  <code>YourNetworkName</code> if you leave it there.</div>
+  <div class="cal warn"><b>Keep the quotation marks</b>
+  Everything between them is text. Leave <code>YourNetworkName</code> in place and the board will
+  honestly try to join a network called exactly that, and time out, and you will blame the WiFi.</div>
 
-  <span class="codeimg" data-code="IyAtLS0tIGV4aXN0aW5nIGxpbmVzIGluIHlvdXIgY29uZmlnLnB5IChsZWF2ZSB0aGVtIGFsb25lKSAtLS0tCkkyQ19DSCAgPSAwCkkyQ19TQ0wgPSAxCkkyQ19TREEgPSAwCiMgLi4uIHRoZSByZXN0IG9mIHlvdXIgcGluIHNldHRpbmdzCgojIC0tLS0gQUREIFRIRVNFIEZPVVIgTElORVMgQVQgVEhFIEJPVFRPTSAtLS0tCldJRklfU1NJRCAgICAgICAgICA9ICJZb3VyTmV0d29ya05hbWUiICAgICAjIHlvdXIgb3duIFdpRmkKV0lGSV9QQVNTICAgICAgICAgID0gIllvdXJQYXNzd29yZCIgICAgICAgICMgeW91ciBvd24gcGFzc3dvcmQKQVBQU19TQ1JJUFRfVVJMICAgID0gImh0dHBzOi8vc2NyaXB0Lmdvb2dsZS5jb20vbWFjcm9zL3MvQUtmeS4uLi4vZXhlYyIKUkVQT1JUX0lOVEVSVkFMX01TID0gNTAwMCAgICAgICAgICAgICAgICAgICMgc2VuZCBldmVyeSA1IHNlY29uZHM=" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-a" aria-selected="true" aria-controls="pan-a">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-b" aria-selected="false" aria-controls="pan-b">&#128268; Route B &mdash; real board</button>
+  </div>
+
+  <div class="panel" id="pan-a" role="tabpanel" aria-labelledby="tab-a">
+    <p>Open the <a href="WOKWI-PROJECT-URL" target="_blank" rel="noopener">Activity 13 starter
+    project</a> and look at the top of <strong>main.py</strong>. The four settings are the first
+    thing in the file.</p>
+    <p><strong>Only one of them is yours to change.</strong> Wokwi's own network is called
+    <code>Wokwi-GUEST</code> and has no password, so the first two lines are already right for
+    everybody. Paste your <code>/exec</code> address from Part 1 into the third.</p>
+
+    <span class="codeimg" data-code="IyAtLS0tIHRoZSB0b3Agb2YgbWFpbi5weSwgaW4gdGhlIFdva3dpIHN0YXJ0ZXIgcHJvamVjdCAtLS0tCldJRklfU1NJRCAgICAgICAgICA9ICJXb2t3aS1HVUVTVCIgICAjIFdva3dpJ3Mgb3duIG5ldHdvcmsuIExlYXZlIGl0LgpXSUZJX1BBU1MgICAgICAgICAgPSAiIiAgICAgICAgICAgICAgIyBJdCBoYXMgbm8gcGFzc3dvcmQuIExlYXZlIGl0LgoKQVBQU19TQ1JJUFRfVVJMICAgID0gIlBBU1RFIFlPVVIgL2V4ZWMgQUREUkVTUyBCRVRXRUVOIFRIRVNFIFFVT1RFUyIKClJFUE9SVF9JTlRFUlZBTF9NUyA9IDUwMDAgICAgICAgICAgICAjIHNlbmQgYSByZWFkaW5nIGV2ZXJ5IDUgc2Vjb25kcw==" role="img" aria-label="Python code, 7 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+
+    <div class="cal tip"><b>Wokwi-GUEST is a real connection to the real internet</b>
+    It is not a pretend network. Wokwi runs a gateway that passes the simulated board's traffic out to
+    the actual internet, which is why a program running in a browser tab can write a row into a
+    spreadsheet in your own Google account.</div>
+  </div>
+
+  <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
+    <p>Four lines at the bottom of <strong>config.py</strong>. This is the only file you edit today,
+    and everybody&rsquo;s is different.</p>
+    <p>The network name and password are <strong>yours</strong> &mdash; whatever your own phone or
+    laptop is on. The <code>/exec</code> address is the one from Part 1.</p>
+
+    <span class="codeimg" data-code="IyAtLS0tIGV4aXN0aW5nIGxpbmVzIGluIHlvdXIgY29uZmlnLnB5IChsZWF2ZSB0aGVtIGFsb25lKSAtLS0tCkkyQ19DSCAgPSAwCkkyQ19TQ0wgPSAxCkkyQ19TREEgPSAwCiMgLi4uIHRoZSByZXN0IG9mIHlvdXIgcGluIHNldHRpbmdzCgojIC0tLS0gQUREIFRIRVNFIEZPVVIgTElORVMgQVQgVEhFIEJPVFRPTSAtLS0tCldJRklfU1NJRCAgICAgICAgICA9ICJZb3VyTmV0d29ya05hbWUiICAgICAjIHlvdXIgb3duIFdpRmkKV0lGSV9QQVNTICAgICAgICAgID0gIllvdXJQYXNzd29yZCIgICAgICAgICMgeW91ciBvd24gcGFzc3dvcmQKQVBQU19TQ1JJUFRfVVJMICAgID0gImh0dHBzOi8vc2NyaXB0Lmdvb2dsZS5jb20vbWFjcm9zL3MvQUtmeS4uLi4vZXhlYyIKUkVQT1JUX0lOVEVSVkFMX01TID0gNTAwMCAgICAgICAgICAgICAgICAgICMgc2VuZCBldmVyeSA1IHNlY29uZHM=" role="img" aria-label="Python code, 11 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
+  </div>
 
   <h3>Type the four lines here first</h3>
-  <p>Get the shape into your fingers before you open Thonny. Use the example values below &mdash; then
-  put your own in for real.</p>
-  <div class="typer" id="typer">
+  <p>Get the shape into your fingers before you open the real file &mdash; Thonny on Route B, the
+  Wokwi editor on Route A. Use the example values below, then put your own in for real.</p>
+  <div class="ckpt typed" data-gate="config" data-label="Settings typed">
+  <p class="askkick"><span>Checkpoint</span> Settings typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder='WIFI_SSID = "ClassroomWiFi"' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder='WIFI_PASS = "letmein123"' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="REPORT_INTERVAL_MS = 5000" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder='readings = {"temperature": 28.4}' autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Four boxes. Line 4 is not going in your config file &mdash; it is the JSON shape from earlier, here so your fingers meet the curly brackets and the colon once before you see them in the sheet.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
-  <h3>&#128269; What each line is for</h3>
+  <h3>&#128269; What each setting is for</h3>
+  <p>Same four on both routes. In Wokwi they are the first lines of
+  <code>main.py</code>; on the real board they are the last lines of <code>config.py</code>.</p>
   <div class="tablescroll"><table class="codetable">
     <tbody>
       <tr><td><span class="codeimg inline" data-code="V0lGSV9TU0lEID0gIllvdXJOZXR3b3JrTmFtZSI=" role="img" aria-label="Code line"><span class="codefallback">Code is shown as a picture.</span></span></td>
@@ -560,20 +640,37 @@
   Put <code>5</code> in there by mistake and the board will try to send two hundred readings a second,
   which will fail in a way that looks like a broken network.</div>
 
-  <label class="chk"><input type="checkbox" data-p="c1"><span>My config.py has all four lines and my own WiFi details in them</span></label>
-  <label class="chk"><input type="checkbox" data-p="c2"><span>The address in config.py ends in <code>/exec</code></span></label>
 </section>
 
 <section id="run">
   <h2>&#9654;&#65039; Part 3 &mdash; upload the pack and run it</h2>
-  <p>In Thonny, open the Files panel (<kbd>View &rarr; Files</kbd>). Right-click each file on your
-  computer&rsquo;s side and choose <kbd>Upload to /</kbd>. Then open
-  <strong>main_dashboard.py</strong> and press <kbd>F5</kbd>.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-c" aria-selected="true" aria-controls="pan-c">&#129514; Route A &mdash; Wokwi</button>
+    <button role="tab" id="tab-d" aria-selected="false" aria-controls="pan-d">&#128268; Route B &mdash; real board</button>
+  </div>
 
-  <div class="cal tip"><b>Your old main.py can stay</b>
-  <code>main_dashboard.py</code> is a separate program you start by hand. Nothing you built in the
-  earlier activities is overwritten, and the board still does what it did before when you unplug it
-  and plug it back in.</div>
+  <div class="panel" id="pan-c" role="tabpanel" aria-labelledby="tab-c">
+    <p>Press the green <strong>play</strong> button. Nothing to upload, nothing to install &mdash;
+    Wokwi copies every project file onto the simulated Pico each time it starts.</p>
+    <div class="cal tip"><b>The sensor has sliders, and nobody ever finds them</b>
+    Click the green sensor block <strong>while the simulation is running</strong>. Three sliders appear
+    &mdash; temperature, pressure, humidity. Drag one and watch the number change in the Shell, then in
+    the sheet, then on the dashboard. That is the whole round trip in about eight seconds, and it is the
+    best thing about the Wokwi route.</div>
+    <div class="cal warn"><b>Keep the Wokwi tab in front</b>
+    The simulator stops the moment its tab is not the one you are looking at. Switch to another tab and
+    the clock freezes; come back and it carries on. If your rows stop arriving, check that first.</div>
+  </div>
+
+  <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
+    <p>In Thonny, open the Files panel (<kbd>View &rarr; Files</kbd>). Right-click each file on your
+    computer&rsquo;s side and choose <kbd>Upload to /</kbd>. Then open
+    <strong>main_dashboard.py</strong> and press <kbd>F5</kbd>.</p>
+    <div class="cal tip"><b>Your old main.py can stay</b>
+    <code>main_dashboard.py</code> is a separate program you start by hand. Nothing you built in the
+    earlier activities is overwritten, and the board still does what it did before when you unplug it
+    and plug it back in.</div>
+  </div>
 
 <svg class="dia wide" viewBox="0 0 780 320" role="img" aria-label="The Shell after running the program. It says connecting to the network, then connected with an IP address, then a line for each reading that was sent. Beside it, a note saying the first line to wait for is the IP address, because everything after it depends on the network being joined.">
   <text x="390" y="26" class="dttl" text-anchor="middle">What the Shell should say</text>
@@ -585,7 +682,7 @@
   <text x="46" y="184" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
   <text x="46" y="214" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
   <text x="46" y="244" class="dmono2">[LilEx5] Sent 12 readings - OK</text>
-  <text x="46" y="272" class="dsub">one line every five seconds, for ever</text>
+  <text x="46" y="272" class="dsub">one line every five seconds, for ever &mdash; in Wokwi it says 3 readings, not 12</text>
 
   <rect x="486" y="52" width="268" height="234" rx="10" class="namebox"/>
   <text x="620" y="84" class="dlbl" text-anchor="middle">Wait for the IP address</text>
@@ -597,10 +694,11 @@
   <text x="620" y="262" class="dsub" text-anchor="middle">It can take twenty seconds.</text>
 </svg>
 
-  <p>The OLED screen carries on working while this happens &mdash; press the buttons and browse the
-  sensor pages exactly as in <a href="activity-8.html">Activity 8</a>. The board is now showing you the
-  readings <em>and</em> sending them at the same time, which is the first time in this module that it
-  has done two useful jobs at once.</p>
+  <p><strong>On the real board</strong>, the OLED screen carries on working while this happens &mdash;
+  press the buttons and browse the sensor pages exactly as in
+  <a href="activity-8.html">Activity 8</a>. The board is now showing you the readings <em>and</em>
+  sending them at the same time, which is the first time in this module that it has done two useful
+  jobs at once. The Wokwi program does not drive the screen; it has one job.</p>
 
   <div class="cal info"><b>Go and look at the sheet</b>
   Open your spreadsheet in a browser tab. The first reading created a header row out of the names in
@@ -637,12 +735,17 @@
 
   <path d="M742 70 L742 204" class="arrow"/>
   <text x="390" y="276" class="dsub" text-anchor="middle">Breathe on the sensor and watch the humidity column jump. That is your breath, in a spreadsheet,</text>
-  <text x="390" y="296" class="dsub" text-anchor="middle">in a file that will still be there next term.</text>
+  <text x="390" y="296" class="dsub" text-anchor="middle">in a file that will still be there next term. In Wokwi, drag the sensor's humidity slider instead.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell printed an IP address</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>New rows are appearing in my sheet while I watch</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>I breathed on the sensor and saw the humidity column change</span></label>
+
+<div class="ckpt" data-gate="run" data-label="Rows are arriving">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; rows are arriving</b>The Shell printed an IP address, and <strong>new rows are appearing in my sheet while I watch</strong>.</span>
+  </label>
+</div>
 </section>
 
 <section id="see">
@@ -682,8 +785,14 @@
   or a factory monitor is built from. Open the dashboard on your phone, on the same WiFi or not: the
   readings are coming from Google, not from your board, so it works from anywhere.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>My dashboard is showing live readings from my own board</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I opened it on a second device and it worked there too</span></label>
+
+<div class="ckpt" data-gate="see" data-label="The dashboard is live">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the dashboard is live</b>My dashboard is showing live readings from my own board &mdash; and when I close it and open it again, the earlier readings are still on the graph.</span>
+  </label>
+</div>
 </section>
 
 <section id="history">
@@ -726,7 +835,6 @@
   and how fast is entirely decided by that one number in <code>config.py</code>. That is the
   exercise.</div>
 
-  <label class="chk"><input type="checkbox" data-p="h1"><span>I closed the dashboard, reopened it, and the earlier readings were still on the graph</span></label>
 </section>
 
 <section id="fix">
@@ -744,6 +852,9 @@
       <tr><td><strong>It worked, and now it has stopped</strong></td><td>Did you edit the Apps Script and forget to deploy again? Saving changes the code; only deploying changes what the address serves.</td></tr>
       <tr><td><code>OSError: -2</code> <strong>or</strong> <code>ECONNABORTED</code></td><td>The board lost the network mid-send. It will usually pick itself up on the next reading. If it does not, stop and run again.</td></tr>
       <tr><td><strong>The program will not stop</strong></td><td>It loops for ever, like every program since <a href="activity-2.html">Activity 2</a>. Thonny&rsquo;s Stop, or <kbd>Ctrl</kbd>+<kbd>C</kbd> in the Shell.</td></tr>
+      <tr><td><strong>Wokwi: the rows just stop</strong></td><td>You looked at another browser tab. The simulator freezes whenever its tab is not the visible one, and starts again when you come back. Nothing is broken.</td></tr>
+      <tr><td><strong>Wokwi: no IP address ever appears</strong></td><td>The board in the project is the plain Pico, not the <strong>Pico&nbsp;W</strong>. Only the W has a radio, and only the starter project has the right one &mdash; start from the link on this page rather than a blank project.</td></tr>
+      <tr><td><code>MemoryError</code> <strong>after a few sends</strong></td><td>Talking to Google securely needs a chunk of memory and a Pico&nbsp;W has little to spare. It usually recovers by itself. If it does not, your teacher has a one-word change that makes the program ask for less.</td></tr>
       <tr><td><strong>The whole board went dead</strong></td><td>You knocked <strong>SW5</strong>. Still the power switch.</td></tr>
     </tbody>
   </table></div>
@@ -760,6 +871,9 @@
     both are lines you have already edited today</li>
     <li>Work out the second number rather than guessing it. A school day is about seven hours</li>
     <li>Nothing about the board, the sensors or the script changes at all</li>
+    <li><strong>Both routes, same exercise, same two numbers.</strong> In Wokwi the first one is at the
+    top of <code>main.py</code> and you press play again; on the real board it is in
+    <code>config.py</code> and you upload it first</li>
   </ul>
 
   <h3>What success looks like</h3>
@@ -772,7 +886,7 @@
   <text x="46" y="118" class="dmono">09:14:00  Sent 12 readings - OK</text>
   <text x="46" y="150" class="dmono">09:15:00  Sent 12 readings - OK</text>
   <text x="46" y="182" class="dmono">09:16:00  Sent 12 readings - OK</text>
-  <text x="46" y="222" class="dsub">one a minute, not twelve a minute</text>
+  <text x="46" y="222" class="dsub">one a minute, not twelve a minute (Wokwi: 3 readings a line)</text>
 
   <rect x="446" y="52" width="308" height="200" rx="10" class="namebox"/>
   <text x="600" y="84" class="dlbl" text-anchor="middle">Two numbers</text>
@@ -807,7 +921,7 @@
     <p>Five things to check before you decide it is broken:</p>
     <ul>
       <li>Is the interval in <strong>milliseconds</strong>? 60 is not a minute; it is sixteen readings a second.</li>
-      <li>Did you <strong>upload the edited config.py to the Pico</strong>? Editing it on your computer changes nothing until it goes across.</li>
+      <li>Did you <strong>upload the edited config.py to the Pico</strong>? Editing it on your computer changes nothing until it goes across. In Wokwi there is nothing to upload &mdash; but you do have to press play again.</li>
       <li>Did you <strong>stop and run the program again</strong>? It reads the settings once, at the start.</li>
       <li>Did you <strong>save the dashboard file</strong> before reopening it in the browser? And did the browser reload rather than show you the old page &mdash; try a hard refresh.</li>
       <li>Does your sheet actually <em>have</em> a day of rows yet? Asking for four hundred when there are nine gives you nine, and that is not a fault.</li>
@@ -839,19 +953,37 @@
     <li><strong>Compare two boards.</strong> Point a second board at the same address, add a name to
     each message, and you have a class weather network. Working out how to tell the two apart in one
     sheet is the real task.</li>
+    <li><strong>Run both routes into one sheet.</strong> If somebody near you is on the other route,
+    point both at the same <code>/exec</code> address. One sheet, twelve columns, and most of them
+    blank on half the rows. Work out from the sheet alone which rows came from which.</li>
     <li><strong>Make the board survive the WiFi going away</strong> &mdash; keep the readings it could
     not send and post them when the network comes back. That one line of thinking is most of what makes
     real IoT hard.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>One reading a minute, and a dashboard that opens on a whole school day.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
-  <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
-  <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> You have built every
+  <p class="lede">Seven questions. No marks, no pressure &mdash; just check it stuck.</p>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
+  <div class="win" id="quizwin" hidden>&#127881; <strong>All seven right.</strong> You have built every
   piece of an IoT system from the sensor to the screen, and you own all of it. That is the end of the
   module.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -881,6 +1013,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "json": {
+          "opts": [
+              "That reading is quietly lost, and the column stays empty",
+              "The script works out what you meant",
+              "The board refuses to send anything"
+          ],
+          "q": "Your board sends a reading named <code>temp</code>. The script is looking for <code>temperature</code>. What happens?",
+          "right": 0,
+          "why": "Named readings only work if the name matches at <em>both</em> ends, exactly. Nothing warns you when it does not &mdash; which is why an empty column is the first thing to check."
+      },
+      "yours": {
+          "opts": [
+              "You build the middle &mdash; your own script, writing to your own sheet",
+              "The board is faster",
+              "The WiFi connection is more reliable"
+          ],
+          "q": "Activities 10 and 11 used somebody else&rsquo;s middle. What is different today?",
+          "right": 0,
+          "why": "Activity 10 borrowed a middle, Activity 12 took it away altogether, and today you build one."
+      }
+  },
   typer: [
     'WIFI_SSID = "ClassroomWiFi"',
     'WIFI_PASS = "letmein123"',
@@ -896,6 +1050,10 @@ window.ACTIVITY = {
       opts: ['So the graphs look better', 'So other students can help you', 'Because the Pico has no way to sign in to a Google account', 'Because Apps Script does not support passwords'],
       right: 2,
       why: 'A browser can sign in; a microcontroller cannot. That is why the long code in the middle of the address has to be treated as a password &mdash; it is the only thing protecting the sheet.' },
+    { q: 'A classmate works in Wokwi and sends three readings; you work on a LilEx5 and send twelve. You both post to the same address. What does the sheet do?',
+      opts: ['Rejects the shorter message', 'Keeps twelve columns and leaves nine of them blank on your classmate&rsquo;s rows', 'Makes a second sheet', 'Averages them together'],
+      right: 1,
+      why: 'The names in the message decide the columns, and nothing is checking that every message carries all of them. A gappy sheet is the normal result of two different senders, not a fault.' },
     { q: 'You post a reading called <code>temprature</code> by mistake. What happens?',
       opts: ['The script rejects it and the Shell prints an error', 'A new column appears with that name, the old one stops filling, and nothing complains', 'The whole sheet is wiped', 'It lands in the temperature column anyway'],
       right: 1,
@@ -915,6 +1073,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

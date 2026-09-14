@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-stand.png" alt="" width="360" height="556" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 0</p>
     <h1>Getting Started</h1>
@@ -75,14 +76,16 @@
       <a href="#errors">When it goes red</a>
       <a href="#checklist">Before Activity 1</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -114,6 +117,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -171,7 +180,6 @@
   <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board seen from above" loading="lazy"><figcaption>The LilEx5 board. The Pico plugs in underneath; everything on top is already wired to it.</figcaption></figure>
   <p>For most activities you will not wire anything at all. The lights, the buttons, the screen and the sensors are already connected. Your job is the code.</p>
   <p>The exceptions are Activity 3 (a servo) and Activity 11 (a soil sensor), which use the 40-pin header. Pin names on that header are not the same as GP numbers &mdash; the activity pages tell you which is which.</p>
-  <label class="chk"><input type="checkbox" data-p="b1"><span>I can point to the Pico on the LilEx5 board</span></label>
 </section>
 
 <section id="language">
@@ -194,6 +202,8 @@
 
   <div class="cal warn"><b>Three things that will catch you out</b>
   A colon at the end of <code>while</code>, <code>if</code> and <code>else</code> lines; indentation &mdash; four spaces, and it has to line up; capital letters matter: <code>Pin</code> is not <code>pin</code>, and <code>True</code> is not <code>true</code>.</div>
+
+<div class="ckpt ask" data-gate="lang" data-label="What MicroPython is"></div>
 </section>
 
 <section id="routes">
@@ -220,7 +230,6 @@
     <p><a href="https://wokwi.com/projects/new/micropython-pi-pico" target="_blank" rel="noopener"><strong>wokwi.com/projects/new/micropython-pi-pico</strong></a></p>
     <p>It should already say <strong>Raspberry Pi Pico</strong>. If you landed on an Arduino project, you took the wrong link. Go back.</p>
     <p>You will see two file tabs: <span class="codeimg inline" data-code="bWFpbi5weQ==" role="img" aria-label="main.py"><span class="codefallback">main.py</span></span> and <code>diagram.json</code>. The board is already on the right-hand side. Nothing is wired yet &mdash; that is correct, because today's program does not touch a single pin.</p>
-    <label class="chk"><input type="checkbox" data-p="w1"><span>I have a new Pico + MicroPython project open</span></label>
 
     <h3>Step 2 &mdash; What you are looking at</h3>
     <p>Six things. You can ignore everything else for the whole module.</p>
@@ -246,7 +255,6 @@
       <text x="60" y="232" class="dsub">4. Serial Monitor &mdash; messages from the Pico appear here</text>
       <text x="60" y="254" class="dsub">5. file tabs (main.py, diagram.json) &nbsp; 6. parts list (+ button)</text>
     </svg>
-    <label class="chk"><input type="checkbox" data-p="w2"><span>I can see main.py, the diagram, the Play button and the Serial Monitor</span></label>
 
     <h3>Step 3 &mdash; Type this. Do not paste it.</h3>
     <p>Five lines. It is the same five lines you will run on the real board later.</p>
@@ -262,11 +270,9 @@
     </table></div>
     <div class="cal warn"><b>Watch these three things</b>
     The colon at the end of the <code>while True:</code> line; the two indented lines must be indented by the same amount; and <code>True</code> has a capital T.</div>
-    <label class="chk"><input type="checkbox" data-p="w3"><span>I typed the five lines myself, with the colon and indentation</span></label>
 
     <h3>Step 4 &mdash; Press play</h3>
     <p>The green triangle at the top of the right-hand panel. The Serial Monitor should start printing <strong>Hello Pico</strong> once a second.</p>
-    <label class="chk"><input type="checkbox" data-p="w4"><span>I can see Hello Pico printing once a second</span></label>
 
     <h3>Step 5 &mdash; Parts, wires, and keeping your work</h3>
     <p>You will not need this until Activity 1, but know where it is.</p>
@@ -276,13 +282,11 @@
       <li><strong>The shortcut:</strong> most activities give you a <code>diagram.json</code>. Open that tab, select everything, paste theirs in. Every part appears, already wired.</li>
       <li><strong>Saving:</strong> Wokwi forgets everything the moment you close the tab, unless you save. Sign in, press <kbd>Ctrl</kbd>+<kbd>S</kbd>, and keep the link somewhere you will find it.</li>
     </ul>
-    <label class="chk"><input type="checkbox" data-p="w5"><span>I know how to add a part, draw a wire, and save a project</span></label>
   </div>
 
   <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
     <h3>Step 1 &mdash; Download Thonny</h3>
     <p>Go to <a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a>. Free. No account, no email address. Install it.</p>
-    <label class="chk"><input type="checkbox" data-p="t1"><span>Thonny is installed and opens</span></label>
 
     <h3>Step 2 &mdash; What you are looking at</h3>
     <svg class="dia" viewBox="0 0 720 300" role="img" aria-label="The Thonny window: the editor at the top, the Shell at the bottom, and the interpreter chooser in the bottom right corner">
@@ -306,21 +310,18 @@
       <text x="392" y="261" class="dsub" text-anchor="end">4. set this here</text>
       <text x="540" y="284" class="dsub" text-anchor="middle">5. file list on the Pico</text>
     </svg>
-    <label class="chk"><input type="checkbox" data-p="t2"><span>I can see the editor, the Shell, the Run button, and the interpreter chooser</span></label>
 
     <h3>Step 3 &mdash; Plug the Pico in, then change one setting</h3>
     <p>Connect the Pico to your computer with the USB cable, and make sure the board's power switch <strong>SW5</strong> is on. Look at the <strong>bottom-right corner</strong> of Thonny and choose <code>MicroPython (Raspberry Pi Pico)</code>.</p>
     <p>When <code>&gt;&gt;&gt;</code> appears in the Shell, Thonny has found your Pico.</p>
     <div class="cal info"><b>If Raspberry Pi Pico is not in the list</b>
     Check the cable. Some USB cables only carry power, and they look identical to the ones that carry data.</div>
-    <label class="chk"><input type="checkbox" data-p="t3"><span>The bottom-right corner says MicroPython (Raspberry Pi Pico)</span></label>
 
     <h3>Step 4 &mdash; Run it, then save it onto the board</h3>
     <p>Same five lines as Wokwi. Type them again &mdash; yes, really.</p>
     <span class="codeimg" data-code="ZnJvbSB0aW1lIGltcG9ydCBzbGVlcAoKd2hpbGUgVHJ1ZToKICAgIHByaW50KCJIZWxsbyBQaWNvIikKICAgIHNsZWVwKDEp" role="img" aria-label="Python code, 5 lines, shown as a picture so you type it yourself"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
     <p>Press <strong>Run</strong>. The Shell fills up, one line a second. Press <strong>Stop</strong> before you unplug anything.</p>
     <p>Save it onto the Pico as <span class="codeimg inline" data-code="bWFpbi5weQ==" role="img" aria-label="main.py"><span class="codefallback">main.py</span></span> with <kbd>Ctrl</kbd>+<kbd>S</kbd>, choosing <strong>Raspberry Pi Pico</strong> as the location.</p>
-    <label class="chk"><input type="checkbox" data-p="t4"><span>The program runs on the real board and is saved as main.py</span></label>
 
     <div class="cal warn"><b>Three safety rules, every time</b>
     Never connect a 5V pin to a GP pin &mdash; they are 3.3&nbsp;V only. Never join a power pin to a GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
@@ -362,6 +363,8 @@
   </table></div>
   <div class="cal note"><b>None of these are your fault</b>
   And none of them break anything. They are the normal texture of writing code.</div>
+
+<div class="ckpt ask" data-gate="err" data-label="Reading an error"></div>
 </section>
 
 <section id="trythis">
@@ -370,26 +373,50 @@
   <div class="step"><div class="idx">1</div><div class="body"><h4>Change the message</h4><p>Replace <strong>Hello Pico</strong> with your own words. Keep the quotes.</p></div></div>
   <div class="step"><div class="idx">2</div><div class="body"><h4>Change the speed</h4><p>Try <code>sleep(0.5)</code> and <code>sleep(2)</code>. The number is seconds.</p></div></div>
   <div class="step"><div class="idx">3</div><div class="body"><h4>Break it on purpose</h4><p>Remove the colon, or change <code>True</code> to <code>true</code>, then fix it. That is how you learn what the error is telling you.</p></div></div>
-  <label class="chk"><input type="checkbox" data-p="try1"><span>I changed the message and the speed</span></label>
-  <label class="chk"><input type="checkbox" data-p="try2"><span>I broke the program on purpose and fixed it</span></label>
+
+<div class="ckpt" data-gate="fix" data-label="Break it and mend it">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; I can break it and mend it</b>I changed the message and the speed, then broke the program on purpose and put it back together.</span>
+  </label>
+</div>
 </section>
 
 <section id="checklist">
   <h2>&#9989; Before you open Activity 1</h2>
   <p>Check these five things. If one is missing, fix it now &mdash; Activity 1 will not make sense without it.</p>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>Wokwi opens, and a new Pico project appears</span></label>
-  <label class="chk"><input type="checkbox" data-p="c2"><span>My five-line program prints in the Serial Monitor</span></label>
-  <label class="chk"><input type="checkbox" data-p="c3"><span>Thonny is installed and opens</span></label>
-  <label class="chk"><input type="checkbox" data-p="c4"><span>The bottom-right corner says MicroPython (Raspberry Pi Pico)</span></label>
-  <label class="chk"><input type="checkbox" data-p="c5"><span>The same program runs on the real board, and is saved as main.py</span></label>
   <div class="win" style="margin-top:18px">&#127881; <strong>Ready.</strong> Next up: <a href="activity-1.html">Activity 1 &mdash; Light Up an LED</a>. Your first variable, your first comment, and one LED that does exactly what you told it to.</div>
+
+<div class="ckpt" data-gate="thonny" data-label="Board ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the real board is ready</b>Thonny is installed, the bottom-right corner says <strong>MicroPython (Raspberry Pi Pico)</strong>, and the same program runs from <code>main.py</code>.</span>
+  </label>
+</div>
+
+<div class="ckpt" data-gate="wokwi" data-label="Wokwi ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; Wokwi is ready</b>A new <strong>Pico + MicroPython</strong> project opens, and my five-line program is printing in the Serial Monitor.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> You are ready for Activity 1.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -419,6 +446,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "err": {
+          "opts": [
+              "Look at that line, and then at the one above it",
+              "Run the program again and hope",
+              "Delete that line"
+          ],
+          "q": "The Shell prints an error and gives you a <strong>line number</strong>. What do you do with it?",
+          "right": 0,
+          "why": "Python stops at the first thing it cannot make sense of &mdash; and a missing bracket or colon on the line <em>above</em> is what usually put it there."
+      },
+      "lang": {
+          "opts": [
+              "Python, trimmed down until it fits on a chip like the Pico",
+              "A different language that only looks like Python",
+              "A program on your computer that sends orders to the Pico"
+          ],
+          "q": "Your program is written in <strong>MicroPython</strong>. What is it?",
+          "right": 0,
+          "why": "Same language and the same rules &mdash; just small enough to live on a few hundred kilobytes."
+      }
+  },
   typer: [
     "from time import sleep",
     "while True:",
@@ -445,6 +494,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

@@ -164,7 +164,10 @@ docs/style-partB.css   diagram and widget families — untouched by the 2026 red
 build_shell.py         (repo root) writes the shared shell on every page. See §4.3.
 docs/code.js           renders code as pictures, guards the clipboard, and carries the
                        staff door (see §9). Every page loads it, index.html included.
-docs/activity.js       progress, tabs, board simulator, blink simulator, button reader,
+docs/robot.js          the progression system: the fourteen robot parts, the progress
+                       model every other file reads, the module rail's ticks and the
+                       confetti. Loaded on every page, ahead of activity.js. See §11.
+docs/activity.js       checkpoints, tabs, board simulator, blink simulator, button reader,
                        decision simulator, logic simulator, screen widget, reading widget,
                        publishing widget, dashboard switch widget, soil widget, typing
                        box, quiz
@@ -194,6 +197,12 @@ Activity 3 build and can be deleted. `PROMPT-activity-12.md` was deleted during 
 build while Activity 12 was still unbuilt, which is exactly what §3 says not to do; the
 Activity 12 build recovered it with `git show 2345bb7^:PROMPT-activity-12.md`. **If a brief
 goes missing, look in git before rewriting it.**
+
+`tools/` holds the build and check scripts: `gates.py` / `checks.py` /
+`apply_gates.py` (the checkpoint spine), `parts.py` (cuts Pip into fourteen —
+the only place the geometry lives), `padpose.py` (pads a full-figure pose onto
+pip-master's 420&times;557 canvas), `cutout.py` (recovers alpha from flattened
+JPEGs), `check.js`, `sweep.js` and `shots.js`.
 
 `docs/img/` holds the real LilEx5 artwork. Use the **unlit** version everywhere a
 student is being asked to make something happen, and the **red-on** version only for
@@ -329,12 +338,22 @@ it existing.
 
 ### 4.4 Reusable classes
 
-`.cal.tip / .warn / .info / .note` (callouts), `.step` (numbered step), `.chk` (progress
-checkbox), `.mini` in `.grid2` (small cards), `.gp` (pin badge), `.act` (activity card),
+`.cal.tip / .warn / .info / .note` (callouts), `.step` (numbered step), `.ckpt` (a
+checkpoint — see §11; `.ckpt.ask` is the question kind, `.ckpt.typed` wraps the typing
+box, `.ckpt.quizgate` the quiz's score strip), `.pip` (a checkpoint in the sticky bar),
+`.partbay` / `.botbay` (the robot), `.mini` in `.grid2` (small cards), `.gp` (pin badge), `.act` (activity card),
 `.phase` (a group heading on the landing page), `.dia` (inline SVG diagram), `.codeimg` (code
 picture), `.tablescroll` (**wrap every table in this** — a bare table overflows at 390 px; the
-pass on 14 Sep wrapped 60-odd tables that had been missed), `.yourprog` (the progress strip on
+pass on 14 Sep wrapped 60-odd tables that had been missed), `.robothall` (the robot on
 `index.html`), `.win` (the celebration box).
+
+**`.gate` is taken.** Part B uses it for the teacher page's staff door, and it carries
+`text-align:center`. The checkpoints were briefly called `.gate` during the rework and
+quietly inherited that centring on every activity page. They are `.ckpt`. Grep both
+parts before naming anything new.
+
+**`.chk` is gone.** The 324 self-assessment checkboxes it styled were removed on
+15 Sep 2026; nothing on the site uses the class any more.
 
 ### 4.5 Type
 
@@ -417,6 +436,9 @@ different left edges, a teal bar for the loop line, a bracket for the block, and
 words in labels beside it. Single identifiers in prose are fine in `<code>`; whole lines
 are not, anywhere.
 
+**5.5 A checkpoint is a milestone, not a nudge.** See §11.2. Six or seven a page, and
+each one at the end of the section it belongs to.
+
 **5.4 The exercise answer never appears on a student page.** Kamil's call, from Activity 6
 on. The student page carries the task, the expected-result diagram and progressive clues
 that stop short of the solution, plus a short callout saying the answer is with the
@@ -452,15 +474,19 @@ Per-page config, before `activity.js`:
 ```html
 <script>
 window.ACTIVITY = {
-  typer: ["line one", "line two"],
-  quiz: [{ q: '...', opts: ['a','b'], right: 0, why: '...' }]
+  checks: { idea: { q: '...', opts: ['a','b'], right: 0, why: '...' } },
+  typer:  ["line one", "line two"],
+  quiz:   [{ q: '...', opts: ['a','b'], right: 0, why: '...' }]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 ```
 
-The board simulator, progress bar and route tabs need no config — `activity.js` finds
-them in the markup if they are there.
+`checks` is keyed by the `data-gate` of each `.ckpt.ask` on the page (§11). The board
+simulator, the sticky bar and the route tabs need no config — `activity.js` finds them
+in the markup if they are there. **`robot.js` must load first**; `build_shell.py` puts
+the tag in, so do not add it by hand.
 
 ## 7. Teaching decisions already made
 
@@ -1248,6 +1274,18 @@ Built on 14 Sep 2026 from a draft page Kamil supplied, plus `LilEx5_Dashboard.ht
 `LilEx5_Dashboard_History.html` and `apps-script-history.gs`, which were already in the repo root.
 **This is now the last activity in the module.**
 
+**`API_URL` ships blank in both dashboards, and must stay that way.** They were
+committed carrying Kamil's own live `/exec` address — a key to his sheet, in a
+public repo, where anyone reading the file could write rows to it. It also
+contradicted Part 4 of the activity, which walks a student through pasting
+*their own* address into that line. Both now hold
+`PASTE-YOUR-EXEC-ADDRESS-HERE`, and `loadData()` checks for a real `https://`
+address before it asks for anything: without one the status bar says so in
+words instead of showing "Offline", which a student reads as a board fault.
+**Removing the address from the files does not un-leak it** — it is in the git
+history, and the deployment it names is still live. Only redeploying the Apps
+Script, which issues a new address, actually closes it. That is Kamil's to do.
+
 - **The one idea is that the middle is yours.** It completes a three-lesson arc that should be said
   out loud when teaching: Activity 10 and 11 *borrowed* somebody else's middle, Activity 12 *removed*
   the middle, Activity 13 *builds* one. The hero, the first section and the last quiz question all
@@ -1267,10 +1305,39 @@ Built on 14 Sep 2026 from a draft page Kamil supplied, plus `LilEx5_Dashboard.ht
   live in front of the class. It is the most transferable thing on the page.
 - **Ships finished code — the one exception to rule 5.1**, and Kamil's call. See the note added under
   §5.1: the *page* still shows every line as a `.codeimg` picture and the copy test passes.
-- **No Wokwi route**, the second activity running. The pack reads the whole LilEx5 sensor set and the
-  simulator has none of it. Unlike Activity 12 there *is* something for a student with no board: the
-  entire cloud half — deploy, sheet, dashboard — needs only a browser, and the student page says so
-  in its own `#kit` section rather than leaving them watching.
+- **There is a Wokwi route, added 14 Sep 2026**, and the page carries the usual `tab-a`/`tab-b` and
+  `tab-c`/`tab-d` route tabs (Part 2 and Part 3). The first draft of this page said there was no Wokwi
+  route; that was wrong and has been reversed. Everything today actually needs is a **Pico W that can
+  reach the internet** and **one sensor**, and Wokwi has both.
+  - **The starter is a fork of Activity 10's project** — same custom weather chip, same Pico W, same
+    `bme280.py`, same `Wokwi-GUEST`. `umqtt_simple.py` is deleted, `urequests.py` is added and
+    `main.py` is replaced. The two files and the build instructions are in
+    **`wokwi/activity-13/`** in the repo root.
+  - **Three readings, not twelve** — temperature, pressure, humidity. **This is a feature and the
+    page treats it as one**: the names in the message decide the columns, so a Wokwi sheet is three
+    columns wide and a LilEx5 sheet twelve, from the same Apps Script. It is a quiz question and a
+    going-further task.
+  - **The four settings sit at the top of `main.py`** in Wokwi instead of in `config.py`, and only the
+    `/exec` address is the student's to change — `Wokwi-GUEST` has no password.
+  - **`urequests.py` is shipped as a project file**, the same library exception as Activity 7's
+    `ssd1306.py` and Activity 11's `umqtt_simple.py`. It is micropython-lib's `requests`, trimmed to
+    `get`/`post`, using the modern `socket`/`ssl`/`json` names (v1.28 dropped the `u` prefixes).
+  - **Apps Script answers a POST with a 302** — it runs `doPost` and *then* redirects to a results
+    page. `urequests.py` follows the redirect so the Shell should say `200`, but a `302` means the row
+    landed. If the TLS handshake for the redirect runs the Pico W out of memory, the one-word fix is
+    `allow_redirects=False`. Both are on `teacher-13.html`.
+
+  **NOT VERIFIED, and this matters.** The project has not been built and the program has never run —
+  the cloud container cannot reach wokwi.com, the same limitation that left Activity 11's Wokwi route
+  unverified. `wokwi/activity-13/HOW-TO-MAKE-THE-PROJECT.md` carries a build checklist and a
+  failure guide. **The student page's Wokwi links say `WOKWI-PROJECT-URL` until somebody makes the
+  project and pastes the real link in** — grep for it; there are two.
+
+- **`LilEx5_AppsScript.js` is not in this repository** and it should be. `apps-script-history.gs` in
+  the root *adds to* it, the teacher file pack *contains* it, and nothing here records what its
+  `doPost` actually expects. The Wokwi `main.py` posts a flat JSON object of name→value, which is what
+  the history endpoint's header mapping implies, but that is **inferred, not read**. Put a copy of the
+  script next to `apps-script-history.gs` and this stops being a guess.
 - **The dashboard's address is set by editing three constants at the top of the HTML file**
   (`API_URL`, `REFRESH_INTERVAL`, `HISTORY_ON_OPEN`). Kamil's original draft described a Settings
   button and a *Google Sheets (live)* data-source picker; **the real file has neither** and the page
@@ -1513,3 +1580,297 @@ build extended it from 9, Activity 12's added `teacher-0.html`, and Activity 13'
    permission on the mount — ask for it, it also unblocks git's `index.lock`. Do **not**
    delete a brief for an activity that is still unbuilt (see §3).
 11. Report what changed and stop. Kamil pushes.
+
+---
+
+## 11. Checkpoints and the robot
+
+**Reworked 15 Sep 2026, Kamil's brief: fewer checks, more obvious, more fun, and one
+progression system across the whole module.**
+
+### 11.1 What was wrong
+
+Every activity carried between seventeen and thirty-eight `.chk` checkboxes — 324 of
+them — and about half were `I can say why…` self-assessments. A student ticks one of
+those in half a second whether or not they can. They diluted the handful of checks that
+mattered, and nothing was ever made of finishing them.
+
+### 11.2 The spine
+
+Six to eight **checkpoints** per activity, in the same order every time, each one at the
+end of the section it belongs to. Two kinds:
+
+| Kind | Markup | For |
+|---|---|---|
+| Question | `<div class="ckpt ask" data-gate="ID" data-label="...">` | an idea the page can actually test. Text comes from `window.ACTIVITY.checks.ID`. Replaces the old *I can say why…* boxes. |
+| Tick | `<div class="ckpt" data-gate="ID" data-label="...">` with a `.gtick` label | something only the student can see: the circuit is wired, the LED lit, the exercise works |
+
+Two more clear themselves: the **typing box**, wrapped in `.ckpt.typed`, which opens when
+every line has been typed correctly, and the **quiz**, which opens when every question is
+right. That is the whole set — there is no third mechanism.
+
+The usual order down a page is: *the new idea* (question) → *the classic trap* (question)
+→ *circuit wired* (tick) → *program typed* (typer) → *it works* (tick) → *exercise done*
+(tick) → *quiz*. Activities 0, 3, 9, 12 and 13 vary, because they are shaped differently.
+Activity 3 had no checks at all before and no progress bar; it has both now.
+
+**Do not add checkpoints casually.** The point of the rework was that thirty were worth
+less than seven. If a new one is not a milestone a student would tell somebody about,
+it does not earn a card.
+
+The spine lives in `tools/` next to the repo as `gates.py` (placement) and `checks.py`
+(question text), applied by `apply_gates.py`. That script is idempotent and can be rerun;
+it is how all fourteen pages were converted in one pass.
+
+### 11.3 Pip
+
+The module builds a robot called **Pip** — the mascot from Kamil's ESP32 decks,
+generated as a set of poses and kept in `docs/img/pip-*.png`.
+
+He is a **picture, not a drawing**. Three states:
+
+| Module progress | Artwork | Looks like |
+|---|---|---|
+| nothing cleared | `pip-off.png` | solid, eyes dark, a slow standby breath. Not washed out — he is asleep, not a blueprint |
+| part way | `pip-master.png` washed out, with earned parts laid over it | a model kit coming together |
+| 14 of 14 | `pip-glowing.png` | arms out, every light on |
+
+All three full-figure poses are padded to `pip-master.png`'s exact
+420&times;557 box, so swapping between them never moves the page.
+`pip-glowing.png` arrived 420&times;508 — arms out is wider and shorter — and
+caused a jump at the last checkpoint until it was padded on 14 Sep 2026.
+**Pad any new full-figure pose the same way** or the layout will jump:
+`python3 tools/padpose.py pip-<pose>.png` centres it and stands it on the same
+floor row. Pad, never scale — a scaled pose is a different size from the parts
+laid over the ghost. The tool is idempotent and `tools/check.js` asserts both
+`pip-off` and `pip-glowing` are 420&times;557.
+
+**Pip comes apart into fourteen parts, one per activity** (`docs/img/parts/`,
+~330&nbsp;KB for the set, plus `parts.json` holding each part's box as a
+percentage of the master). `tools/parts.py` cuts them out of `pip-master.png`
+and is the only place the geometry lives. Every pixel belongs to exactly one
+part: the regions are tried in order and the first match wins, so the eyes, the
+smile and the chest grille are listed before the head and the shell that
+surround them, and the body shell is the catch-all at the end. That ordering is
+what guarantees the parts tile with no holes.
+
+**A cut through a curve leaves fragments**, and `parts.py` hands each one to
+whichever part surrounds it so every part comes out a single connected piece.
+The threshold for "fragment" is **2% of the part's own body** (with a 30&nbsp;px
+floor), not the flat 30&nbsp;px it was until 14 Sep 2026: the flat number was
+tuned on two-pixel specks and let the real ones through — each arm came away
+carrying two 38-70&nbsp;px traces of the belly outline, from the rows where
+`torso_mask` interpolates across the hands. They were alpha 1-12 of 255, so
+nothing on the site looked wrong; what they did was stretch the two arm boxes
+32 rows further down than the arms actually reach. The eyes, genuinely two
+halves of one part at 50% each, are nowhere near the threshold. The search ring
+also grows (7, 11, 15&nbsp;px) until it reaches another part, so a fragment
+sitting a pixel or two clear of everything is still placed; one whose only
+neighbour is its own part is already where it belongs and is left alone — the
+left ear pod keeps a 3&nbsp;px speck on that rule.
+
+**Every PNG in the repo carries a `caBX` chunk** — 5,758 bytes of C2PA
+content credentials, the provenance marker the artwork was generated with.
+`pip-master.png` has one and the first cut copied it into all fourteen parts.
+Pillow 12 does not pass unknown private chunks through, so `parts.py` drops
+them; they come back when the file is written to disk, because the tooling
+that delivers a generated image stamps one on. **Checked on 14 Sep 2026:** the
+files in the clone are pixel-for-pixel what `parts.py` produced, and 5,770
+bytes larger each. So do not count on the chunk being absent, and do not treat
+a size change of exactly 5,770 bytes as a content change. It costs about
+152&nbsp;KB across the 27 images, which is the difference between the figures
+quoted here and what `du` reports.
+
+The cuts land on real joints, **measured off the artwork, not guessed**: the neck
+at its narrowest row (316), the hips where the body actually comes apart, the ear
+pods over the rows they actually occupy, and the arms as whatever falls outside
+the torso.
+
+Three of those are traced at run time rather than written down, so replacing the
+artwork re-measures them: `torso_mask()`, `legs_mask()` and `pod_band()`. Each
+one replaced a hand-written number that was *nearly* right, and each was caught
+by looking at a part on its own rather than at a finished Pip:
+
+- **`legs_mask()`** — the hips used to be `box(0, 462, 420, 557)`, on the
+  reasoning that 462 is the last row before the outline splits in two. It is,
+  which is exactly why the box was wrong: row 462 is still solid belly, so the
+  legs came away joined by a bar of body shell, with the tongue of belly that
+  hangs between them for a couple of rows below the split. Now the split is
+  found (row 463), everything under it is labelled, and only the pieces that
+  reach the floor are legs. The tongue falls through to the shell.
+- **`pod_band()`** — `DOME` is a good boundary where there is a pod to bound,
+  and the crease is within a few pixels of it all the way down. Above and below
+  the pods, though, `DOME` narrows faster than the head does, so
+  `outside(DOME)` was true of plain head shell — and the ear ellipses are 140
+  rows tall while the pods are 105. Each ear came away with a broad crescent of
+  dome. The pods are the only thing that makes the head's silhouette bulge, so
+  the band is found by fitting an ellipse to the half-width per row, dropping
+  the rows that sit outside the fit, and refitting until it settles: rows
+  147-251. The ear regions are clamped to it.
+The torso is traced row by row rather than approximated — in most rows the arms
+are their own runs of opaque pixels and the torso is simply the run on the centre
+line; across the thirty-odd rows where the hands overlap the chest, the edges are
+interpolated from the clean rows either side. Two guessed ellipses were tried
+first and left a crescent of belly riding on each arm, because no ellipse fits
+both the narrow chest and the wide hips.
+
+`tools/parts.py` ends by stacking all fourteen back up and asserting they
+reproduce `pip-master.png` pixel for pixel. **Keep that assertion.** It is the
+only thing standing between a tweaked region and a seam or a hole on the site.
+
+Part per activity, chosen so the part matches what the activity teaches and the
+assembly order makes sense: 0 legs and boots, 1 chest lamp, 2 body shell,
+3 servo arm, 4 button arm, 5 head dome, 6 smile, 7 eyes, 8 left ear pod,
+9 right ear pod, 10 left aerial, 11 right aerial, 12 radio tip, 13 data beacon.
+
+**How it is wired** (`docs/robot.js` + the `.pipfig` block in
+`style-partA.css`, 14 Sep 2026). `.pipfig` is three stacked layers:
+
+| Layer | Building | At zero | At 14 of 14 |
+|---|---|---|---|
+| `.pipghost` | `pip-master.png`, washed out — what is still missing | `pip-off.png`, **not** washed | hidden |
+| `.pipparts` > `.pippart` &times;14 | earned parts, over the ghost | all transparent | hidden |
+| `.pipfull` | hidden | `pip-off.png` | `pip-glowing.png` |
+
+Each `.pippart` is absolutely positioned from its `parts.json` box **in per
+cent**, so the whole thing scales with whatever width the host gives Pip — 132
+px in the rail, 190 px in the part bay, 180 px in the hall — and every part
+lands back exactly where it was cut from.
+
+**An activity in progress shows its part faintly materialising** (Kamil's call,
+14 Sep 2026), desaturated and at `0.10 + 0.34 × fraction` opacity, so a student
+who clears checkpoint 3 of 7 can see that it did something. It never reaches
+half, so a half-done part cannot be mistaken for a fitted one; the jump to
+full opacity is the reward. A part landing gets the `pipland` flash, the figure
+gets the existing `justfitted` pop and the bay gets its `partbay.pop`
+shockwave, all inside `prefers-reduced-motion: no-preference`.
+
+**`robot.js` carries its own copy of the fourteen boxes** in `var PARTS`. That
+is deliberate: the site is opened from `file://` at least as often as from
+Pages — `tools/check.js` drives it that way — and `fetch()` of a local JSON is
+blocked there, which would leave Pip in pieces exactly where he is hardest to
+debug. So the copy is checked instead of avoided: `tools/check.js` diffs
+`PARTS` against `parts.json` on every run and fails on any drift. **Re-run
+`tools/parts.py`, then paste the new `parts.json` into `robot.js`.**
+
+Every checkpoint anywhere still moves progress — `moduleFrac()` in `robot.js` is
+the sum of each activity's fraction over fourteen — so a single tick on any page
+does something.
+
+**Activities 5 and 7 were left alone.** Swapping them so the head dome arrives
+before the eyes was considered on 14 Sep 2026 and rejected: the eyes and smile
+are cut as their own regions with the dome as the box behind them, so eyes at 5
+would float in empty space for two activities, and it would hand *Words on a
+Screen* the dome instead of the eyes. The face is not blank in the meantime —
+the ghost shows it faintly, which reads as unfinished rather than featureless.
+
+He appears in the sticky bar, in the `.partbay` at the foot of each activity,
+in the module rail on all thirty-two pages, and full size on `index.html`.
+
+**An earlier version built him out of fourteen hand-drawn SVG parts.** It is
+gone: Kamil's call that a real rendered mascot beat a vector one. Do not rebuild
+the vector robot. Cutting the render into parts, above, is how the per-part
+assembly came back without it.
+
+**His class is `.pipfig`, not `.pip`.** `.pip` is the numbered checkpoint in the
+sticky bar and it is 29&nbsp;px square; the collision rendered him as a sliver.
+That is the second name collision in this system — see `.gate` in §11.2. Grep
+**both** CSS parts before naming anything new. A third near-miss: `robot.js`'s
+`repaint()` has a local `art` for the `.botart` host, so the pose helpers are
+called `pose()` and `poseAlt()`. The part layers are `.pipparts` and `.pippart`
+— checked against both CSS parts before they were named, and deliberately not
+`.part*`, which is already the bay (`.partbay`, `.partart`, `.partside`,
+`.partname`, `.partlist`).
+
+**`activity.js` used to look for an `svg`.** `paintBay()` and the sticky-bar
+repaint both did `querySelector('svg')`, left over from the vector robot; since
+Pip became a picture that returned `null` and `setFrac()` bailed out, so the
+part bay and the sticky bar only ever updated on a full page repaint. Both now
+ask for `.pipfig`. If a Pip somewhere stops responding to checkpoints, this is
+the first thing to check.
+
+**Poses on hand** (`docs/img/`): `master` (the build), `off` (zero), `glowing`
+(the finish), `stand`, `cheer`, `wave`, `thumbsup`, `thinking`, `magnifier`,
+`led`, `servo`, `oled`, `buttons`, `farming`, `sitting`.
+
+`master`, `off` and `glowing` drive the assembly above. **The other twelve were
+placed in page heroes on 14 Sep 2026** as `.heropose` — one per page, matched to
+what the page teaches:
+
+| Page | Pose | | Page | Pose |
+|---|---|---|---|---|
+| Activity 0 Getting Started | `stand` | | Activity 8 Sensors and Numbers | `magnifier` |
+| Activity 1 Light Up an LED | `led` | | Activity 9 Soil Moisture | `farming` |
+| Activity 2 Make an LED Blink | `thumbsup` | | Activity 11 Control from Anywhere | `wave` |
+| Activity 3 Digital Output &amp; Servo | `servo` | | Activity 13 Your Own Live Dashboard | `cheer` |
+| Activity 4 Digital Input | `buttons` | | Pin reference | `sitting` |
+| Activity 5 Making Decisions | `thinking` | | Activity 6 And, Or, Not | `buttons` &dagger; |
+| Activity 7 Words on a Screen | `oled` | | Activity 10 Internet and Data | `magnifier` &dagger; |
+| | | | Activity 12 Sending Messages by Radio | `thumbsup` &dagger; |
+
+**&dagger; Three poses are used twice.** Activities 6, 10 and 12 had nothing of
+their own and were left bare at first; Kamil's call on 14 Sep 2026 was to reuse
+rather than leave them empty. The three reuses are not arbitrary — Activity 6 is
+the two-switch activity, so it gets Activity 4's `buttons`; Activity 10 is a
+BME280 reading on its way to the internet, so it gets Activity 8's `magnifier`;
+Activity 12 gets Activity 2's `thumbsup` for a message that got through.
+
+**No two adjacent activities share a pose**, which is the repeat a student would
+actually notice. The closest are 4 and 6, and 8 and 10, two apart in each case.
+That is what ruled out the otherwise obvious choices: `thinking` on 6 (next to 5)
+and `wave` on 12 (next to 11). If three more poses are ever rendered, these are
+the three to replace.
+
+**`teacher.html` cannot have one.** Its hero sits inside the staff door's
+`display:none` wrapper, so the pose would load and never be seen. `pip-sitting`
+went to `pinout.html` instead.
+
+**The twelve were re-encoded to 360&nbsp;px wide and 256 colours**, 5.7&nbsp;MB
+down to 441&nbsp;KB as written (about 510&nbsp;KB on disk once the `caBX`
+chunk below is added back), which took `docs/img/` from 9.6&nbsp;MB to
+4.8&nbsp;MB.
+They are shown at most 176&nbsp;px wide, so the full-size files were about
+thirty times more pixels than any screen asks for, on a site that runs in
+classrooms. **The originals are outside the repo**, in
+`STEM LAB/pip-pictures` — re-encode from there, never from `docs/img/`.
+
+`tools/cutout.py` recovers alpha from checkerboard-flattened JPEGs. It is not
+needed for the current set, which arrived as proper PNGs — keep it in case a
+later batch comes back flattened, and ask for PNG first.
+
+### 11.4 Where progress lives
+
+Still one `localStorage` entry per page, and still keyed the same way, but the shape
+changed on 15 Sep 2026:
+
+```
+lilex5v2:activity-4.html  ->  { g:{build:1,run:0,…}, gt:7, q:{0:1,1:1}, route:'a' }
+
+  g   gate id -> 1 when cleared
+  gt  how many checkpoints the page has, so other pages can say "3 of 7"
+  q   quiz question index -> 1 when answered right   (NEW — quiz answers used
+      to be forgotten on reload, which is why there was nothing to build on)
+  route  which route tab the student picked
+```
+
+**`robot.js` owns this.** It reads and writes the entries, paints the rail, the landing
+page and every robot; `activity.js` only says when a checkpoint opens. The rail-ticking
+code used to be at the bottom of `code.js` and was moved — `code.js` is back to being
+about code pictures and the staff door.
+
+The rail and the landing cards now show **three** states, not two: untouched, `going`
+(amber — something cleared but not all of it), and `done` (green — the part is on).
+Before the rework, one tick anywhere made an activity "started" for ever.
+
+### 11.5 Checking it
+
+`tools/check.js` drives a real browser through every checkpoint on all fourteen pages —
+answering every question, typing every line, taking every quiz — and asserts the part is
+earned and survives a reload. It also asserts, per activity, that the part image
+loaded and is boxed exactly where `parts.json` says, that the *next* part is
+still invisible, and (on activity 0) that a part one checkpoint in is visible but
+under half opacity. Before the browser starts it diffs `robot.js`'s `PARTS`
+table against `parts.json`; at the end it checks `pip-glowing.png` is the
+master's 420&times;557. `tools/sweep.js` loads all thirty-one pages at 390 / 900 /
+1400 px in both themes looking for JS errors and horizontal overflow. Run both before
+committing anything that touches this system.

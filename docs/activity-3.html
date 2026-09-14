@@ -15,6 +15,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "pin": {
+          "opts": [
+              "The GP number",
+              "The physical pin number counted along the edge",
+              "The H1 connector number"
+          ],
+          "q": "One hole on this board has three different numbers attached to it. Which number goes in your code?",
+          "right": 0,
+          "why": "Code only ever speaks GP. The other two are for your fingers when you are working out where to plug something in."
+      },
+      "pwm": {
+          "opts": [
+              "How long each pulse stays on",
+              "How many pulses arrive each second",
+              "How much voltage the pulses carry"
+          ],
+          "q": "The Pico sends the servo fifty pulses a second whatever position you ask for. So what actually changes when the arm moves?",
+          "right": 0,
+          "why": "The rate stays at fifty a second. Only the <em>width</em> of each pulse changes, and the servo reads that width as an angle."
+      }
+  },
   typer: [
     "servo = PWM(Pin(28))",
     "servo.freq(50)",
@@ -80,6 +102,7 @@ window.ACTIVITY = {
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-servo.png" alt="" width="360" height="600" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 3</p>
     <h1>Digital Output &amp; Servo</h1>
@@ -105,9 +128,19 @@ window.ACTIVITY = {
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</div>
 
 <div class="shell">
 <aside class="rail" aria-label="Module map">
@@ -136,6 +169,12 @@ window.ACTIVITY = {
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -202,6 +241,8 @@ window.ACTIVITY = {
   <p>The Pico generates these pulses at 50 per second (50&thinsp;Hz). Your code sets the pulse length
   by calling <span class="codeimg inline" data-code="c2Vydm8uZnJlcSg1MCk=" role="img" aria-label="servo.freq(50)"><span class="codefallback">Code is shown as a picture.</span></span> &mdash; once at the start &mdash; and then calling <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobGVmdCk=" role="img" aria-label="servo.duty_u16(left)"><span class="codefallback">Code is shown as a picture.</span></span>, <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYobWlkZGxlKQ==" role="img" aria-label="servo.duty_u16(middle)"><span class="codefallback">Code is shown as a picture.</span></span>, or
   <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span> each time you want to change position.</p>
+
+<div class="ckpt ask" data-gate="pwm" data-label="How the arm is told where to go"></div>
 </section>
 
 <!-- ═══════════════════════════════ THE THREE NUMBERS ═══════════════════════════════ -->
@@ -264,6 +305,8 @@ window.ACTIVITY = {
 
   <p>You will meet this same situation in every activity that uses the header. The
   <a href="pinout.html">Pin reference page</a> has the full translation table.</p>
+
+<div class="ckpt ask" data-gate="pin" data-label="Three names, one hole"></div>
 </section>
 
 <!-- ═══════════════════════════════ BUILD ═══════════════════════════════ -->
@@ -674,6 +717,14 @@ window.ACTIVITY = {
     <p class="note">Watch the row. Pin&nbsp;1 (3V3) sits <em>below</em> pin&nbsp;2 (+5V), not beside it,
     so a wire one row out lands on 3.3&thinsp;V and the servo only twitches.</p>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>The servo&rsquo;s three wires are in: signal to the pin my route&rsquo;s table gives, red to power, brown or black to GND. Wokwi and the LilEx5 use <strong>different</strong> numbers &mdash; I used the ones for my route.</span>
+  </label>
+</div>
 </section>
 
 <!-- ═══════════════════════════════ WRITE THE PROGRAM ═══════════════════════════════ -->
@@ -685,6 +736,14 @@ window.ACTIVITY = {
   <span class="codeimg" data-code="ZnJvbSBtYWNoaW5lIGltcG9ydCBQaW4sIFBXTQpmcm9tIHRpbWUgaW1wb3J0IHNsZWVwCgpzZXJ2byA9IFBXTShQaW4oMjgpKSAgICAgICAjIHRoZSBzZXJ2byBpcyBvbiBHUDI4CnNlcnZvLmZyZXEoNTApICAgICAgICAgICAgICMgc2Vydm9zIHdhbnQgNTAgcHVsc2VzIGEgc2Vjb25kCgpsZWZ0ICAgPSAxNjM4ICAgICAgICAgICAgICAjIGxlZnQgcG9zaXRpb24KbWlkZGxlID0gNDkxNSAgICAgICAgICAgICAgIyBtaWRkbGUgcG9zaXRpb24KcmlnaHQgID0gODE1MCAgICAgICAgICAgICAgIyByaWdodCBwb3NpdGlvbgoKd2hpbGUgVHJ1ZToKICAgIHNlcnZvLmR1dHlfdTE2KGxlZnQpICAgIyBtb3ZlIGxlZnQKICAgIHByaW50KCJsZWZ0IikgICAgICAgICAgIyBzaG93IHBvc2l0aW9uIGluIFNoZWxsCiAgICBzbGVlcCgxKSAgICAgICAgICAgICAgICMgaG9sZCBmb3IgMSBzZWNvbmQKCiAgICBzZXJ2by5kdXR5X3UxNihtaWRkbGUpICMgbW92ZSB0byBtaWRkbGUKICAgIHByaW50KCJtaWRkbGUiKQogICAgc2xlZXAoMSkKCiAgICBzZXJ2by5kdXR5X3UxNihyaWdodCkgICMgbW92ZSByaWdodAogICAgcHJpbnQoInJpZ2h0IikKICAgIHNsZWVwKDEp" role="img" aria-label="Full Activity 3 program: from machine import Pin, PWM; from time import sleep; servo = PWM(Pin(28)); servo.freq(50); left=1638; middle=4915; right=8150; while True move left middle right"><span class="codefallback">Code is shown as a picture &mdash; turn on JavaScript to see it.</span></span>
 
   <p class="note">The code is shown as a picture so that you practise typing it yourself.</p>
+
+<div class="ckpt" data-gate="code" data-label="Program typed">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; typed, not pasted</b>I typed the program myself, into Wokwi or Thonny. Every character of it.</span>
+  </label>
+</div>
 </section>
 
 <!-- ═══════════════════════════════ LINE BY LINE ═══════════════════════════════ -->
@@ -731,6 +790,14 @@ window.ACTIVITY = {
     Watch carefully &mdash; it moves three times before returning to the same spot.
     If it never moves at all, check the wiring (especially whether the red wire is in H1 pin&nbsp;2, the top row, and not pin&nbsp;1 below it).
   </div>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The arm swings to left, middle and right, waits long enough at each one to see it, and the Shell says where it is going.</span>
+  </label>
+</div>
 </section>
 
 <!-- ═══════════════════════════════ INTRODUCING PRINT ═══════════════════════════════ -->
@@ -831,6 +898,14 @@ window.ACTIVITY = {
     <span class="codeimg inline" data-code="c2Vydm8uZHV0eV91MTYocmlnaHQp" role="img" aria-label="servo.duty_u16(right)"><span class="codefallback">Code is shown as a picture.</span></span>, <code>sleep()</code>, and <code>print()</code>. Everything you need was introduced
     in Activity 2 or earlier in this activity.
   </div>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>My signal arm moves to the position the program asks for, holds there long enough to read, and keeps its cycle going.</span>
+  </label>
+</div>
 </section>
 
 <!-- ═══════════════════════════════ GOING FURTHER ═══════════════════════════════ -->
@@ -850,10 +925,17 @@ window.ACTIVITY = {
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> You have moved
   something for the first time &mdash; and you know exactly where it went. Activity 4 builds on this
   to add a button that controls the arm directly.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <!-- ═══════════════════════════════ WORDS TO REMEMBER ═══════════════════════════════ -->
@@ -913,6 +995,7 @@ window.ACTIVITY = {
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 <script src="code.js"></script>
 </body>

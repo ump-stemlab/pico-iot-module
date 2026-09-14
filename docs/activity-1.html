@@ -63,6 +63,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-led.png" alt="" width="360" height="559" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 1</p>
     <h1>Light Up an LED</h1>
@@ -81,14 +82,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -120,6 +123,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -237,7 +246,6 @@
     <div class="sim-out" id="simout">Nothing running yet. Pick a pin and press Run.</div>
   </div>
 
-  <label class="chk"><input type="checkbox" data-p="p1"><span>I found the pin number that lights the <strong>red</strong> LED</span></label>
 
   <details>
     <summary>&#129300; Why does the red LED get GP11 and not GP14?</summary>
@@ -253,6 +261,8 @@
   <div class="cal info"><b>Board labels are not pin numbers</b>
   The picture printed on the board uses its own labels, like <code>SW1(11)</code> or <code>SW4(37)</code>.
   Those are positions on the connector. In code you always use the <strong>GP</strong> number.</div>
+
+<div class="ckpt ask" data-gate="pins" data-label="Why the pin number matters"></div>
 </section>
 
 <section id="build">
@@ -270,7 +280,6 @@
       <h4>Start a new project</h4>
       <p>Go to <a href="https://wokwi.com" target="_blank" rel="noopener">wokwi.com</a>, click
       <strong>New Project</strong>, then choose <strong>Raspberry Pi Pico</strong> and <strong>MicroPython</strong>.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>I have a new Pico + MicroPython project open</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -300,7 +309,6 @@
   <text x="60" y="232" class="dsub">Serial Monitor &mdash; messages from the Pico appear here</text>
 </svg>
 
-      <label class="chk"><input type="checkbox" data-p="a2"><span>I can see main.py, the diagram, and the Play button</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -334,7 +342,6 @@
   <text x="412" y="132" class="dsub">that gets the power.</text>
 </svg>
 
-      <label class="chk"><input type="checkbox" data-p="a3"><span>Red LED and 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">4</div><div class="body">
@@ -550,8 +557,6 @@
 </svg>
       <p><strong>In words:</strong> the LED's <strong>long leg (A)</strong> goes through the resistor to
       <strong>GP11</strong>. The <strong>short leg (C)</strong> goes to <strong>GND</strong>.</p>
-      <label class="chk"><input type="checkbox" data-p="a4"><span>Long leg &rarr; resistor &rarr; GP11</span></label>
-      <label class="chk"><input type="checkbox" data-p="a5"><span>Short leg &rarr; GND</span></label>
       <details>
         <summary>&#9889; Why the resistor?</summary>
         <p>On a real board, too much electricity rushes through the LED and burns it out in about a
@@ -574,7 +579,6 @@
       <p>Connect the Pico to your computer with the USB cable, and make sure the board's power switch
       <strong>SW5</strong> is on. A small light on the Pico turns on. Nothing else happens yet &mdash;
       that is normal.</p>
-      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -603,7 +607,6 @@
   <text x="392" y="261" class="dsub" text-anchor="end">&#9313; set this here</text>
 </svg>
 
-      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -611,13 +614,20 @@
       <p><strong>There is nothing to wire.</strong> The three LEDs are already joined to pins 11, 12 and
       13 inside the LilEx5 board &mdash; the same circuit you just built in Wokwi, made permanent in copper.</p>
       <figure class="board"><img src="img/lilex5-board.png" alt="The LilEx5 board, with the LEDs already wired inside it" loading="lazy"><figcaption>The circuit you built in Wokwi is already here, printed in copper inside the board. Nothing to plug in.</figcaption></figure>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>Understood &mdash; go straight to the code</span></label>
     </div></div>
 
     <div class="cal warn"><b>Three safety rules</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Wokwi: the LED&rsquo;s long leg goes through the 330&nbsp;&Omega; resistor to <span class="gp">11</span>, and the short leg to GND. Real board: the power light is on and the Shell shows <code>&gt;&gt;&gt;</code>.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -639,13 +649,16 @@
   <h3>Type it here first</h3>
   <p>Practise the three working lines below. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="led = Pin(11, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="led.on()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Three boxes, three lines. Take your time.</p>
   </div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -710,10 +723,14 @@
   <figure class="board"><img src="img/lilex5-board-red-on.png" alt="The LilEx5 board with the red LED lit" loading="lazy"><figcaption>LED1 glowing. That is your three lines of code doing their job.</figcaption></figure>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The <strong>red</strong> LED is glowing &mdash; on the board, or in the Wokwi diagram</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The yellow and green LEDs stay dark</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>The LED does <strong>not</strong> switch off again &mdash; my program never told it to</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>Nothing is beeping</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The red LED is glowing and <em>stays</em> glowing. The yellow and green stay dark, and nothing is beeping.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -758,9 +775,6 @@
 </svg>
 
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>All three LEDs are glowing at once</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>They stay on &mdash; they do not flicker or switch off</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>I used a comment to explain what my program does</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
     <p>You already know how to switch on <em>one</em> LED. Do not throw that away &mdash; you are going
@@ -831,15 +845,30 @@
     <li>What do you think <code>Pin(14, Pin.OUT)</code> would do? Try it &mdash; but keep your finger
     near the stop button.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>All three LEDs are on at once, and they stay on.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> You have got the idea:
   a pin is a number, the number has to match the board, and every LED needs its own name. Next up &mdash;
   Activity 2, where you make it blink.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -868,6 +897,18 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "pins": {
+          "opts": [
+              "That is where the board&rsquo;s own wiring joins each LED to the Pico",
+              "Because MicroPython keeps those three numbers for lights",
+              "Because they are the eleventh, twelfth and thirteenth parts on the board"
+          ],
+          "q": "The three LEDs are on <span class=\"gp\">11</span>, <span class=\"gp\">12</span> and <span class=\"gp\">13</span>. Why must your program use those exact numbers?",
+          "right": 0,
+          "why": "A GP number is a <em>wire</em>, not a name. Nothing is special about GP11 until the board joins it to LED1."
+      }
+  },
   typer: [
     "from machine import Pin",
     "led = Pin(11, Pin.OUT)",
@@ -892,6 +933,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

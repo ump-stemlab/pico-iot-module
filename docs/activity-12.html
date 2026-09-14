@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-thumbsup.png" alt="" width="360" height="478" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 12</p>
     <h1>Sending Messages by Radio</h1>
@@ -78,14 +79,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -117,6 +120,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -256,8 +265,8 @@
   <strong>no address</strong> today: everybody on your channel gets everything. The server you have just
   thrown away was doing all three of those jobs for you.</div>
 
-  <label class="chk"><input type="checkbox" data-p="n1"><span>I can name three things Activity 11 needed that today does not</span></label>
-  <label class="chk"><input type="checkbox" data-p="n2"><span>I can say one thing the server was doing for us that nothing does today</span></label>
+
+<div class="ckpt ask" data-gate="noserver" data-label="Nobody in the middle"></div>
 </section>
 
 <section id="kit">
@@ -288,8 +297,14 @@
       plastic.</p></div>
   </div>
 
-  <label class="chk"><input type="checkbox" data-p="k1"><span>My antenna is screwed on, and so is the antenna of the person next to me</span></label>
-  <label class="chk"><input type="checkbox" data-p="k2"><span>My board is plugged in and Thonny says Raspberry Pi Pico at the bottom right</span></label>
+
+<div class="ckpt" data-gate="kit" data-label="Kit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the kit is ready</b>My antenna is screwed on &mdash; and so is the antenna of the person next to me &mdash; and Thonny says <strong>Raspberry Pi Pico</strong> in the bottom-right corner.</span>
+  </label>
+</div>
 </section>
 
 <section id="uart">
@@ -350,8 +365,6 @@
   in the signal says how fast it is going. Set one end to a different number and you get letters, but
   the wrong ones &mdash; which is exactly what strange symbols in the Shell mean.</div>
 
-  <label class="chk"><input type="checkbox" data-p="u1"><span>I can say what the two UART wires do, and why they cross over</span></label>
-  <label class="chk"><input type="checkbox" data-p="u2"><span>I know which two GP numbers the radio is on, without looking them up again</span></label>
 </section>
 
 <section id="mode">
@@ -398,8 +411,8 @@
   &mdash; and there is <em>no error message</em> to tell you why. The Shell just stays empty and you
   think the radio is broken.</div>
 
-  <label class="chk"><input type="checkbox" data-p="m1"><span>I know what 1,&nbsp;1,&nbsp;1 does, and why that is the state my board wakes up in</span></label>
-  <label class="chk"><input type="checkbox" data-p="m2"><span>I know which combination is the normal one, and which one is for changing settings</span></label>
+
+<div class="ckpt ask" data-gate="mode" data-label="The three mode pins"></div>
 </section>
 
 <section id="listen">
@@ -416,7 +429,9 @@
 
   <h3>Type it here first</h3>
   <p>Five lines worth getting into your fingers before you open Thonny.</p>
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import UART, Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="m0 = Pin(20, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="radio = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -424,8 +439,9 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="radio.write(message.encode())" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 3 is the long one &mdash; it is the only line in the whole activity that mentions both radio wires at once, and the two names inside it are the wrong way round more often than not.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
-  <label class="chk"><input type="checkbox" data-p="l1"><span>I typed the program myself into Thonny and saved it to the Pico as listen.py</span></label>
 
   <h3>&#128269; Only three things here are new</h3>
   <div class="tablescroll"><table class="codetable">
@@ -525,9 +541,14 @@
   <text x="390" y="352" class="dsub" text-anchor="middle">The sender is told nothing. It does not know how many heard it, or whether anybody did.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="l2"><span>The first line appeared, and then the Shell went quiet</span></label>
-  <label class="chk"><input type="checkbox" data-p="l3"><span>I caught my instructor&rsquo;s broadcast</span></label>
-  <label class="chk"><input type="checkbox" data-p="l4"><span>I looked at somebody else&rsquo;s screen and saw the same words at the same moment</span></label>
+
+<div class="ckpt" data-gate="listen" data-label="I caught a broadcast">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; I caught a broadcast</b><code>listen.py</code> is saved on the Pico, the first line appeared and then the Shell went quiet &mdash; and my instructor&rsquo;s broadcast arrived on my screen.</span>
+  </label>
+</div>
 </section>
 
 <section id="channels">
@@ -660,9 +681,6 @@
   Byte 0 was set to the <em>save for good</em> command. Your board will still be on channel 24 next
   week. Your instructor has a one-line change that puts it back on 23 &mdash; ask, do not guess.</div>
 
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I ran it once and got two lines of six numbers, not None</span></label>
-  <label class="chk"><input type="checkbox" data-p="c2"><span>The fifth number changed and the other five did not</span></label>
-  <label class="chk"><input type="checkbox" data-p="c3"><span>The last line said 24 = 434 MHz</span></label>
 </section>
 
 <section id="send">
@@ -745,9 +763,14 @@
   exactly that too &mdash; and every one of them had to be invented, because the air itself does not do
   it for you.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>My own name is in the message, not Aisyah</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I went and looked at the instructor&rsquo;s screen and found my own message on it</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I can say what a collision is, and why nobody gets told about one</span></label>
+
+<div class="ckpt" data-gate="send" data-label="I answered back">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; I answered back</b>My own name is in the message, and I went and found it on my instructor&rsquo;s screen.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -866,11 +889,18 @@
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> You have now sent a
   message with nothing in the middle at all &mdash; no server, no account, no internet &mdash; and you
   know what that costs as well as what it saves. One activity left &mdash; and in it you build a
   middle of your own.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -901,6 +931,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "mode": {
+          "opts": [
+              "Sleeping &mdash; nothing is sent and nothing arrives",
+              "Sending at full power",
+              "Waiting for you to give it a channel number"
+          ],
+          "q": "M0, M1 and M2 all read <strong>1</strong> when your board wakes up. What is the radio doing?",
+          "right": 0,
+          "why": "Set the three mode pins before anything else. Miss them and the Shell just stays empty, with no error to tell you why."
+      },
+      "noserver": {
+          "opts": [
+              "Nothing keeps the message &mdash; if nobody is listening at that moment, it is gone",
+              "Messages travel more slowly",
+              "Only one person can send at a time"
+          ],
+          "q": "Today there is no broker and no WiFi. What does that cost you?",
+          "right": 0,
+          "why": "A broker held your reading until somebody came and asked for it. A radio wave waits for nobody."
+      }
+  },
   typer: [
     "from machine import UART, Pin",
     "m0 = Pin(20, Pin.OUT)",
@@ -936,6 +988,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

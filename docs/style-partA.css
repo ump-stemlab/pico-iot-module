@@ -28,6 +28,7 @@
   /* the accent is set per page by [data-accent] below */
   --accent:#02ADA5; --accent-deep:#0B4F4B; --accent-ink:#026A66;
   --accent-soft:rgba(2,173,165,.10); --accent-line:rgba(2,173,165,.30);
+  --accent-lite:#3FD3CB;
 
   --r:14px; --r-lg:20px;
   --shadow:0 1px 2px rgba(16,40,50,.05), 0 6px 18px -8px rgba(16,40,50,.18);
@@ -38,15 +39,15 @@
 
 /* one accent per phase of the module, so a student can feel where they are */
 [data-accent="teal"]  {--accent:#02ADA5;--accent-deep:#0B4F4B;--accent-ink:#00726C;
-                       --accent-soft:rgba(2,173,165,.10);--accent-line:rgba(2,173,165,.32)}
+                       --accent-soft:rgba(2,173,165,.10);--accent-line:rgba(2,173,165,.32);--accent-lite:#3FD3CB}
 [data-accent="orange"]{--accent:#F5A21D;--accent-deep:#6A4402;--accent-ink:#9A6403;
-                       --accent-soft:rgba(245,162,29,.13);--accent-line:rgba(245,162,29,.38)}
+                       --accent-soft:rgba(245,162,29,.13);--accent-line:rgba(245,162,29,.38);--accent-lite:#FFC062}
 [data-accent="leaf"]  {--accent:#64A026;--accent-deep:#2F4E0F;--accent-ink:#4B7A19;
-                       --accent-soft:rgba(100,160,38,.12);--accent-line:rgba(100,160,38,.34)}
+                       --accent-soft:rgba(100,160,38,.12);--accent-line:rgba(100,160,38,.34);--accent-lite:#8FCB4E}
 [data-accent="blue"]  {--accent:#0D55A7;--accent-deep:#08326B;--accent-ink:#0D55A7;
-                       --accent-soft:rgba(13,85,167,.10);--accent-line:rgba(13,85,167,.30)}
+                       --accent-soft:rgba(13,85,167,.10);--accent-line:rgba(13,85,167,.30);--accent-lite:#3A83D8}
 [data-accent="red"]   {--accent:#C80000;--accent-deep:#5E0505;--accent-ink:#A81111;
-                       --accent-soft:rgba(200,0,0,.09);--accent-line:rgba(200,0,0,.28)}
+                       --accent-soft:rgba(200,0,0,.09);--accent-line:rgba(200,0,0,.28);--accent-lite:#F2564E}
 
 @media (prefers-color-scheme: dark){
   :root{
@@ -173,6 +174,55 @@ header.hero p.sub em{color:#fff;font-style:normal;font-weight:650}
   border-radius:999px;padding:6px 14px;color:#CFEEEB;background:rgba(255,255,255,.05)}
 .toc a:hover{background:#fff;color:var(--teal-dark);border-color:#fff}
 
+/* ---------- Pip's pose in the hero ----------
+   One pose per page, chosen to match what that page teaches: the LED
+   activity gets pip-led, the display activity pip-oled, soil moisture gets
+   him kneeling in the dirt. It is decoration — the <figure> is aria-hidden
+   with an empty alt, because the hero's own <h1> already says what the
+   activity is and "a robot holding an LED" on every page is noise in a
+   screen reader.
+
+   The box is capped in BOTH directions and the artwork is fitted inside it,
+   so a pose can never be clipped or squashed:
+
+     width   the free gutter beside the text. .wrap is 900px and centred, so
+             that gutter is (100vw - 900px)/2 and the sums are in those terms
+             rather than guessed. Capped at 176px.
+     height  the hero's own height less a little. Heroes vary a lot — 258px
+             on the pin reference, 563px on Activity 13 — and pip-sitting is
+             266px tall, so without this cap it lost the top of its head on
+             the short one.
+     fit     object-fit:contain with object-position:bottom, so whichever cap
+             binds, Pip scales to suit and keeps his feet on the hero's edge.
+
+   Below 1180px there is no gutter to sit in, so he is not drawn at all — the
+   same breakpoint the module rail uses. The hero is overflow:hidden, so he
+   can never widen the page. He is a direct child of header.hero, not of
+   .wrap, so the height cap is measured against the hero; .wrap's z-index:1
+   then keeps the text above him if they ever meet.
+
+   NOTE: .heropose, not .pose or .herofig. Grepped against both CSS parts
+   before naming, per CONTEXT §4.4 — .pip and .gate are what happens when you
+   do not.
+
+   The artwork is served at 360px wide, 256 colours. At full size these
+   twelve poses were 5.7MB of PNG for a mascot, which is not a reasonable
+   thing to push at a classroom's wifi; they are 441KB now and identical at
+   this size. The originals are Kamil's, in STEM LAB/pip-pictures. */
+.heropose{display:none}
+@media(min-width:1180px){
+  .heropose{
+    display:block;position:absolute;margin:0;bottom:0;
+    right:calc(450px - 50vw + 20px);
+    width:min(176px, calc(50vw - 478px));
+    height:min(276px, calc(100% - 14px));
+    pointer-events:none;
+    filter:drop-shadow(0 14px 22px rgba(0,0,0,.42))}
+  .heropose img{display:block;width:100%;height:100%;
+    object-fit:contain;object-position:bottom center}
+}
+
+
 /* ---------- sticky progress ---------- */
 .progress-bar{position:sticky;top:var(--head-h);z-index:100;background:var(--card);
   border-bottom:1px solid var(--line);box-shadow:0 6px 18px -14px rgba(0,0,0,.5)}
@@ -182,6 +232,18 @@ header.hero p.sub em{color:#fff;font-style:normal;font-weight:650}
 .track > i{display:block;height:100%;width:0%;border-radius:999px;transition:width .45s cubic-bezier(.2,.8,.3,1);
   background:linear-gradient(90deg,var(--teal),var(--accent),var(--sun))}
 .progress-inner b{font-family:var(--display);font-size:13px;color:var(--muted);white-space:nowrap;font-weight:700}
+.gbpart{flex:0 0 34px;width:34px;display:block}
+/* the thumbnail is too small for context — show the part alone */
+.bot.tiny .chassis,.bot.tiny .plate{display:none}
+
+.pips{display:flex;gap:7px;flex:1;flex-wrap:wrap;min-width:0}
+.pip{position:relative;width:29px;height:29px;padding:0;border-radius:9px;border:2px solid var(--line);
+  background:var(--card);color:var(--muted);font:800 12px/1 var(--display);cursor:pointer;
+  display:grid;place-items:center;transition:.16s}
+.pip:hover{border-color:var(--accent);color:var(--accent-ink);transform:translateY(-2px)}
+.pip.on{background:var(--green);border-color:var(--green);color:transparent}
+.pip.on::after{content:"\2713";position:absolute;inset:0;display:grid;place-items:center;
+  color:#fff;font-size:15px}
 .progress-inner button{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;
   font-size:12px;font-weight:600;padding:5px 11px;cursor:pointer}
 .progress-inner button:hover{border-color:var(--accent);color:var(--accent-ink)}
@@ -209,6 +271,7 @@ header.hero p.sub em{color:#fff;font-style:normal;font-weight:650}
 .raillist a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .raillist a[aria-current="page"]{background:var(--accent);color:#fff;font-weight:700}
 .raillist a[aria-current="page"] i{background:rgba(255,255,255,.24);color:#fff}
+.raillist a.going i{background:var(--sun);color:#07292C}
 .raillist a.done i{background:var(--green);color:#fff}
 .raillist a.done i::after{content:"✓";font-size:12px}
 .raillist a.done i b{display:none}
@@ -278,13 +341,57 @@ tbody tr:hover{background:var(--accent-soft)}
 .step .body{flex:1;min-width:0}
 .step h4{margin:4px 0 4px;font-size:17px}
 
-/* ---------- checkboxes ---------- */
-.chk{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;border:1.5px solid var(--line);
-  border-radius:11px;margin:8px 0;cursor:pointer;font-size:15px;transition:.15s;background:transparent}
-.chk:hover{border-color:var(--accent);background:var(--accent-soft)}
-.chk input{margin:4px 0 0;accent-color:var(--green);width:18px;height:18px;flex:0 0 auto;cursor:pointer}
-.chk.done{background:rgba(31,157,85,.10);border-color:var(--green)}
-.chk.done span{text-decoration:line-through;color:var(--muted)}
+/* ---------- checkpoints ----------
+   One card, hard to miss, sitting at the end of the step it belongs to. Two
+   kinds share the shell: a tick (.gtick) for something only the student can
+   see, and a question (.ckpt.ask) for something the page can actually check.
+   .open is the cleared state and is set by activity.js.
+
+   The class is .ckpt, not .gate: part B already uses .gate for the teacher
+   page's staff door, and the two quietly fought over text-align. */
+.ckpt{position:relative;margin:26px 0;padding:17px 20px 17px 24px;border:2px solid var(--accent-line);
+  border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow);overflow:hidden;
+  transition:border-color .2s,background .2s}
+.ckpt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--accent)}
+.ckpt.open{border-color:var(--green);background:rgba(31,157,85,.07)}
+.ckpt.open::before{background:var(--green)}
+.step .ckpt,.panel .ckpt{margin:16px 0 4px}
+
+.gtick{display:flex;gap:14px;align-items:flex-start;cursor:pointer}
+.gtick input{position:absolute;width:1px;height:1px;opacity:0}
+.gbox{flex:0 0 30px;height:30px;border-radius:10px;border:2.5px solid var(--accent-line);
+  background:var(--card);display:grid;place-items:center;transition:.2s;margin-top:1px}
+.gbox::after{content:"\2713";font-size:18px;font-weight:800;color:#fff;line-height:1;
+  transform:scale(.2);opacity:0;transition:.22s cubic-bezier(.2,1.4,.4,1)}
+.gtick:hover .gbox{border-color:var(--accent)}
+.gtick input:focus-visible + .gbox{outline:3px solid var(--accent);outline-offset:3px}
+.ckpt.open .gbox{background:var(--green);border-color:var(--green)}
+.ckpt.open .gbox::after{transform:scale(1);opacity:1}
+.gtxt{flex:1;min-width:0;font-size:15.5px}
+.gtxt b{display:block;font-family:var(--display);font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px;font-weight:800}
+.ckpt.open .gtxt b{color:var(--green)}
+
+.askkick{font-family:var(--display);font-size:13.5px;color:var(--accent-ink);margin:0 0 9px;
+  font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.askkick span{background:var(--accent);color:#fff;border-radius:7px;padding:3px 9px;
+  font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.ckpt.open .askkick{color:var(--green)}
+.ckpt.open .askkick span{background:var(--green)}
+.askq{font-size:16px;font-weight:650;margin:0 0 13px}
+.ckpt.quizgate{padding:13px 20px;margin:16px 0 4px}
+.ckpt.typed{padding-bottom:14px}
+.ckpt.typed .askkick{margin-bottom:10px}
+.askopts{display:grid;gap:8px}
+.askfb{font-size:14.5px;margin:13px 0 0;min-height:21px}
+.askfb.good{color:var(--green)}
+.askfb.bad{color:var(--orange)}
+
+@keyframes gpop{0%{transform:scale(1)}38%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes ghint{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 7px var(--accent-soft)}}
+.ckpt.justdone{animation:gpop .55s ease}
+.ckpt.hint{animation:ghint .9s ease 2}
+@media(prefers-reduced-motion:reduce){.ckpt.justdone,.ckpt.hint{animation:none}}
 
 /* ---------- tabs ---------- */
 .tabs{display:flex;gap:6px;margin:20px 0 0;flex-wrap:wrap}
@@ -330,29 +437,215 @@ kbd{background:var(--sink);border:1px solid var(--line);border-radius:6px;paddin
   font-size:13.5px;color:#7FE3DD;min-height:42px;white-space:pre-wrap}
 
 /* ---------- typing exercise ---------- */
-.typer{margin:18px 0}
-.line-row{display:flex;gap:10px;align-items:center;margin:8px 0}
+.typer{margin:4px 0 0}
+.line-row{display:flex;gap:10px;align-items:center;margin:9px 0;transition:opacity .2s}
 .line-row .lno{flex:0 0 22px;color:var(--muted);font-family:monospace;font-size:13px;text-align:right}
-.line-row input{flex:1;padding:10px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:monospace;
-  font-size:14.5px;background:var(--bg);color:var(--ink)}
-.line-row input:focus{outline:none;border-color:var(--accent)}
-.line-row input.ok{border-color:var(--green);background:rgba(31,157,85,.09)}
-.line-row input.bad{border-color:var(--orange);background:rgba(245,162,29,.09)}
-.line-row .mark{flex:0 0 22px;font-size:17px;text-align:center}
-.typer-msg{font-size:14px;color:var(--muted);margin-top:8px;min-height:22px}
+.line-row input{flex:1;min-width:0;padding:11px 13px;border:2px solid var(--line);border-radius:10px;
+  font-family:monospace;font-size:14.5px;background:var(--card);color:var(--ink);transition:.16s}
+.line-row input:focus{outline:none}
+.line-row input:disabled{background:var(--sink);color:var(--muted);cursor:default}
+.line-row.locked{opacity:.38}
+.line-row.now input{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.line-row.going input{border-color:var(--sun);box-shadow:0 0 0 4px rgba(251,169,25,.14)}
+.line-row.ok input{border-color:var(--green);background:rgba(31,157,85,.09);opacity:1}
+.line-row.bad input{border-color:var(--orange);background:rgba(245,162,29,.10);
+  box-shadow:0 0 0 4px rgba(245,162,29,.12)}
+.line-row .mark{flex:0 0 22px;font-size:18px;text-align:center;font-weight:800}
+.line-row.ok .mark{color:var(--green)}
+.line-row.bad .mark{color:var(--orange)}
+.typer-msg{font-size:14.5px;color:var(--muted);margin-top:10px;min-height:22px}
+.typer-msg.good{color:var(--green)}
+.typer-msg.bad{color:var(--orange)}
+.typeragain{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;
+  font-size:12px;font-weight:600;padding:5px 11px;cursor:pointer;margin-top:4px}
+.typeragain:hover{border-color:var(--accent);color:var(--accent-ink)}
 
 /* ---------- quiz ---------- */
-.q{border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:16px 0;background:var(--sink)}
-.q p.qt{font-weight:650;margin:0 0 10px}
-.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);
+.quizhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px}
+.quizpips{display:flex;gap:6px}
+.qpip{width:13px;height:13px;border-radius:5px;border:2px solid var(--line);background:var(--card);
+  transition:.2s}
+.qpip.on{background:var(--green);border-color:var(--green);transform:scale(1.12)}
+#quizscore{font-family:var(--display);font-size:13px;color:var(--muted);font-weight:700}
+.q{border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:16px 0;background:var(--sink);
+  transition:border-color .2s,background .2s}
+.q.solved{border-color:var(--green);background:rgba(31,157,85,.07)}
+.q p.qt{font-weight:650;margin:0 0 12px;display:flex;gap:11px;align-items:baseline}
+.qn{flex:0 0 25px;height:25px;border-radius:8px;background:var(--accent);color:#fff;
+  display:inline-grid;place-items:center;font:800 13px/1 var(--display);align-self:flex-start}
+.q.solved .qn{background:var(--green)}
+.q.solved .qn::after{content:"\2713"}
+.q.solved .qn{color:transparent;position:relative}
+.q.solved .qn::after{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);
   color:var(--ink);border-radius:10px;padding:11px 15px;margin:7px 0;cursor:pointer;font-size:15px;
-  transition:.12s}
-.opt:hover{border-color:var(--accent);transform:translateX(2px)}
-.opt.right{border-color:var(--green);background:rgba(31,157,85,.14)}
-.opt.wrong{border-color:var(--red);background:rgba(200,0,0,.1)}
-.q .fb{font-size:14px;margin-top:10px;min-height:20px}
+  transition:.14s;font-family:inherit}
+/* a quiz option or a checkpoint can carry a long unbroken name — Activity 13's
+   settings are the ones that pushed the page sideways at 390px */
+.opt,.askq,.askfb,.gtxt,.q p.qt,.q .fb,.partlist li{overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--accent);transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--green);background:rgba(31,157,85,.15);font-weight:650;
+  animation:gpop .45s ease}
+.opt.wrong{border-color:var(--line);opacity:.4;text-decoration:line-through}
+.q .fb{font-size:14.5px;margin-top:12px;min-height:21px}
+.q .fb.good{color:var(--green)}
+.q .fb.bad{color:var(--orange)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}
+  40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.q.shake{animation:shake .34s ease}
+@media(prefers-reduced-motion:reduce){.q.shake,.opt.right{animation:none}}
 .win{background:linear-gradient(135deg,rgba(31,157,85,.16),rgba(2,173,165,.14));
-  border:1.5px solid var(--green);border-radius:var(--r);padding:18px 20px;margin:18px 0;font-size:15.5px}
+  border:1.5px solid var(--green);border-radius:var(--r);padding:18px 20px;margin:18px 0;font-size:15.5px;
+  position:relative;overflow:visible}
+
+/* ---------- Pip ----------
+   NOTE: his class is .pipfig, not .pip — .pip is already the numbered
+   checkpoint in the sticky bar, and it is 29px square. That collision made
+   him render as a 29-pixel sliver. Grep both CSS parts before naming
+   anything new; this is the second time (see .gate / .ckpt in CONTEXT §11).
+
+   Pip is a picture, not a drawing the CSS paints, and he is built part by
+   part — one part per activity, like a model kit:
+
+     .off        pip-off.png alone, unwashed. He is asleep, not a blueprint.
+     .building   pip-master.png washed out to a ghost, so a student can see
+                 what is still missing, with each earned part laid over it.
+                 Parts are absolutely positioned from their parts.json box,
+                 in per cent, so they scale with whatever width the host gives
+                 him — 132px in the rail, 190px in the part bay, 180px in the
+                 hall — and land back exactly where they were cut from.
+     .done       pip-glowing.png, arms out, every light on.
+
+   All three poses are 420x557 (tools/padpose.py), so the swaps never move the
+   page. robot.js still writes --f, the module percentage, on .pipfig; nothing
+   here reads it, but tools/check.js does and it is a useful handle when this
+   misbehaves. This replaced a vertical colour-fill that coloured him in from
+   the boots up regardless of which activities were actually done. */
+.pipfig{position:relative;display:block;width:100%;line-height:0}
+.pipfig img{display:block;width:100%;height:auto}
+.pipghost{filter:grayscale(1) brightness(1.06) opacity(.2);transition:filter .6s ease,opacity .6s ease}
+/* At zero he is not a blueprint, he is switched off: pip-off.png is already
+   drawn with dark eyes and a flat mouth, so it must NOT get the ghost wash. */
+.pipfig.off .pipghost{filter:none}
+.pipfig.done .pipghost{opacity:0}
+
+/* the earned parts, stacked over the ghost. Their width/left/top come from
+   parts.json through robot.js, inline and in per cent — the only geometry on
+   the site that is not in this file, because tools/parts.py owns it. */
+.pipparts{position:absolute;inset:0;display:block;transition:opacity .5s ease}
+.pippart{position:absolute;opacity:0;
+  transition:opacity .55s ease,filter .55s ease,transform .45s cubic-bezier(.2,.9,.3,1)}
+/* an activity still under way: its part materialises so every checkpoint
+   visibly moves something, but stays desaturated and under half solid, so a
+   half-done part can never be mistaken for a fitted one */
+.pippart:not(.on){filter:saturate(.35) brightness(1.07)}
+.pippart.on{opacity:1}
+.pipfig.off .pipparts,.pipfig.done .pipparts{opacity:0}
+
+/* the asleep and finished poses ride on top; while he is being built they are
+   out of the way and the ghost plus the parts are the whole picture */
+.pipfull{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+.pipfig.done .pipfull{opacity:1}
+
+@media (prefers-reduced-motion:no-preference){
+  @keyframes pipfit{0%{transform:scale(1)}22%{transform:scale(1.07)}
+    55%{transform:scale(.98)}100%{transform:scale(1)}}
+  .pipfig.justfitted{animation:pipfit .8s cubic-bezier(.2,.9,.3,1)}
+  /* a part arriving: it seats the last hair of the way in and flashes */
+  @keyframes pipland{0%{transform:scale(1.18);filter:brightness(2.6) saturate(.4)}
+    45%{transform:scale(.985);filter:brightness(1.3)}
+    100%{transform:scale(1);filter:none}}
+  .pippart.landing{animation:pipland .7s cubic-bezier(.2,.9,.3,1)}
+  /* a slow standby breath, so a student can tell he is asleep rather than broken */
+  @keyframes pipsleep{0%,100%{opacity:.86}50%{opacity:1}}
+  .pipfig.off .pipghost{animation:pipsleep 4s ease-in-out infinite}
+  @keyframes pipbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .botbay.complete .pipfig,.robothall .botbay.complete .pipfig{
+    animation:pipbob 3.6s ease-in-out infinite}
+}
+/* nothing slides, fades or flashes; the parts simply are or are not there */
+@media (prefers-reduced-motion:reduce){
+  .pipghost,.pipparts,.pippart,.pipfull{transition:none}
+  .pippart.landing{animation:none}
+}
+
+/* the shockwave behind him as an activity completes */
+.partbay{position:relative}
+.partbay::after{content:"";position:absolute;left:0;top:50%;width:180px;height:180px;
+  margin-top:-90px;border-radius:50%;border:3px solid var(--green);opacity:0;
+  pointer-events:none}
+@keyframes shock{0%{transform:scale(.35);opacity:.85}100%{transform:scale(1.9);opacity:0}}
+.partbay.pop::after{animation:shock .85s ease-out}
+@media(max-width:640px){.partbay::after{left:50%;top:104px;margin-left:-90px}}
+
+/* the robot hall on the landing page */
+.robothall{display:flex;gap:30px;align-items:center;background:var(--sink);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:24px 26px;margin:18px 0 26px}
+.robothall .botbay{flex:0 0 190px;margin:0;border:none;padding:0}
+.robothall .botart .pipfig{max-width:180px}
+.hallside{flex:1;min-width:0}
+.hallside p{margin:0 0 10px;font-size:15px;color:var(--muted)}
+.hallkick{font-family:var(--display);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent-ink);font-weight:800;margin:0 !important}
+.hallttl{font-family:var(--display);font-size:22px;margin:3px 0 9px;line-height:1.2}
+.robothall .botcount{text-align:left;margin:0 0 8px}
+.robothall .track{max-width:420px}
+.robothall small{display:block;margin-top:7px;font-size:13px;color:var(--muted)}
+@media(max-width:700px){.robothall{flex-direction:column;text-align:center;padding:22px 18px}
+  .robothall .botcount,.hallkick{text-align:center}.robothall .track{margin:0 auto}}
+
+/* the robot in the module rail */
+.botbay{margin:14px 4px 2px;border-top:1px solid var(--line);padding-top:13px}
+.botttl{font-family:var(--display);margin:0 0 8px;padding:0 4px;font-size:11px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.botart .pipfig{max-width:132px;margin:0 auto}
+.botcount{display:block;text-align:center;font-size:12px;color:var(--muted);margin:8px 0 0;
+  font-family:var(--display);font-weight:700}
+.botcount b{color:var(--ink);font-size:15px}
+.botnote{text-align:center;font-size:11px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+
+/* the part being printed, at the foot of an activity page */
+.partsec{margin:44px 0 8px}
+.partbay{position:relative;display:flex;gap:28px;align-items:center;padding:26px;
+  border:2px dashed var(--accent-line);border-radius:var(--r-lg);background:var(--sink);
+  transition:border-color .3s,background .3s}
+.partbay.done{border-style:solid;border-color:var(--green);
+  background:linear-gradient(135deg,rgba(31,157,85,.13),var(--accent-soft))}
+.partart{flex:0 0 190px}
+.partart .pipfig{width:190px}
+.partside{flex:1;min-width:0}
+.partkick{font-family:var(--display);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent-ink);font-weight:800;margin:0}
+.partbay.done .partkick{color:var(--green)}
+.partname{font-family:var(--display);font-size:24px;margin:3px 0 9px;line-height:1.2}
+.partsay{margin:0;font-size:15px;color:var(--muted)}
+.partsay strong{color:var(--ink)}
+.partlist{list-style:none;padding:0;margin:15px 0 0;display:grid;gap:7px}
+.partlist li{display:flex;gap:10px;align-items:center;font-size:14.5px;color:var(--muted)}
+.partlist .rt{flex:0 0 17px;width:17px;height:17px;border-radius:5px;border:2px solid var(--line);
+  background:var(--card);position:relative}
+.partlist li.yes{color:var(--ink)}
+.partlist li.yes .rt{background:var(--green);border-color:var(--green)}
+.partlist li.yes .rt::after{content:"\2713";position:absolute;inset:0;display:grid;place-items:center;
+  color:#fff;font-size:11px;font-weight:800}
+@keyframes bpop{0%{transform:scale(1)}30%{transform:scale(1.03)}60%{transform:scale(.995)}
+  100%{transform:scale(1)}}
+.partbay.pop{animation:bpop .85s cubic-bezier(.2,.9,.3,1)}
+@media(max-width:640px){
+  .partbay{flex-direction:column;text-align:center;gap:18px;padding:22px 18px}
+  .partart{flex:none}.partart .pipfig{width:150px}
+  .partlist li{justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){.partbay.pop{animation:none}}
+
+/* confetti */
+.burst{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:6}
+.burst i{position:absolute;top:55%;width:9px;height:14px;border-radius:2px;opacity:0;
+  animation:fly 1.6s cubic-bezier(.12,.7,.35,1) forwards}
+@keyframes fly{0%{opacity:1;transform:translate(0,0) rotate(0)}
+  70%{opacity:1}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}}
 
 /* ---------- details ---------- */
 details{border:1px solid var(--line);border-radius:var(--r);padding:13px 17px;margin:13px 0;
@@ -413,6 +706,13 @@ summary::marker{color:var(--accent)}
   border-radius:50%;background:var(--green);border:2px solid var(--card);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3L9.6 3.7' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size:13px;background-repeat:no-repeat;background-position:center}
+
+.act.going .n{box-shadow:0 0 0 3px var(--sun),0 6px 14px -6px var(--accent)}
+.actpart{display:block;margin-top:5px;font-family:var(--display);font-size:11px;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.act.done .actpart{color:var(--green)}
+.act.going .actpart{color:var(--accent-ink)}
+.act.done{border-color:var(--green)}
 
 /* the module-progress strip on the home page */
 .yourprog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--sink);

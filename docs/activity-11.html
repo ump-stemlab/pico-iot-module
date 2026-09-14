@@ -66,6 +66,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-wave.png" alt="" width="360" height="456" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 11</p>
     <h1>Control from Anywhere</h1>
@@ -92,14 +93,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -131,6 +134,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -285,8 +294,8 @@
   <strong>feed</strong>, because that is what a person sees. In your program it is called a
   <strong>topic</strong>, because that is what the message system calls an address. Same box.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say the difference between publishing and subscribing</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I can say why the web page and the board never talk to each other directly</span></label>
+
+<div class="ckpt ask" data-gate="turn" data-label="Which way round"></div>
 </section>
 
 <section id="wifi">
@@ -347,8 +356,6 @@
   2.4&nbsp;GHz &mdash; or do this activity on the Wokwi route, which has its own network and needs no
   password at all.</div>
 
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I can say why the program has to wait after asking to join</span></label>
-  <label class="chk"><input type="checkbox" data-p="w2"><span>I know which of the two loop shapes ever ends, and why</span></label>
 </section>
 
 <section id="account">
@@ -417,7 +424,6 @@
     letters or dashes.</p>
     <figure class="shot"><img src="img/aio11-feeds.png" alt="The Adafruit IO Feeds page. The username kamilkhal96 is shown at the top left, above a blue New Feed button and a table with one row in it called Welcome Feed." loading="lazy">
     <figcaption><strong>Feeds</strong> in the black bar. The blue word at the top left is your <strong>username</strong> &mdash; here it is <code>kamilkhal96</code>, and yours will be different. Write it down exactly.</figcaption></figure>
-    <label class="chk"><input type="checkbox" data-p="a1"><span>I have an account and I have written my username down</span></label>
   </div></div>
 
   <div class="step"><div class="idx">2</div><div class="body">
@@ -434,7 +440,6 @@
     Adafruit IO turns whatever you type into a <em>key</em>, and that key is what your program has to
     match. Type <code>led</code> and the key is <code>led</code> and there is nothing to get wrong.
     Type <code>LED</code> and you have given yourself a puzzle for later.</div>
-    <label class="chk"><input type="checkbox" data-p="a2"><span>My feed is called led and its key says led too</span></label>
   </div></div>
 
   <div class="step"><div class="idx">3</div><div class="body">
@@ -466,7 +471,6 @@
   <text x="390" y="224" class="dsub" text-anchor="middle">There is no error message for a wrong address &mdash; it simply stays quiet for ever.</text>
 </svg>
 
-    <label class="chk"><input type="checkbox" data-p="a3"><span>I have copied down the three-part address of my feed</span></label>
   </div></div>
 
   <div class="step"><div class="idx">4</div><div class="body">
@@ -479,7 +483,6 @@
     <div class="cal warn"><b>Blank the key out before you show anyone your screen</b>
     Including the person sitting next to you, and including the projector. It is a password with a
     different name.</div>
-    <label class="chk"><input type="checkbox" data-p="a4"><span>I have my key, and I have not shown it to anybody</span></label>
   </div></div>
 
   <div class="step"><div class="idx">5</div><div class="body">
@@ -502,7 +505,6 @@
     <div class="cal tip"><b>Why a Toggle and not a slider</b>
     A slider can send any number it likes. A toggle sends one of <strong>exactly two words</strong>, and
     two words is precisely what a light that is either on or off needs.</div>
-    <label class="chk"><input type="checkbox" data-p="a5"><span>I have a dashboard with a Toggle block being set up on it</span></label>
   </div></div>
 
   <div class="step"><div class="idx">6</div><div class="body">
@@ -522,7 +524,6 @@
     going to compare what arrives against the word <strong>ON</strong>. Change the word here and you have
     to change it there too &mdash; and the two are on different screens, which is why this catches
     people.</div>
-    <label class="chk"><input type="checkbox" data-p="a6"><span>The Toggle is joined to the led feed, and says ON and OFF</span></label>
   </div></div>
 
   <h3>Click it &mdash; and watch nothing happen</h3>
@@ -542,7 +543,6 @@
   A toggle only draws itself once its feed has a value in it. Click it once, reload, and it will be
   there.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a7"><span>Clicking the switch puts a new row in the feed, and I have seen it</span></label>
 </section>
 
 <section id="callback">
@@ -663,9 +663,8 @@
   <text x="390" y="256" class="dsub" text-anchor="middle">Asking costs almost nothing, and it never waits &mdash; which is why you can afford to ask constantly.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="f1"><span>I can say why writing a function down does not run it</span></label>
-  <label class="chk"><input type="checkbox" data-p="f2"><span>I can say what goes wrong if you put brackets after the name you hand over</span></label>
-  <label class="chk"><input type="checkbox" data-p="f3"><span>I can say why the loop has to keep asking</span></label>
+
+<div class="ckpt ask" data-gate="callback" data-label="Handing over a function"></div>
 </section>
 
 <section id="try">
@@ -703,9 +702,6 @@
   press per message, and that the messages arrive in the order they were sent. Then turn on
   <strong>Keep asking</strong> and flip the switch: that is what your loop is going to do.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the switch work while the board was not subscribed, and nothing happened</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw that subscribing on its own is still not enough &mdash; something has to ask</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I have the loop asking on its own, and the light following the switch</span></label>
 </section>
 
 <section id="library">
@@ -735,7 +731,6 @@
       a single file called <code>umqtt_simple.py</code>. On the real board it lives in a folder called
       <code>umqtt</code>, which is why the import line has a dot in it there and an underscore here.
       One character, two routes.</div>
-      <label class="chk"><input type="checkbox" data-p="l1"><span>My Wokwi project has a tab called umqtt_simple.py</span></label>
     </div></div>
   </div>
 
@@ -755,7 +750,6 @@
       <p><strong>View &rarr; Files</strong>. In the lower panel, inside <code>lib</code>, you want a
       <em>folder</em> called <code>umqtt</code> with <code>simple.py</code> in it. A folder, not a file
       &mdash; that is what the dot in the import line is about.</p>
-      <label class="chk"><input type="checkbox" data-p="l1b"><span>There is a folder called umqtt inside lib on the Pico</span></label>
     </div></div>
   </div>
 
@@ -765,7 +759,6 @@
   usually means the import line says <code>umqtt.simple</code> when the file is called
   <code>umqtt_simple</code>.</div>
 
-  <label class="chk"><input type="checkbox" data-p="l2"><span>The MQTT library is on the Pico, not just on my computer</span></label>
 </section>
 
 <section id="build">
@@ -1041,9 +1034,6 @@
       The names beside them are what you type. GP11 is physical pin 15 and GP13 is physical pin 17;
       typing 15 or 17 in your program would give you two completely different pins.</div>
 
-      <label class="chk"><input type="checkbox" data-p="c1"><span>I picked the Pico <strong>W</strong>, and I can see the Wi-Fi box on it</span></label>
-      <label class="chk"><input type="checkbox" data-p="c2"><span>Red LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="c3"><span>Green LED: long leg &rarr; resistor &rarr; GP13, short leg &rarr; GND</span></label>
   </div>
 
   <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
@@ -1061,20 +1051,26 @@
       <h4>Plug the board in and check Thonny is talking to it</h4>
       <p>The Shell should show <code>&gt;&gt;&gt;</code>. If it does not, the board is not connected and
       nothing else on this page will work.</p>
-      <label class="chk"><input type="checkbox" data-p="d1"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Have your WiFi name and password ready</h4>
       <p>The exact name, with the exact capital letters, and a network on <strong>2.4&nbsp;GHz</strong>
       without a sign-in page. If you are not sure, a phone hotspot set to 2.4&nbsp;GHz is the reliable
       fallback, and there is no shame in it.</p>
-      <label class="chk"><input type="checkbox" data-p="d2"><span>I have a 2.4 GHz network name and password I know works</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     <strong>SW5</strong> is still the power switch, and the board still runs on the USB supply. Nothing
     about being on the internet changes what happens if you short something.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Ready to listen">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; ready to listen</b>The red LED is on <span class="gp">11</span> and the green on <span class="gp">13</span>, each through its own resistor; my <code>led</code> feed has a Toggle on a dashboard, and clicking it already puts a new row in the feed.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -1098,7 +1094,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that are new. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from umqtt.simple import MQTTClient" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="while not wlan.isconnected():" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="def when_a_message_arrives(topic, message):" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -1106,13 +1104,14 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="mqtt.subscribe(FEED)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Lines 2 and 3 both end in a colon, and both start a block that is indented underneath. Line 4 has no brackets after the name &mdash; that is the whole point of it.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
   <div class="cal note"><b>Three levels of indentation, for the first time</b>
   Inside the function is four spaces. Inside the <code>if</code> that is inside the function is
   <strong>eight</strong>. Activity 5 got you to two levels; this is the same rule one step further, and
   the rule has not changed: a line is inside whatever is above it and further left.</div>
 
-  <label class="chk"><input type="checkbox" data-p="p1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each new line is doing</h3>
   <div class="tablescroll">
@@ -1230,13 +1229,14 @@
   entire lesson in one gesture, and it is worth thirty seconds of class time.</div>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell printed <em>On the network</em> within a few seconds</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The Shell printed <em>Listening</em> after that, with no error</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>Clicking the switch to ON lights the red LED</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>Clicking it to OFF puts the LED out again</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>One line appears in the Shell for every flip</span></label>
-  <label class="chk"><input type="checkbox" data-p="r6"><span>I flipped it twice quickly and both messages arrived, in order</span></label>
-  <label class="chk"><input type="checkbox" data-p="r7"><span>I controlled it from a phone that was not on the same network</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The Shell printed <em>On the network</em> and then <em>Listening</em>. Clicking the switch to ON lights the red LED, OFF puts it out, and a line appears in the Shell for every flip.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1310,11 +1310,6 @@
   <text x="390" y="306" class="dlbl" text-anchor="middle">A thing that can only say one word cannot tell you it is still alive.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>ON lights the red one and puts the green one out</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>OFF lights the green one and puts the red one out</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>Exactly one is lit at any moment &mdash; never both</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>I stopped the program on purpose and saw both go dark</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>It still keeps up when I flip the switch quickly</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Do not start a new file. Start from the program you have just got working, which already does
@@ -1377,15 +1372,30 @@
     <li>Find out what happens if you unplug the router while the program is running, and then plug it
     back in. Decide what a well-behaved device ought to do about that.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>ON lights the red one and puts the green out, OFF does the opposite, and exactly one is lit at any moment &mdash; never both.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now be
   told what to do by something that is not in the room, is not on your network, and has never heard of
   it &mdash; which is the whole of what people mean by the Internet of Things.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1421,6 +1431,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "callback": {
+          "opts": [
+              "Brackets would run it now &mdash; the bare name hands it over to be run later",
+              "Brackets are only for functions that take something in",
+              "MicroPython does not allow brackets there"
+          ],
+          "q": "You hand over the function&rsquo;s <em>name</em>, with no brackets after it. Why no brackets?",
+          "right": 0,
+          "why": "Writing a function down does not run it. Put brackets on and you run it once, immediately, and hand over whatever it gave back &mdash; which is usually nothing at all."
+      },
+      "turn": {
+          "opts": [
+              "Subscribing &mdash; waiting to be told something",
+              "Publishing, but faster",
+              "Both at once, to the same feed"
+          ],
+          "q": "Activity 10 published a reading. What is your board doing today?",
+          "right": 0,
+          "why": "The arrow turns round. The web page publishes what the switch did; the board subscribes, and acts on it."
+      }
+  },
   typer: [
     "from umqtt.simple import MQTTClient",
     "while not wlan.isconnected():",
@@ -1452,6 +1484,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

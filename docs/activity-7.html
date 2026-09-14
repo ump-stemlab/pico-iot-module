@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-oled.png" alt="" width="360" height="557" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 7</p>
     <h1>Words on a Screen</h1>
@@ -78,14 +79,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -117,6 +120,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -281,9 +290,6 @@
   Only SDA and SCL carry anything you will ever type. VCC and GND are there because a screen needs
   electricity, exactly like the LED did &mdash; no program mentions them.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I found the screen on the board (or on the Wokwi part list)</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I can say how many pixels across and down it is</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I know which GP number is SDA and which is SCL</span></label>
 </section>
 
 <section id="bus">
@@ -409,8 +415,8 @@
   of them today &mdash; the library already knows &mdash; but when you meet <code>0x78</code> in a
   datasheet later, it is not a different screen.</div>
 
-  <label class="chk"><input type="checkbox" data-p="b1"><span>I can say why eight parts share two wires instead of having sixteen</span></label>
-  <label class="chk"><input type="checkbox" data-p="b2"><span>I can say what an address is for</span></label>
+
+<div class="ckpt ask" data-gate="bus" data-label="Two wires, many parts"></div>
 </section>
 
 <section id="library">
@@ -537,7 +543,6 @@
       <h4>Go back to <code>main.py</code></h4>
       <p>Your own program still goes there. Wokwi puts <em>every</em> file in the project onto the
       simulated Pico when you press <strong>&#9654; Play</strong>, so the import line will now find it.</p>
-      <label class="chk"><input type="checkbox" data-p="l1"><span>My Wokwi project has three tabs: main.py, ssd1306.py and diagram.json</span></label>
     </div></div>
   </div>
 
@@ -567,7 +572,6 @@
       <p>Turn on <strong>View &rarr; Files</strong>. The lower panel lists what is on the Pico. You
       should see <code>ssd1306.py</code> there. It stays there for good &mdash; you will not have to do
       this again in Activity 8.</p>
-      <label class="chk"><input type="checkbox" data-p="l1b"><span>I can see ssd1306.py in Thonny&rsquo;s list of files on the Pico</span></label>
     </div></div>
     <details>
       <summary>&#128230; The other way, if your computer has internet in the lab</summary>
@@ -584,8 +588,8 @@
   times out of ten the file is on the computer instead of the Pico, or it is spelt
   <code>SSD1306.py</code> or <code>ssd1306.py.txt</code>. Fix the file, not the program.</div>
 
-  <label class="chk"><input type="checkbox" data-p="l2"><span>I can say the difference between a built-in tool and a library</span></label>
-  <label class="chk"><input type="checkbox" data-p="l3"><span>I know what &ldquo;no module named&rdquo; is telling me</span></label>
+
+<div class="ckpt ask" data-gate="lib" data-label="What a library is"></div>
 </section>
 
 <section id="try">
@@ -619,8 +623,6 @@
   press <strong>Wipe the page</strong> and look at the screen: it is still showing the old words, because
   wiping the page is not the same as clearing the glass. Then press Show it and watch them go.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I saw that writing changes the page but not the screen</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I saw that wiping the page does nothing until I show it</span></label>
 </section>
 
 <section id="build">
@@ -639,7 +641,6 @@
       <p>Click the blue <strong>+</strong> and type <em>ssd1306</em>. One part comes back:
       <strong>SSD1306 OLED display</strong>, under <em>Display</em>. Add it and drag it clear of the
       Pico so you can see all four of its pads.</p>
-      <label class="chk"><input type="checkbox" data-p="c1"><span>The blue screen part is on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -891,9 +892,6 @@
       also look like power and are not &mdash; they are 5&nbsp;V, and 5&nbsp;V is the one rule this module
       has repeated since Activity 1.</div>
 
-      <label class="chk"><input type="checkbox" data-p="c2"><span>SDA &rarr; GP0 (physical pin 1)</span></label>
-      <label class="chk"><input type="checkbox" data-p="c3"><span>SCL &rarr; GP1 (physical pin 2)</span></label>
-      <label class="chk"><input type="checkbox" data-p="c4"><span>GND &rarr; a ground pin, and VCC &rarr; 3V3</span></label>
 
       <div class="cal tip"><b>Any GND pad still works</b>
       Physical pin 3 is drawn here only because it is nearest. All eight grounds are the same piece of
@@ -909,7 +907,6 @@
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on.</p>
-      <label class="chk"><input type="checkbox" data-p="d1"><span>The Pico&rsquo;s power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -917,20 +914,26 @@
       <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
       choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
       Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="d2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Make sure the library is on the Pico</h4>
       <p>This is the step that replaces wiring for you. Go back to
       <a href="#library">Adding a library</a> and finish it before you write a line of the program.</p>
-      <label class="chk"><input type="checkbox" data-p="d3"><span>ssd1306.py is on the Pico, not just on my computer</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Four wires to the screen: SDA to <span class="gp">0</span>, SCL to <span class="gp">1</span>, GND to a ground pin and VCC to 3V3. And <code>ssd1306.py</code> is on the Pico, not just on my computer.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -948,7 +951,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that matter. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from ssd1306 import SSD1306_I2C" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="i2c = I2C(0, sda=Pin(0), scl=Pin(1))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="oled = SSD1306_I2C(128, 64, i2c)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -956,10 +961,11 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="oled.show()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Watch the capitals in line 1 and line 3 &mdash; they are the two that catch people.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>Nothing on this page is indented</b>
   There is no loop and no decision today, so every line starts at the left-hand edge. If your editor has
   put spaces in front of a line, take them out.</div>
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -1074,11 +1080,14 @@
 </svg>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Words appeared on the screen, not just in the Shell</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>Both lines are there, and there is a clear gap between them</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>I changed the words to my own name and ran it again</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>I moved a line by changing its down-number and saw it move</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>I deleted the show line on purpose, saw a black screen, and put it back</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>Words appeared on the <em>screen</em>, both lines, with a clear gap between them &mdash; and I changed them to my own name and ran it again.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1144,12 +1153,6 @@
   <text x="390" y="256" class="dsub" text-anchor="middle">If a label jumps about while you press, the page is not being wiped between rounds.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>Both lines say UP when I am not touching anything</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>Holding SW1 changes only the first line</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>Holding SW2 changes only the second line</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>Holding both changes both</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>The words go back as soon as I let go</span></label>
-  <label class="chk"><input type="checkbox" data-p="e6"><span>Nothing is left over on the screen from the round before</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Do not start a new file. Start from the program you have just written and add to it.</p>
@@ -1229,16 +1232,31 @@
     <li>Count how many rows you can fit before words start falling off the bottom. Predict the number
     first.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>Both lines say UP until I press. SW1 changes only the first line, SW2 only the second, and nothing is left over from the round before.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now say
   things out loud, on its own screen, with nobody&rsquo;s computer attached &mdash; and you know how to
   give Python a tool it did not come with. Next up &mdash; Activity 8, where the numbers on that screen
   start coming from the world instead of from you.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1269,6 +1287,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "bus": {
+          "opts": [
+              "Every part has its own address, and ignores messages for the others",
+              "Each part gets its own turn, one after another",
+              "Each part uses a different voltage"
+          ],
+          "q": "Eight parts can share the same two wires. What keeps their messages apart?",
+          "right": 0,
+          "why": "Every message carries an address. It is also why the sensor in Activity 8 can join these same two wires without needing any of its own."
+      },
+      "lib": {
+          "opts": [
+              "The program runs on the board, so the file it wants has to be there too",
+              "Thonny copies it across automatically every time",
+              "It only matters in Wokwi"
+          ],
+          "q": "The screen&rsquo;s library file has to be <em>on the Pico</em>, not just on your computer. Why?",
+          "right": 0,
+          "why": "That is exactly what <em>no module named</em> is telling you: the program is running on the board, and the file it is asking for is not on the board."
+      }
+  },
   typer: [
     "from ssd1306 import SSD1306_I2C",
     "i2c = I2C(0, sda=Pin(0), scl=Pin(1))",
@@ -1300,6 +1340,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

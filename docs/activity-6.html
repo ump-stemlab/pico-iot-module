@@ -63,6 +63,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-buttons.png" alt="" width="360" height="409" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 6</p>
     <h1>And, Or, Not</h1>
@@ -86,14 +87,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -125,6 +128,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -240,8 +249,6 @@
   a question at all, and Python will either refuse it or quietly answer something you did not ask.
   The section on <a href="#whole">two whole questions</a> is the one to read twice.</div>
 
-  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say what a joining word takes in, and what comes out of it</span></label>
-  <label class="chk"><input type="checkbox" data-p="i2"><span>I can name the three words and say which is the strictest</span></label>
 </section>
 
 <section id="tables">
@@ -359,9 +366,8 @@
   <text x="390" y="256" class="dsub" text-anchor="middle">Choosing the word <tspan class="dlbl">is</tspan> the design decision.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I can fill in the four rows of the <em>and</em> table from memory</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I know what <code>or</code> answers when <strong>both</strong> are held down</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I can say what <code>not</code> does to an answer</span></label>
+
+<div class="ckpt ask" data-gate="tables" data-label="The strictest word"></div>
 </section>
 
 <section id="whole">
@@ -452,8 +458,8 @@
   <strong>Each side of <code>and</code> must be able to stand up on its own.</strong> Cover one half with
   your hand: if what is left is still a question you could ask, you have written it correctly.</div>
 
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I can say why the second half needs its own <code>==</code> and its own 0</span></label>
-  <label class="chk"><input type="checkbox" data-p="w2"><span>I know why naming the two pins on their own gives a light that never goes out</span></label>
+
+<div class="ckpt ask" data-gate="whole" data-label="Each half is a whole question"></div>
 </section>
 
 <section id="not">
@@ -503,8 +509,6 @@
   the going-further task at the bottom of this page, where a third key must <strong>not</strong> be
   held. Reach for it then &mdash; and not before.</p>
 
-  <label class="chk"><input type="checkbox" data-p="n1"><span>I can read a <code>not</code> question out loud in English</span></label>
-  <label class="chk"><input type="checkbox" data-p="n2"><span>I know why I should <em>not</em> use it to turn the button numbers round</span></label>
 </section>
 
 <section id="try">
@@ -549,9 +553,6 @@
   most people expect to be dark. Then choose <strong>not</strong> and let go of everything: the light is
   on because nothing is pressed. Then hold SW1 and watch it go out.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>With <code>and</code>, one pad on its own did nothing</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>With <code>or</code>, holding both still lit the light</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I saw what <code>not</code> did to a single question</span></label>
 </section>
 
 <section id="build">
@@ -571,7 +572,6 @@
       <p>Click the blue <strong>+</strong> and add <strong>two Pushbuttons</strong>, an
       <strong>LED</strong> and a <strong>Resistor</strong>. Set the LED to red and the resistor to
       <strong>330</strong> in the panel on the right.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>Two pushbuttons, a red LED and a 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -841,9 +841,6 @@
       The names beside them are what you type. GP2 is physical pin 4 and GP3 is physical pin 5; typing 4
       or 5 in your program would give you two completely different pins.</div>
 
-      <label class="chk"><input type="checkbox" data-p="a2"><span>SW1: one leg &rarr; GP2, diagonally opposite leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="a3"><span>SW2: one leg &rarr; GP3, diagonally opposite leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="a4"><span>LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
 
       <div class="cal tip"><b>Any GND pad will do</b>
       There are eight of them and they are all the same piece of metal inside the Pico. Pins 8, 13 and
@@ -860,7 +857,6 @@
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on.</p>
-      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico&rsquo;s power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -868,20 +864,26 @@
       <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
       choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
       Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Work out which two buttons you can hold at once</h4>
       <p>SW1 and SW2 sit close together. Decide now whether you are using two fingers on one hand or one
       finger from each &mdash; a two-key switch you cannot comfortably hold is hard to test.</p>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>I can hold SW1 and SW2 down at the same time</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Two pushbuttons this time &mdash; SW1 to <span class="gp">2</span>, SW2 to <span class="gp">3</span>, each with its diagonally opposite leg to GND &mdash; plus the LED on <span class="gp">11</span>.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -900,7 +902,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that matter. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="sw2 = Pin(3, Pin.IN, Pin.PULL_UP)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="if sw1.value() == 0 and sw2.value() == 0:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="led.on()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -908,11 +912,12 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="led.off()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 2 has two whole questions in it &mdash; check both halves.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>These boxes ignore the spaces at the front</b>
   Python does not. When you type them for real, lines 2 and 4 go in by <strong>four</strong> spaces and
   lines 3 and 5 by <strong>eight</strong> &mdash; exactly as in Activity 5. Nothing about indentation
   changes today.</div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -1011,12 +1016,14 @@
 </svg>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Holding <strong>SW1 alone</strong> does nothing at all</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>Holding <strong>SW2 alone</strong> does nothing at all</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>Holding <strong>both</strong> lights the red LED</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>Letting go of either one puts it out again straight away</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>The words on my screen match what the light is doing</span></label>
-  <label class="chk"><input type="checkbox" data-p="r6"><span>I stopped the program on purpose, rather than closing the window</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>Holding one button on its own does <em>nothing at all</em>. Holding both lights the red LED, and letting go of either one puts it straight out.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1090,11 +1097,6 @@
   <text x="390" y="280" class="dsub" text-anchor="middle">All three counts as open too: three keys are still &ldquo;at least two&rdquo;.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>One key on its own never opens it</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>SW1 + SW2 opens it</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>SW1 + SW3 opens it, and so does SW2 + SW3</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>All three together opens it as well</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>It keeps running until I stop it on purpose</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Do not write any code yet. On paper, list every way of holding <strong>exactly two</strong> of the
@@ -1152,15 +1154,30 @@
     <li>Take the two-key switch and make it need SW1 held down <em>and</em> SW2 <strong>not</strong>
     held. Predict what it will do before you run it.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>Two-key safe: one key alone never opens it, and any two of the three together do.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now ask
   about several things at once and still make one clean decision. Next up &mdash; Activity 7, where the
   answers stop living on a computer screen and start appearing on the board&rsquo;s own display.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1188,6 +1205,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "tables": {
+          "opts": [
+              "Both <strong>and</strong> and <strong>or</strong>",
+              "<strong>and</strong> only",
+              "<strong>or</strong> only"
+          ],
+          "q": "Both buttons are held down at once. Which of the joining words answers <em>true</em>?",
+          "right": 0,
+          "why": "<strong>or</strong> only needs one of them, so both is perfectly fine by it. <strong>and</strong> is the strict one &mdash; it is the word that needs both."
+      },
+      "whole": {
+          "opts": [
+              "Because <strong>and</strong> joins two complete questions, not two pin names",
+              "Because the second button is on a different pin",
+              "Because Python needs the number written twice to be sure"
+          ],
+          "q": "Why does the second half of the line need its own comparison, instead of just the pin&rsquo;s name?",
+          "right": 0,
+          "why": "Name the two pins on their own and Python reads each as &ldquo;there is something here&rdquo;, which is always true &mdash; so the light comes on and never goes out."
+      }
+  },
   typer: [
     "sw2 = Pin(3, Pin.IN, Pin.PULL_UP)",
     "if sw1.value() == 0 and sw2.value() == 0:",
@@ -1219,6 +1258,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

@@ -104,6 +104,12 @@ def rail(fname):
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>""" % ("\n".join(rows))
 
@@ -205,6 +211,15 @@ def process(path):
          + '<div class="shell">\n' + rail(fname) + '\n<main class="wrap" id="main">'
          + inner + '</main>\n</div>'
          + s[end:])
+
+    # ---- robot.js, ahead of whatever uses it ------------------------------
+    s = s.replace('<script src="robot.js"></script>\n', '')
+    if '<script src="activity.js">' in s:
+        s = s.replace('<script src="activity.js">',
+                      '<script src="robot.js"></script>\n<script src="activity.js">', 1)
+    else:
+        s = s.replace('<script src="code.js">',
+                      '<script src="robot.js"></script>\n<script src="code.js">', 1)
 
     # ---- footer ----------------------------------------------------------
     f = s.index('<footer>')

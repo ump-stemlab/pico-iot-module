@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-magnifier.png" alt="" width="360" height="560" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 10</p>
     <h1>Internet and Data</h1>
@@ -80,14 +81,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -119,6 +122,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -335,7 +344,6 @@
   <em>machine</em> can read it. Both times the reading itself is left alone until the last moment &mdash;
   you send the whole of it and change it only where it has to fit something.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I can say why the graph cannot use the reading as it arrives</span></label>
 </section>
 
 <section id="wifi">
@@ -423,7 +431,6 @@
   tick a box on a web page first, because it has no browser to tick it in. Many school networks work
   exactly like that; a phone hotspot is the usual way round it.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I can explain what the waiting loop is waiting for</span></label>
 </section>
 
 <section id="mqtt">
@@ -506,7 +513,8 @@
   The website calls it a <strong>feed</strong>. MQTT calls the address of it a <strong>topic</strong>.
   They are the same thing seen from two sides &mdash; the box, and the way you write to it.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I can say what a broker is for in one sentence</span></label>
+
+<div class="ckpt ask" data-gate="mqtt" data-label="What sits in the middle"></div>
 </section>
 
 <section id="account">
@@ -521,7 +529,6 @@
     <h4>Make a free account</h4>
     <p>Go to <a href="https://io.adafruit.com" target="_blank" rel="noopener">io.adafruit.com</a> and sign
     up. It takes about two minutes and costs nothing.</p>
-    <label class="chk"><input type="checkbox" data-p="a1"><span>I have an Adafruit IO account and I am signed in</span></label>
   </div></div>
 
   <div class="step"><div class="idx">2</div><div class="body">
@@ -534,7 +541,6 @@
     It lets anybody who has it write to your account as if they were you. Never put it in a screenshot,
     never paste it into a group chat, and never type it into somebody else&rsquo;s program. If it does get
     out, the same page has a button to throw it away and make a new one.</div>
-    <label class="chk"><input type="checkbox" data-p="a2"><span>I have my username and my key written down privately</span></label>
   </div></div>
 
   <div class="step"><div class="idx">3</div><div class="body">
@@ -551,7 +557,6 @@
   <figure class="shot"><img src="img/aio-feed-address.png" alt="The Edit Feed panel, showing a list headed Current Endpoints with three addresses: a Web one, an API one, and an MQTT one which reads kamilkhal96 slash feeds slash temperature." loading="lazy">
     <figcaption>Three addresses are shown. <strong>The one you want is the MQTT one</strong> &mdash; the short one, with no <code>https://</code> in front of it. Copy that, and do not retype it.</figcaption></figure>
 
-    <label class="chk"><input type="checkbox" data-p="a3"><span>I have a feed called temperature, and I have copied its address</span></label>
   </div></div>
 
   <div class="step"><div class="idx">4</div><div class="body">
@@ -573,7 +578,6 @@
 
     <p>You now have an empty graph waiting for its first point. Leave the tab open &mdash; watching it
     fill up is the best moment in this activity.</p>
-    <label class="chk"><input type="checkbox" data-p="a4"><span>I have an empty line chart on a dashboard, waiting</span></label>
   </div></div>
 
   <div class="cal note"><b>The pictures are real, and websites move</b>
@@ -590,6 +594,8 @@
   A free account accepts <strong>30 data points per minute</strong>. That is why the program waits five
   seconds between messages &mdash; twelve a minute, comfortably inside the limit. Take the wait out and
   you will be shut out for a while, which looks exactly like a broken program.</div>
+
+<div class="ckpt ask" data-gate="key" data-label="Your key is a password"></div>
 </section>
 
 <section id="library">
@@ -645,7 +651,6 @@
     <code>umqtt_simple.py</code> &mdash; an underscore where the real board has a dot. It is the same
     tool. This is one of the three lines that differ between the two routes, and the code section points
     it out again.</div>
-    <label class="chk"><input type="checkbox" data-p="l1"><span>I can see the three library files along the top of the starter project</span></label>
   </div>
 
   <div class="panel" id="pan-b" role="tabpanel" aria-labelledby="tab-b" hidden>
@@ -671,7 +676,6 @@
     <div class="cal warn"><b>Manage packages talks to the Pico, not to your laptop</b>
     Thonny has to be connected to the board, with nothing running, before the install will work. If the
     list comes back empty, press stop and try again.</div>
-    <label class="chk"><input type="checkbox" data-p="l2"><span>bme280.py is saved on the Pico and umqtt.simple is installed</span></label>
   </div>
 
   <div class="cal info"><b>The error that means one is missing</b>
@@ -718,9 +722,6 @@
   &mdash; a wrong username is a message going to somebody else&rsquo;s address. And keep publishing
   without stopping until you are told you have gone too fast.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I saw a point land on the graph</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I sent one with the unit still on, and saw what the graph did with it</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I published fast enough to be told off about the limit</span></label>
 </section>
 
 <section id="build">
@@ -977,7 +978,6 @@
     simulation is running. A panel opens with sliders for temperature, pressure and humidity. Without it
     the room in the simulator never changes and your graph is a flat line &mdash; which looks exactly like
     a broken program and is not one.</div>
-    <label class="chk"><input type="checkbox" data-p="c1"><span>I opened the starter project and found the sensor&rsquo;s sliders</span></label>
   </div>
 
   <div class="panel" id="pan-d" role="tabpanel" aria-labelledby="tab-d" hidden>
@@ -998,8 +998,15 @@
     Before the lesson, check that a Pico W can actually join the WiFi in this room. School networks often
     ask you to sign in on a web page, and a Pico has no browser. If that is the case here, a phone hotspot
     is the usual answer &mdash; make sure it is set to 2.4&nbsp;GHz.</div>
-    <label class="chk"><input type="checkbox" data-p="c2"><span>The board is on, and I know the name and password of a 2.4&nbsp;GHz network</span></label>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Ready to send">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; ready to send</b>My feed exists with an empty chart waiting on a dashboard, the board is on, and I have the name and password of a <strong>2.4&nbsp;GHz</strong> network.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -1027,7 +1034,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that are new. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="wlan = network.WLAN(network.STA_IF)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="wlan.connect(WIFI_NAME, WIFI_PASS)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="while not wlan.isconnected():" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -1035,7 +1044,8 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="mqtt.publish(FEED, temp)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 1 has capitals in two places and they both matter. Line 3 ends in a colon.</p>
   </div>
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
   <h3>&#128269; What each new line is doing</h3>
   <div class="tablescroll">
@@ -1158,12 +1168,14 @@
     <figcaption>This is the moment. Somebody put their hands round the sensor about two thirds of the way along.</figcaption></figure>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The Shell says it joined the network, and shows an address</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The Shell says it connected to Adafruit IO</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>A line appears in the Shell every five seconds</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>Points are landing on my dashboard graph</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>I made the graph move on purpose &mdash; slider, or warm hands</span></label>
-  <label class="chk"><input type="checkbox" data-p="r6"><span>I opened my dashboard on a phone and watched it from across the room</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The Shell says it joined the network and connected to Adafruit IO, a line appears every five seconds, and <strong>points are landing on my dashboard graph</strong>.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1460,12 +1472,6 @@
   <text x="390" y="302" class="dsub" text-anchor="middle">One reading, taken once, used twice. Take it at the top of the round and then use it for both.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>The screen shows the word Temp with a reading under it</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>The reading on the screen changes as the room changes</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>The graph is still filling up at the same time</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>Nothing is left over on the screen from the round before</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>The label Temp stays exactly where it is while the number changes</span></label>
-  <label class="chk"><input type="checkbox" data-p="e6"><span>It keeps going for as long as I leave it running</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Do not start a new file. Start from the program you have just written, which already reads the
@@ -1559,17 +1565,32 @@
     <li>Share your dashboard link with somebody in a different room and get them to tell you when you have
     breathed on the sensor.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>The screen shows Temp with a reading under it, changing as the room changes, while the graph keeps filling up at the same time.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now find
   something out about the world and tell the rest of the world about it, which is the whole of the
   Internet of Things in one sentence. Next up &mdash; Activity 9, where a pin stops answering yes or
   no and starts answering <em>how much</em> &mdash; and where you find out that a sensor&rsquo;s
   numbers mean nothing at all until you have measured what they mean on <em>your</em> sensor.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1605,6 +1626,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "key": {
+          "opts": [
+              "A password &mdash; anybody who has it can write to your feeds",
+              "The name of your feed",
+              "The address of your dashboard"
+          ],
+          "q": "Your Adafruit IO <strong>key</strong> is not your username. What is it?",
+          "right": 0,
+          "why": "Write it down privately, and keep it out of anything you show the class or put on a screen."
+      },
+      "mqtt": {
+          "opts": [
+              "A broker &mdash; the board publishes to it, and the dashboard reads from it",
+              "A cable from the board to the web page",
+              "The WiFi router"
+          ],
+          "q": "Your board never talks to the graph directly. What sits in between them?",
+          "right": 0,
+          "why": "Publisher on one side, subscriber on the other, and neither needs to know the other exists. Activity 11 turns the same arrangement round."
+      }
+  },
   typer: [
     "wlan = network.WLAN(network.STA_IF)",
     "wlan.connect(WIFI_NAME, WIFI_PASS)",
@@ -1651,6 +1694,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

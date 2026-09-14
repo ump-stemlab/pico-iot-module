@@ -54,6 +54,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-thumbsup.png" alt="" width="360" height="478" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 2</p>
     <h1>Make an LED Blink</h1>
@@ -73,14 +74,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -112,6 +115,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -283,8 +292,8 @@
     <div class="sim-out" id="blinkout">Nothing running yet. Press Run the loop.</div>
   </div>
 
-  <label class="chk"><input type="checkbox" data-p="p1"><span>I made the LED blink slowly, then so fast I could not see it blink at all</span></label>
-  <label class="chk"><input type="checkbox" data-p="p2"><span>I can see that the two waiting times do not have to be the same</span></label>
+
+<div class="ckpt ask" data-gate="idea" data-label="Why it has to wait"></div>
 </section>
 
 <section id="indent">
@@ -389,8 +398,8 @@
   your editor puts in for you and you will never meet this problem. If a line refuses to work and you
   cannot see why, delete all the space at the front of it and press <kbd>Space</kbd> four times.</div>
 
-  <label class="chk"><input type="checkbox" data-p="p3"><span>I can say what the four spaces in front of a line mean</span></label>
-  <label class="chk"><input type="checkbox" data-p="p4"><span>I know what happens if <em>off</em> is left at the left edge</span></label>
+
+<div class="ckpt ask" data-gate="indent" data-label="What the spaces mean"></div>
 </section>
 
 <section id="build">
@@ -432,14 +441,12 @@
       <h4>Check the parts</h4>
       <p>A <strong>red LED</strong> and a <strong>330&nbsp;&Omega; resistor</strong>, nothing else. Add
       them from the blue <strong>+</strong> button if the project is empty.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>Red LED and 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Check the two wires</h4>
       <p>Long leg <strong>A</strong> through the resistor to <strong>GP11</strong> (physical pin 15).
       Short leg <strong>C</strong> to any <strong>GND</strong> pin.</p>
-      <label class="chk"><input type="checkbox" data-p="a2"><span>Both wires are in place and the LED has no warning triangle</span></label>
     </div></div>
   </div>
 
@@ -449,20 +456,26 @@
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on.</p>
-      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Find the Pico in Thonny</h4>
       <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
       choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Nothing new to wire &mdash; the LED and resistor from Activity 1 are still on <span class="gp">11</span> and GND, with no warning triangle on the part.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -484,17 +497,20 @@
   <h3>Type it here first</h3>
   <p>The four lines that are new this time. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from time import sleep" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="while True:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="sleep(0.5)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="led.off()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Four boxes, four lines. Capitals matter.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>These boxes ignore the spaces at the front</b>
   Python does not. When you type these lines for real, lines 3 and 4 go <strong>inside</strong> the loop
   &mdash; pushed in by four spaces.</div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -602,10 +618,14 @@
   <figure class="board"><img src="img/lilex5-board-red-on.png" alt="The LilEx5 board with the red LED lit, one half of the blink" loading="lazy"><figcaption>Half of the blink. Half a second later this LED is dark, and half a second after that it is back.</figcaption></figure>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The red LED goes <strong>on and off</strong> by itself, about once a second</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>It keeps going &mdash; it does not stop after one blink</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>I stopped the program on purpose, and the blinking stopped</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>I changed one of the waiting numbers and the blink changed speed</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The red LED goes on and off <em>by itself</em>, about once a second, and keeps going until I stop it on purpose.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -671,10 +691,6 @@
   <text x="393" y="276" class="dsub" text-anchor="middle">&hellip; then back to red, and round again, for ever</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>The three colours take turns in the right order</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>Only one LED is lit at a time &mdash; no two colours overlap</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>The yellow is clearly shorter than the red and the green</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>It runs for ever, until I stop it</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
     <p>You have done most of this before. In the Activity 1 exercise you gave each LED its own nickname,
@@ -725,15 +741,30 @@
     <li>Put a fourth group in the loop that switches the buzzer on <span class="gp">14</span> for a tenth
     of a second when the light turns red. Warn the person next to you first.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>Traffic light: the three colours take turns in the right order, only one is lit at a time, and the yellow is clearly the shortest.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> Loops, spaces and pauses
   &mdash; that is the machinery behind almost every program you will write from here. Next up &mdash;
   Activity 4, where the board starts listening to you instead of the other way round.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -762,6 +793,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "idea": {
+          "opts": [
+              "It still blinks &mdash; far too fast to see, so the LED just looks dim",
+              "It blinks once and stops",
+              "Nothing happens at all"
+          ],
+          "q": "Take both of the waiting lines out and run it. What happens?",
+          "right": 0,
+          "why": "The loop runs millions of times a second. The wait is the only thing slowing it down to a speed your eye can follow."
+      },
+      "indent": {
+          "opts": [
+              "This line is inside the loop, and repeats with it",
+              "This line is a comment",
+              "This line runs once, before the loop starts"
+          ],
+          "q": "A line is pushed in by four spaces. What does that tell Python?",
+          "right": 0,
+          "why": "Indentation is how Python marks what belongs inside a block. Slide a line back to the left edge and it drops out of the loop."
+      }
+  },
   typer: [
     "from time import sleep",
     "while True:",
@@ -788,6 +841,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

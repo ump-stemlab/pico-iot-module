@@ -63,6 +63,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-farming.png" alt="" width="360" height="452" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 9</p>
     <h1>Soil Moisture</h1>
@@ -90,14 +91,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -129,6 +132,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -253,7 +262,6 @@
   yes-or-no throws the answer away. The kind of signal follows the thing being measured, not the
   other way round.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a1"><span>I can say in one sentence what makes a signal analogue rather than digital</span></label>
 </section>
 
 <section id="adc">
@@ -343,8 +351,8 @@
   <strong>3V3</strong>, never from a 5&nbsp;V pin &mdash; 5&nbsp;V on a GP pin damages it. This is the
   same rule Activity 1 started with, and it is the one that costs money when it is broken.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a2"><span>I know what an ADC is for, and what the two ends of its scale are</span></label>
-  <label class="chk"><input type="checkbox" data-p="a3"><span>I know which three pins can measure a voltage, and which one we are using</span></label>
+
+<div class="ckpt ask" data-gate="adc" data-label="What the ADC does"></div>
 </section>
 
 <section id="probe">
@@ -398,7 +406,8 @@
   <strong>Big number, dry soil. Small number, wet soil.</strong> Everything else today follows from
   that one sentence &mdash; including why the dry threshold is the <em>bigger</em> of your two numbers.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a4"><span>I can explain to somebody else why watering the plant makes the number go down</span></label>
+
+<div class="ckpt ask" data-gate="probe" data-label="Backwards again"></div>
 </section>
 
 <section id="zones">
@@ -503,7 +512,6 @@
   they are three parts of one decision. What each of them does is indented under it, the way it has been
   since Activity 5.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a5"><span>I can say what elif means, and why only one branch ever runs</span></label>
 </section>
 
 <section id="percent">
@@ -580,7 +588,6 @@
   short lines that pull them back to 0 and 100. Let somebody in the class hit 138&nbsp;% before you fix
   it &mdash; it is much more memorable that way round.</div>
 
-  <label class="chk"><input type="checkbox" data-p="a6"><span>I know what the two slashes do that one slash does not</span></label>
 </section>
 
 <section id="try">
@@ -622,9 +629,6 @@
   <strong>dry</strong> below <strong>wet</strong> and see what a program does when its two numbers are
   the wrong way round.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I found the raw number for bone-dry and for soaked</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I changed the verdict without changing the soil, just by moving a threshold</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I put the two numbers the wrong way round on purpose and saw what happened</span></label>
 </section>
 
 <section id="build">
@@ -647,7 +651,6 @@
       <p><a href="https://wokwi.com/projects/472418654786566145" target="_blank" rel="noopener">wokwi.com/projects/<wbr>472418654786566145</a>
       &mdash; a Pico, the soil sensor, and three wires. The program file is empty on purpose: that part
       is yours.</p>
-      <label class="chk"><input type="checkbox" data-p="c1"><span>The project is open and I can see the Pico and the green sensor block</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -882,7 +885,6 @@
       the sensor on either of them pushes more than 3.3&nbsp;V into GP26, which damages the pin. Physical
       pin <strong>36</strong> is the one.</div>
 
-      <label class="chk"><input type="checkbox" data-p="c2"><span>AOUT is on GP26, VCC is on 3V3, and GND is on a ground</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -893,7 +895,6 @@
       somebody had watered the plant.</p>
       <div class="cal tip"><b>Without the slider the number never moves</b>
       Which looks precisely like a broken program and is not one. It starts at 15&nbsp;%, which is dryish.</div>
-      <label class="chk"><input type="checkbox" data-p="c3"><span>I pressed play, clicked the sensor, and found the water slider</span></label>
     </div></div>
   </div>
 
@@ -971,7 +972,6 @@
       <p><strong>SW5</strong> off, and the USB cable out, before a single wire goes in. Wires get moved
       with the power off. This has been the rule since Activity 1 and it is the one that matters most
       today, because today is the first time you are actually moving any.</p>
-      <label class="chk"><input type="checkbox" data-p="d1"><span>The board is switched off and unplugged</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -982,7 +982,6 @@
       <div class="cal warn"><b>+5V into this probe puts more than 3.3&nbsp;V onto GP26</b>
       Which damages the pin, permanently, and quietly. There is no error message and no smoke &mdash;
       that pin just stops reading properly for ever. Look twice.</div>
-      <label class="chk"><input type="checkbox" data-p="d2"><span>All three wires are in, and VCC is on pin 1 and not on pin 2 or 4</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -991,13 +990,11 @@
       deeper &mdash; the little board on the lead is electronics and does not want to be buried. Keep
       the same depth every time you read it, or your numbers will move for a reason that has nothing to
       do with water.</p>
-      <label class="chk"><input type="checkbox" data-p="d3"><span>Both prongs are in the soil to the same depth, and the board on the lead is dry</span></label>
     </div></div>
 
     <div class="step"><div class="idx">4</div><div class="body">
       <h4>Power on</h4>
       <p>USB in, <strong>SW5</strong> on, and Thonny showing <code>&gt;&gt;&gt;</code> in the Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="d4"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="cal note"><b>The little connector marked with analogue inputs is a different thing</b>
@@ -1005,6 +1002,14 @@
     reach the Pico directly &mdash; they go through a converter chip of their own and come back on the
     sensor bus, so nothing in today&rsquo;s program will read them. Use the 40-pin header, as above.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Three wires: AOUT to <span class="gp">26</span>, VCC to 3V3 and GND to a ground. On the real board it was <strong>switched off while I wired it</strong>, and both prongs are in the soil to the same depth.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -1023,7 +1028,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that are new or nearly new. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from machine import ADC, Pin" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="soil = ADC(Pin(26))" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="reading = soil.read_u16()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -1031,6 +1038,8 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="elif reading > wet:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 4 is the one worth slowing down for &mdash; and line 5 ends in a colon, like every question that has lines underneath it.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
 
   <div class="cal note"><b>Where the indents go</b>
   Everything inside the loop is four spaces in. <code>if</code>, <code>elif</code> and <code>else</code>
@@ -1038,7 +1047,6 @@
   of them does sits at eight. If <code>elif</code> ends up at eight it will not run at all and Python
   will say so.</div>
 
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the program myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each new line is doing</h3>
   <div class="tablescroll"><table class="codetable">
@@ -1127,11 +1135,14 @@
 </svg>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are scrolling up the Shell, three lines every second</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>Wetting the soil (or dragging the slider up) makes the raw number go down</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>I found the exact moment DRY turns into JUST RIGHT, and read the number it happened at</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>I got the percentage to sit at 0, and to sit at 100</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>I took one clamp line out on purpose and saw a percentage past 100 or below 0</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>Numbers are scrolling up the Shell, and wetting the soil (or dragging the slider up) makes the raw number go <em>down</em>.</span>
+  </label>
+</div>
 </section>
 
 <section id="calibrate">
@@ -1190,7 +1201,6 @@
     it down. Nothing you measure today will ever be drier than the air in this room.</p>
     <p><em>On the Wokwi route:</em> drag the water slider to <strong>0</strong>. That is your air
     reading.</p>
-    <label class="chk"><input type="checkbox" data-p="k1"><span>My air reading, written down on paper</span></label>
   </div></div>
 
   <div class="step"><div class="idx">2</div><div class="body">
@@ -1198,7 +1208,6 @@
     <p>Water the cup properly &mdash; more than you think &mdash; push the probe in to the same depth as
     before, and let it settle again. Write that number down too. Nothing will be wetter than this either.</p>
     <p><em>On the Wokwi route:</em> drag the slider to <strong>100</strong>.</p>
-    <label class="chk"><input type="checkbox" data-p="k2"><span>My soaked reading, written down next to it</span></label>
   </div></div>
 
   <div class="step"><div class="idx">3</div><div class="body">
@@ -1208,8 +1217,6 @@
     plenty. Sitting exactly on the ends is a bad idea &mdash; readings wobble, and a threshold right on
     the edge flickers.</p>
     <p>Then go back to your program, change the two lines, and run it again.</p>
-    <label class="chk"><input type="checkbox" data-p="k3"><span>My own two numbers are in my program, and the worksheet&rsquo;s two are gone</span></label>
-    <label class="chk"><input type="checkbox" data-p="k4"><span>Wet soil now says WET, dry soil says DRY, and the percentage moves sensibly in between</span></label>
   </div></div>
 
   <div class="cal tip"><b>The Wokwi route gives you a free check</b>
@@ -1229,6 +1236,14 @@
   Two groups sitting next to each other will not have the same two numbers, and neither of them is
   mistaken. The numbers belong to the probe and the cup, not to the activity. Write them on a sticky
   note and keep them with the probe.</div>
+
+<div class="ckpt" data-gate="calibrate" data-label="Calibrated">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; calibrated with my own numbers</b>My own air reading and soaked reading are written down and are <em>in my program</em> &mdash; the worksheet&rsquo;s two numbers are gone. Wet soil now says WET, dry soil says DRY, and the percentage moves sensibly in between.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1628,16 +1643,31 @@
     <li><strong>Move your two numbers closer together</strong> until JUST RIGHT is a very narrow band,
     and watch the verdict flicker. Then work out what that tells you about choosing a threshold.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>The LED warns me that the soil is dry with no screen and no Shell needed.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> Your board can now
   measure something that has no yes-or-no answer at all, and &mdash; more importantly &mdash; you know
   that its numbers mean nothing until somebody has gone and found out what they mean. Next up &mdash;
   Activity 10, where a reading like this one leaves the room altogether.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1670,6 +1700,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "adc": {
+          "opts": [
+              "Turned a voltage into a number the Pico can hold",
+              "Turned a number into a voltage for the probe",
+              "Made the signal stronger so it can be read"
+          ],
+          "q": "The probe gives a voltage, and your program reads a number between 0 and 65535. What has the ADC done?",
+          "right": 0,
+          "why": "A computer cannot hold a voltage. An ADC is the part that measures one and hands back a number standing for it."
+      },
+      "probe": {
+          "opts": [
+              "Down &mdash; wet soil carries electricity more easily",
+              "Up &mdash; there is more water to measure",
+              "Nowhere until the soil dries out again"
+          ],
+          "q": "You water the plant. Which way does the raw number go?",
+          "right": 0,
+          "why": "Wet soil conducts, which pulls the voltage at the probe down, and the number down with it. This is the one everybody gets backwards."
+      }
+  },
   typer: [
     "from machine import ADC, Pin",
     "soil = ADC(Pin(26))",
@@ -1705,6 +1757,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

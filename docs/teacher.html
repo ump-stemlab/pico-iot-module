@@ -98,6 +98,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -159,7 +165,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
         <td>The middle is gone: no WiFi, no account, no server, and the message still arrives. <strong>UART</strong> (two chips, two wires, no addresses), the three <strong>mode pins</strong> &mdash; which idle at 1,&nbsp;1,&nbsp;1, meaning <em>asleep</em>, and whose every failure is silent &mdash; and <strong>channels</strong>. The honest cost is taught with the win: no acknowledgement, no ordering, no address. <strong>The only activity with no simulator.</strong></td>
         <td><a href="teacher-12.html">teacher-12</a></td></tr>
       <tr><td><strong>13</strong></td><td><a href="activity-13.html">Your Own Live Dashboard</a></td>
-        <td>The middle is <strong>yours</strong>: the class deploys a Google Apps Script, posts every reading to it over <strong>HTTP</strong> as named values (<strong>JSON</strong>), and keeps the rows in a spreadsheet of its own &mdash; which is the first time the module has <strong>history</strong> rather than a live gauge. Posting is contrasted with Activity&nbsp;10&rsquo;s publishing: today the board waits for an answer. <strong>Ships finished code</strong> &mdash; the one exception to the typing rule &mdash; and has <strong>no simulator</strong>.</td>
+        <td>The middle is <strong>yours</strong>: the class deploys a Google Apps Script, posts every reading to it over <strong>HTTP</strong> as named values (<strong>JSON</strong>), and keeps the rows in a spreadsheet of its own &mdash; which is the first time the module has <strong>history</strong> rather than a live gauge. Posting is contrasted with Activity&nbsp;10&rsquo;s publishing: today the board waits for an answer. <strong>Ships finished code</strong> &mdash; the one exception to the typing rule. <strong>Both routes do the whole activity</strong>: Wokwi's Pico&nbsp;W reaches the real internet, and posts three readings where the LilEx5 posts twelve.</td>
         <td><a href="teacher-13.html">teacher-13</a></td></tr>
     </tbody>
   </table>
@@ -293,6 +299,7 @@ seconds of each other. Nothing on the page hints at it, so keep it among staff.
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+<script src="robot.js"></script>
 <script src="code.js"></script>
 </body>
 </html>

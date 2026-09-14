@@ -63,6 +63,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-thinking.png" alt="" width="360" height="559" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 5</p>
     <h1>Making Decisions</h1>
@@ -86,14 +87,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -125,6 +128,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -287,8 +296,8 @@
   edge, with the lines that belong to the <code>if</code> in between. An <code>else</code> on its own
   is an error &mdash; Python has no idea what it is the opposite of.</div>
 
-  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say what <code>if</code> does to the path a program takes</span></label>
-  <label class="chk"><input type="checkbox" data-p="i2"><span>I can say why <code>if</code> on its own would leave the light stuck on</span></label>
+
+<div class="ckpt ask" data-gate="idea" data-label="What else adds"></div>
 </section>
 
 <section id="trap">
@@ -358,9 +367,8 @@
   program that worked five minutes ago suddenly refuses to start and the word <code>SyntaxError</code>
   appears, count the equals signs before you look at anything else.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say what <strong>one</strong> equals sign does</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I can say what <strong>two</strong> equals signs do</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I know which one belongs in an <code>if</code> line, and what happens if I get it wrong</span></label>
+
+<div class="ckpt ask" data-gate="trap" data-label="One equals sign, or two"></div>
 </section>
 
 <section id="zero">
@@ -417,8 +425,6 @@
   comparison the wrong way round, get an LED that is on except when they press, and have nothing to
   argue with. Learning to read <strong>0 as pressed</strong> is the whole reason that activity existed.</div>
 
-  <label class="chk"><input type="checkbox" data-p="z1"><span>I know which number the button gives while I am pressing it</span></label>
-  <label class="chk"><input type="checkbox" data-p="z2"><span>I can describe what the wrong comparison would look like on the board</span></label>
 </section>
 
 <section id="indent">
@@ -484,8 +490,6 @@
   <p>Python answers with <code>SyntaxError</code> or <code>IndentationError</code> depending on how far
   out you were. Either way it will not run, which is the kind thing to do.</p>
 
-  <label class="chk"><input type="checkbox" data-p="n1"><span>I know how far in a line inside the <code>if</code> goes</span></label>
-  <label class="chk"><input type="checkbox" data-p="n2"><span>I know that <code>else</code> lines up with <code>if</code>, not with the lines under it</span></label>
 </section>
 
 <section id="try">
@@ -518,9 +522,6 @@
     <div class="sim-out tall" id="ifout">Nothing running yet. Press Run the loop, then hold the pad down.</div>
   </div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the light follow my finger with the question set to 0</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw what comparing with 1 does instead</span></label>
-  <label class="chk"><input type="checkbox" data-p="s3"><span>I saw what happens with the <code>else</code> taken away</span></label>
 </section>
 
 <section id="build">
@@ -541,7 +542,6 @@
       <p>Click the blue <strong>+</strong> and add a <strong>Pushbutton</strong>, an
       <strong>LED</strong> and a <strong>Resistor</strong>. Set the LED to red and the resistor to
       <strong>330</strong> in the panel on the right.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>A pushbutton, a red LED and a 330 &Omega; resistor are on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -787,8 +787,6 @@
       physically goes. The names beside them are what you type. GP2 is physical pin 4 and GP11 is
       physical pin 15; typing 4 or 15 in your program would give you two completely different pins.</div>
 
-      <label class="chk"><input type="checkbox" data-p="a2"><span>Button: one leg &rarr; GP2, diagonally opposite leg &rarr; GND</span></label>
-      <label class="chk"><input type="checkbox" data-p="a3"><span>LED: long leg &rarr; resistor &rarr; GP11, short leg &rarr; GND</span></label>
       <div class="cal tip"><b>Any GND pad will do</b>
       There are eight of them and they are all the same piece of metal inside the Pico. Pins 8 and 18
       are drawn here only because they are the closest ones to the wires that need them &mdash; a tidy
@@ -804,7 +802,6 @@
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on.</p>
-      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico&rsquo;s power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -812,20 +809,26 @@
       <p>Bottom-right corner of <a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a>,
       choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
       Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Check you can find both parts with a finger</h4>
       <p>SW1 is the first of the three small pushbuttons. LED1 is the red one. This program is the first
       that uses an input and an output at once, so being sure which is which saves a lot of time later.</p>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>I can point at SW1 and at LED1 on the board</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>A pushbutton <em>and</em> an LED this time: button leg to <span class="gp">2</span> with the opposite leg to GND, LED long leg through the resistor to <span class="gp">11</span> with the short leg to GND.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -843,7 +846,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that matter. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="led = Pin(11, Pin.OUT)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="if sw.value() == 0:" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="led.on()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -851,10 +856,11 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="led.off()" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Count your equals signs on line 2.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>These boxes ignore the spaces at the front</b>
   Python does not. When you type them for real, lines 2 and 4 go in by <strong>four</strong> spaces and
   lines 3 and 5 by <strong>eight</strong>.</div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -956,11 +962,14 @@
   half-missed leaves the light on for a moment.</div>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>The light is <strong>off</strong> when nobody is touching the button</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The light comes <strong>on</strong> while I hold SW1 down</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>It goes out again the moment I let go</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>The words on my screen match what the light is doing</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>I stopped the program on purpose, rather than closing the window</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>The light is off when nobody is touching the button, comes on while I hold SW1 down, and goes out the moment I let go.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1040,10 +1049,6 @@
   <text x="390" y="260" class="dsub" text-anchor="middle">Green is LED3, on GP13.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>SW1 lights the red LED and nothing else</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>SW2 lights the green LED and nothing else</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>Both together light both</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>Both go out when I let go, and it keeps running until I stop it</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Four things, four names. This is the same lesson as the three LEDs in Activity 1 and the two
@@ -1100,15 +1105,30 @@
     <li>Take the waiting line out completely and watch what the light does. Predict first: does it
     flicker, does it dim, or does nothing change at all?</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>SW1 lights the red LED, SW2 lights the green one, both together light both &mdash; and everything goes out when I let go.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Five questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All five right.</strong> Your board can now
   read the world <em>and</em> decide what to do about it. Next up &mdash; Activity 6, where one
   decision gets to depend on more than one thing at a time.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1138,6 +1158,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "idea": {
+          "opts": [
+              "A second road, taken whenever the question comes out false",
+              "A second question to ask",
+              "A way of repeating the if"
+          ],
+          "q": "What does <strong>else</strong> give you that an <strong>if</strong> on its own does not?",
+          "right": 0,
+          "why": "Without it, nothing ever switches the light back off &mdash; the program only has instructions for one of the two answers."
+      },
+      "trap": {
+          "opts": [
+              "Two equals signs, because they ask a question",
+              "One equals sign, because it compares",
+              "Either one &mdash; Python treats them the same"
+          ],
+          "q": "Which one belongs in an <strong>if</strong> line?",
+          "right": 0,
+          "why": "One equals sign <em>puts</em> a value into a name. Two <em>ask</em> whether two things match. An if is always asking."
+      }
+  },
   typer: [
     "led = Pin(11, Pin.OUT)",
     "if sw.value() == 0:",
@@ -1169,6 +1211,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

@@ -108,6 +108,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -122,10 +128,12 @@ in the cloud half. The one thing they type is <code>config.py</code>. Do not let
 excuse to skip reading <code>main_dashboard.py</code> &mdash; the going-further tasks assume they have
 opened it.</div>
 
-<div class="tbanner"><b>No Wokwi route, for the second activity running.</b> The program reads the whole
-LilEx5 sensor set and the simulator has none of it. A student with no board can still do the entire
-cloud half on their own laptop &mdash; deploy a script, make a sheet, and point the dashboard at a
-classmate&rsquo;s address. Plan for that rather than leaving them watching.</div>
+<div class="tbanner"><b>There is a Wokwi route, and it has not been run yet.</b> The starter project is
+a fork of Activity 10's (same custom weather chip, same Pico&nbsp;W) with <code>main.py</code> replaced
+and <code>urequests.py</code> added. It posts three readings instead of twelve; everything else is the
+same. <strong>Build it and run it once before a class uses it</strong> &mdash; the checklist is in
+<code>wokwi/activity-13/HOW-TO-MAKE-THE-PROJECT.md</code> in the repo, and the student page's Wokwi
+links say <code>WOKWI-PROJECT-URL</code> until you paste the real one in.</div>
 
 <section>
   <h2>What is being taught</h2>
@@ -186,6 +194,32 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
     500,000 rows &mdash; a month at five seconds, four years at a minute.</li>
   </ul>
 
+  <h3>The Wokwi route &mdash; what is different, and what to watch</h3>
+  <ul>
+    <li><strong>Three readings, not twelve</strong> &mdash; temperature, pressure and humidity from the
+    same custom weather chip as Activity 10. <strong>Use it, do not apologise for it.</strong> A Wokwi
+    student's sheet is three columns wide and a board student's is twelve, from the same Apps Script:
+    that is the "names decide the columns" idea demonstrating itself. If you have both routes in the
+    room, point two of them at one address and put the gappy sheet on the projector.</li>
+    <li><strong>The four settings sit at the top of <code>main.py</code></strong> instead of in
+    <code>config.py</code>, and only one of them is the student's to change &mdash; Wokwi's network is
+    <code>Wokwi-GUEST</code> with no password.</li>
+    <li><strong>The sensor's sliders are invisible until you click the green block while the simulation
+    is running</strong>, exactly as in Activity 10. They are the best demonstration in the activity: drag
+    the humidity slider and the number moves in the Shell, then the sheet, then the dashboard.</li>
+    <li><strong>Wokwi freezes when its tab is not in front.</strong> Students will report that the rows
+    "stopped". They did not; the clock did. This is on the student page too.</li>
+    <li><strong>A <code>302</code> in the Shell is a success.</strong> Apps Script runs
+    <code>doPost</code> and <em>then</em> redirects to a results page. <code>urequests.py</code> follows
+    the redirect so you should see <code>200</code>, but a <code>302</code> means the row landed.</li>
+    <li><strong>If it runs out of memory</strong>, the TLS handshake is the cause and the one-word fix is
+    <code>allow_redirects=False</code> on the <code>post</code> call &mdash; it skips the second
+    handshake and reports <code>302</code>. The full list is in
+    <code>wokwi/activity-13/HOW-TO-MAKE-THE-PROJECT.md</code>.</li>
+    <li><strong>It must be the Pico&nbsp;W</strong> (<code>board-pi-pico-w</code>). The plain Pico has no
+    radio and fails at the first import, silently as far as a student is concerned.</li>
+  </ul>
+
   <div class="cal warn"><b>Check the address inside the dashboard files before you hand them out</b>
   <code>LilEx5_Dashboard.html</code> and <code>LilEx5_Dashboard_History.html</code> ship with a working
   <code>/exec</code> address already typed into <code>API_URL</code>. Whoever deployed that script owns
@@ -210,6 +244,8 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
     <li><strong>Put a sheet on the projector</strong> with a board already feeding it, so the class sees
     rows arriving before they start. This is the thing that makes them want to finish.</li>
     <li><strong>Have the pack on a shared drive</strong>, not on a memory stick going round the room.</li>
+    <li><strong>Run the Wokwi project yourself, once, end to end</strong>, with the tab left in front,
+    and confirm rows land in a sheet. It has not been run by anyone yet.</li>
   </ul>
 
   <h3>The one line that turns on history</h3>
@@ -256,6 +292,8 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
       <tr><td>Pasted the address with a trailing space or a line break</td><td>Silent failure, or a 404</td><td>It must end in <code>/exec</code> with nothing after it</td></tr>
       <tr><td>Used the <code>/dev</code> address instead of <code>/exec</code></td><td>Works for them, fails for the board</td><td><code>/dev</code> requires being signed in; only <code>/exec</code> is public</td></tr>
       <tr><td>Opened the dashboard before saving it</td><td>Still the placeholder address</td><td>Save, then hard-refresh the browser</td></tr>
+      <tr><td>Wokwi: switched to another browser tab</td><td>Rows stop arriving, then start again</td><td>Not a fault. The simulator only runs while its tab is visible</td></tr>
+      <tr><td>Wokwi: started from a blank project instead of the starter</td><td>Fails at the first import, no useful message</td><td>They picked the plain Pico. Only the starter has the Pico&nbsp;W and the libraries</td></tr>
       <tr><td>Shared their <code>/exec</code> address in the class chat</td><td>Other people&rsquo;s readings in their sheet</td><td>Re-deploy to get a new address &mdash; and treat this as the lesson, not a telling-off</td></tr>
     </tbody>
   </table></div>
@@ -271,6 +309,9 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
   <div class="codebox"><button class="copybtn" type="button">Copy</button><pre><code>REPORT_INTERVAL_MS = 60000</code></pre></div>
   <p>Upload <code>config.py</code> to the Pico again, then stop and run <code>main_dashboard.py</code>.
   The Shell should print one line a minute. That is the check &mdash; it needs no marking.</p>
+  <p><strong>In Wokwi it is the same number</strong>, at the top of <code>main.py</code>, and there is
+  nothing to upload &mdash; but they do have to press play again, and they have to leave the tab in
+  front for a minute to see it work.</p>
 
   <h3>Number two &mdash; the dashboard</h3>
   <p>At the top of <code>LilEx5_Dashboard_History.html</code>. One reading a minute means one row a
@@ -340,6 +381,8 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
     <li><a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> &mdash; only for finding an existing project; always <em>create</em> from inside the sheet</li>
     <li><a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener">Apps Script quotas</a> &mdash; the current limits, which do change</li>
     <li><a href="https://thonny.org" target="_blank" rel="noopener">Thonny</a></li>
+    <li>The Wokwi starter project &mdash; paste its link into <code>activity-13.html</code> where it
+    currently says <code>WOKWI-PROJECT-URL</code>, and add a row to the corrected-links note</li>
     <li><a href="activity-13.html">The student page</a> &middot; <a href="teacher-12.html">Activity 12 notes</a> &middot; <a href="teacher.html">All teacher notes</a></li>
   </ul>
 </section>
@@ -389,6 +432,7 @@ classmate&rsquo;s address. Plan for that rather than leaving them watching.</div
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+<script src="robot.js"></script>
 <script src="code.js"></script>
 <script>
 document.querySelectorAll('.copybtn').forEach(function(b){

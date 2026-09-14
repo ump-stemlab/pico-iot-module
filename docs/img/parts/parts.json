@@ -1,0 +1,128 @@
+{
+ "0": {
+  "key": "legs",
+  "label": "Legs and boots",
+  "verb": "bolted on",
+  "x": 25.952,
+  "y": 82.944,
+  "w": 48.095,
+  "h": 17.056
+ },
+ "1": {
+  "key": "chestlamp",
+  "label": "Chest lamp",
+  "verb": "lit",
+  "x": 44.524,
+  "y": 59.785,
+  "w": 11.19,
+  "h": 4.488
+ },
+ "2": {
+  "key": "shell",
+  "label": "Body shell",
+  "verb": "clicked together",
+  "x": 28.571,
+  "y": 56.732,
+  "w": 42.857,
+  "h": 31.777
+ },
+ "3": {
+  "key": "servoarm",
+  "label": "Servo arm",
+  "verb": "bolted on",
+  "x": 0.0,
+  "y": 56.732,
+  "w": 35.476,
+  "h": 20.287
+ },
+ "4": {
+  "key": "buttonarm",
+  "label": "Button arm",
+  "verb": "fitted",
+  "x": 64.524,
+  "y": 56.732,
+  "w": 35.476,
+  "h": 20.287
+ },
+ "5": {
+  "key": "head",
+  "label": "Head dome",
+  "verb": "seated",
+  "x": 11.905,
+  "y": 5.745,
+  "w": 76.19,
+  "h": 50.987
+ },
+ "6": {
+  "key": "smile",
+  "label": "Smile",
+  "verb": "switched on",
+  "x": 41.429,
+  "y": 40.215,
+  "w": 16.429,
+  "h": 9.515
+ },
+ "7": {
+  "key": "eyes",
+  "label": "Eyes",
+  "verb": "lit up",
+  "x": 20.238,
+  "y": 21.005,
+  "w": 59.286,
+  "h": 23.878
+ },
+ "8": {
+  "key": "earL",
+  "label": "Left ear pod",
+  "verb": "clipped on",
+  "x": 6.667,
+  "y": 26.391,
+  "w": 18.571,
+  "h": 18.851
+ },
+ "9": {
+  "key": "earR",
+  "label": "Right ear pod",
+  "verb": "clipped on",
+  "x": 75.0,
+  "y": 26.391,
+  "w": 18.333,
+  "h": 19.21
+ },
+ "10": {
+  "key": "aerialL",
+  "label": "Left aerial",
+  "verb": "raised",
+  "x": 15.238,
+  "y": 5.566,
+  "w": 10.0,
+  "h": 10.592
+ },
+ "11": {
+  "key": "aerialR",
+  "label": "Right aerial",
+  "verb": "raised",
+  "x": 74.762,
+  "y": 5.745,
+  "w": 10.0,
+  "h": 10.413
+ },
+ "12": {
+  "key": "radiotip",
+  "label": "Radio tip",
+  "verb": "tuned in",
+  "x": 9.048,
+  "y": 0.0,
+  "w": 9.286,
+  "h": 7.002
+ },
+ "13": {
+  "key": "databeacon",
+  "label": "Data beacon",
+  "verb": "powered up",
+  "x": 81.667,
+  "y": 0.0,
+  "w": 9.286,
+  "h": 7.002
+ }
+}

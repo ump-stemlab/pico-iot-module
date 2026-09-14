@@ -94,6 +94,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -127,45 +133,57 @@
   <p class="lede">Numbered exactly as they are in your Classroom. Each one adds exactly one new idea,
   and each one builds on the last.</p>
 
-  <div class="yourprog">
-    <b>Your progress</b>
-    <div class="track"><i id="yourfill"></i></div>
-    <small id="yourcount">Nothing started yet &mdash; Activity 0 is the door in</small>
+  <div class="robothall">
+    <div class="botbay" data-size="big">
+      <div class="botart"></div>
+    </div>
+    <div class="hallside">
+      <p class="hallkick">Meet Pip</p>
+      <h3 class="hallttl">He colours in as you work</h3>
+      <p>Pip starts switched off, eyes dark. Your first checkpoint wakes him, and after that
+      every checkpoint you clear fills a little more of him in, from the boots up &mdash; a
+      whole fourteenth of him for each activity you finish. Leave one undone and he stands
+      there half-lit, which is its own kind of nagging.</p>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+      <div class="track"><i id="yourfill"></i></div>
+      <small id="yourcount">No parts yet &mdash; Activity 0 is the door in</small>
+    </div>
   </div>
 
   <div class="phase" data-accent="teal"><span class="dot"></span><b>&#127793; Start here</b><i></i></div>
   <p class="lede" style="margin:0 0 10px">Switch something on, and make it repeat.</p>
   <div class="actlist" data-accent="teal">
-    <a class="act" data-act="0" href="activity-0.html"><span class="n">0</span><span class="t"><b>Getting Started</b><small>the board, Thonny, and your first run</small></span></a>
-    <a class="act" data-act="1" href="activity-1.html"><span class="n">1</span><span class="t"><b>Light Up an LED</b><small>variables, comments, GPIO pins</small></span></a>
-    <a class="act" data-act="2" href="activity-2.html"><span class="n">2</span><span class="t"><b>Make an LED Blink</b><small>loops, indentation, sleep</small></span></a>
+    <a class="act" data-act="0" href="activity-0.html"><span class="n">0</span><span class="t"><b>Getting Started</b><small>the board, Thonny, and your first run</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="1" href="activity-1.html"><span class="n">1</span><span class="t"><b>Light Up an LED</b><small>variables, comments, GPIO pins</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="2" href="activity-2.html"><span class="n">2</span><span class="t"><b>Make an LED Blink</b><small>loops, indentation, sleep</small><span class="actpart"></span></span></a>
   </div>
   <div class="phase" data-accent="orange"><span class="dot"></span><b>&#9881;&#65039; Make things happen</b><i></i></div>
   <p class="lede" style="margin:0 0 10px">Move things, read buttons, and let the board decide.</p>
   <div class="actlist" data-accent="orange">
-    <a class="act" data-act="3" href="activity-3.html"><span class="n">3</span><span class="t"><b>Digital Output &amp; Servo</b><small>moving something, not just lighting it</small></span></a>
-    <a class="act" data-act="4" href="activity-4.html"><span class="n">4</span><span class="t"><b>Digital Input</b><small>reading buttons, print()</small></span></a>
-    <a class="act" data-act="5" href="activity-5.html"><span class="n">5</span><span class="t"><b>Making Decisions</b><small>if / else, comparing with ==</small></span></a>
-    <a class="act" data-act="6" href="activity-6.html"><span class="n">6</span><span class="t"><b>And, Or, Not</b><small>joining two questions into one</small></span></a>
+    <a class="act" data-act="3" href="activity-3.html"><span class="n">3</span><span class="t"><b>Digital Output &amp; Servo</b><small>moving something, not just lighting it</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="4" href="activity-4.html"><span class="n">4</span><span class="t"><b>Digital Input</b><small>reading buttons, print()</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="5" href="activity-5.html"><span class="n">5</span><span class="t"><b>Making Decisions</b><small>if / else, comparing with ==</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="6" href="activity-6.html"><span class="n">6</span><span class="t"><b>And, Or, Not</b><small>joining two questions into one</small><span class="actpart"></span></span></a>
   </div>
   <div class="phase" data-accent="leaf"><span class="dot"></span><b>&#128300; Sense the world</b><i></i></div>
   <p class="lede" style="margin:0 0 10px">Screens, sensors, and turning readings into meaning.</p>
   <div class="actlist" data-accent="leaf">
-    <a class="act" data-act="7" href="activity-7.html"><span class="n">7</span><span class="t"><b>Words on a Screen</b><small>the OLED, the I&sup2;C bus, adding a library</small></span></a>
-    <a class="act" data-act="8" href="activity-8.html"><span class="n">8</span><span class="t"><b>Sensors and Numbers</b><small>a sensor on the same bus, decimals, round()</small></span></a>
-    <a class="act" data-act="9" href="activity-9.html"><span class="n">9</span><span class="t"><b>Soil Moisture</b><small>an analogue pin, elif, calibrating it yourself</small></span></a>
+    <a class="act" data-act="7" href="activity-7.html"><span class="n">7</span><span class="t"><b>Words on a Screen</b><small>the OLED, the I&sup2;C bus, adding a library</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="8" href="activity-8.html"><span class="n">8</span><span class="t"><b>Sensors and Numbers</b><small>a sensor on the same bus, decimals, round()</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="9" href="activity-9.html"><span class="n">9</span><span class="t"><b>Soil Moisture</b><small>an analogue pin, elif, calibrating it yourself</small><span class="actpart"></span></span></a>
   </div>
   <div class="phase" data-accent="blue"><span class="dot"></span><b>&#127760; Get online</b><i></i></div>
   <p class="lede" style="margin:0 0 10px">Put a reading on the internet &mdash; and take an order back.</p>
   <div class="actlist" data-accent="blue">
-    <a class="act" data-act="10" href="activity-10.html"><span class="n">10</span><span class="t"><b>Internet and Data</b><small>joining WiFi, MQTT, a live graph online</small></span></a>
-    <a class="act" data-act="11" href="activity-11.html"><span class="n">11</span><span class="t"><b>Control from Anywhere</b><small>subscribing, your first function, a switch on the web</small></span></a>
+    <a class="act" data-act="10" href="activity-10.html"><span class="n">10</span><span class="t"><b>Internet and Data</b><small>joining WiFi, MQTT, a live graph online</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="11" href="activity-11.html"><span class="n">11</span><span class="t"><b>Control from Anywhere</b><small>subscribing, your first function, a switch on the web</small><span class="actpart"></span></span></a>
   </div>
   <div class="phase" data-accent="red"><span class="dot"></span><b>&#128640; Go further</b><i></i></div>
   <p class="lede" style="margin:0 0 10px">Throw away the middle, then build the middle yourself.</p>
   <div class="actlist" data-accent="red">
-    <a class="act" data-act="12" href="activity-12.html"><span class="n">12</span><span class="t"><b>Sending Messages by Radio</b><small>UART, mode pins, channels, no server at all</small></span></a>
-    <a class="act" data-act="13" href="activity-13.html"><span class="n">13</span><span class="t"><b>Your Own Live Dashboard</b><small>HTTP, a sheet of your own, and history</small></span></a>
+    <a class="act" data-act="12" href="activity-12.html"><span class="n">12</span><span class="t"><b>Sending Messages by Radio</b><small>UART, mode pins, channels, no server at all</small><span class="actpart"></span></span></a>
+    <a class="act" data-act="13" href="activity-13.html"><span class="n">13</span><span class="t"><b>Your Own Live Dashboard</b><small>HTTP, a sheet of your own, and history</small><span class="actpart"></span></span></a>
   </div>
 
 </section>
@@ -238,6 +256,7 @@
        <a href="https://github.com/ump-stemlab/pico-iot-module">Source on GitHub</a></p>
   </div>
 </footer>
+<script src="robot.js"></script>
 <script src="code.js"></script>
 </body>
 </html>

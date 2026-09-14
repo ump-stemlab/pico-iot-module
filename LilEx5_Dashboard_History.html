@@ -28,10 +28,14 @@
 // Deploy your Apps Script as a web app, copy the /exec address it
 // gives you, and paste it between the quotes below. Nothing else on
 // this page has to change.
+//
+// It ships blank on purpose. The address is a key to YOUR sheet:
+// anyone who has it can write rows to it, so it does not belong in
+// a file that gets shared or committed. Yours, in your copy, only.
 // ----------------------------------------------------------------
 
 const API_URL =
-    "https://script.google.com/macros/s/AKfycbzkgdXQMhTnerYwF2XB2ZJflbJOEMp4r5EfCFIyFNNCpQ8czQGyA8O7tJa-QzG5pzN3/exec";
+    "PASTE-YOUR-EXEC-ADDRESS-HERE";
 
 
 // ----------------------------------------------------------------
@@ -1153,6 +1157,29 @@ function loadData() {
         document.getElementById(
             "status"
         );
+
+
+    // ------------------------------------------------------------
+    // NO ADDRESS YET
+    //
+    // Without this the page just says "Offline", which reads like
+    // the board is not sending — when really nothing has been
+    // pasted into API_URL at the top of this file yet.
+    // ------------------------------------------------------------
+
+    if (!/^https:\/\//.test(API_URL)) {
+
+        status.textContent =
+            "No address set \u2014 paste your /exec address into API_URL at the top of this file";
+
+
+        status.className =
+            "error";
+
+
+        return;
+
+    }
 
 
     status.textContent =

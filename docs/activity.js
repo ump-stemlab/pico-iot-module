@@ -1,49 +1,251 @@
 /* activity.js — shared behaviour for every activity page.
    The page declares its own content first:
 
-     <script>window.ACTIVITY = { typer: [...lines...], quiz: [{q,opts,right,why}] };</script>
+     <script>window.ACTIVITY = {
+       typer:  [...lines...],
+       checks: { idea:{q,opts,right,why}, ... },   // the inline question gates
+       quiz:   [{q,opts,right,why}]
+     };</script>
+     <script src="robot.js"></script>
      <script src="activity.js"></script>
 
-   Everything else (progress checkboxes, route tabs, the board simulator, the
-   blink simulator) is picked up from the markup if it is there, and skipped if
-   it is not. */
+   Everything else (the gates, route tabs, the board simulator, the blink
+   simulator) is picked up from the markup if it is there, and skipped if it
+   is not.
+
+   ---- gates ----
+   A gate is one thing worth proving, and an activity has six or seven of them
+   rather than the thirty-odd checkboxes this page used to carry. Three kinds:
+
+     <div class="ckpt" data-gate="run" data-label="It works">   a tick, for
+       ...a checkbox...                                         something only
+     </div>                                                     the student sees
+
+     <div class="ckpt ask" data-gate="idea" data-label="...">   a question,
+     </div>            drawn from window.ACTIVITY.checks.idea   answered here
+
+     the typing box and the quiz, which clear their own gates.
+
+   Clearing a gate brings this activity's part of Pip a little further out of
+   the ghost. Clearing them all fits it for good. robot.js owns all of that;
+   this file only says when a gate opens. */
 (function(){
   "use strict";
   var CFG = window.ACTIVITY || {};
-  /* Saved ticks are keyed by the page's filename. */
-  var KEY = 'lilex5v2:' + location.pathname.split('/').pop();
+  var L   = window.LILEX;
+  var N   = L ? L.pageAct() : null;
 
-  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
-  function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
-  var state = load();
+  /* One localStorage entry per page; robot.js reads and writes it. */
+  var state = (L && N !== null) ? L.raw(N) : {};
+  if(!state.g) state.g = {};
+  if(!state.q) state.q = {};
+  function save(){ if(L && N !== null) L.write(N, state); }
 
-  /* ---------- progress checkboxes ---------- */
-  var boxes = [].slice.call(document.querySelectorAll('.chk input[type=checkbox]'));
-  var fill  = document.getElementById('pfill');
-  var count = document.getElementById('pcount');
+  /* ---------- the gates on this page ---------- */
+  var gates = [].slice.call(document.querySelectorAll('.ckpt')).map(function(el, i){
+    return { el: el,
+             id: el.getAttribute('data-gate') || ('g' + i),
+             label: el.getAttribute('data-label') || 'Checkpoint' };
+  });
+  state.gt = gates.length;
 
-  function paint(){
-    var done = 0;
-    boxes.forEach(function(b){
-      if(b.checked){ done++; b.parentElement.classList.add('done'); }
-      else { b.parentElement.classList.remove('done'); }
+  var bar    = document.getElementById('gpips');
+  var count  = document.getElementById('gcount');
+  var barart = document.getElementById('gbpart');
+  var bay    = document.getElementById('partbay');
+  var pips   = [];
+
+  function open(id){ return !!state.g[id]; }
+  function tallyGates(){
+    var d = 0;
+    gates.forEach(function(g){ if(open(g.id)) d++; });
+    return d;
+  }
+  function frac(){ return gates.length ? tallyGates() / gates.length : 0; }
+
+  /* the little pip map in the sticky bar — one pip per gate, and clicking a
+     pip jumps to the gate it stands for */
+  if(bar && gates.length){
+    gates.forEach(function(g, i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pip';
+      b.innerHTML = '<span>' + (i + 1) + '</span>';
+      b.title = g.label;
+      b.setAttribute('aria-label', 'Checkpoint ' + (i + 1) + ': ' + g.label);
+      b.addEventListener('click', function(){
+        g.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        g.el.classList.remove('hint');
+        void g.el.offsetWidth;
+        g.el.classList.add('hint');
+      });
+      bar.appendChild(b);
+      pips.push(b);
     });
-    if(fill)  fill.style.width = (boxes.length ? Math.round(done / boxes.length * 100) : 0) + '%';
-    if(count) count.textContent = done + ' / ' + boxes.length + ' done';
   }
 
-  boxes.forEach(function(b){
-    var k = b.getAttribute('data-p');
-    if(state[k]) b.checked = true;
-    b.addEventListener('change', function(){ state[k] = b.checked; save(state); paint(); });
+  if(barart && L && N !== null) barart.innerHTML = L.soloSVG(N, frac(), 'tiny');
+
+  /* ---------- the part panel at the foot of the page ---------- */
+  function bayHTML(){
+    var info = L.info(N), done = tallyGates(), all = done >= gates.length && gates.length > 0;
+    var rows = gates.map(function(g){
+      return '<li class="' + (open(g.id) ? 'yes' : 'no') + '"><span class="rt"></span>'
+           + g.label + '</li>';
+    }).join('');
+    var t = L.tally();
+    return '<div class="partart" id="partart">' + L.soloSVG(N, frac(), 'big') + '</div>'
+      + '<div class="partside">'
+      + '<p class="partkick">' + (all ? 'Part earned' : 'On the bench') + '</p>'
+      + '<h3 class="partname">' + info.part + '</h3>'
+      + '<p class="partsay" id="partsay">'
+      + (all ? '<strong>' + info.part + ' ' + info.verb + '.</strong> That is '
+               + t.built + ' of ' + t.total + ' activities done, and Pip is '
+               + Math.round(L.moduleFrac() * 100) + '&thinsp;% built.'
+             : 'The part takes shape as you go. <strong>' + done + ' of ' + gates.length
+               + '</strong> checkpoints cleared &mdash; clear them all and it is '
+               + 'fitted for good.')
+      + '</p><ul class="partlist">' + rows + '</ul></div>';
+  }
+
+  function paintBay(first){
+    if(!bay || !L || N === null) return;
+    var art = document.getElementById('partart');
+    if(first || !art){
+      bay.innerHTML = bayHTML();
+      bay.classList.toggle('done', tallyGates() >= gates.length && gates.length > 0);
+      return;
+    }
+    /* keep the picture, so the part fades in rather than being redrawn */
+    var fig = art.querySelector('.pipfig');
+    var side = bay.querySelector('.partside');
+    if(side) side.outerHTML = bayHTML().replace(/^[\s\S]*?<div class="partside">/, '<div class="partside">');
+    L.setFrac(fig, N, frac());
+    bay.classList.toggle('done', tallyGates() >= gates.length && gates.length > 0);
+  }
+
+  /* ---------- painting ---------- */
+  var wasAll = false;
+
+  function paint(first){
+    var done = tallyGates(), all = gates.length > 0 && done >= gates.length;
+    gates.forEach(function(g, i){
+      g.el.classList.toggle('open', open(g.id));
+      if(pips[i]) pips[i].classList.toggle('on', open(g.id));
+    });
+    if(count){
+      count.innerHTML = all
+        ? '&#10003; All ' + gates.length + ' done'
+        : '<b>' + done + '</b> of ' + gates.length;
+    }
+    if(barart){
+      /* .pipfig, not svg: Pip is a picture now, and querySelector('svg') has
+         quietly returned null — and skipped this repaint — ever since. */
+      var s = barart.querySelector('.pipfig');
+      if(s) L.setFrac(s, N, frac());
+    }
+    paintBay(first);
+    if(L) L.repaint();
+
+    if(all && !wasAll && !first){
+      if(bay){
+        L.burst(bay);
+        bay.classList.add('pop');
+        setTimeout(function(){ bay.classList.remove('pop'); }, 1200);
+        bay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    wasAll = all;
+  }
+
+  /* Called by every kind of gate. */
+  function clear(id, on){
+    if(!!state.g[id] === !!on) return;
+    if(on) state.g[id] = 1; else delete state.g[id];
+    save();
+    paint(false);
+  }
+  window.LILEX_GATE = clear;
+
+  /* ---------- tick gates ---------- */
+  gates.forEach(function(g){
+    var box = g.el.querySelector('input[type=checkbox]');
+    if(!box) return;
+    box.checked = open(g.id);
+    box.addEventListener('change', function(){
+      clear(g.id, box.checked);
+      if(box.checked){
+        g.el.classList.remove('justdone');
+        void g.el.offsetWidth;
+        g.el.classList.add('justdone');
+      }
+    });
   });
-  paint();
+
+  /* ---------- question gates ---------- */
+  gates.forEach(function(g){
+    if(!g.el.classList.contains('ask')) return;
+    var item = (CFG.checks || {})[g.id];
+    if(!item) return;
+    var already = open(g.id);
+
+    var h = document.createElement('p');
+    h.className = 'askkick';
+    h.innerHTML = '<span>Checkpoint</span> ' + g.label;
+    var q = document.createElement('p');
+    q.className = 'askq';
+    q.innerHTML = item.q;
+    var opts = document.createElement('div');
+    opts.className = 'askopts';
+    var fb = document.createElement('p');
+    fb.className = 'askfb';
+    fb.setAttribute('role', 'status');
+
+    var first = true;
+    item.opts.forEach(function(text, oi){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.innerHTML = text;
+      b.addEventListener('click', function(){
+        if(b.disabled || g.el.classList.contains('open')) return;
+        if(oi === item.right){
+          b.classList.add('right');
+          [].forEach.call(opts.children, function(x){ x.disabled = true; });
+          fb.className = 'askfb good';
+          fb.innerHTML = (first ? '<b>First go.</b> ' : '<b>Got it.</b> ') + item.why;
+          clear(g.id, true);
+        } else {
+          b.classList.add('wrong');
+          b.disabled = true;
+          first = false;
+          fb.className = 'askfb bad';
+          fb.textContent = 'Not that one — it is out of the running now. Try again.';
+        }
+      });
+      opts.appendChild(b);
+    });
+
+    g.el.appendChild(h);
+    g.el.appendChild(q);
+    g.el.appendChild(opts);
+    g.el.appendChild(fb);
+
+    if(already){
+      var r = opts.children[item.right];
+      if(r) r.classList.add('right');
+      [].forEach.call(opts.children, function(x){ x.disabled = true; });
+      fb.className = 'askfb good';
+      fb.innerHTML = '<b>Cleared.</b> ' + item.why;
+    }
+  });
 
   var reset = document.getElementById('reset');
   if(reset){
     reset.addEventListener('click', function(){
-      boxes.forEach(function(b){ b.checked = false; state[b.getAttribute('data-p')] = false; });
-      save(state); paint();
+      state.g = {}; state.q = {};
+      save();
+      location.reload();
     });
   }
 
@@ -118,80 +320,250 @@
             : '💡 ' + hit.name + ' is now on, and it stays on.');
     });
   }
+  /* Scoped on purpose. activity.js is one long IIFE, and the per-activity
+     widgets further down declare names like `rows` and `say` at the same
+     level — without this wrapper Activity 11's radio widget quietly replaces
+     the typing box's list of lines with an empty one. */
+  (function(){
+  /* ---------- type-it-here box ----------
+     One line at a time. The box you are on is the only one open; get it
+     exactly right and it locks with a tick and the next one opens. While you
+     are typing it says whether you are still on track, and if you wander off
+     it says where — capitals and underscores are the usual culprits.
 
-  /* ---------- type-it-here box ---------- */
-  var inputs = [].slice.call(document.querySelectorAll('#typer input'));
-  var msg = document.getElementById('typermsg');
-  if(inputs.length && CFG.typer){
-    var norm = function(s){ return s.replace(/\s+/g, ' ').trim(); };
-    var check = function(){
-      var ok = 0, note = '';
-      inputs.forEach(function(inp, i){
-        var mark = inp.parentElement.querySelector('.mark');
-        inp.classList.remove('ok', 'bad');
+     The target line lives in the input's placeholder, which cannot be
+     selected or copied, so rule 5.1 still holds: the student types every
+     character. Finished lines stay in disabled inputs for the same reason. */
+  var typer = document.getElementById('typer');
+  if(typer && CFG.typer){
+    var rows   = [].slice.call(typer.querySelectorAll('.line-row'));
+    var inputs = rows.map(function(r){ return r.querySelector('input'); });
+    var msg    = document.getElementById('typermsg');
+    var tgate  = typer.closest ? typer.closest('.ckpt') : null;
+    var gid    = tgate ? tgate.getAttribute('data-gate') : null;
+    var norm   = function(s){ return s.replace(/\s+/g, ' ').trim(); };
+    var at     = 0;
+    var clean  = true;
+
+    var say = function(txt, cls){
+      if(!msg) return;
+      msg.className = 'typer-msg' + (cls ? ' ' + cls : '');
+      msg.innerHTML = txt;
+    };
+
+    /* where the student's line first parts company with the target */
+    var hint = function(v, t){
+      var i = 0;
+      while(i < v.length && i < t.length && v[i] === t[i]) i++;
+      if(v.toLowerCase() === t.slice(0, v.length).toLowerCase()){
+        var want = t.charAt(i), got = v.charAt(i);
+        return 'Capitals matter &mdash; your <b>' + esc(got) + '</b> should be '
+             + (want === want.toUpperCase() ? 'a capital' : 'a small') + ' <b>'
+             + esc(want) + '</b>.';
+      }
+      if(t[i] === '_' || v[i] === '_') return 'Underscore trouble &mdash; count them again.';
+      if(t[i] === '(' || t[i] === ')') return 'A bracket is in the wrong place.';
+      if(t[i] === '"' || t[i] === "'") return 'Check the quote marks.';
+      return 'It goes wrong after <b>' + esc(v.slice(Math.max(0, i - 8), i)) + '</b>';
+    };
+
+    var esc = function(s){
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+
+    var focusRow = function(){
+      rows.forEach(function(r, i){
+        r.classList.toggle('now', i === at);
+        r.classList.toggle('locked', i > at);
+        inputs[i].disabled = i !== at;
+      });
+      if(at < rows.length){
+        say('Line <b>' + (at + 1) + '</b> of ' + rows.length
+            + ' &mdash; type it exactly and it locks itself.', '');
+      }
+    };
+
+    var finish = function(){
+      rows.forEach(function(r){ r.classList.remove('now'); });
+      typer.classList.add('alldone');
+      say('&#9989; <b>All ' + rows.length + ' lines typed.</b> Not one of them pasted.', 'good');
+      if(gid) clear(gid, true);
+      if(L) L.burst(typer);
+    };
+
+    rows.forEach(function(row, i){
+      var inp = inputs[i], mark = row.querySelector('.mark');
+      inp.addEventListener('input', function(){
+        var v = inp.value, t = CFG.typer[i] || '';
+        row.classList.remove('ok', 'bad', 'going');
         mark.textContent = '';
-        if(!inp.value) return;
-        var target = CFG.typer[i] || '';
-        if(norm(inp.value) === norm(target)){
-          inp.classList.add('ok'); mark.textContent = '✓'; ok++;
-        } else {
-          inp.classList.add('bad'); mark.textContent = '✗';
-          if(norm(inp.value).toLowerCase() === norm(target).toLowerCase()){
-            note = 'Line ' + (i + 1) + ': the letters are right but the capitals are not. '
-                 + 'Python cares — Pin is not pin, and True is not true.';
+        if(!v){ say('Line <b>' + (i + 1) + '</b> of ' + rows.length + ' &mdash; off you go.', ''); return; }
+        if(norm(v) === norm(t)){
+          row.classList.add('ok');
+          mark.textContent = '✓';
+          inp.disabled = true;
+          at = i + 1;
+          if(at >= rows.length){ finish(); }
+          else {
+            focusRow();
+            var bonus = clean ? ' <b>Clean run so far.</b>' : '';
+            say('Line ' + (i + 1) + ' locked.' + bonus + ' Next one is open.', 'good');
+            inputs[at].focus();
           }
+          return;
+        }
+        if(t.slice(0, v.length) === v){
+          row.classList.add('going');
+          say('On track&hellip; keep going.', '');
+        } else {
+          clean = false;
+          row.classList.add('bad');
+          mark.textContent = '✗';
+          say(hint(v, t), 'bad');
         }
       });
-      if(ok === inputs.length){
-        msg.textContent = '✅ Every line exactly right. Now type them into Wokwi or Thonny.';
-      } else if(note){ msg.textContent = note; }
-      else { msg.textContent = ok + ' of ' + inputs.length + ' lines correct.'; }
-    };
-    inputs.forEach(function(inp){ inp.addEventListener('input', check); });
+    });
+
+    if(gid && state.g[gid]){
+      /* already typed on an earlier visit: show it done rather than blank —
+         the lines are not filled back in, because the typing is the point */
+      rows.forEach(function(r, i){
+        r.classList.add('ok');
+        r.querySelector('.mark').textContent = '\u2713';
+        inputs[i].disabled = true;
+      });
+      typer.classList.add('alldone');
+      at = rows.length;
+      say('&#9989; <b>Typed already.</b> Use <em>Start the box over</em> if you want another run at it.', 'good');
+    } else {
+      focusRow();
+    }
+
+    var again = document.getElementById('typeragain');
+    if(again){
+      again.addEventListener('click', function(){
+        at = 0; clean = true;
+        typer.classList.remove('alldone');
+        rows.forEach(function(r, i){
+          r.classList.remove('ok', 'bad', 'going');
+          inputs[i].value = '';
+          r.querySelector('.mark').textContent = '';
+        });
+        focusRow();
+        inputs[0].focus();
+      });
+    }
   }
 
-  /* ---------- quiz ---------- */
+  })();
+
+  /* Scoped for the same reason as the block above. */
+  (function(){
+  /* ---------- quiz ----------
+     The last gate. Right answers stick — they are saved, so coming back to
+     the page does not mean answering them all again. A wrong option is taken
+     out of the running rather than just going red, so a second guess is a
+     narrower one. */
   var box = document.getElementById('quizbox');
   if(box && CFG.quiz && CFG.quiz.length){
-    var scored = CFG.quiz.map(function(){ return false; });
-    var win = document.getElementById('quizwin');
+    var qgate = box.closest ? box.closest('.ckpt') : null;
+    var qid   = qgate ? qgate.getAttribute('data-gate') : 'quiz';
+    var win   = document.getElementById('quizwin');
+    var strip = document.getElementById('quizpips');
+    var qpips = [];
+
+    var scored = CFG.quiz.map(function(_, i){ return !!state.q[i]; });
+    var allRight = function(){ return scored.every(function(x){ return x; }); };
+
+    if(strip){
+      CFG.quiz.forEach(function(_, i){
+        var s = document.createElement('span');
+        s.className = 'qpip';
+        strip.appendChild(s);
+        qpips.push(s);
+      });
+    }
+
+    var settle = function(){
+      qpips.forEach(function(p, i){ p.classList.toggle('on', scored[i]); });
+      var n = scored.filter(Boolean).length;
+      var lab = document.getElementById('quizscore');
+      if(lab) lab.innerHTML = '<b>' + n + '</b> of ' + CFG.quiz.length + ' right';
+      if(win) win.hidden = !allRight();
+      if(allRight()){
+        if(!state.g[qid] && win && L) L.burst(win);
+        clear(qid, true);
+      }
+    };
+
     CFG.quiz.forEach(function(item, qi){
       var d = document.createElement('div');
       d.className = 'q';
       var p = document.createElement('p');
       p.className = 'qt';
-      p.innerHTML = (qi + 1) + '. ' + item.q;
+      p.innerHTML = '<span class="qn">' + (qi + 1) + '</span>' + item.q;
       d.appendChild(p);
-      var fb = document.createElement('div');
+      var fb = document.createElement('p');
       fb.className = 'fb';
+      fb.setAttribute('role', 'status');
+      var first = true;
+
+      var lockRight = function(b, note){
+        b.classList.add('right');
+        [].forEach.call(d.querySelectorAll('.opt'), function(x){ x.disabled = true; });
+        fb.className = 'fb good';
+        fb.innerHTML = note + ' ' + item.why;
+        d.classList.add('solved');
+        scored[qi] = true;
+        state.q[qi] = 1;
+        save();
+        settle();
+      };
+
       item.opts.forEach(function(text, oi){
         var b = document.createElement('button');
-        b.type = 'button'; b.className = 'opt'; b.textContent = text;
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = text;
         b.addEventListener('click', function(){
-          [].forEach.call(d.querySelectorAll('.opt'), function(x){
-            x.classList.remove('right', 'wrong');
-          });
+          if(b.disabled) return;
           if(oi === item.right){
-            b.classList.add('right');
-            fb.textContent = '✅ ' + item.why;
-            fb.style.color = '#1F9D55';
-            scored[qi] = true;
+            lockRight(b, first ? '<b>First go.</b>' : '<b>That is the one.</b>');
           } else {
             b.classList.add('wrong');
-            fb.textContent = '❌ Not quite — have another go.';
-            fb.style.color = '#C80000';
-            scored[qi] = false;
-          }
-          if(win){
-            win.hidden = !scored.every(function(x){ return x === true; });
+            b.disabled = true;
+            first = false;
+            d.classList.remove('shake');
+            void d.offsetWidth;
+            d.classList.add('shake');
+            fb.className = 'fb bad';
+            fb.textContent = 'Not that one. It is out — pick again from what is left.';
           }
         });
         d.appendChild(b);
       });
       d.appendChild(fb);
       box.appendChild(d);
+
+      if(scored[qi]){
+        var r = d.querySelectorAll('.opt')[item.right];
+        if(r){
+          r.classList.add('right');
+          [].forEach.call(d.querySelectorAll('.opt'), function(x){ x.disabled = true; });
+          fb.className = 'fb good';
+          fb.innerHTML = '<b>Answered.</b> ' + item.why;
+          d.classList.add('solved');
+        }
+      }
     });
+    settle();
   }
+
+  })();
+
+  /* everything is wired — draw the starting state */
+  paint(true);
+
 
   /* ---------- blink simulator ---------- */
   var blinkrun = document.getElementById('blinkrun');

@@ -63,6 +63,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-buttons.png" alt="" width="360" height="409" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 4</p>
     <h1>Digital Input</h1>
@@ -85,14 +86,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -124,6 +127,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -216,8 +225,6 @@
   pattern to learn and nobody memorises this &mdash; keep <a href="pinout.html">the pin reference</a>
   open in another tab, the way an engineer does.</div>
 
-  <label class="chk"><input type="checkbox" data-p="p1"><span>I found SW1 on the board and I know its pin number</span></label>
-  <label class="chk"><input type="checkbox" data-p="p2"><span>I know which of the switches is the power switch</span></label>
 </section>
 
 <section id="idea">
@@ -361,8 +368,8 @@
     wide corridor.</p>
   </details>
 
-  <label class="chk"><input type="checkbox" data-p="i1"><span>I can say the difference between an <strong>output</strong> pin and an <strong>input</strong> pin</span></label>
-  <label class="chk"><input type="checkbox" data-p="i2"><span>I know what the pull-up is holding the pin up to</span></label>
+
+<div class="ckpt ask" data-gate="idea" data-label="Out, and in"></div>
 </section>
 
 <section id="trap">
@@ -407,8 +414,8 @@
   <strong>0 means nothing is in the way &mdash; the path to ground is open.</strong> Your finger closed a
   gate, and closing the gate is what brought the number down.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I can say what a button reads when <strong>nobody is touching it</strong></span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I can explain <em>why</em> pressing makes the number go down, not up</span></label>
+
+<div class="ckpt ask" data-gate="trap" data-label="The backwards number"></div>
 </section>
 
 <section id="print">
@@ -499,8 +506,6 @@
     <div class="sim-out tall" id="btnout">Nothing running yet. Press Run the loop, then hold the button down.</div>
   </div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I saw the number change from 1 to 0 while I held the button down</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I saw what happens with no wait in the loop</span></label>
 </section>
 
 <section id="build">
@@ -520,7 +525,6 @@
       <p>Click the blue <strong>+</strong> in the diagram panel and search for
       <strong>Pushbutton</strong>. Add one. That is the only part you need &mdash; no LED, and
       <strong>no resistor</strong>.</p>
-      <label class="chk"><input type="checkbox" data-p="a1"><span>A pushbutton is on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -584,7 +588,6 @@
   <text x="580" y="232" class="dwarn" text-anchor="middle">so nothing can ever change</text>
 </svg>
 
-      <label class="chk"><input type="checkbox" data-p="a2"><span>I know why two of the four legs are the wrong ones to use</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -802,7 +805,6 @@
       wire physically goes. The <strong>GP</strong> names beside them are what you type. GP2 is
       physical pin 4, and typing 4 would give you GP4, which is a different button altogether.
       Same trap as Activity 1, where GP11 sits on physical pin 15.</div>
-      <label class="chk"><input type="checkbox" data-p="a3"><span>One leg &rarr; GP2, the diagonally opposite leg &rarr; GND</span></label>
       <div class="cal tip"><b>Nothing will look like it is working yet</b>
       A button has no light in it. Until you have written the program and looked at the Serial Monitor,
       there is no way to tell a correct circuit from a wrong one &mdash; which is exactly why this
@@ -817,7 +819,6 @@
     <div class="step"><div class="idx">1</div><div class="body">
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on.</p>
-      <label class="chk"><input type="checkbox" data-p="b1"><span>The Pico's power light is on</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -826,20 +827,26 @@
       choose <code>MicroPython (Raspberry Pi Pico)</code>, and wait for <code>&gt;&gt;&gt;</code> in the
       Shell. <strong>That panel is where your numbers are going to appear</strong> &mdash; make sure you
       can see it before you run anything.</p>
-      <label class="chk"><input type="checkbox" data-p="b2"><span>The Shell shows &gt;&gt;&gt; and I can see the whole panel</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Find SW1 with your finger</h4>
       <p>Press it once now, before there is any code. Nothing happens, and nothing should &mdash; a
       button on its own does nothing at all until a program is asking about it.</p>
-      <label class="chk"><input type="checkbox" data-p="b3"><span>I know which of the three buttons is SW1</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>Wokwi: one leg of the pushbutton goes to <span class="gp">2</span> and the leg <strong>diagonally opposite</strong> goes to GND. Real board: the Shell shows <code>&gt;&gt;&gt;</code> and I know which of the three buttons is SW1.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -874,17 +881,20 @@
   <h3>Type it here first</h3>
   <p>The four lines that are new this time. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="print(&quot;Hello&quot;)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="sw = Pin(2, Pin.IN, Pin.PULL_UP)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="print(sw.value())" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">4</span><input type="text" data-i="3" placeholder="sleep(0.2)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Four boxes, four lines. Capitals and underscores matter.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>These boxes ignore the spaces at the front</b>
   Python does not. When you type them for real, lines 3 and 4 go <strong>inside</strong> the loop
   &mdash; pushed in by four spaces, exactly as in Activity 2.</div>
-  <label class="chk"><input type="checkbox" data-p="c1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each line is doing</h3>
   <div class="tablescroll"><table>
@@ -969,10 +979,14 @@
   not looking at all. Hold it for a full second and you will see several 0s.</div>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are appearing in the Serial Monitor or the Shell, on their own</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>They are <strong>1</strong> when I am not touching the button</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>They turn into <strong>0</strong> while I hold the button down</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>They go back to 1 when I let go, and I stopped the program on purpose</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>Numbers are appearing on their own: <strong>1</strong> when I am not touching the button, <strong>0</strong> while I hold it down, and 1 again when I let go.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1035,10 +1049,6 @@
   <text x="360" y="270" class="dsub" text-anchor="middle">One line every fifth of a second. Only the SW1 column moves.</text>
 </svg>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>Both buttons appear on the same line, each with its own label</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>Pressing SW1 changes only the SW1 number</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>Pressing SW2 changes only the SW2 number</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>It keeps going until I stop it, at a speed I can read</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don't know where to start</summary>
     <p>You met this problem in Activity 1 with the three LEDs, and again in Activity 2 with the traffic
@@ -1095,15 +1105,30 @@
     <li>Leave the pull-up out of the setup line, run it, and touch the wire with your finger. What
     happens, and why is a floating pin such a nuisance?</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>Both buttons print on the same line, each with its own label, and each one changes only its own number.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Four questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All four right.</strong> You can now read the
   world as well as change it. Next up &mdash; <a href="activity-5.html">Activity 5</a>, where the Pico
   finally gets to <em>decide</em> what to do about it.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1134,6 +1159,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "idea": {
+          "opts": [
+              "Whether the Pico drives the pin, or listens to it",
+              "Whether the pin carries 3.3&nbsp;V or 5&nbsp;V",
+              "Whether the pin is on the left or the right of the board"
+          ],
+          "q": "What are you changing when you set a pin up as an <strong>input</strong> instead of an <strong>output</strong>?",
+          "right": 0,
+          "why": "An output sends power out when you say so. An input sits quiet and lets you ask what is happening to it."
+      },
+      "trap": {
+          "opts": [
+              "1 &mdash; the pull-up is holding it high",
+              "0 &mdash; nothing is happening",
+              "Nothing at all until the button is pressed"
+          ],
+          "q": "Nobody is touching SW1. What number does the pin give you?",
+          "right": 0,
+          "why": "The built-in pull-up holds the pin at 3.3&nbsp;V, so an untouched button reads 1. Pressing it joins the pin to ground, and the answer drops to 0."
+      }
+  },
   typer: [
     'print("Hello")',
     "sw = Pin(2, Pin.IN, Pin.PULL_UP)",
@@ -1160,6 +1207,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>

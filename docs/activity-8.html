@@ -60,6 +60,7 @@
 </header>
 
 <header class="hero">
+  <figure class="heropose" aria-hidden="true"><img src="img/pip-magnifier.png" alt="" width="360" height="560" decoding="async"></figure>
   <div class="wrap">
     <p class="eyebrow">LilEx5 &middot; Pico IoT Module &middot; Activity 8</p>
     <h1>Sensors and Numbers</h1>
@@ -86,14 +87,16 @@
       <a href="#fix">If it breaks</a>
       <a href="#exercise">Exercise</a>
       <a href="#quiz">Quiz</a>
+      <a href="#part">Your part</a>
     </div>
   </div>
 </header>
 
 <div class="progress-bar">
   <div class="progress-inner">
-    <b id="pcount">0 / 0 done</b>
-    <div class="track"><i id="pfill"></i></div>
+    <span class="gbpart" id="gbpart" aria-hidden="true"></span>
+    <b id="gcount">0 of 0</b>
+    <div class="pips" id="gpips" aria-label="Checkpoints on this page"></div>
     <button id="reset" type="button">Reset</button>
   </div>
 </div>
@@ -125,6 +128,12 @@
     </ol>
     <p class="railprog" id="railprog" hidden></p>
     <a class="railpin" href="pinout.html">&#128204; Pin reference</a>
+    <div class="botbay">
+      <p class="botttl">Pip</p>
+      <div class="botart"></div>
+      <p class="botcount"></p>
+      <p class="botnote"></p>
+    </div>
   </div>
 </aside>
 <main class="wrap" id="main">
@@ -281,8 +290,6 @@
   have worked out which is which &mdash; that is a two-minute experiment and it is worth more than being
   told.</div>
 
-  <label class="chk"><input type="checkbox" data-p="s1"><span>I can say the difference between an input that is yes-or-no and one that measures</span></label>
-  <label class="chk"><input type="checkbox" data-p="s2"><span>I know why a board lying flat reads about 1 in one direction</span></label>
 </section>
 
 <section id="join">
@@ -335,8 +342,6 @@
   is the form the library already uses. As in Activity 7, <strong>no program on this page types an
   address at all</strong> &mdash; the library finds the sensor by itself.</div>
 
-  <label class="chk"><input type="checkbox" data-p="j1"><span>I can say why the sensor needed no new pins</span></label>
-  <label class="chk"><input type="checkbox" data-p="j2"><span>I can say what tells the screen and the sensor apart on one pair of wires</span></label>
 </section>
 
 <section id="numbers">
@@ -491,9 +496,6 @@
   screen get anything. If you find that hard to see, put the two steps on two separate lines with a name
   in between &mdash; it does exactly the same thing and there is no shame in it.</div>
 
-  <label class="chk"><input type="checkbox" data-p="n1"><span>I can say why a measurement has a decimal point when a button never did</span></label>
-  <label class="chk"><input type="checkbox" data-p="n2"><span>I can say what the second number inside round() controls</span></label>
-  <label class="chk"><input type="checkbox" data-p="n3"><span>I can say why a screen will not take a number as it stands</span></label>
 
 
   <h3>&#9878;&#65039; Asking whether a measurement is big enough</h3>
@@ -543,7 +545,8 @@
   Less than. Everything on this page about <code>&gt;</code> is true of it the other way round, and the
   two of them together are how every threshold in every program you will ever write is built.</div>
 
-  <label class="chk"><input type="checkbox" data-p="n4"><span>I can say why <code>== 1.0</code> is the wrong question to ask a sensor</span></label>
+
+<div class="ckpt ask" data-gate="numbers" data-label="Why a sensor has a decimal point"></div>
 </section>
 
 <section id="library">
@@ -600,7 +603,6 @@
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Do it again for <code>vector3d.py</code></h4>
       <p>Exactly the same three clicks. Two new tabs when you are finished.</p>
-      <label class="chk"><input type="checkbox" data-p="l1"><span>My project has five tabs: main.py, ssd1306.py, imu.py, vector3d.py and diagram.json</span></label>
     </div></div>
   </div>
 
@@ -617,7 +619,6 @@
       <h4>Check the Pico&rsquo;s file list</h4>
       <p><strong>View &rarr; Files</strong>. The lower panel should now show <em>three</em> library files:
       <code>ssd1306.py</code> from last time, plus today&rsquo;s two. They all stay there for good.</p>
-      <label class="chk"><input type="checkbox" data-p="l1b"><span>Thonny&rsquo;s file list shows ssd1306.py, imu.py and vector3d.py on the Pico</span></label>
     </div></div>
   </div>
 
@@ -626,7 +627,6 @@
   <code>imu.py</code> asking for the file it leans on, and not finding it. Copy the second file and the
   message goes away.</div>
 
-  <label class="chk"><input type="checkbox" data-p="l2"><span>Both library files are on the Pico, not just on my computer</span></label>
 </section>
 
 <section id="try">
@@ -667,9 +667,8 @@
   to the next and most of the movement has vanished. Then press <strong>turning it into words</strong> so
   it reads <em>leaving it as a number</em>, and send it: that is the error you are going to meet.</div>
 
-  <label class="chk"><input type="checkbox" data-p="t1"><span>I saw the long number change as I tilted</span></label>
-  <label class="chk"><input type="checkbox" data-p="t2"><span>I saw what keeping 0 places instead of 1 throws away</span></label>
-  <label class="chk"><input type="checkbox" data-p="t3"><span>I made it refuse a number on purpose, and saw the screen keep its old contents</span></label>
+
+<div class="ckpt ask" data-gate="equals" data-label="Asking a sensor the wrong question"></div>
 </section>
 
 <section id="build">
@@ -689,7 +688,6 @@
       <p>Click the blue <strong>+</strong> and type <em>mpu6050</em>. One part comes back:
       <strong>MPU6050 Accelerometer + Gyroscope</strong>. Add it and drag it somewhere clear, with its
       row of pads facing the Pico.</p>
-      <label class="chk"><input type="checkbox" data-p="c1"><span>The blue sensor part is on the diagram</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
@@ -955,9 +953,6 @@
       Physical pin <strong>36</strong>, the same one the screen uses. Pins 39 and 40 look like power and
       are 5&nbsp;V &mdash; still the one rule this module has repeated since Activity 1.</div>
 
-      <label class="chk"><input type="checkbox" data-p="c2"><span>SDA &rarr; GP0 and SCL &rarr; GP1, alongside the screen&rsquo;s wires</span></label>
-      <label class="chk"><input type="checkbox" data-p="c3"><span>GND &rarr; a ground pin, and VCC &rarr; 3V3</span></label>
-      <label class="chk"><input type="checkbox" data-p="c4"><span>The screen&rsquo;s four wires are still there and untouched</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
@@ -966,7 +961,6 @@
       sensor part while the simulation is running</strong> and a little panel opens with sliders on it:
       three for acceleration, three for rotation, and one for temperature. Drag the acceleration
       sliders and your program sees the numbers change, exactly as if you had picked the board up.</p>
-      <label class="chk"><input type="checkbox" data-p="c5"><span>I found the sliders by clicking the sensor while it was running</span></label>
     </div></div>
   </div>
 
@@ -979,27 +973,32 @@
       <h4>Plug in and power up</h4>
       <p>USB cable in, power switch <strong>SW5</strong> on, and Thonny showing
       <code>&gt;&gt;&gt;</code> in the Shell.</p>
-      <label class="chk"><input type="checkbox" data-p="d1"><span>The Shell shows &gt;&gt;&gt;</span></label>
     </div></div>
 
     <div class="step"><div class="idx">2</div><div class="body">
       <h4>Get today&rsquo;s two library files on</h4>
       <p>This is your wiring step. Go back to <a href="#library">the library section</a> and finish it
       before you write a line of the program.</p>
-      <label class="chk"><input type="checkbox" data-p="d2"><span>imu.py and vector3d.py are both on the Pico</span></label>
     </div></div>
 
     <div class="step"><div class="idx">3</div><div class="body">
       <h4>Have somewhere to put the board down</h4>
       <p>You are going to be picking it up and tilting it with a USB cable attached. Leave enough slack,
       and keep the cable out of the way of your own hand.</p>
-      <label class="chk"><input type="checkbox" data-p="d3"><span>I can tilt the board freely without pulling on anything</span></label>
     </div></div>
 
     <div class="cal warn"><b>The safety rules have not gone away</b>
     Never connect a 5V pin to a GP pin &mdash; GP pins are 3.3&nbsp;V only. Never join a power pin to a
     GND pin. Switch the board off at <strong>SW5</strong> before changing any wires.</div>
   </div>
+
+<div class="ckpt" data-gate="build" data-label="Circuit ready">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; the circuit is ready</b>The sensor is on the <em>same</em> two wires as the screen &mdash; SDA to <span class="gp">0</span>, SCL to <span class="gp">1</span> &mdash; plus GND and 3V3, and the screen&rsquo;s four wires are still there and untouched.</span>
+  </label>
+</div>
 </section>
 
 <section id="code">
@@ -1017,7 +1016,9 @@
   <h3>Type it here first</h3>
   <p>The five lines that are new or nearly new. The box turns green when a line is exactly right.</p>
 
-  <div class="typer" id="typer">
+  <div class="ckpt typed" data-gate="code" data-label="Program typed">
+  <p class="askkick"><span>Checkpoint</span> Program typed</p>
+<div class="typer" id="typer">
     <div class="line-row"><span class="lno">1</span><input type="text" data-i="0" placeholder="from imu import MPU6050" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">2</span><input type="text" data-i="1" placeholder="imu = MPU6050(i2c)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <div class="line-row"><span class="lno">3</span><input type="text" data-i="2" placeholder="tilt = imu.accel.x" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
@@ -1025,10 +1026,11 @@
     <div class="line-row"><span class="lno">5</span><input type="text" data-i="4" placeholder="oled.text(str(round(tilt, 1)), 0, 16)" autocomplete="off" spellcheck="false"><span class="mark"></span></div>
     <p class="typer-msg" id="typermsg">Five boxes, five lines. Line 5 is the one worth slowing down for &mdash; three closing brackets, and a comma inside as well as outside.</p>
   </div>
+  <button class="typeragain" id="typeragain" type="button">Start the box over</button>
+</div>
   <div class="cal note"><b>Everything after the loop line is indented by four</b>
   One level, not two &mdash; there is no decision in this program. If a line has drifted to eight spaces
   it will still run and it will behave oddly, which is worse than an error.</div>
-  <label class="chk"><input type="checkbox" data-p="w1"><span>I typed the lines myself, into Wokwi or Thonny</span></label>
 
   <h3>&#128269; What each new line is doing</h3>
   <div class="tablescroll"><table>
@@ -1133,12 +1135,14 @@
 </svg>
 
   <h3>Check yourself</h3>
-  <label class="chk"><input type="checkbox" data-p="r1"><span>Numbers are scrolling up the Shell, one every half second</span></label>
-  <label class="chk"><input type="checkbox" data-p="r2"><span>The screen shows a short number under the word Tilt</span></label>
-  <label class="chk"><input type="checkbox" data-p="r3"><span>Tilting the board (or dragging the slider) changes both of them</span></label>
-  <label class="chk"><input type="checkbox" data-p="r4"><span>I found the position where the number is nearest to 1</span></label>
-  <label class="chk"><input type="checkbox" data-p="r5"><span>I changed the 1 in round to a 2, ran it, and saw a longer number</span></label>
-  <label class="chk"><input type="checkbox" data-p="r6"><span>I took the rounding out on purpose and saw the number run off the edge</span></label>
+
+<div class="ckpt" data-gate="run" data-label="It works">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; it works</b>Numbers are scrolling up the Shell and the screen shows a short number under the word Tilt &mdash; and <em>both</em> change as I tilt the board.</span>
+  </label>
+</div>
 </section>
 
 <section id="fix">
@@ -1433,12 +1437,6 @@
   Same rule as Activity 1: without it Wokwi shows a warning triangle, and a real LED burns out. Bands
   orange-orange-brown-gold, which is 330&nbsp;&Omega;.</div>
 
-  <label class="chk"><input type="checkbox" data-p="e1"><span>The screen still shows the tilt number, changing as I move the board</span></label>
-  <label class="chk"><input type="checkbox" data-p="e2"><span>The light comes on when I tilt the board past about halfway</span></label>
-  <label class="chk"><input type="checkbox" data-p="e3"><span>The light goes out again when I put the board back down flat</span></label>
-  <label class="chk"><input type="checkbox" data-p="e4"><span>It keeps up with me &mdash; on, off, on &mdash; for as long as I leave it running</span></label>
-  <label class="chk"><input type="checkbox" data-p="e5"><span>I found the position where it is right on the edge, and watched it make up its mind</span></label>
-  <label class="chk"><input type="checkbox" data-p="e6"><span>I tilted the board the <em>other</em> way and noticed what the light did</span></label>
 
   <details><summary>&#128161; Clue 1 &mdash; I don&rsquo;t know where to start</summary>
     <p>Do not start a new file. Start from the program you have just written, which already reads the
@@ -1526,16 +1524,31 @@
     how it is tilted. It is spelt like the first set with one word changed. Find it, and notice that it
     drops back to nothing the moment you stop moving.</li>
   </ol>
+
+<div class="ckpt" data-gate="exercise" data-label="Exercise done">
+  <label class="gtick">
+    <input type="checkbox">
+    <span class="gbox" aria-hidden="true"></span>
+    <span class="gtxt"><b>Checkpoint &mdash; exercise done</b>The light comes on when I tilt the board past about halfway and goes out when I set it back down flat, over and over, for as long as I leave it running.</span>
+  </label>
+</div>
 </section>
 
 <section id="quiz">
   <h2>&#129504; Quick quiz</h2>
   <p class="lede">Six questions. No marks, no pressure &mdash; just check it stuck.</p>
-  <div id="quizbox"></div>
+  <div class="ckpt quizgate" data-gate="quiz" data-label="Quiz">
+  <div class="quizhead"><span id="quizscore"></span><span class="quizpips" id="quizpips" aria-hidden="true"></span></div>
+</div>
+<div id="quizbox"></div>
   <div class="win" id="quizwin" hidden>&#127881; <strong>All six right.</strong> Your board can now find
   something out about the world, and say it in a form a person can read &mdash; which is the whole job of
   every instrument ever built. Next up &mdash; Activity 9, where a pin answers with a number all by
   itself, with no bus and no library in between.</div>
+</section>
+
+<section id="part" class="partsec">
+  <div class="partbay" id="partbay"></div>
 </section>
 
 <section>
@@ -1569,6 +1582,28 @@
 
 <script>
 window.ACTIVITY = {
+  checks: {
+      "equals": {
+          "opts": [
+              "It will almost never be exactly 1.0, so the answer is almost always no",
+              "1.0 is outside the sensor&rsquo;s range",
+              "MicroPython cannot compare decimals"
+          ],
+          "q": "Why is &ldquo;is the tilt exactly 1.0?&rdquo; a bad question to ask a sensor?",
+          "right": 0,
+          "why": "Measurements land <em>near</em> a number, not on it. Ask whether it is bigger or smaller than something and you get a question that can actually come true."
+      },
+      "numbers": {
+          "opts": [
+              "A button has two states; the sensor is measuring, and a measurement lands anywhere in between",
+              "The sensor is faulty and needs calibrating",
+              "MicroPython always uses decimals for sensors"
+          ],
+          "q": "A button gave you 1 or 0. This sensor gives you 0.9843137. Why the difference?",
+          "right": 0,
+          "why": "That is the whole jump this activity makes &mdash; from yes-or-no to how-much."
+      }
+  },
   typer: [
     "from imu import MPU6050",
     "imu = MPU6050(i2c)",
@@ -1604,6 +1639,7 @@ window.ACTIVITY = {
   ]
 };
 </script>
+<script src="robot.js"></script>
 <script src="activity.js"></script>
 
 <footer>
