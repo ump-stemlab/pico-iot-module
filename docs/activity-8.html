@@ -23,6 +23,9 @@
   <linearGradient id="wkres" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#eadfc6"/><stop offset=".5" stop-color="#d5c09c"/><stop offset="1" stop-color="#bda87f"/>
   </linearGradient>
+  <linearGradient id="wkresv" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#eadfc6"/><stop offset=".5" stop-color="#d5c09c"/><stop offset="1" stop-color="#bda87f"/>
+  </linearGradient>
 </defs></svg>
 
 <a class="skip" href="#main">Skip to the activity</a>
@@ -1218,9 +1221,270 @@
   <p>On the real LilEx5 there is nothing to do: LED1 is soldered on <span class="gp">GP11</span> already.
   In Wokwi you have to add it, and it is exactly the circuit you built in Activity 1.</p>
 
-<svg class="dia wide" viewBox="0 0 780 600" role="img" aria-label="The extra Wokwi wiring for the exercise, drawn the way Wokwi draws it. A red LED stands to the left of the Pico. Its long leg goes through a 330 ohm resistor to physical pin 15, which is GP11. Its short leg goes down and round to physical pin 18, which is a ground. The sensor and screen wiring from earlier is not shown and does not change.">
+<!-- bb:start act8ex -->
+<svg class="dia wide" viewBox="0 0 780 700" role="img" aria-label="The extra wiring for the Activity 8 exercise, built on a breadboard. A red LED stands at the right-hand end of the board. Its short leg shares a strip with a 330 ohm resistor that stands across the centre gap and drops to the minus rail; a red wire from physical pin 15, which is GP11, lands in the strip holding the long leg. One black wire carries the minus rail to physical pin 18. The sensor and screen wiring from earlier is not shown and does not change.">
   <text x="390" y="26" class="dttl" text-anchor="middle">One LED, one resistor, two pins that nothing else is using</text>
-  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the board are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+  <text x="390" y="48" class="dsub" text-anchor="middle">The big white numbers on the Pico are the physical pins &mdash; where a wire goes. The names beside them are what you type.</text>
+  <g class="bb">
+  <rect x="32" y="96" width="426" height="433" rx="6" class="bb-body"/>
+  <rect x="44" y="301.5" width="402" height="15" class="bb-chan"/>
+  <path d="M62 106 H428" class="bb-rail pos"/>
+  <path d="M42.5 106 h11 M48 100.5 v11" class="bb-sign pos"/>
+  <path d="M436.5 106 h11 M442 100.5 v11" class="bb-sign pos"/>
+  <rect x="81.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="124.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <path d="M62 159 H428" class="bb-rail neg"/>
+  <path d="M42.5 159 h11" class="bb-sign neg"/>
+  <path d="M436.5 159 h11" class="bb-sign neg"/>
+  <rect x="81.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="144.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <path d="M62 463 H428" class="bb-rail pos"/>
+  <path d="M42.5 463 h11 M48 457.5 v11" class="bb-sign pos"/>
+  <path d="M436.5 463 h11 M442 457.5 v11" class="bb-sign pos"/>
+  <rect x="81.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="487.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <path d="M62 519 H428" class="bb-rail neg"/>
+  <path d="M42.5 519 h11" class="bb-sign neg"/>
+  <path d="M436.5 519 h11" class="bb-sign neg"/>
+  <rect x="81.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="507.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="81.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="101.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="121.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="141.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="161.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="181.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="201.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="221.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="241.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="261.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="281.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="301.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="321.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="341.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="361.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="381.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="195.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="215.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="235.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="255.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="275.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="335.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="355.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="375.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="395.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <rect x="401.2" y="415.2" width="7.6" height="7.6" rx="1" class="bb-hole"/>
+  <text x="47" y="203" class="bb-num" text-anchor="middle">a</text>
+  <text x="47" y="223" class="bb-num" text-anchor="middle">b</text>
+  <text x="47" y="243" class="bb-num" text-anchor="middle">c</text>
+  <text x="47" y="263" class="bb-num" text-anchor="middle">d</text>
+  <text x="47" y="283" class="bb-num" text-anchor="middle">e</text>
+  <text x="47" y="343" class="bb-num" text-anchor="middle">f</text>
+  <text x="47" y="363" class="bb-num" text-anchor="middle">g</text>
+  <text x="47" y="383" class="bb-num" text-anchor="middle">h</text>
+  <text x="47" y="403" class="bb-num" text-anchor="middle">i</text>
+  <text x="47" y="423" class="bb-num" text-anchor="middle">j</text>
+  <text x="85" y="443" class="bb-num" text-anchor="middle">1</text>
+  <text x="165" y="443" class="bb-num" text-anchor="middle">5</text>
+  <text x="265" y="443" class="bb-num" text-anchor="middle">10</text>
+  <text x="365" y="443" class="bb-num" text-anchor="middle">15</text>
+  </g>
 <g class="wk">
   <rect x="545" y="100" width="200" height="440" rx="8" class="wk-pcb"/>
   <path d="M553 100 h184 v6 h-184 z" class="wk-pcb-top"/>
@@ -1393,45 +1657,45 @@
   <circle cx="735" cy="134" r="3.4" class="wk-hole"/>
   <text x="723" y="137.3" class="wk-num" text-anchor="end">40</text>
   <text x="707" y="137.3" class="wk-silk" text-anchor="end">VBUS</text>
-  </g>
   <circle cx="555" cy="414" r="10.5" class="wk-ring"/>
   <circle cx="555" cy="474" r="10.5" class="wk-ring"/>
-
-  <path d="M166 326 L166 301 A19 19 0 0 1 204 301 L204 326 Z" fill="url(#wkled)"/>
-  <rect x="162" y="323" width="46" height="8" rx="3" class="wk-led-rim"/>
-  <path d="M176 304 q6 -8 12 -3" class="wk-led-gloss"/>
-  <rect x="170" y="331" width="7" height="83" rx="2" class="wk-leg"/>
-  <rect x="193" y="331" width="7" height="83" rx="2" class="wk-leg"/>
-  <text x="185" y="270" class="dlbl" text-anchor="middle">red LED &mdash; LED1</text>
-  <text x="158" y="380" class="dsub" text-anchor="end">C &mdash; short leg</text>
-  <text x="214" y="380" class="dsub">A &mdash; long leg</text>
-
-  <rect x="242" y="410.5" width="186" height="7" rx="2" class="wk-leg"/>
-  <defs><clipPath id="rbody7">
-    <path d="M284 402 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z"/>
-  </clipPath></defs>
-  <g clip-path="url(#rbody7)">
-    <rect x="269" y="398" width="132" height="32" fill="url(#wkres)"/>
-    <rect x="286" y="398" width="11" height="32" class="wk-b-or"/>
-    <rect x="310" y="398" width="11" height="32" class="wk-b-or"/>
-    <rect x="330" y="398" width="11" height="32" class="wk-b-br"/>
-    <rect x="370" y="398" width="11" height="32" class="wk-b-gd"/>
   </g>
-  <path d="M284 402 h102 a15 15 0 0 1 0 24 h-102 a15 15 0 0 1 0 -24 z" class="wk-res-edge"/>
-  <text x="335" y="384" class="dlbl" text-anchor="middle">330 &#8486;</text>
-
-  <path d="M196.5 414 L242 414" class="wkwire red"/>
-  <path d="M428 414 L537 414" class="wkwire red"/>
-  <path d="M173.5 414 L173.5 508 L505 508 L505 474 L537 474" class="wkwire black"/>
-
-  <rect x="250" y="158" width="256" height="92" rx="10" class="note"/>
-  <text x="266" y="186" class="dlbl">Two pins nothing else wants</text>
-  <text x="266" y="210" class="dsub">pin 15 is GP11 &mdash; the one you type</text>
-  <text x="266" y="228" class="dsub">pin 18 is the nearest free ground</text>
-
-  <text x="390" y="558" class="dsub" text-anchor="middle">Leave the sensor&rsquo;s four wires exactly where they are. This is one more part on a board that already works.</text>
-  <text x="390" y="582" class="dsub" text-anchor="middle">Long leg through the resistor to pin 15. Short leg to a ground. Same rules as Activity 1.</text>
+  <path d="M537 414 L524 414 A9 9 0 0 1 515 405 L515 288 A9 9 0 0 0 506 279 L405 279" class="wkwire-o"/>
+  <path d="M537 414 L524 414 A9 9 0 0 1 515 405 L515 288 A9 9 0 0 0 506 279 L405 279" class="wkwire bbw red"/>
+  <path d="M385 419 L385 511" class="wkwire-o"/>
+  <path d="M385 419 L385 511" class="wkwire bbw black"/>
+  <path d="M325 511 L325 546 A9 9 0 0 0 334 555 L481 555 A9 9 0 0 0 490 546 L490 483 A9 9 0 0 1 499 474 L537 474" class="wkwire-o"/>
+  <path d="M325 511 L325 546 A9 9 0 0 0 334 555 L481 555 A9 9 0 0 0 490 546 L490 483 A9 9 0 0 1 499 474 L537 474" class="wkwire bbw black"/>
+  <g class="bb-part">
+  <rect x="381.5" y="279" width="7" height="120" rx="2" class="wk-leg"/>
+  <defs><clipPath id="rv664"><path d="M373 308 v62 a12 12 0 0 0 24 0 v-62 a12 12 0 0 0 -24 0 z"/></clipPath></defs>
+  <g clip-path="url(#rv664)">
+    <rect x="373" y="296" width="24" height="86" fill="url(#wkresv)"/>
+    <rect x="373" y="308.04" width="24" height="9.1" class="wk-b-or"/>
+    <rect x="373" y="320.08" width="24" height="9.1" class="wk-b-or"/>
+    <rect x="373" y="332.12" width="24" height="9.1" class="wk-b-br"/>
+    <rect x="373" y="363.08" width="24" height="9.1" class="wk-b-gd"/>
+  </g>
+  <path d="M373 308 v62 a12 12 0 0 0 24 0 v-62 a12 12 0 0 0 -24 0 z" class="wk-res-edge"/>
+  </g>
+  <g class="bb-part">
+  <rect x="381.5" y="207" width="7" height="32" rx="2" class="wk-leg"/>
+  <rect x="401.5" y="207" width="7" height="32" rx="2" class="wk-leg"/>
+  <path d="M376 204 L376 179 A19 19 0 0 1 414 179 L414 204 Z" fill="url(#wkled)"/>
+  <rect x="372" y="201" width="46" height="8" rx="3" class="wk-led-rim"/>
+  <path d="M383 172 q6 -8 12 -3" class="wk-led-gloss"/>
+  </g>
+  <text x="32" y="592" class="dlbl">Same unit as Activity 1</text>
+  <text x="32" y="614" class="dsub">&#8226; Short leg (C) and the resistor share one strip.</text>
+  <text x="32" y="632" class="dsub">&#8226; Long leg (A) has a strip to itself &mdash; the red wire lands there.</text>
+  <text x="32" y="650" class="dsub">&#8226; The resistor stands across the gap and drops to the &#8722; rail.</text>
+  <rect x="470" y="572" width="300" height="72" rx="10" class="note"/>
+  <text x="486" y="598" class="dlbl">Two pins nothing else wants</text>
+  <text x="486" y="620" class="dsub">15 is GP11 &mdash; the one you type</text>
+  <text x="486" y="638" class="dsub">18 is the nearest free ground</text>
+  <text x="390" y="676" class="dsub" text-anchor="middle">Leave the sensor&rsquo;s four wires exactly where they are. This is one more part on a board that already works.</text>
 </svg>
+      <!-- bb:end act8ex -->
 
   <div class="cal warn"><b>The resistor is not optional</b>
   Same rule as Activity 1: without it Wokwi shows a warning triangle, and a real LED burns out. Bands

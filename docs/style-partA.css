@@ -210,16 +210,25 @@ header.hero p.sub em{color:#fff;font-style:normal;font-weight:650}
    thing to push at a classroom's wifi; they are 441KB now and identical at
    this size. The originals are Kamil's, in STEM LAB/pip-pictures. */
 .heropose{display:none}
-@media(min-width:1180px){
+@media(min-width:820px){
   .heropose{
-    display:block;position:absolute;margin:0;bottom:0;
-    right:calc(450px - 50vw + 20px);
-    width:min(176px, calc(50vw - 478px));
+    display:block;position:absolute;margin:0;bottom:0;right:16px;
+    width:clamp(104px, 12.5vw, 176px);
     height:min(276px, calc(100% - 14px));
     pointer-events:none;
     filter:drop-shadow(0 14px 22px rgba(0,0,0,.42))}
   .heropose img{display:block;width:100%;height:100%;
     object-fit:contain;object-position:bottom center}
+}
+/* Between 820 and 1180 the 900px text column reaches the window edge, so there
+   is no gutter for him to stand in and the space has to be bought from the
+   column. Above 1180 the column floats clear of the edge and the gutter pays
+   for him instead, so the text gets its full width back. */
+@media(min-width:820px) and (max-width:1179px){
+  header.hero .wrap{padding-right:calc(clamp(104px, 12.5vw, 176px) + 36px)}
+}
+@media(min-width:1180px){
+  .heropose{width:min(176px, calc(50vw - 478px))}
 }
 
 
@@ -471,6 +480,12 @@ kbd{background:var(--sink);border:1px solid var(--line);border-radius:6px;paddin
   transition:border-color .2s,background .2s}
 .q.solved{border-color:var(--green);background:rgba(31,157,85,.07)}
 .q p.qt{font-weight:650;margin:0 0 12px;display:flex;gap:11px;align-items:baseline}
+/* The question text is wrapped in .qbody by activity.js so this flex row has
+   exactly two children — the number and the question. Without the wrapper
+   every inline <code> in a question becomes its own flex item. min-width:0
+   lets it shrink below its content width so a long code token wraps instead
+   of pushing the row wide at 390px. */
+.q p.qt .qbody{flex:1;min-width:0}
 .qn{flex:0 0 25px;height:25px;border-radius:8px;background:var(--accent);color:#fff;
   display:inline-grid;place-items:center;font:800 13px/1 var(--display);align-self:flex-start}
 .q.solved .qn{background:var(--green)}

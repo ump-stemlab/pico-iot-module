@@ -355,6 +355,22 @@ parts before naming anything new.
 **`.chk` is gone.** The 324 self-assessment checkboxes it styled were removed on
 15 Sep 2026; nothing on the site uses the class any more.
 
+**A quiz question's text must stay inside `.qbody`.** `.q p.qt` is a flex row —
+the number badge and the question sit side by side, baseline-aligned. Flex makes
+a separate item of every child, *including* each inline element and each run of
+text between them, so a question written as `... you write <code>led =
+Pin(11)</code>, then <code>led = Pin(12)</code> ...` rendered as a row of narrow
+columns with words broken down the middle. `activity.js` now wraps the question
+in one `<span class="qbody">` so the row has exactly two children, and `.qbody`
+takes `flex:1;min-width:0` so a long code token wraps instead of pushing the row
+wide at 390&nbsp;px.
+
+**This was live on 27 quiz questions across 12 activities**, and not only with
+`<code>`: `<b>`, `<strong>` and `<em>` in a question did the same. Kamil found
+it on Activity 1 and again on Activity 2. **Anything that drops author HTML into
+a flex container has this problem** — check the container's `display` before
+writing `innerHTML` into it.
+
 ### 4.5 Type
 
 Headings, the brand, buttons and numbers use **Poppins**, loaded from Google Fonts by a `<link>`
@@ -1399,20 +1415,147 @@ module does not look like two different books.
   `by + 34 + (n<=20 ? n-1 : 40-n) * 20`**, pads 1–20 down the left and 40–21 down the right; a wire
   meets a left-hand pad at `x=537` and a right-hand pad at `x=755`; the ring on a used pad is
   `<circle r="10.5" class="wk-ring">` centred on the hole.
-- The diagrams' viewBoxes are `780 × 545` (Activity 1), `780 × 560` (Activity 4),
-  `780 × 600` (Activity 5, which carries both circuits), `780 × 690` (Activity 6, which adds a
-  second button below the first), `780 × 660` (Activity 7, whose power wires wrap round the board) and
-  `780 × 690` (Activity 8, whose sensor module sits high on the left), `780 × 600` (Activity 8's
-  exercise, one LED and one resistor), `780 × 690` (Activity 9, whose three wires all wrap round to the
-  right-hand pads, one over the top and two underneath), `780 × 720` (Activity 9's exercise, which is
-  Activity 11's diagram with the plain Pico swapped in), `780 × 690` (Activity 10, whose custom chip sits
-  high on the left with its legend beneath it) and `780 × 720` (Activity 11, which carries two
-  LED-and-resistor chains, one routed over the top of the board and one under it).
+- **Every breadboard wiring diagram is `780 x 665`**, except Activity 8's exercise at `780 x 700`
+  (it carries an extra line under the caption). Activity 1's two teaching diagrams are `780 x 545`
+  (the board's anatomy) and `780 x 460` (the wrong/right pair). The old per-activity viewBoxes
+  (545/560/600/690/720) are gone: one frame for all of them is what makes the module look like one
+  book, and the board plus the caption strip needs the same height every time.
+  The direct-wired module diagrams (Activities 3, 7, 8, 9, 10) keep their own sizes.
 - Parts are drawn the way Wokwi draws them: the pushbutton is a dark frame with a pale face, four
   corner screws, a domed cap and two silver legs a side; the LED is a red bullet with a flange and a
-  long leg (A, right) and short leg (C, left); the resistor has silver leads, a body that bulges at
+  long leg (A, right) and short leg (C, left) &mdash; **and they must actually be different lengths.**
+  Until 14 Sep 2026 every LED in the module was drawn with both legs the same height, while the
+  labels beside them read *A &mdash; long leg* and *C &mdash; short leg*. Eight LEDs across
+  Activities 1, 5, 6, 8, 9 and 11. Telling the legs apart is how a student knows which way round an
+  LED goes, so a diagram that draws them equal contradicts the one thing it is there to teach.
+  The cathode is now 17&ndash;18&nbsp;px shorter (about a fifth), and the black ground wire starts at
+  the new, higher leg end. **This rule is about LEDs drawn free-standing.** An LED plugged into a
+  breadboard has both visible legs the same length, because both reach the same depth into the board,
+  and drawing them unequal there would be a lie. On the board the legs are told apart by what their
+  strips carry, and Activity 1 still teaches A and C on the free-standing diagram first. **If a leg height changes, move its wire's leading run with it** &mdash;
+  a wire that leaves the leg sideways has two points on that line, not one; the resistor has silver leads, a body that bulges at
   both ends and orange-orange-brown-gold bands for 330 Ω. Rule 5.3 still applies — **render every
   diagram and look at it**, in both themes. Four of Activity 5's ten needed moving after seeing them.
+
+### The breadboard (Activity 1, and the discrete-part circuits after it)
+
+Kamil's call, 14&ndash;15 Sep 2026: the circuits are built on a breadboard with the power rails, and
+the resistors are mounted vertically. **The first attempt at this was rejected** &mdash; it put a
+200-tie-point board under a three-part circuit stacked into one column, scattered haloed labels over
+the board and ran a wire across its face. What follows is the second attempt, and none of it is
+guessed.
+
+**The reference is Kamil's own project, `https://wokwi.com/projects/408599214421455873`.** On
+15 Sep 2026 its `diagram.json` and its rendered `wokwi-breadboard-half` SVG were both read out of the
+live page. Every number in `tools/bb.py` is Wokwi's own, scaled from its 9.6px pitch to our 20px by
+2.0833. Do not round them.
+
+- **Colours.** `#EEEFED` body, tie points as 1&nbsp;mm squares at **50% black**, a channel at
+  `#E3E3E3` that is almost invisible, rail hairlines at `#F97466` / `#55D2FD`. The cream board with
+  dark round holes that was there before is most of why the first attempt did not look like Wokwi.
+- **Vertical geometry**, px from the board's top edge: red hairline 10, `+` row 32, `-` row 52, blue
+  hairline 63, rows A&ndash;E at 103/123/143/163/183, **three pitches of channel** (centre 213), rows
+  F&ndash;J at 243&hellip;323, red hairline 367, `+` 395, `-` 415, blue 423, height **433**.
+- **Seventeen columns, not Wokwi's thirty.** The 780-wide viewBox already spends 200 on the Pico; at
+  the scale the Pico is drawn, thirty columns would be 722px. Seventeen is a real board length and is
+  enough for every circuit here. The consequence is a squarer board than Wokwi's; everything local to
+  it is exact. **Kamil chose this over growing the viewBox**, which would have dropped `wk-num` from
+  4.4 to 3.4 CSS px at 390px.
+- **The unit**, which is Wokwi's own topology: LED upright with its legs one column apart in row C;
+  the **resistor vertical in the cathode's column, bridging the channel from E to I**; a short black
+  jumper from row J straight down to the `-` rail; one black wire from the rail to a Pico GND pad.
+  Repeat on a **four-column stride**. The point of the vertical resistor is that the unit then spans
+  the board top to bottom &mdash; that is what stops it reading as a stripe in a sea of holes.
+- **Signal wires come in sideways.** An LED's body always covers its own two columns, so a wire can
+  never come down onto the strip it feeds. It enters through the **side margin into the last column**,
+  where it crosses no tie point at all &mdash; which is why the unit sits at the right-hand end of the
+  board. Wokwi's own autorouter runs its signal wire straight up the face of the board; that is the
+  one thing here deliberately not copied, because rule 5.3 wins.
+- **Nothing is written on the board.** No part name, no value, no pin number. Labels live in a caption
+  strip under the board. `.bb-lbl` and its halo are gone and must not come back.
+- Row letters are printed down the **left only** and column numbers along the **bottom only** (1, then
+  every five, which is Wokwi's sequence). Wokwi prints both of each on both sides; the second copy is
+  where wires and parts collide with text, and halving the board's text is half of what stops it
+  reading as clutter.
+- Wires are drawn twice, an outline then the colour, with **9px rounded corners** &mdash; `bb.wire()`
+  emits both paths and tags the colour `.wkwire.bbw`. That `bbw` matters: `.wkwire.black` lightens in
+  dark mode so it does not vanish against a dark page, but a breadboard wire runs across a near-white
+  board, where the lightened one is the one that disappears. `.bbw` opts out and the **outline** turns
+  light instead.
+
+**`tools/bb.py`** owns the board and the parts (`board`, `led`, `vresistor`, `wire`, `mark`,
+`leader`, `pad`). **`tools/bb_build.py`** holds one function per diagram and splices the result
+between `<!-- bb:start KEY -->` / `<!-- bb:end KEY -->` markers in the page; run it with no arguments
+to rebuild every diagram it knows. It never draws the Pico: the `<g class="wk">` group is lifted
+**verbatim** out of `activity-8.html` and only the orange `wk-ring` circles are redrawn, so that group
+stays byte-identical everywhere.
+
+`vresistor()` shades its body with `url(#wkresv)`, a **horizontal** version of the page's `wkres`
+gradient. `activity-1.html` has it in the shared `<defs>` block at the top; any other page that gains
+a vertical resistor needs it adding there too, or the body renders unfilled.
+
+`board(bx, by, cols=, rails=False)` draws a short railless fragment, for the two diagrams that teach
+the board itself. Only for those &mdash; a circuit is always drawn on the whole board, because that is
+the board the student has.
+
+**Activity 1's resistor moved to the cathode side**, which is where Wokwi's project has it and the
+only side that lays out cleanly: ground is at the bottom of the board and the LED is at the top, so
+something has to cross the channel, and better a resistor than a bare jumper. The page said *long leg
+&rarr; resistor &rarr; GP11* in five places and now says *long leg &rarr; GP11; short leg &rarr;
+resistor &rarr; `-` rail &rarr; GND* &mdash; including the free-standing LED diagram, the checkpoint
+and the troubleshooting table. **If you wire another activity's LED, match this.** The page also now
+says out loud that the resistor works on either side of the LED.
+
+Activity 1 gained a **step 3, "Add the breadboard"**, between "Find your way around" and "Add the
+parts"; the old steps 3 and 4 became 4 and 5. It carries two new diagrams &mdash; the board's anatomy
+(strips, gap, rails, each labelled off the board through a leader that crosses the margin only) and a
+wrong/right pair for *two legs must never share a strip*. No new checkpoint: SS11.2 says not to add
+them casually, and neither is a milestone.
+
+#### Laying out more than one unit
+
+Done 15 Sep 2026 for Activities 4, 5, 6, 8's exercise, 9's exercise and 11. Three rules on top of
+Activity 1's, and they are the whole reason those six laid out cleanly:
+
+- **Lanes.** A signal wire that cannot reach its column straight from the margin travels along a
+  **lane** &mdash; a y midway between two rows, clear of every part &mdash; and then jogs 10px into its
+  hole. A lane crosses no tie point, so it can never be read as a connection. The usable lanes are
+  **249** and **269** (either side of row D): above them sit the LED legs, which are drawn down to 239,
+  and below them the resistor leads and the button bodies, which start at 279.
+- **Margin order.** Where several signal wires share the 79px gap between the board and the Pico, work
+  out every pair before choosing their x values: wire A's horizontal at `yA`, running left from `xA`,
+  crosses wire B's vertical whenever `xB < xA` **and** `yA` lies between B's pad and its own entry row.
+  There is no single ordering that always works &mdash; on Activity 6 the answer was SW1 at 505, SW2 at
+  520 and the LED at 490, which is neither ascending nor descending. **If you move a wire, redo the
+  check.**
+- **One ground.** Every part drops to the `-` rail and **one** wire takes the rail to **one** Pico GND
+  pad. That is what the rails are for, and it is why these circuits now use fewer ground pins than they
+  used to: Activity 5 was pins 8 and 18 and is now just 18; Activity 6 was 8, 13 and 18 and is now 18;
+  Activities 9's exercise and 11 were 13 and 18 and are now 18. Activity 4 still uses pin 8, because it
+  only ever had one. **The pin tables, the "Any GND pad will do" callouts and the checkpoints on those
+  pages were rewritten to match** &mdash; if you rewire one of them again, check those too.
+
+#### The pushbutton
+
+`bb.button(bx, by, col_l, col_r)` draws a tactile switch **straddling the centre channel**, which is
+the only way one goes into a breadboard: its top bar lands in row E and its bottom bar in row F, with
+the legs four columns apart so they stay visible either side of a 56x40 body. Signal comes from a strip
+**above** the gap, ground from a strip **below** it.
+
+That changes how Activity 4's four-leg trap is taught, and the change is an improvement. The part's
+internals are unchanged, so the two-pane *wire these two / not these two* diagram stays exactly as it
+was; a new paragraph after it says that **on a breadboard you get the diagonal for free**, because
+straddling the gap puts one bar above it and the other below. Every later mention of "diagonally
+opposite" on Activities 4, 5 and 6 &mdash; prose, checkpoint, troubleshooting row, exercise clue,
+words-to-remember &mdash; now says *above the gap / below the gap* instead. The trap itself is still
+real and still described.
+
+Two small CSS fixes went in alongside: `.wk-leg-w` dropped from 7px to 5px (at 7 the button's legs read
+as staples), and the green LED gained `.wk-led-rim.g`, because until now it borrowed the red LED's red
+flange.
+
+**Still direct-wired, on purpose:** the module circuits on Activities 3, 7, 8, 9 and 10 (OLED, BME280,
+IMU, soil block, the custom chip). That is how Wokwi draws a four-pin module, and Kamil's call.
 
 ## 8. Publishing
 
@@ -1455,7 +1598,21 @@ After a push, GitHub Pages rebuilds in about a minute. The CDN caches hard — c
 
 There is no browser on Kamil's machine that these sessions can drive, but the cloud
 container has Chromium and Playwright already installed (`PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`
-— never run `playwright install`). The routine that worked for Activity 2:
+— never run `playwright install`).
+
+**`device_bash` works.** A handoff prompt written on 15 Sep 2026 said it had been broken by a Windows
+update on the 8th and that files had to move by stage/commit round-trips. It was tested at the start
+of the next session and it is fine — `ls`, `cat`, `sed -i` and `python3` all run against the clone.
+Use it; round-tripping every file through the container is slow and leaves two copies to keep in step.
+Staging is still needed for the two things the machine cannot do: looking at a rendered PNG, and
+running Playwright.
+
+**`check.js` and `sweep.js` have to run in the container, not on Kamil's machine** — node is there,
+but `playwright` is not, so both die with `Cannot find module 'playwright'`. Stage `docs/` and
+`tools/` into the container keeping the layout (`tools/` a sibling of `docs/`) and run them there.
+All 108 files fit in three `device_stage_files` calls.
+
+The routine that worked for Activity 2:
 
 1. Build the page in the container, next to copies of `style.css`, `code.js`,
    `activity.js` and `img/`, staged from the clone.
@@ -1833,6 +1990,23 @@ They are shown at most 176&nbsp;px wide, so the full-size files were about
 thirty times more pixels than any screen asks for, on a site that runs in
 classrooms. **The originals are outside the repo**, in
 `STEM LAB/pip-pictures` — re-encode from there, never from `docs/img/`.
+
+**He appears from 820&nbsp;px wide, not 1180.** Between 820 and 1180 the 900px
+text column reaches the window edge, so the space for him is bought with
+`padding-right` on the hero's `.wrap`; above 1180 the column floats clear and
+the gutter pays for him instead, so the text gets its full width back. The first
+version used the module rail's 1180&nbsp;px breakpoint, which meant he never
+appeared on an ordinary laptop window.
+
+**The first version was also placed wrong, and shipped that way.** `right` was
+written as an offset from `.wrap` while the figure was a child of `.wrap`; the
+figure was then moved to be a child of `header.hero` and the formula was left
+alone. It resolved to &minus;230&nbsp;px at 1400&nbsp;px, put him completely off
+the right of the window, and `overflow:hidden` on the hero swallowed him — so
+every activity shipped with an invisible mascot. The check that should have
+caught it tested vertical clipping and distance-to-text, and a figure sitting
+off-screen passes both. **If `.heropose` moves, re-derive `right` against its
+new containing block and assert the figure is inside the window.**
 
 `tools/cutout.py` recovers alpha from checkerboard-flattened JPEGs. It is not
 needed for the current set, which arrived as proper PNGs — keep it in case a

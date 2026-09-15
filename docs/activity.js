@@ -501,7 +501,14 @@
       d.className = 'q';
       var p = document.createElement('p');
       p.className = 'qt';
-      p.innerHTML = '<span class="qn">' + (qi + 1) + '</span>' + item.q;
+      /* .qt is a flex row, so the question text needs to be ONE child of it.
+         Dropped straight in, every inline <code> in the question became a flex
+         item of its own and the text between them became anonymous ones, and
+         the question rendered as a row of narrow columns with words broken
+         down the middle. 21 quiz questions across 10 activities looked like
+         that. Keep the wrapper. */
+      p.innerHTML = '<span class="qn">' + (qi + 1) + '</span>'
+                  + '<span class="qbody">' + item.q + '</span>';
       d.appendChild(p);
       var fb = document.createElement('p');
       fb.className = 'fb';
